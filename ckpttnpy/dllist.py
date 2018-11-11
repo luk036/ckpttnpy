@@ -1,10 +1,22 @@
 class dlnode:
+    """doubly linked node
+    """
+
     def __init__(self, next=None, prev=None, key=None):
+        """initialization
+        
+        Keyword Arguments:
+            next {dlnode} -- [description] (default: {None})
+            prev {dlnode} -- [description] (default: {None})
+            key {int} -- [description] (default: {None})
+        """
         self.next = next
         self.prev = prev
         self.key = key
 
     def detach(self):
+        """detach
+        """ 
         n = self.next
         p = self.prev
         p.next = n
@@ -12,67 +24,108 @@ class dlnode:
 
 
 class dllist:
+    """doubly linked list
+    
+    Raises:
+        StopIteration -- [description]
+    
+    Returns:
+        [type] -- [description]
+    """
+
     def __init__(self):
+        """initialization
+        """
         self.nil = dlnode()
-        self.head = self.tail = self.nil
+        self.nil.next = self.nil.prev = self.nil
         self.cur = None
 
     def is_empty(self):
-        return self.head == self.nil
+        """is_empty
+        
+        Returns:
+            bool -- [description]
+        """
+        return self.nil.next == self.nil
 
     def clear(self):
-        self.head = self.tail = self.nil
+        """clear
+        """ 
+        self.nil.next = self.nil.prev = self.nil
 
     def appendleft(self, node):
-        if self.head == self.nil: # empty
-            self.head = self.tail = node
-            node.next = node.prev = self.nil
-        else:
-            node.next = self.head
-            self.head.prev = node
-            self.head = node
-            node.prev = self.nil
+        """append left
+        
+        Arguments:
+            node {dlnode} -- [description]
+        """
+        node.next = self.nil.next
+        self.nil.next.prev = node
+        self.nil.next = node
+        node.prev = self.nil
 
     def append(self, node):
-        if self.head == self.nil: # empty
-            self.head = self.tail = node
-            node.next = node.prev = self.nil
-        else:
-            node.prev = self.tail
-            self.tail.next = node
-            self.tail = node
-            node.next = self.nil
+        """append
+        
+        Arguments:
+            node {dlnode} -- [description]
+        """
+        node.prev = self.nil.prev
+        self.nil.prev.next = node
+        self.nil.prev = node
+        node.next = self.nil
 
     def popleft(self):
-        res = self.head
-        self.head = res.next
-        self.head.prev = self.nil
-        if self.head == self.nil: # empty
-            self.tail = self.nil
+        """pop left
+        
+        Returns:
+            dlnode -- [description]
+        """
+        res = self.nil.next
+        self.nil.next = res.next
+        self.nil.next.prev = self.nil
         return res
 
     def pop(self):
-        res = self.tail
-        self.tail = res.prev
-        self.tail.next = self.nil
-        if self.tail == self.nil: # empty
-            self.head = self.nil
+        """pop
+        
+        Returns:
+            dlnode -- [description]
+        """
+        res = self.nil.prev
+        self.nil.prev = res.prev
+        self.nil.prev.next = self.nil
         return res
 
     def detach(self, node):
-        if node.next == self.nil and node.prev == self.nil:
-            self.head = self.tail = self.nil
+        """detach
+        
+        Arguments:
+            node {dlnode} -- [description]
+        """
         node.detach()
 
     def __iter__(self):
-        self.cur = self.head
+        """iterable
+        
+        Returns:
+            dllist -- itself
+        """
+        self.cur = self.nil.next
         return self
 
     def __next__(self):
+        """next
+        
+        Raises:
+            StopIteration -- [description]
+        
+        Returns:
+            dlnode -- [description]
+        """
         if self.cur != self.nil:
             res = self.cur
             self.cur = self.cur.next
             return res
         else:
             raise StopIteration
-            
