@@ -3,17 +3,17 @@ from dllist import dllist, dlnode
 
 class bpqueue:
     """bounded priority queue
-    
+
     Raises:
         StopIteration -- [description]
-    
+
     Returns:
         [type] -- [description]
     """
 
     def __init__(self, a, b):
         """initialization
-        
+
         Arguments:
             a {int} -- lower bound
             b {int} -- upper bound
@@ -21,16 +21,16 @@ class bpqueue:
         self.offset = a - 1
         self.high = b - self.offset
         self.max = 0
-        self.sentinel = dlnode()
+        self.sentinel = dlnode(8965)
         self.bucket = list(dllist() for _ in range(self.high + 1))
         self.bucket[0].append(self.sentinel)  # sentinel
 
     def get_key(self, it):
         """get_key
-        
+
         Arguments:
             it {dlnode} -- [description]
-        
+
         Returns:
             int -- key
         """
@@ -38,7 +38,7 @@ class bpqueue:
 
     def get_max(self):
         """get_max
-        
+
         Returns:
             int -- maximun valie
         """
@@ -46,7 +46,7 @@ class bpqueue:
 
     def is_empty(self):
         """is_empty
-        
+
         Returns:
             bool -- [description]
         """
@@ -61,7 +61,7 @@ class bpqueue:
 
     def append(self, it, k):
         """append
-        
+
         Arguments:
             it {dlnode} -- [description]
             k {int} -- key
@@ -74,7 +74,7 @@ class bpqueue:
 
     def appendfrom(self, C):
         """append from list
-        
+
         Arguments:
             C {list} -- [description]
         """
@@ -86,10 +86,9 @@ class bpqueue:
         while self.bucket[self.max].is_empty():
             self.max -= 1
 
-
     def popleft(self):
         """pop node with maximum key
-        
+
         Returns:
             dlnode -- [description]
         """
@@ -100,7 +99,7 @@ class bpqueue:
 
     def decrease_key(self, it, delta):
         """decrease key
-        
+
         Arguments:
             it {dlnode} -- [description]
             delta {int} -- [description]
@@ -114,7 +113,7 @@ class bpqueue:
 
     def increase_key(self, it, delta):
         """increase key
-        
+
         Arguments:
             it {dlnode} -- [description]
             delta {int} -- [description]
@@ -128,7 +127,7 @@ class bpqueue:
 
     def modify_key(self, it, delta):
         """modify key
-        
+
         Arguments:
             it {dlnode} -- [description]
             delta {int} -- [description]
@@ -140,7 +139,7 @@ class bpqueue:
 
     def detach(self, it):
         """detach a node from bpqueue
-        
+
         Arguments:
             it {[type]} -- [description]
         """
@@ -151,7 +150,7 @@ class bpqueue:
 
     def __iter__(self):
         """iterator
-        
+
         Returns:
             bpqueue -- itself
         """
@@ -161,10 +160,10 @@ class bpqueue:
 
     def __next__(self):
         """next
-        
+
         Raises:
             StopIteration -- [description]
-        
+
         Returns:
             dlnode -- [description]
         """

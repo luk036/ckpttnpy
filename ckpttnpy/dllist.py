@@ -2,21 +2,21 @@ class dlnode:
     """doubly linked node
     """
 
-    def __init__(self, next=None, prev=None, key=None):
+    def __init__(self, id=0, next=None, prev=None, key=None):
         """initialization
-        
+
         Keyword Arguments:
             next {dlnode} -- [description] (default: {None})
             prev {dlnode} -- [description] (default: {None})
             key {int} -- [description] (default: {None})
         """
+        self.id = id
         self.next = next
         self.prev = prev
         self.key = key
 
     def detach(self):
-        """detach
-        """ 
+        """detach"""
         n = self.next
         p = self.prev
         p.next = n
@@ -25,37 +25,35 @@ class dlnode:
 
 class dllist:
     """doubly linked list
-    
+
     Raises:
         StopIteration -- [description]
-    
+
     Returns:
         [type] -- [description]
     """
 
     def __init__(self):
-        """initialization
-        """
-        self.nil = dlnode()
+        """initialization"""
+        self.nil = dlnode(8965)
         self.nil.next = self.nil.prev = self.nil
         self.cur = None
 
     def is_empty(self):
         """is_empty
-        
+
         Returns:
             bool -- [description]
         """
         return self.nil.next == self.nil
 
     def clear(self):
-        """clear
-        """ 
+        """clear"""
         self.nil.next = self.nil.prev = self.nil
 
     def appendleft(self, node):
         """append left
-        
+
         Arguments:
             node {dlnode} -- [description]
         """
@@ -66,7 +64,7 @@ class dllist:
 
     def append(self, node):
         """append
-        
+
         Arguments:
             node {dlnode} -- [description]
         """
@@ -77,7 +75,7 @@ class dllist:
 
     def popleft(self):
         """pop left
-        
+
         Returns:
             dlnode -- [description]
         """
@@ -88,7 +86,7 @@ class dllist:
 
     def pop(self):
         """pop
-        
+
         Returns:
             dlnode -- [description]
         """
@@ -99,7 +97,7 @@ class dllist:
 
     def detach(self, node):
         """detach
-        
+
         Arguments:
             node {dlnode} -- [description]
         """
@@ -107,7 +105,7 @@ class dllist:
 
     def __iter__(self):
         """iterable
-        
+
         Returns:
             dllist -- itself
         """
@@ -116,10 +114,10 @@ class dllist:
 
     def __next__(self):
         """next
-        
+
         Raises:
             StopIteration -- [description]
-        
+
         Returns:
             dlnode -- [description]
         """

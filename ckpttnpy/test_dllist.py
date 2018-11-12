@@ -1,5 +1,6 @@
 from dllist import dllist, dlnode
 
+
 def test_dllist():
     L1 = dllist()
     L2 = dllist()
