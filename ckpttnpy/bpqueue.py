@@ -1,4 +1,4 @@
-from dllist import dllist, dlnode
+from dllist import dllink
 
 
 class bpqueue:
@@ -21,15 +21,15 @@ class bpqueue:
         self.offset = a - 1
         self.high = b - self.offset
         self.max = 0
-        self.sentinel = dlnode(8965)
-        self.bucket = list(dllist() for _ in range(self.high + 1))
+        self.sentinel = dllink(8965)
+        self.bucket = list(dllink() for _ in range(self.high + 1))
         self.bucket[0].append(self.sentinel)  # sentinel
 
     def get_key(self, it):
         """get_key
 
         Arguments:
-            it {dlnode} -- [description]
+            it {dllink} -- [description]
 
         Returns:
             int -- key
@@ -63,7 +63,7 @@ class bpqueue:
         """append
 
         Arguments:
-            it {dlnode} -- [description]
+            it {dllink} -- [description]
             k {int} -- key
         """
         key = k - self.offset
@@ -78,10 +78,9 @@ class bpqueue:
         Arguments:
             C {list} -- [description]
         """
-        for it, k in C:
-            key = k - self.offset
-            it.key = key
-            self.bucket[key].append(it)
+        for it in C:
+            it.key -= self.offset
+            self.bucket[it.key].append(it)
         self.max = self.high
         while self.bucket[self.max].is_empty():
             self.max -= 1
@@ -90,7 +89,7 @@ class bpqueue:
         """pop node with maximum key
 
         Returns:
-            dlnode -- [description]
+            dllink -- [description]
         """
         res = self.bucket[self.max].popleft()
         while self.bucket[self.max].is_empty():
@@ -101,7 +100,7 @@ class bpqueue:
         """decrease key
 
         Arguments:
-            it {dlnode} -- [description]
+            it {dllink} -- [description]
             delta {int} -- [description]
         """
         # self.bucket[it.key].detach(it)
@@ -115,7 +114,7 @@ class bpqueue:
         """increase key
 
         Arguments:
-            it {dlnode} -- [description]
+            it {dllink} -- [description]
             delta {int} -- [description]
         """
         # self.bucket[it.key].detach(it)
@@ -129,7 +128,7 @@ class bpqueue:
         """modify key
 
         Arguments:
-            it {dlnode} -- [description]
+            it {dllink} -- [description]
             delta {int} -- [description]
         """
         if delta > 0:
@@ -152,11 +151,16 @@ class bpqueue:
         """iterator
 
         Returns:
-            bpqueue -- itself
+            bpq_iterator
         """
-        self.curkey = self.max
-        self.curitem = iter(self.bucket[self.curkey])
-        return self
+        return bpq_iterator(self)
+
+
+class bpq_iterator:
+    def __init__(self, bpq):
+        self.bpq = bpq
+        self.curkey = bpq.max
+        self.curitem = iter(bpq.bucket[bpq.max])
 
     def __next__(self):
         """next
@@ -165,7 +169,7 @@ class bpqueue:
             StopIteration -- [description]
 
         Returns:
-            dlnode -- [description]
+            dllink -- [description]
         """
         while self.curkey > 0:
             try:
@@ -173,5 +177,5 @@ class bpqueue:
                 return res
             except StopIteration:
                 self.curkey -= 1
-                self.curitem = iter(self.bucket[self.curkey])
+                self.curitem = iter(self.bpq.bucket[self.curkey])
         raise StopIteration

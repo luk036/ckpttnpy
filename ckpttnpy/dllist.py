@@ -1,29 +1,4 @@
-class dlnode:
-    """doubly linked node
-    """
-
-    def __init__(self, id=0, next=None, prev=None, key=None):
-        """initialization
-
-        Keyword Arguments:
-            next {dlnode} -- [description] (default: {None})
-            prev {dlnode} -- [description] (default: {None})
-            key {int} -- [description] (default: {None})
-        """
-        self.id = id
-        self.next = next
-        self.prev = prev
-        self.key = key
-
-    def detach(self):
-        """detach"""
-        n = self.next
-        p = self.prev
-        p.next = n
-        p.prev = p
-
-
-class dllist:
+class dllink:
     """doubly linked list
 
     Raises:
@@ -33,11 +8,24 @@ class dllist:
         [type] -- [description]
     """
 
-    def __init__(self):
-        """initialization"""
-        self.nil = dlnode(8965)
-        self.nil.next = self.nil.prev = self.nil
-        self.cur = None
+    def __init__(self, id=None, key=0):
+        """initialization
+
+        Keyword Arguments:
+            next {dllink} -- [description] (default: {None})
+            prev {dllink} -- [description] (default: {None})
+            key {int} -- [description] (default: {None})
+        """
+        self.id = id
+        self.key = key
+        self.next = self.prev = self
+
+    def detach(self):
+        """detach"""
+        n = self.next
+        p = self.prev
+        p.next = n
+        p.prev = p
 
     def is_empty(self):
         """is_empty
@@ -45,72 +33,69 @@ class dllist:
         Returns:
             bool -- [description]
         """
-        return self.nil.next == self.nil
+        return self.next == self
 
     def clear(self):
         """clear"""
-        self.nil.next = self.nil.prev = self.nil
+        self.next = self.prev = self
 
     def appendleft(self, node):
         """append left
 
         Arguments:
-            node {dlnode} -- [description]
+            node {dllink} -- [description]
         """
-        node.next = self.nil.next
-        self.nil.next.prev = node
-        self.nil.next = node
-        node.prev = self.nil
+        node.next = self.next
+        self.next.prev = node
+        self.next = node
+        node.prev = self
 
     def append(self, node):
         """append
 
         Arguments:
-            node {dlnode} -- [description]
+            node {dllink} -- [description]
         """
-        node.prev = self.nil.prev
-        self.nil.prev.next = node
-        self.nil.prev = node
-        node.next = self.nil
+        node.prev = self.prev
+        self.prev.next = node
+        self.prev = node
+        node.next = self
 
     def popleft(self):
         """pop left
 
         Returns:
-            dlnode -- [description]
+            dllink -- [description]
         """
-        res = self.nil.next
-        self.nil.next = res.next
-        self.nil.next.prev = self.nil
+        res = self.next
+        self.next = res.next
+        self.next.prev = self
         return res
 
     def pop(self):
         """pop
 
         Returns:
-            dlnode -- [description]
+            dllink -- [description]
         """
-        res = self.nil.prev
-        self.nil.prev = res.prev
-        self.nil.prev.next = self.nil
+        res = self.prev
+        self.prev = res.prev
+        self.prev.next = self
         return res
-
-    def detach(self, node):
-        """detach
-
-        Arguments:
-            node {dlnode} -- [description]
-        """
-        node.detach()
 
     def __iter__(self):
         """iterable
 
         Returns:
-            dllist -- itself
+            dllink -- itself
         """
-        self.cur = self.nil.next
-        return self
+        return dll_iterator(self)
+
+
+class dll_iterator:
+    def __init__(self, link):
+        self.link = link
+        self.cur = link.next
 
     def __next__(self):
         """next
@@ -119,11 +104,12 @@ class dllist:
             StopIteration -- [description]
 
         Returns:
-            dlnode -- [description]
+            dllink -- [description]
         """
-        if self.cur != self.nil:
+        if self.cur != self.link:
             res = self.cur
             self.cur = self.cur.next
             return res
         else:
             raise StopIteration
+

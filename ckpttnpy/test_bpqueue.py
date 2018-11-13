@@ -1,4 +1,4 @@
-from dllist import dllist, dlnode
+from dllist import dllink
 from bpqueue import bpqueue
 
 
@@ -8,9 +8,9 @@ def test_bpqueue():
 
     assert bpq1.is_empty()
 
-    d = dlnode(0)
-    e = dlnode(1)
-    f = dlnode(2)
+    d = dllink(0)
+    e = dllink(1)
+    f = dllink(2)
 
     assert d.key == None
 
@@ -27,9 +27,11 @@ def test_bpqueue():
     assert bpq1.is_empty()
     assert bpq2.get_max() == 6
 
-    nodelist = list(dlnode(i) for i in range(10))
-    gainlist = list(2*i - 10 for i in range(10))
-    bpq1.appendfrom(zip(nodelist, gainlist))
+    nodelist = list(dllink(i) for i in range(10))
+
+    for i, it in enumerate(nodelist):
+        it.key = 2*i - 10
+    bpq1.appendfrom(nodelist)
 
     count = 0
     for _ in bpq1:

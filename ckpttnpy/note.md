@@ -1,6 +1,6 @@
-- Special code for two-pin nets
+- **Special code for two-pin nets**
 - Take a snapshot when a move make **negative** gain.
-- Snapshot in the form of "interface"
+- Snapshot in the form of "interface"???
 
 ```python
 # initialization
