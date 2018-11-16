@@ -1,4 +1,4 @@
-from dllist import dllink
+from ckpttnpy.dllist import dllink
 
 
 def test_dllink():

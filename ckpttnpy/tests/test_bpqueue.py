@@ -1,5 +1,5 @@
-from dllist import dllink
-from bpqueue import bpqueue
+from ckpttnpy.dllist import dllink
+from ckpttnpy.bpqueue import bpqueue
 
 
 def test_bpqueue():
@@ -12,7 +12,7 @@ def test_bpqueue():
     e = dllink(1)
     f = dllink(2)
 
-    assert d.key == None
+    assert d.key == 0
 
     bpq1.append(e, 3)
     bpq1.append(f, -10)
@@ -22,8 +22,8 @@ def test_bpqueue():
     bpq2.append(bpq1.popleft(), 3)
     bpq2.append(bpq1.popleft(), 0)
 
-    bpq2.increase_key(d, 15)
-    bpq2.decrease_key(d, 3)
+    bpq2.modify_key(d, 15)
+    bpq2.modify_key(d, -3)
     assert bpq1.is_empty()
     assert bpq2.get_max() == 6
 

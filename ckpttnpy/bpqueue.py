@@ -1,4 +1,4 @@
-from dllist import dllink
+from .dllist import dllink
 
 
 class bpqueue:
@@ -105,7 +105,9 @@ class bpqueue:
         """
         # self.bucket[it.key].detach(it)
         it.detach()
-        it.key -= delta
+        it.key += delta
+        assert it.key > 0
+        assert it.key <= self.high
         self.bucket[it.key].append(it)  # FIFO
         while self.bucket[self.max].is_empty():
             self.max -= 1
@@ -120,6 +122,8 @@ class bpqueue:
         # self.bucket[it.key].detach(it)
         it.detach()
         it.key += delta
+        assert it.key > 0
+        assert it.key <= self.high
         self.bucket[it.key].appendleft(it)  # LIFO
         if self.max < it.key:
             self.max = it.key

@@ -1,12 +1,12 @@
 import networkx as nx
 from collections import deque
-from dllist import dllink
-from bpqueue import bpqueue
+from ckpttnpy.dllist import dllink
+from ckpttnpy.bpqueue import bpqueue
 
 G = nx.Graph()
 G.add_nodes_from([
-    ('a1', {'type': 'cell', 'weight': 58444, 'fixed': True}),
-    ('a2', {'type': 'cell', 'weight': 34565, 'ispad': True}),
+    ('a1', {'type': 'cell', 'weight': 5844, 'fixed': True}),
+    ('a2', {'type': 'cell', 'weight': 3456, 'ispad': True}),
     ('a3', {'type': 'cell', 'weight': 345}),
     ('n1', {'type': 'net', 'weight': 1}),
     ('n2', {'type': 'net', 'weight': 1, 'fixed': True})
@@ -27,16 +27,16 @@ G.add_edges_from([
     ('a3', 'n2', {'dir': 'unknown'})
 ])
 
-G = nx.to_directed(G)
-
 num = [0, 1]
 net_degree = []
+# G = nx.DiGraph(G)
 
 vertexlist = [dllink(i) for i in range(3)]
 gainbucket = bpqueue(-10, 10)
 gainbucket.append(vertexlist[0], 6)
 gainbucket.append(vertexlist[1], 7)
 gainbucket.append(vertexlist[2], 8)
+
 
 def initialization():
     for net in net_list:
@@ -48,9 +48,8 @@ def initialization():
         net_degree.append(degree)
 
 
-
-def init2PinNet(net, part):
-    assert G.out_degree[net] == 2
+def init_2pin_net(net, part):
+    assert G.degree[net] == 2
     netCur = iter(G[net])
     w = next(netCur)
     v = next(netCur)
@@ -64,8 +63,8 @@ def init2PinNet(net, part):
     vertexlist[i_v].key += g
 
 
-def updateMove2PinNet(net, part, fromPart, v):
-    assert G.out_degree[net] == 2
+def update_move_2pin_net(net, part, fromPart, v):
+    assert G.degree[net] == 2
     netCur = iter(G[net])
     w = next(netCur)
     if w == v:
@@ -79,8 +78,8 @@ def updateMove2PinNet(net, part, fromPart, v):
     gainbucket.modify_key(vertexlist[i_w], deltaGainW)
 
 
-def updateMoveGeneralNet(net, part, fromPart, v):
-    assert G.out_degree[net] > 2
+def update_move_general_net(net, part, fromPart, v):
+    assert G.degree[net] > 2
 
     IdVec = []
     deltaGain = []
@@ -115,7 +114,7 @@ def updateMoveGeneralNet(net, part, fromPart, v):
         gainbucket.modify_key(vertexlist[IdVec[idx]], deltaGain[idx])
 
 
-if __name__ == "__main__":
+def test_experiment():
     print(gainbucket.get_max())
     gainmax = gainbucket.get_max()
     dlv = gainbucket.popleft()
@@ -124,6 +123,10 @@ if __name__ == "__main__":
     for n in G[v]:
         print(n)
     initialization()
-    init2PinNet('n1', cell_part)
-    updateMove2PinNet('n1', cell_part, 1, 'a2')
-    updateMoveGeneralNet('n2', cell_part, 1, 'a2')
+    init_2pin_net('n1', cell_part)
+    update_move_2pin_net('n1', cell_part, 1, 'a2')
+    update_move_general_net('n2', cell_part, 1, 'a2')
+
+if __name__ == "__main__":
+    test_experiment()
+
