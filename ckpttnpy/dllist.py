@@ -97,7 +97,7 @@ class dll_iterator:
         self.link = link
         self.cur = link.next
 
-    def __next__(self):
+    def next(self):
         """next
 
         Raises:
@@ -113,3 +113,5 @@ class dll_iterator:
         else:
             raise StopIteration
 
+    def __next__(self):
+        return self.next()

@@ -166,7 +166,7 @@ class bpq_iterator:
         self.curkey = bpq.max
         self.curitem = iter(bpq.bucket[bpq.max])
 
-    def __next__(self):
+    def next(self):
         """next
 
         Raises:
@@ -183,3 +183,6 @@ class bpq_iterator:
                 self.curkey -= 1
                 self.curitem = iter(self.bpq.bucket[self.curkey])
         raise StopIteration
+
+    def __next__(self):
+        return self.next()
