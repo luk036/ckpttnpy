@@ -24,6 +24,7 @@ def test_bpqueue():
 
     bpq2.modify_key(d, 15)
     bpq2.modify_key(d, -3)
+    bpq2.detach(f)
     assert bpq1.is_empty()
     assert bpq2.get_max() == 6
 
@@ -37,3 +38,6 @@ def test_bpqueue():
     for _ in bpq1:
         count += 1
     assert count == 10
+
+    bpq1.clear()
+    assert bpq1.is_empty()
