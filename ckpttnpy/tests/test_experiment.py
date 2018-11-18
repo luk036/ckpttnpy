@@ -118,7 +118,7 @@ def test_experiment():
     print(gainbucket.get_max())
     gainmax = gainbucket.get_max()
     dlv = gainbucket.popleft()
-    v = cell_list[dlv.id]
+    v = cell_list[dlv.idx]
     print(G.degree[v])
     for n in G[v]:
         print(n)

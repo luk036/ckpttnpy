@@ -1,7 +1,4 @@
 import networkx as nx
-from collections import deque
-from ckpttnpy.dllist import dllink
-from ckpttnpy.bpqueue import bpqueue
 from ckpttnpy.netlist import Netlist
 
 def create_test_netlist():

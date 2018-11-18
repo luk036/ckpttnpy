@@ -26,7 +26,7 @@ class bpqueue:
         self.bucket[0].append(self.sentinel)  # sentinel
 
     def get_key(self, it):
-        """get_key
+        """Get the key value
 
         Arguments:
             it {dllink} -- [description]
@@ -37,10 +37,10 @@ class bpqueue:
         return it.key + self.offset
 
     def get_max(self):
-        """get_max
+        """Get the max value
 
         Returns:
-            int -- maximun valie
+            int -- maximum value
         """
         return self.max + self.offset
 
@@ -53,8 +53,7 @@ class bpqueue:
         return self.max == 0
 
     def clear(self):
-        """clear
-        """
+        """clear"""
         while self.max > 0:
             self.bucket[self.max].clear()
             self.max -= 1

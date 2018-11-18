@@ -8,15 +8,14 @@ class dllink:
         [type] -- [description]
     """
 
-    def __init__(self, id=None, key=0):
+    def __init__(self, idx=None, key=0):
         """initialization
 
         Keyword Arguments:
-            next {dllink} -- [description] (default: {None})
-            prev {dllink} -- [description] (default: {None})
-            key {int} -- [description] (default: {None})
+            idx {[type]} -- [description] (default: {None})
+            key {int} -- [description] (default: {0})
         """
-        self.id = id
+        self.idx = idx
         self.key = key
         self.next = self.prev = self
 

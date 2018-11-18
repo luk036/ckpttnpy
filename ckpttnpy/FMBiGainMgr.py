@@ -64,7 +64,7 @@ class FMBiGainMgr:
         i_v = self.H.cell_dict[v]
         part_w = part[i_w]
         part_v = part[i_v]
-        weight = self.H.G[net].get('weight', 1)
+        weight = self.H.G.nodes[net].get('weight', 1)
         g = -weight if part_w == part_v else weight
         self.vertex_list[i_w].key += g
         self.vertex_list[i_v].key += g
@@ -83,7 +83,7 @@ class FMBiGainMgr:
             self.num[part[i_w]] += 1
             IdVec.append(i_w)
 
-        weight = self.H.G[net].get('weight', 1)
+        weight = self.H.G.nodes[net].get('weight', 1)
         for k in [0, 1]:
             if self.num[k] == 0:
                 for i_w in IdVec:
@@ -127,7 +127,7 @@ class FMBiGainMgr:
             w = next(netCur)
         i_w = self.H.cell_dict[w]
         part_w = part[i_w]
-        weight = self.H.G[net].get('weight', 1)
+        weight = self.H.G.nodes[net].get('weight', 1)
         deltaGainW = 2*weight if part_w == fromPart else -2*weight
         self.gainbucket.modify_key(self.vertex_list[i_w], deltaGainW)
 
@@ -150,7 +150,7 @@ class FMBiGainMgr:
             IdVec.append(self.H.cell_dict[w])
             deltaGain.append(0)
         degree = len(IdVec)
-        m = self.H.G[net].get('weight', 1)
+        m = self.H.G.nodes[net].get('weight', 1)
         weight = m if fromPart == 0 else -m
         for k in [0, 1]:
             if self.num[k] == 0:
