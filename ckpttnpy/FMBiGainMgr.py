@@ -96,6 +96,12 @@ class FMBiGainMgr:
                         break
 
     def update_move(self, part, v):
+        """[summary]
+
+        Arguments:
+            part {[type]} -- [description]
+            v {[type]} -- [description]
+        """
         i_v = self.H.cell_dict[v]
         fromPart = part[i_v]
 

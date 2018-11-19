@@ -1,4 +1,3 @@
-import networkx as nx
 from ckpttnpy.netlist import Netlist
 from ckpttnpy.FMBiGainMgr import FMBiGainMgr
 from ckpttnpy.tests.test_netlist import create_test_netlist
