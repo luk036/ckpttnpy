@@ -22,7 +22,7 @@ class bpqueue:
         self.high = b - self.offset
         self.max = 0
         self.sentinel = dllink(8965)
-        self.bucket = list(dllink() for _ in range(self.high + 1))
+        self.bucket = list(dllink(4848) for _ in range(self.high + 1))
         self.bucket[0].append(self.sentinel)  # sentinel
 
     def get_key(self, it):
@@ -124,6 +124,7 @@ class bpqueue:
         assert it.key > 0
         assert it.key <= self.high
         self.bucket[it.key].appendleft(it)  # LIFO
+        # self.bucket[it.key].append(it)  # LIFO
         if self.max < it.key:
             self.max = it.key
 
@@ -139,16 +140,16 @@ class bpqueue:
         elif delta < 0:
             self.decrease_key(it, delta)
 
-    def detach(self, it):
-        """detach a node from bpqueue
+    # def detach(self, it):
+    #     """detach a node from bpqueue
 
-        Arguments:
-            it {[type]} -- [description]
-        """
-        # self.bucket[it.key].detach(it)
-        it.detach()
-        while self.bucket[self.max].is_empty():
-            self.max -= 1
+    #     Arguments:
+    #         it {[type]} -- [description]
+    #     """
+    #     # self.bucket[it.key].detach(it)
+    #     it.detach()
+    #     while self.bucket[self.max].is_empty():
+    #         self.max -= 1
 
     def __iter__(self):
         """iterator

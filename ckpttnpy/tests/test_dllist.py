@@ -18,6 +18,8 @@ def test_dllink():
     L2.append(L1.popleft())
     assert not L1.is_empty()
     assert not L2.is_empty()
+    e.detach()
+    assert L1.is_empty()
 
     count = 0
     for _ in L2:

@@ -4,6 +4,9 @@ from .netlist import Netlist
 
 
 class FMBiGainMgr:
+
+    # public:
+
     def __init__(self, H):
         """initialization
 
@@ -16,8 +19,7 @@ class FMBiGainMgr:
 
         num_cells = H.number_of_cells()
         self.vertex_list = [dllink(i) for i in range(num_cells)]
-
-        self.num = [0, 0]
+        # num = [0, 0]
 
     def init(self, part):
         """(re)initialization after creation
@@ -49,6 +51,27 @@ class FMBiGainMgr:
         else:
             self.init_gain_general_net(net, part)
 
+    def update_move(self, part, fromPart, v):
+        """[summary]
+
+        Arguments:
+            part {[type]} -- [description]
+            v {[type]} -- [description]
+        """
+        for net in self.H.G[v]:
+            if self.H.G.degree[net] == 2:
+                self.update_move_2pin_net(net, part, fromPart, v)
+            elif self.H.G.degree[net] < 2:  # unlikely, self-loop, etc.
+                break  # does not provide any gain change when move
+            else:
+                self.update_move_general_net(net, part, fromPart, v)
+
+        i_v = self.H.cell_dict[v]
+        gain = self.gainbucket.get_key(self.vertex_list[i_v])
+        self.gainbucket.modify_key(self.vertex_list[i_v], -2*gain)
+
+    # private:
+
     def init_gain_2pin_net(self, net, part):
         """initialize gain for 2-pin net
 
@@ -76,46 +99,24 @@ class FMBiGainMgr:
             net {Graph's node} -- [description]
             part {list} -- [description]
         """
-        self.num = [0, 0]
+        num = [0, 0]
         IdVec = []
         for w in self.H.G[net]:
             i_w = self.H.cell_dict[w]
-            self.num[part[i_w]] += 1
+            num[part[i_w]] += 1
             IdVec.append(i_w)
 
         weight = self.H.G.nodes[net].get('weight', 1)
         for k in [0, 1]:
-            if self.num[k] == 0:
+            if num[k] == 0:
                 for i_w in IdVec:
                     self.vertex_list[i_w].key -= weight
-            elif self.num[k] == 1:
+            elif num[k] == 1:
                 for i_w in IdVec:
                     part_w = part[i_w]
                     if part_w == k:
                         self.vertex_list[i_w].key += weight
                         break
-
-    def update_move(self, part, v):
-        """[summary]
-
-        Arguments:
-            part {[type]} -- [description]
-            v {[type]} -- [description]
-        """
-        i_v = self.H.cell_dict[v]
-        fromPart = part[i_v]
-
-        for net in self.H.G[v]:
-            if self.H.G.degree[net] == 2:
-                self.update_move_2pin_net(net, part, fromPart, v)
-            elif self.H.G.degree[net] < 2:  # unlikely, self-loop, etc.
-                break  # does not provide any gain change when move
-            else:
-                self.update_move_general_net(net, part, fromPart, v)
-
-        gain = self.gainbucket.get_key(self.vertex_list[i_v])
-        self.gainbucket.modify_key(self.vertex_list[i_v], -2*gain)
-        part[i_v] = 1 - fromPart
 
     def update_move_2pin_net(self, net, part, fromPart, v):
         """Update move for 2-pin net
@@ -128,9 +129,8 @@ class FMBiGainMgr:
         """
         assert self.H.G.degree[net] == 2
         netCur = iter(self.H.G[net])
-        w = next(netCur)
-        if w == v:
-            w = next(netCur)
+        u = next(netCur)
+        w = u if u != v else next(netCur)
         i_w = self.H.cell_dict[w]
         part_w = part[i_w]
         weight = self.H.G.nodes[net].get('weight', 1)
@@ -148,21 +148,24 @@ class FMBiGainMgr:
         """
         assert self.H.G.degree[net] > 2
 
+        num = [0, 0]
         IdVec = []
         deltaGain = []
         for w in self.H.G[net]:
-            if w == v:
-                continue
-            IdVec.append(self.H.cell_dict[w])
+            if w == v: continue
+            i_w = self.H.cell_dict[w]
+            num[part[i_w]] += 1
+            IdVec.append(i_w)
             deltaGain.append(0)
         degree = len(IdVec)
+
         m = self.H.G.nodes[net].get('weight', 1)
         weight = m if fromPart == 0 else -m
         for k in [0, 1]:
-            if self.num[k] == 0:
+            if num[k] == 0:
                 for idx in range(degree):
                     deltaGain[idx] -= weight
-            elif self.num[k] == 1:
+            elif num[k] == 1:
                 for idx in range(degree):
                     part_w = part[IdVec[idx]]
                     if part_w == k:
@@ -171,5 +174,6 @@ class FMBiGainMgr:
             weight = -weight
 
         for idx in range(degree):
+            if deltaGain[idx] == 0: continue
             self.gainbucket.modify_key(
                 self.vertex_list[IdVec[idx]], deltaGain[idx])

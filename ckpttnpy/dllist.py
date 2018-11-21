@@ -24,7 +24,7 @@ class dllink:
         n = self.next
         p = self.prev
         p.next = n
-        p.prev = p
+        n.prev = p
 
     def is_empty(self):
         """is_empty
