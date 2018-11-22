@@ -7,7 +7,7 @@ def test_FMBiPartMgr():
     H = create_test_netlist()
     gainMgr = FMBiGainMgr(H)
     constrMgr = FMBiConstrMgr(H, 0.3)
-    assert H.G.nodes['a1'].get('weight', 1) == 5844
+    assert H.G.nodes[0].get('weight', 1) == 5844
 
     partMgr = FMBiPartMgr(H, gainMgr, constrMgr)
     partMgr.init()

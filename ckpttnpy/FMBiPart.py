@@ -29,9 +29,9 @@ class FMBiPartMgr:
             vlink = self.gainMgr.gainbucket.popleft()
             self.waitinglist.append(vlink)
 
-            i_v = vlink.idx
-            v = self.H.cell_list[i_v]
-            fromPart = self.part[i_v]
+            v = vlink.idx
+            # v = self.H.cell_list[i_v]
+            fromPart = self.part[v]
             # Check if the move of v can notsatisfied, makebetter, or satisfied
             legalcheck = self.validator.check_legal(fromPart, v)
             if legalcheck == 0:  # notsatisfied
@@ -41,7 +41,7 @@ class FMBiPartMgr:
             # Put neigbours to bucket
             self.gainMgr.update_move(self.part, fromPart, v)
             self.validator.update_move(fromPart, v)
-            self.part[i_v] = 1 - fromPart
+            self.part[v] = 1 - fromPart
             totalgain += gainmax
 
             if legalcheck == 2:  # satisfied
@@ -59,13 +59,13 @@ class FMBiPartMgr:
             gainmax = self.gainMgr.gainbucket.get_max()
             vlink = self.gainMgr.gainbucket.popleft()
             self.waitinglist.append(vlink)
-            i_v = vlink.idx
-            assert i_v != 4848
-            assert i_v != 3734
-            assert i_v != None
+            v = vlink.idx
+            assert v != 4848
+            assert v != 3734
+            assert v != None
 
-            v = self.H.cell_list[i_v]
-            fromPart = self.part[i_v]
+            # v = self.H.cell_list[i_v]
+            fromPart = self.part[v]
             # Check if the move of v can satisfied or notsatisfied
             satisfiedOK = self.validator.check_constraints(fromPart, v)
 
@@ -93,7 +93,7 @@ class FMBiPartMgr:
                 totalgain = 0  # reset to zero
                 deferredsnapshot = True
 
-            self.part[i_v] = 1 - fromPart
+            self.part[v] = 1 - fromPart
 
         if deferredsnapshot:
             # Take a snapshot

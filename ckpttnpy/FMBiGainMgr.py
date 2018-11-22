@@ -1,6 +1,5 @@
 from .dllist import dllink
 from .bpqueue import bpqueue
-from .netlist import Netlist
 
 
 class FMBiGainMgr:
@@ -31,9 +30,9 @@ class FMBiGainMgr:
             self.init_gain(net, part)
 
         for v in self.H.cell_fixed:
-            i_v = self.H.cell_dict[v]
+            # i_v = self.H.cell_dict[v]
             # force to the lowest gain
-            self.vertex_list[i_v].key = -self.pmax
+            self.vertex_list[v].key = -self.pmax
 
         self.gainbucket.appendfrom(self.vertex_list)
 
@@ -66,9 +65,9 @@ class FMBiGainMgr:
             else:
                 self.update_move_general_net(net, part, fromPart, v)
 
-        i_v = self.H.cell_dict[v]
-        gain = self.gainbucket.get_key(self.vertex_list[i_v])
-        self.gainbucket.modify_key(self.vertex_list[i_v], -2*gain)
+        # i_v = self.H.cell_dict[v]
+        gain = self.gainbucket.get_key(self.vertex_list[v])
+        self.gainbucket.modify_key(self.vertex_list[v], -2*gain)
 
     # private:
 
@@ -83,14 +82,14 @@ class FMBiGainMgr:
         netCur = iter(self.H.G[net])
         w = next(netCur)
         v = next(netCur)
-        i_w = self.H.cell_dict[w]
-        i_v = self.H.cell_dict[v]
-        part_w = part[i_w]
-        part_v = part[i_v]
+        # i_w = self.H.cell_dict[w]
+        # i_v = self.H.cell_dict[v]
+        part_w = part[w]
+        part_v = part[v]
         weight = self.H.G.nodes[net].get('weight', 1)
         g = -weight if part_w == part_v else weight
-        self.vertex_list[i_w].key += g
-        self.vertex_list[i_v].key += g
+        self.vertex_list[w].key += g
+        self.vertex_list[v].key += g
 
     def init_gain_general_net(self, net, part):
         """initialize gain for general net
@@ -102,9 +101,9 @@ class FMBiGainMgr:
         num = [0, 0]
         IdVec = []
         for w in self.H.G[net]:
-            i_w = self.H.cell_dict[w]
-            num[part[i_w]] += 1
-            IdVec.append(i_w)
+            # i_w = self.H.cell_dict[w]
+            num[part[w]] += 1
+            IdVec.append(w)
 
         weight = self.H.G.nodes[net].get('weight', 1)
         for k in [0, 1]:
@@ -131,11 +130,11 @@ class FMBiGainMgr:
         netCur = iter(self.H.G[net])
         u = next(netCur)
         w = u if u != v else next(netCur)
-        i_w = self.H.cell_dict[w]
-        part_w = part[i_w]
+        # i_w = self.H.cell_dict[w]
+        part_w = part[w]
         weight = self.H.G.nodes[net].get('weight', 1)
         deltaGainW = 2*weight if part_w == fromPart else -2*weight
-        self.gainbucket.modify_key(self.vertex_list[i_w], deltaGainW)
+        self.gainbucket.modify_key(self.vertex_list[w], deltaGainW)
 
     def update_move_general_net(self, net, part, fromPart, v):
         """update move for general net
@@ -153,9 +152,9 @@ class FMBiGainMgr:
         deltaGain = []
         for w in self.H.G[net]:
             if w == v: continue
-            i_w = self.H.cell_dict[w]
-            num[part[i_w]] += 1
-            IdVec.append(i_w)
+            # i_w = self.H.cell_dict[w]
+            num[part[w]] += 1
+            IdVec.append(w)
             deltaGain.append(0)
         degree = len(IdVec)
 
@@ -174,6 +173,7 @@ class FMBiGainMgr:
             weight = -weight
 
         for idx in range(degree):
-            if deltaGain[idx] == 0: continue
+            if deltaGain[idx] == 0:
+                continue
             self.gainbucket.modify_key(
                 self.vertex_list[IdVec[idx]], deltaGain[idx])

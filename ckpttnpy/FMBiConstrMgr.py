@@ -1,8 +1,3 @@
-from .dllist import dllink
-from .bpqueue import bpqueue
-from .netlist import Netlist
-import networkx as nx
-
 # Check if the move of v can satisfied, makebetter, or notsatisfied
 
 
@@ -16,10 +11,10 @@ class FMBiConstrMgr:
 
     def init(self, part):
         totalweight = 0
-        for i_v, v in enumerate(self.H.cell_list):
+        for v in self.H.cell_list:
             weight = self.H.G.nodes[v].get('weight', 1)
             # weight = 10
-            self.diff[part[i_v]] += weight
+            self.diff[part[v]] += weight
             totalweight += weight
         self.lowerbound = round(totalweight * self.ratio)
         self.upperbound = totalweight - self.lowerbound

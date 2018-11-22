@@ -1,12 +1,10 @@
-import networkx as nx
-
-
 class Netlist:
     cost_model = 0
     net_weight = []
     cell_weight = []
+    cell_fixed = {}
 
-    def __init__(self, G, cell_list, net_list, cell_fixed={}):
+    def __init__(self, G, cell_list, net_list):
         """[summary]
 
         Arguments:
@@ -20,12 +18,12 @@ class Netlist:
         self.G = G
         self.cell_list = cell_list
         self.net_list = net_list
-        self.cell_dict = {}
+        
+        # self.cell_dict = {}
+        # for i_v, v in enumerate(self.cell_list):
+        #     self.cell_dict[v] = i_v
 
-        for i_v, v in enumerate(self.cell_list):
-            self.cell_dict[v] = i_v
-
-        self.cell_fixed = cell_fixed
+        # self.cell_fixed = cell_fixed
         self.has_fixed_cells = (self.cell_fixed != {})
 
         self.max_degree = max(self.G.degree[cell]
