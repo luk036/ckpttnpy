@@ -18,7 +18,7 @@ class Netlist:
         self.G = G
         self.cell_list = cell_list
         self.net_list = net_list
-        
+
         # self.cell_dict = {}
         # for i_v, v in enumerate(self.cell_list):
         #     self.cell_dict[v] = i_v

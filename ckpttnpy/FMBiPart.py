@@ -8,6 +8,13 @@ from .dllist import dllink
 
 class FMBiPartMgr:
     def __init__(self, H, gainMgr, constrMgr):
+        """[summary]
+
+        Arguments:
+            H {[type]} -- [description]
+            gainMgr {[type]} -- [description]
+            constrMgr {[type]} -- [description]
+        """
         self.H = H
         self.gainMgr = gainMgr
         self.validator = constrMgr
@@ -18,6 +25,8 @@ class FMBiPartMgr:
         self.totalcost = 0
 
     def init(self):
+        """[summary]
+        """
         self.gainMgr.init(self.part)
         self.validator.init(self.part)
 
@@ -32,15 +41,16 @@ class FMBiPartMgr:
             v = vlink.idx
             # v = self.H.cell_list[i_v]
             fromPart = self.part[v]
+            weight = self.H.G.nodes[v].get('weight', 1)
             # Check if the move of v can notsatisfied, makebetter, or satisfied
-            legalcheck = self.validator.check_legal(fromPart, v)
+            legalcheck = self.validator.check_legal(fromPart, v, weight)
             if legalcheck == 0:  # notsatisfied
                 continue
 
             # Update v and its neigbours (even they are in waitinglist)
             # Put neigbours to bucket
             self.gainMgr.update_move(self.part, fromPart, v)
-            self.validator.update_move(fromPart, v)
+            self.validator.update_move(fromPart, v, weight)
             self.part[v] = 1 - fromPart
             totalgain += gainmax
 
@@ -51,6 +61,8 @@ class FMBiPartMgr:
         assert not self.gainMgr.gainbucket.is_empty()
 
     def optimize(self):
+        """[summary]
+        """
         totalgain = 0
         deferredsnapshot = True
 
@@ -67,7 +79,8 @@ class FMBiPartMgr:
             # v = self.H.cell_list[i_v]
             fromPart = self.part[v]
             # Check if the move of v can satisfied or notsatisfied
-            satisfiedOK = self.validator.check_constraints(fromPart, v)
+            weight = self.H.G.nodes[v].get('weight', 1)
+            satisfiedOK = self.validator.check_constraints(fromPart, v, weight)
 
             if not satisfiedOK:
                 continue
@@ -85,7 +98,7 @@ class FMBiPartMgr:
             # Update v and its neigbours (even they are in waitinglist)
             # Put neigbours to bucket
             self.gainMgr.update_move(self.part, fromPart, v)
-            self.validator.update_move(fromPart, v)
+            self.validator.update_move(fromPart, v, weight)
             totalgain += gainmax
 
             if totalgain > 0:
@@ -98,17 +111,3 @@ class FMBiPartMgr:
         if deferredsnapshot:
             # Take a snapshot
             self.snapshot = self.part
-
-
-if __name__ == "__main__":
-    from ckpttnpy.FMBiGainMgr import FMBiGainMgr
-    from ckpttnpy.FMBiConstrMgr import FMBiConstrMgr
-    from ckpttnpy.tests.test_netlist import create_test_netlist
-
-    H = create_test_netlist()
-    gainMgr = FMBiGainMgr(H)
-    constrMgr = FMBiConstrMgr(H, 0.3)
-    partMgr = FMBiPartMgr(H, gainMgr, constrMgr)
-    partMgr.init()
-    partMgr.optimize()
-    print(partMgr.snapshot)
