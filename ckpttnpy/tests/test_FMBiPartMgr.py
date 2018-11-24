@@ -6,7 +6,7 @@ from ckpttnpy.tests.test_netlist import create_test_netlist
 def test_FMBiPartMgr():
     H = create_test_netlist()
     gainMgr = FMBiGainMgr(H)
-    constrMgr = FMBiConstrMgr(H, 0.3)
+    constrMgr = FMBiConstrMgr(H, 0.7)
     assert H.G.nodes[0].get('weight', 1) == 5844
 
     partMgr = FMBiPartMgr(H, gainMgr, constrMgr)

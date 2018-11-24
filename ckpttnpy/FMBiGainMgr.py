@@ -18,7 +18,14 @@ class FMBiGainMgr:
 
         num_cells = H.number_of_cells()
         self.vertex_list = [dllink(i) for i in range(num_cells)]
+        self.waitinglist = dllink(3734)
         # num = [0, 0]
+
+    def popleft(self):
+        gainmax = self.gainbucket.get_max()
+        vlink = self.gainbucket.popleft()
+        self.waitinglist.append(vlink)
+        return vlink.idx, gainmax
 
     def init(self, part):
         """(re)initialization after creation
@@ -50,7 +57,7 @@ class FMBiGainMgr:
         else:
             self.init_gain_general_net(net, part)
 
-    def update_move(self, part, fromPart, v):
+    def update_move(self, part, fromPart, v, gain):
         """[summary]
 
         Arguments:
@@ -66,8 +73,9 @@ class FMBiGainMgr:
                 self.update_move_general_net(net, part, fromPart, v)
 
         # i_v = self.H.cell_dict[v]
-        gain = self.gainbucket.get_key(self.vertex_list[v])
-        self.gainbucket.modify_key(self.vertex_list[v], -2*gain)
+        # gain = self.gainbucket.get_key(self.vertex_list[v])
+        # self.gainbucket.modify_key(self.vertex_list[v], -2*gain)
+        self.vertex_list[v].key -= 2*gain
 
     # private:
 
