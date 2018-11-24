@@ -72,7 +72,7 @@ class FMKWayConstrMgr:
         self.weight = self.H.G.nodes[v].get('weight', 1)
         # toPart = 1 - fromPart
         diffTo = self.diff[toPart] + self.weight
-        diffFrom = self.diff[fromPart] + self.weight
+        diffFrom = self.diff[fromPart] - self.weight
         return diffTo <= self.upperbound and diffFrom >= self.lowerbound
 
     def update_move(self, fromPart, toPart, v):
