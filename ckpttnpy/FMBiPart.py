@@ -30,7 +30,7 @@ class FMBiPartMgr:
 
         totalgain = 0
 
-        while not self.gainMgr.gainbucket.is_empty():
+        while not self.gainMgr.is_empty():
             # Take the gainmax with v from gainbucket
             # gainmax = self.gainMgr.gainbucket.get_max()
             v, gainmax = self.gainMgr.popleft()
@@ -61,14 +61,10 @@ class FMBiPartMgr:
         totalgain = 0
         deferredsnapshot = True
 
-        while not self.gainMgr.gainbucket.is_empty():
+        while not self.gainMgr.is_empty():
             # Take the gainmax with v from gainbucket
             # gainmax = self.gainMgr.gainbucket.get_max()
             v, gainmax = self.gainMgr.popleft()
-            assert v != 4848
-            assert v != 3734
-            assert v != None
-
             # v = self.H.cell_list[i_v]
             fromPart = self.part[v]
             # Check if the move of v can satisfied or notsatisfied
