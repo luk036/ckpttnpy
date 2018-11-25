@@ -4,7 +4,7 @@ class Netlist:
     cell_weight = []
     cell_fixed = {}
     cell_name = []
-    
+
     def __init__(self, G, cell_list, net_list):
         """[summary]
 

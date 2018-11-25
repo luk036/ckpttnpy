@@ -1,7 +1,6 @@
 from ckpttnpy.FMBiGainMgr import FMBiGainMgr
 from ckpttnpy.FMBiGainMgr2 import FMBiGainMgr2
 from ckpttnpy.tests.test_netlist import create_test_netlist, create_drawf
-from ckpttnpy.dllist import dllink
 
 
 def run_FMBiGainMgr(H, part, mgr):

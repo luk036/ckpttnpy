@@ -1,7 +1,3 @@
-from .dllist import dllink
-from .bpqueue import bpqueue
-
-
 class FMKWayGainCalc:
 
     # public:
@@ -88,7 +84,7 @@ class FMKWayGainCalc:
                             vertex_list[k2][w].key += weight
                         break
 
-    def update_move_2pin_net(self, net, part, fromPart, toPart, v):
+    def update_move_2pin_net(self, part, move_info):
         """Update move for 2-pin net
 
         Arguments:
@@ -97,6 +93,7 @@ class FMKWayGainCalc:
             fromPart {int} -- [description]
             v {Graph's node} -- [description]
         """
+        net, fromPart, toPart, v = move_info
         assert self.H.G.degree[net] == 2
         netCur = iter(self.H.G[net])
         u = next(netCur)
@@ -117,7 +114,7 @@ class FMKWayGainCalc:
         return w, deltaGainW
         # self.gainbucket[1-part_w].modify_key(self.vertex_list[w], deltaGainW)
 
-    def update_move_general_net(self, net, part, fromPart, toPart, v):
+    def update_move_general_net(self, part, move_info):
         """update move for general net
 
         Arguments:
@@ -126,8 +123,8 @@ class FMKWayGainCalc:
             fromPart {int} -- [description]
             v {Graph's node} -- [description]
         """
+        net, fromPart, toPart, v = move_info
         assert self.H.G.degree[net] > 2
-
         num = list(0 for _ in range(self.K))
         IdVec = []
         deltaGain = []

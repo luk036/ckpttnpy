@@ -63,7 +63,8 @@ def init_2pin_net(net, part):
     vertexlist[v].key += g
 
 
-def update_move_2pin_net(net, part, fromPart, v):
+def update_move_2pin_net(part, move_info):
+    net, fromPart, _, v = move_info
     assert G.degree[net] == 2
     netCur = iter(G[net])
     w = next(netCur)
@@ -78,7 +79,8 @@ def update_move_2pin_net(net, part, fromPart, v):
     gainbucket.modify_key(vertexlist[w], deltaGainW)
 
 
-def update_move_general_net(net, part, fromPart, v):
+def update_move_general_net(part, move_info):
+    net, fromPart, toPart, v = move_info
     assert G.degree[net] > 2
 
     IdVec = []
@@ -96,9 +98,8 @@ def update_move_general_net(net, part, fromPart, v):
     if degree == 0:
         return
 
-    m = G[net].get('weight', 1)
-    weight = m if fromPart == 0 else -m
-    for k in [0, 1]:
+    weight = G[net].get('weight', 1)
+    for k in [fromPart, toPart]:
         if num[k] == 0:
             for idx in range(degree):
                 deltaGain[idx] -= weight
@@ -124,8 +125,8 @@ def test_experiment():
         print(n)
     initialization()
     init_2pin_net(3, cell_part)
-    update_move_2pin_net(3, cell_part, 1, 1)
-    update_move_general_net(4, cell_part, 1, 1)
+    update_move_2pin_net(cell_part, [3, 1, 0, 1])
+    update_move_general_net(cell_part, [4, 1, 0, 1])
 
 if __name__ == "__main__":
     test_experiment()

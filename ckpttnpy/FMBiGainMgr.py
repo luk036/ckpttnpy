@@ -38,7 +38,7 @@ class FMBiGainMgr:
 
     def is_empty(self):
         """[summary]
-        
+
         Returns:
             [type] -- [description]
         """
@@ -63,15 +63,16 @@ class FMBiGainMgr:
             v {[type]} -- [description]
         """
         for net in self.H.G[v]:
+            move_info = [net, fromPart, 1-fromPart, v]
             if self.H.G.degree[net] == 2:
-                self.update_move_2pin_net(net, part, fromPart, v)
+                self.update_move_2pin_net(part, move_info)
             elif self.H.G.degree[net] < 2:  # unlikely, self-loop, etc.
                 break  # does not provide any gain change when move
             else:
-                self.update_move_general_net(net, part, fromPart, v)
+                self.update_move_general_net(part, move_info)
         self.vertex_list[v].key -= 2*gain
 
-    def update_move_2pin_net(self, net, part, fromPart, v):
+    def update_move_2pin_net(self, part, move_info):
         """Update move for 2-pin net
 
         Arguments:
@@ -81,10 +82,10 @@ class FMBiGainMgr:
             v {Graph's node} -- [description]
         """
         w, deltaGainW = self.gainCalc.update_move_2pin_net(
-            net, part, fromPart, v)
+            part, move_info)
         self.gainbucket.modify_key(self.vertex_list[w], deltaGainW)
 
-    def update_move_general_net(self, net, part, fromPart, v):
+    def update_move_general_net(self, part, move_info):
         """update move for general net
 
         Arguments:
@@ -94,7 +95,7 @@ class FMBiGainMgr:
             v {Graph's node} -- [description]
         """
         IdVec, deltaGain = self.gainCalc.update_move_general_net(
-            net, part, fromPart, v)
+            part, move_info)
         degree = len(IdVec)
         for idx in range(degree):
             self.gainbucket.modify_key(

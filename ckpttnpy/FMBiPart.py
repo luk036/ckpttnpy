@@ -1,8 +1,6 @@
 # **Special code for two-pin nets**
 # Take a snapshot when a move make **negative** gain.
 # Snapshot in the form of "interface"???
-from .FMBiGainMgr import FMBiGainMgr
-from .FMBiConstrMgr import FMBiConstrMgr
 
 
 class FMBiPartMgr:

@@ -69,12 +69,13 @@ class FMKWayGainMgr:
             v {[type]} -- [description]
         """
         for net in self.H.G[v]:
+            move_info = [net, fromPart, toPart, v]
             if self.H.G.degree[net] == 2:
-                self.update_move_2pin_net(net, part, fromPart, toPart, v)
+                self.update_move_2pin_net(part, move_info)
             elif self.H.G.degree[net] < 2:  # unlikely, self-loop, etc.
                 break  # does not provide any gain change when move
             else:
-                self.update_move_general_net(net, part, fromPart, toPart, v)
+                self.update_move_general_net(part, move_info)
 
         # i_v = self.H.cell_dict[v]
         # gain = self.gainbucket.get_key(self.vertex_list[v])
@@ -89,7 +90,7 @@ class FMKWayGainMgr:
             self.gainbucket[k].modify_key(
                 self.vertex_list[k][w], keys[k])
 
-    def update_move_2pin_net(self, net, part, fromPart, toPart, v):
+    def update_move_2pin_net(self, part, move_info):
         """Update move for 2-pin net
 
         Arguments:
@@ -99,10 +100,10 @@ class FMKWayGainMgr:
             v {Graph's node} -- [description]
         """
         w, deltaGainW = self.gainCalc.update_move_2pin_net(
-            net, part, fromPart, toPart, v)
+            part, move_info)
         self.modify_key(w, deltaGainW)
 
-    def update_move_general_net(self, net, part, fromPart, toPart, v):
+    def update_move_general_net(self, part, move_info):
         """update move for general net
 
         Arguments:
@@ -112,7 +113,7 @@ class FMKWayGainMgr:
             v {Graph's node} -- [description]
         """
         IdVec, deltaGain = self.gainCalc.update_move_general_net(
-            net, part, fromPart, toPart, v)
+            part, move_info)
         degree = len(IdVec)
         for idx in range(degree):
             self.modify_key(IdVec[idx], deltaGain[idx])

@@ -1,7 +1,7 @@
 from ckpttnpy.FMKWayGainMgr import FMKWayGainMgr
 from ckpttnpy.FMKWayConstrMgr import FMKWayConstrMgr
 from ckpttnpy.FMKWayPart import FMKWayPartMgr
-from ckpttnpy.tests.test_netlist import create_test_netlist, create_drawf
+from ckpttnpy.tests.test_netlist import create_drawf
 
 
 def run_FMKWayPartMgr(H, K, gainMgr):

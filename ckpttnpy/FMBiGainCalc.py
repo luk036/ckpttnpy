@@ -81,7 +81,7 @@ class FMBiGainCalc:
                         vertex_list[w].key += weight
                         break
 
-    def update_move_2pin_net(self, net, part, fromPart, v):
+    def update_move_2pin_net(self, part, move_info):
         """Update move for 2-pin net
 
         Arguments:
@@ -90,6 +90,7 @@ class FMBiGainCalc:
             fromPart {int} -- [description]
             v {Graph's node} -- [description]
         """
+        net, fromPart, _, v = move_info
         assert self.H.G.degree[net] == 2
         netCur = iter(self.H.G[net])
         u = next(netCur)
@@ -101,7 +102,7 @@ class FMBiGainCalc:
         return w, deltaGainW
         # self.gainbucket[1-part_w].modify_key(self.vertex_list[w], deltaGainW)
 
-    def update_move_general_net(self, net, part, fromPart, v):
+    def update_move_general_net(self, part, move_info):
         """update move for general net
 
         Arguments:
@@ -110,6 +111,7 @@ class FMBiGainCalc:
             fromPart {int} -- [description]
             v {Graph's node} -- [description]
         """
+        net, fromPart, toPart, v = move_info
         assert self.H.G.degree[net] > 2
 
         num = [0, 0]
@@ -126,7 +128,6 @@ class FMBiGainCalc:
         deltaGain = list(0 for _ in range(degree))
         weight = self.H.G.nodes[net].get('weight', 1)
         # weight = m if fromPart == 0 else -m
-        toPart = 1 - fromPart
         for l in [fromPart, toPart]:
             if num[l] == 0:
                 for idx in range(degree):

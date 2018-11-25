@@ -31,7 +31,7 @@ class FMKWayPartMgr:
 
         totalgain = 0
 
-        while True: 
+        while True:
             # Take the gainmax with v from gainbucket
             # gainmax = self.gainMgr.gainbucket.get_max()
             toPart = self.validator.select_togo()
@@ -108,20 +108,3 @@ class FMKWayPartMgr:
             # Take a snapshot
             self.snapshot = self.part
 
-
-def run_FMKWayPartMgr(H, gainMgr):
-    constrMgr = FMKWayConstrMgr(H, 3, 0.7)
-    partMgr = FMKWayPartMgr(H, 3, gainMgr, constrMgr)
-    partMgr.init()
-    totalcostbefore = partMgr.totalcost
-    partMgr.optimize()
-    assert partMgr.totalcost <= totalcostbefore
-    print(partMgr.snapshot)
-
-
-if __name__ == "__main__":
-    from ckpttnpy.tests.test_netlist import create_test_netlist, create_drawf
-
-    H = create_drawf()
-    gainMgr = FMKWayGainMgr(H, 3)
-    run_FMKWayPartMgr(H, gainMgr)
