@@ -2,15 +2,15 @@
 
 
 class FMKWayConstrMgr:
-    def __init__(self, K, H, ratio):
+    def __init__(self, H, K, ratio):
         """[summary]
 
         Arguments:
             H {[type]} -- [description]
             ratio {[type]} -- [description]
         """
-        self.K = K
         self.H = H
+        self.K = K
         self.ratio = ratio
         self.diff = list(0 for _ in range(K))
         self.illegal = list(True for _ in range(K))
@@ -36,6 +36,11 @@ class FMKWayConstrMgr:
         for k in range(self.K):
             self.illegal[k] = (self.diff[k] < self.lowerbound or
                                self.diff[k] > self.upperbound)
+
+    def select_togo(self):
+        minb = min(self.diff)
+        toPart = self.diff.index(minb)
+        return toPart
 
     def check_legal(self, fromPart, toPart, v):
         """[summary]
@@ -82,7 +87,7 @@ class FMKWayConstrMgr:
             fromPart {[type]} -- [description]
             v {[type]} -- [description]
         """
-        self.weight = self.H.G.nodes[v].get('weight', 1)
+        # self.weight = self.H.G.nodes[v].get('weight', 1)
         # toPart = 1 - fromPart
         self.diff[toPart] += self.weight
         self.diff[fromPart] -= self.weight

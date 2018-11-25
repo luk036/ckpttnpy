@@ -28,7 +28,7 @@ class FMBiConstrMgr:
             totalweight += weight
         self.upperbound = round(totalweight * self.ratio)
 
-    def pick_move(self):
+    def select(self):
         return 0 if self.diff[0] < self.diff[1] else 1
 
     def check_legal(self, fromPart, v):

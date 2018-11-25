@@ -56,11 +56,10 @@ class FMKWayGainCalc:
         weight = self.H.G.nodes[net].get('weight', 1)
         if part_v == part_w:
             for k in range(self.K):
-                vertex_list[k][w] -= weight
-                vertex_list[k][v] -= weight
-        else:
-            vertex_list[part_v][w] += weight
-            vertex_list[part_w][v] += weight
+                vertex_list[k][w].key -= weight
+                vertex_list[k][v].key -= weight
+        vertex_list[part_v][w].key += weight
+        vertex_list[part_w][v].key += weight
 
     def init_gain_general_net(self, net, part, vertex_list):
         """initialize gain for general net
@@ -69,7 +68,7 @@ class FMKWayGainCalc:
             net {Graph's node} -- [description]
             part {list} -- [description]
         """
-        num = [0, 0]
+        num = list(0 for _ in range(self.K))
         IdVec = []
         for w in self.H.G[net]:
             # i_w = self.H.cell_dict[w]
@@ -77,15 +76,16 @@ class FMKWayGainCalc:
             IdVec.append(w)
 
         weight = self.H.G.nodes[net].get('weight', 1)
-        for k in [0, 1]:
+
+        for k in range(self.K):
             if num[k] == 0:
-                for i_w in IdVec:
-                    vertex_list[i_w].key -= weight
+                for w in IdVec:
+                    vertex_list[k][w].key -= weight
             elif num[k] == 1:
-                for i_w in IdVec:
-                    part_w = part[i_w]
-                    if part_w == k:
-                        vertex_list[i_w].key += weight
+                for w in IdVec:
+                    if part[w] == k:
+                        for k2 in range(self.K):
+                            vertex_list[k2][w].key += weight
                         break
 
     def update_move_2pin_net(self, net, part, fromPart, toPart, v):
@@ -113,11 +113,11 @@ class FMKWayGainCalc:
                 deltaGainW[k] -= weight
         deltaGainW[fromPart] -= weight
         deltaGainW[toPart] += weight
-        
+
         return w, deltaGainW
         # self.gainbucket[1-part_w].modify_key(self.vertex_list[w], deltaGainW)
 
-    def update_move_general_net(self, net, part, fromPart, v):
+    def update_move_general_net(self, net, part, fromPart, toPart, v):
         """update move for general net
 
         Arguments:
@@ -128,7 +128,7 @@ class FMKWayGainCalc:
         """
         assert self.H.G.degree[net] > 2
 
-        num = [0, 0]
+        num = list(0 for _ in range(self.K))
         IdVec = []
         deltaGain = []
         for w in self.H.G[net]:
@@ -137,20 +137,23 @@ class FMKWayGainCalc:
             # i_w = self.H.cell_dict[w]
             num[part[w]] += 1
             IdVec.append(w)
-            deltaGain.append(0)
-        degree = len(IdVec)
 
-        m = self.H.G.nodes[net].get('weight', 1)
-        weight = m if fromPart == 0 else -m
-        for k in [0, 1]:
-            if num[k] == 0:
+        degree = len(IdVec)
+        deltaGain = list(list(0 for _ in range(self.K))
+                         for _ in range(degree))
+
+        weight = self.H.G.nodes[net].get('weight', 1)
+        # weight = m if fromPart == 0 else -m
+        for l in [fromPart, toPart]:
+            if num[l] == 0:
                 for idx in range(degree):
-                    deltaGain[idx] -= weight
-            elif num[k] == 1:
+                    deltaGain[idx][l] -= weight
+            elif num[l] == 1:
                 for idx in range(degree):
                     part_w = part[IdVec[idx]]
-                    if part_w == k:
-                        deltaGain[idx] += weight
+                    if part_w == l:
+                        for k in range(self.K):
+                            deltaGain[idx][k] += weight
                         break
             weight = -weight
 

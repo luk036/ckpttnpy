@@ -36,6 +36,17 @@ class bpqueue:
         """
         return it.key + self.offset
 
+    def set_key(self, it, gain):
+        """Get the key value
+
+        Arguments:
+            it {dllink} -- [description]
+
+        Returns:
+            int -- key
+        """
+        it.key = gain - self.offset
+
     def get_max(self):
         """Get the max value
 

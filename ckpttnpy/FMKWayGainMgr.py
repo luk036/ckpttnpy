@@ -1,26 +1,28 @@
 from .dllist import dllink
 from .bpqueue import bpqueue
-from .FMBiGainCalc import FMBiGainCalc
+from .FMKWayGainCalc import FMKWayGainCalc
 
 
-class FMBiGainMgr2:
+class FMKWayGainMgr:
 
     # public:
 
-    def __init__(self, H):
+    def __init__(self, H, K):
         """initialization
 
         Arguments:
             cell_dict {dict} -- [description]
         """
         self.H = H
-        self.gainCalc = FMBiGainCalc(H)
+        self.K = K
+        self.gainCalc = FMKWayGainCalc(H, K)
         self.pmax = self.H.get_max_degree()
-        self.gainbucket = []
-        for _ in [0, 1]:
-            self.gainbucket += [bpqueue(-self.pmax, self.pmax)]
         num_cells = H.number_of_cells()
-        self.vertex_list = [dllink(i) for i in range(num_cells)]
+        self.gainbucket = []
+        self.vertex_list = []
+        for _ in range(K):
+            self.gainbucket += [ bpqueue(-self.pmax, self.pmax) ]
+            self.vertex_list += [ list(dllink(i) for i in range(num_cells)) ]
         self.waitinglist = dllink(3734)
         # num = [0, 0]
 
@@ -35,29 +37,31 @@ class FMBiGainMgr2:
         for v in self.H.cell_fixed:
             # i_v = self.H.cell_dict[v]
             # force to the lowest gain
-            self.vertex_list[v].key = -self.pmax
+            for k in range(self.K):
+                self.vertex_list[k][v].key = -self.pmax
 
         for v in self.H.cell_list:
-            vlink = self.vertex_list[v]
-            toPart = 1 - part[v]
-            self.gainbucket[toPart].append(vlink, vlink.key)
+            for k in range(self.K):
+                vlink = self.vertex_list[k][v]
+                if part[v] == k:
+                    self.waitinglist.append(vlink)
+                else:
+                    self.gainbucket[k].append(vlink, vlink.key)
 
-    def is_empty(self):
-        for k in [0, 1]:
-            if not self.gainbucket[k].is_empty():
-                return False
-        return True
+    def is_empty(self, toPart):
+        return self.gainbucket[toPart].is_empty()
 
-    def select(self):
-        gainmax = [0, 0]
-        for k in [0, 1]:
-            gainmax[k] = self.gainbucket[k].get_max()
-        toPart = 0 if gainmax[0] > gainmax[1] else 1
+    def select_togo(self, toPart):
+        gainmax = self.gainbucket[toPart].get_max()
         vlink = self.gainbucket[toPart].popleft()
         self.waitinglist.append(vlink)
-        return vlink.idx, gainmax[toPart]
+        return vlink.idx, gainmax
 
-    def update_move(self, part, fromPart, v, gain):
+    def set_key(self, whichPart, v, key):
+        self.gainbucket[whichPart].set_key(
+            self.vertex_list[whichPart][v], key)
+
+    def update_move(self, part, fromPart, toPart, v, gain):
         """[summary]
 
         Arguments:
@@ -66,20 +70,26 @@ class FMBiGainMgr2:
         """
         for net in self.H.G[v]:
             if self.H.G.degree[net] == 2:
-                self.update_move_2pin_net(net, part, fromPart, v)
+                self.update_move_2pin_net(net, part, fromPart, toPart, v)
             elif self.H.G.degree[net] < 2:  # unlikely, self-loop, etc.
                 break  # does not provide any gain change when move
             else:
-                self.update_move_general_net(net, part, fromPart, v)
+                self.update_move_general_net(net, part, fromPart, toPart, v)
 
         # i_v = self.H.cell_dict[v]
         # gain = self.gainbucket.get_key(self.vertex_list[v])
         # self.gainbucket.modify_key(self.vertex_list[v], -2*gain)
-        self.vertex_list[v].key -= 2*gain
+        self.set_key(fromPart, v, -gain)
+        self.set_key(toPart, v, 0) # actually don't care
 
     # private:
 
-    def update_move_2pin_net(self, net, part, fromPart, v):
+    def modify_key(self, w, keys):
+        for k in range(self.K):
+            self.gainbucket[k].modify_key(
+                self.vertex_list[k][w], keys[k])
+
+    def update_move_2pin_net(self, net, part, fromPart, toPart, v):
         """Update move for 2-pin net
 
         Arguments:
@@ -89,11 +99,10 @@ class FMBiGainMgr2:
             v {Graph's node} -- [description]
         """
         w, deltaGainW = self.gainCalc.update_move_2pin_net(
-            net, part, fromPart, v)
-        part_w = part[w]
-        self.gainbucket[1-part_w].modify_key(self.vertex_list[w], deltaGainW)
+            net, part, fromPart, toPart, v)
+        self.modify_key(w, deltaGainW)
 
-    def update_move_general_net(self, net, part, fromPart, v):
+    def update_move_general_net(self, net, part, fromPart, toPart, v):
         """update move for general net
 
         Arguments:
@@ -103,9 +112,7 @@ class FMBiGainMgr2:
             v {Graph's node} -- [description]
         """
         IdVec, deltaGain = self.gainCalc.update_move_general_net(
-            net, part, fromPart, v)
+            net, part, fromPart, toPart, v)
         degree = len(IdVec)
         for idx in range(degree):
-            part_w = part[IdVec[idx]]
-            self.gainbucket[1-part_w].modify_key(
-                self.vertex_list[IdVec[idx]], deltaGain[idx])
+            self.modify_key(IdVec[idx], deltaGain[idx])

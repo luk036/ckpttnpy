@@ -48,8 +48,6 @@ class FMBiGainCalc:
         netCur = iter(self.H.G[net])
         w = next(netCur)
         v = next(netCur)
-        # i_w = self.H.cell_dict[w]
-        # i_v = self.H.cell_dict[v]
         part_w = part[w]
         part_v = part[v]
         weight = self.H.G.nodes[net].get('weight', 1)
@@ -75,13 +73,12 @@ class FMBiGainCalc:
         weight = self.H.G.nodes[net].get('weight', 1)
         for k in [0, 1]:
             if num[k] == 0:
-                for i_w in IdVec:
-                    vertex_list[i_w].key -= weight
+                for w in IdVec:
+                    vertex_list[w].key -= weight
             elif num[k] == 1:
-                for i_w in IdVec:
-                    part_w = part[i_w]
-                    if part_w == k:
-                        vertex_list[i_w].key += weight
+                for w in IdVec:
+                    if part[w] == k:
+                        vertex_list[w].key += weight
                         break
 
     def update_move_2pin_net(self, net, part, fromPart, v):
@@ -124,19 +121,20 @@ class FMBiGainCalc:
             # i_w = self.H.cell_dict[w]
             num[part[w]] += 1
             IdVec.append(w)
-            deltaGain.append(0)
-        degree = len(IdVec)
 
-        m = self.H.G.nodes[net].get('weight', 1)
-        weight = m if fromPart == 0 else -m
-        for k in [0, 1]:
-            if num[k] == 0:
+        degree = len(IdVec)
+        deltaGain = list(0 for _ in range(degree))
+        weight = self.H.G.nodes[net].get('weight', 1)
+        # weight = m if fromPart == 0 else -m
+        toPart = 1 - fromPart
+        for l in [fromPart, toPart]:
+            if num[l] == 0:
                 for idx in range(degree):
                     deltaGain[idx] -= weight
-            elif num[k] == 1:
+            elif num[l] == 1:
                 for idx in range(degree):
                     part_w = part[IdVec[idx]]
-                    if part_w == k:
+                    if part_w == l:
                         deltaGain[idx] += weight
                         break
             weight = -weight

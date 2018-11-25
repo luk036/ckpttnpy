@@ -1,12 +1,12 @@
 # **Special code for two-pin nets**
 # Take a snapshot when a move make **negative** gain.
 # Snapshot in the form of "interface"???
-from .FMBiGainMgr import FMBiGainMgr
-from .FMBiConstrMgr import FMBiConstrMgr
+from .FMKWayGainMgr import FMKWayGainMgr
+from .FMKWayConstrMgr import FMKWayConstrMgr
 
 
-class FMBiPartMgr:
-    def __init__(self, H, gainMgr, constrMgr):
+class FMKWayPartMgr:
+    def __init__(self, H, K, gainMgr, constrMgr):
         """[summary]
 
         Arguments:
@@ -15,6 +15,7 @@ class FMBiPartMgr:
             constrMgr {[type]} -- [description]
         """
         self.H = H
+        self.K = K
         self.gainMgr = gainMgr
         self.validator = constrMgr
         self.snapshot = None
@@ -30,23 +31,26 @@ class FMBiPartMgr:
 
         totalgain = 0
 
-        while not self.gainMgr.is_empty():
+        while True: 
             # Take the gainmax with v from gainbucket
             # gainmax = self.gainMgr.gainbucket.get_max()
-            v, gainmax = self.gainMgr.select()
+            toPart = self.validator.select_togo()
+            if self.gainMgr.is_empty(toPart):
+                break
+            v, gainmax = self.gainMgr.select_togo(toPart)
             # v = self.H.cell_list[i_v]
             fromPart = self.part[v]
             # weight = self.H.G.nodes[v].get('weight', 1)
             # Check if the move of v can notsatisfied, makebetter, or satisfied
-            legalcheck = self.validator.check_legal(fromPart, v)
+            legalcheck = self.validator.check_legal(fromPart, toPart, v)
             if legalcheck == 0:  # notsatisfied
                 continue
 
             # Update v and its neigbours (even they are in waitinglist)
             # Put neigbours to bucket
-            self.gainMgr.update_move(self.part, fromPart, v, gainmax)
-            self.validator.update_move(fromPart, v)
-            self.part[v] = 1 - fromPart
+            self.gainMgr.update_move(self.part, fromPart, toPart, v, gainmax)
+            self.validator.update_move(fromPart, toPart, v)
+            self.part[v] = toPart
             totalgain += gainmax
 
             if legalcheck == 2:  # satisfied
@@ -61,15 +65,18 @@ class FMBiPartMgr:
         totalgain = 0
         deferredsnapshot = True
 
-        while not self.gainMgr.is_empty():
+        while True: 
             # Take the gainmax with v from gainbucket
             # gainmax = self.gainMgr.gainbucket.get_max()
-            v, gainmax = self.gainMgr.select()
+            toPart = self.validator.select_togo()
+            if self.gainMgr.is_empty(toPart):
+                break
+            v, gainmax = self.gainMgr.select_togo(toPart)
             # v = self.H.cell_list[i_v]
             fromPart = self.part[v]
             # Check if the move of v can satisfied or notsatisfied
             # weight = self.H.G.nodes[v].get('weight', 1)
-            satisfiedOK = self.validator.check_constraints(fromPart, v)
+            satisfiedOK = self.validator.check_constraints(fromPart, toPart, v)
 
             if not satisfiedOK:
                 continue
@@ -86,8 +93,8 @@ class FMBiPartMgr:
 
             # Update v and its neigbours (even they are in waitinglist)
             # Put neigbours to bucket
-            self.gainMgr.update_move(self.part, fromPart, v, gainmax)
-            self.validator.update_move(fromPart, v)
+            self.gainMgr.update_move(self.part, fromPart, toPart, v, gainmax)
+            self.validator.update_move(fromPart, toPart, v)
             totalgain += gainmax
 
             if totalgain > 0:
@@ -95,8 +102,26 @@ class FMBiPartMgr:
                 totalgain = 0  # reset to zero
                 deferredsnapshot = True
 
-            self.part[v] = 1 - fromPart
+            self.part[v] = toPart
 
         if deferredsnapshot:
             # Take a snapshot
             self.snapshot = self.part
+
+
+def run_FMKWayPartMgr(H, gainMgr):
+    constrMgr = FMKWayConstrMgr(H, 3, 0.7)
+    partMgr = FMKWayPartMgr(H, 3, gainMgr, constrMgr)
+    partMgr.init()
+    totalcostbefore = partMgr.totalcost
+    partMgr.optimize()
+    assert partMgr.totalcost <= totalcostbefore
+    print(partMgr.snapshot)
+
+
+if __name__ == "__main__":
+    from ckpttnpy.tests.test_netlist import create_test_netlist, create_drawf
+
+    H = create_drawf()
+    gainMgr = FMKWayGainMgr(H, 3)
+    run_FMKWayPartMgr(H, gainMgr)

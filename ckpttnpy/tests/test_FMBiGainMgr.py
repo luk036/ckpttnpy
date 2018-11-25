@@ -8,7 +8,7 @@ def run_FMBiGainMgr(H, part, mgr):
     mgr.init(part)
     while not mgr.is_empty():
         # Take the gainmax with v from gainbucket
-        v, gainmax = mgr.popleft()
+        v, gainmax = mgr.select()
         if gainmax <= 0:
             continue
         fromPart = part[v]

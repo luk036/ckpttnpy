@@ -44,7 +44,7 @@ class FMBiGainMgr:
         """
         return self.gainbucket.is_empty()
 
-    def popleft(self):
+    def select(self):
         """[summary]
         
         Returns:
