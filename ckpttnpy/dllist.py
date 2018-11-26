@@ -93,6 +93,11 @@ class dllink:
 
 class dll_iterator:
     def __init__(self, link):
+        """[summary]
+        
+        Arguments:
+            link {[type]} -- [description]
+        """
         self.link = link
         self.cur = link.next
 
@@ -113,4 +118,9 @@ class dll_iterator:
             raise StopIteration
 
     def __next__(self):
+        """[summary]
+        
+        Returns:
+            [type] -- [description]
+        """
         return self.next()

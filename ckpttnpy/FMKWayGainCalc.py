@@ -4,9 +4,10 @@ class FMKWayGainCalc:
 
     def __init__(self, H, K):
         """initialization
-
+        
         Arguments:
-            cell_dict {dict} -- [description]
+            H {Netlist} -- [description]
+            K {size_t} -- number of partitions
         """
         self.H = H
         self.K = K

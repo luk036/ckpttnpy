@@ -173,6 +173,11 @@ class bpqueue:
 
 class bpq_iterator:
     def __init__(self, bpq):
+        """[summary]
+        
+        Arguments:
+            bpq {[type]} -- [description]
+        """
         self.bpq = bpq
         self.curkey = bpq.max
         self.curitem = iter(bpq.bucket[bpq.max])
@@ -196,4 +201,9 @@ class bpq_iterator:
         raise StopIteration
 
     def __next__(self):
+        """[summary]
+        
+        Returns:
+            [type] -- [description]
+        """
         return self.next()

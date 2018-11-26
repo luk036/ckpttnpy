@@ -40,16 +40,17 @@ class FMKWayPartMgr:
             v, gainmax = self.gainMgr.select_togo(toPart)
             # v = self.H.cell_list[i_v]
             fromPart = self.part[v]
+            move_info_v = [fromPart, toPart, v]
             # weight = self.H.G.nodes[v].get('weight', 1)
             # Check if the move of v can notsatisfied, makebetter, or satisfied
-            legalcheck = self.validator.check_legal(fromPart, toPart, v)
+            legalcheck = self.validator.check_legal(move_info_v)
             if legalcheck == 0:  # notsatisfied
                 continue
 
             # Update v and its neigbours (even they are in waitinglist)
             # Put neigbours to bucket
-            self.gainMgr.update_move(self.part, fromPart, toPart, v, gainmax)
-            self.validator.update_move(fromPart, toPart, v)
+            self.gainMgr.update_move(self.part, move_info_v, gainmax)
+            self.validator.update_move(move_info_v)
             self.part[v] = toPart
             totalgain += gainmax
 
@@ -74,9 +75,10 @@ class FMKWayPartMgr:
             v, gainmax = self.gainMgr.select_togo(toPart)
             # v = self.H.cell_list[i_v]
             fromPart = self.part[v]
+            move_info_v = [fromPart, toPart, v]
             # Check if the move of v can satisfied or notsatisfied
             # weight = self.H.G.nodes[v].get('weight', 1)
-            satisfiedOK = self.validator.check_constraints(fromPart, toPart, v)
+            satisfiedOK = self.validator.check_constraints(move_info_v)
 
             if not satisfiedOK:
                 continue
@@ -93,8 +95,8 @@ class FMKWayPartMgr:
 
             # Update v and its neigbours (even they are in waitinglist)
             # Put neigbours to bucket
-            self.gainMgr.update_move(self.part, fromPart, toPart, v, gainmax)
-            self.validator.update_move(fromPart, toPart, v)
+            self.gainMgr.update_move(self.part, move_info_v, gainmax)
+            self.validator.update_move(move_info_v)
             totalgain += gainmax
 
             if totalgain > 0:

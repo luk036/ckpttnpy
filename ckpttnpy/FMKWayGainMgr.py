@@ -61,13 +61,14 @@ class FMKWayGainMgr:
         self.gainbucket[whichPart].set_key(
             self.vertex_list[whichPart][v], key)
 
-    def update_move(self, part, fromPart, toPart, v, gain):
+    def update_move(self, part, move_info_v, gain):
         """[summary]
 
         Arguments:
             part {[type]} -- [description]
             v {[type]} -- [description]
         """
+        fromPart, toPart, v = move_info_v 
         for net in self.H.G[v]:
             move_info = [net, fromPart, toPart, v]
             if self.H.G.degree[net] == 2:

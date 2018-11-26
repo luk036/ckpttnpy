@@ -29,9 +29,14 @@ class FMBiConstrMgr:
         self.upperbound = round(totalweight * self.ratio)
 
     def select(self):
+        """[summary]
+
+        Returns:
+            [type] -- [description]
+        """
         return 0 if self.diff[0] < self.diff[1] else 1
 
-    def check_legal(self, fromPart, v):
+    def check_legal(self, move_info_v):
         """[summary]
 
         Arguments:
@@ -41,9 +46,8 @@ class FMBiConstrMgr:
         Returns:
             [type] -- [description]
         """
+        fromPart, toPart, v = move_info_v
         self.weight = self.H.G.nodes[v].get('weight', 1)
-        # weight = 10
-        toPart = 1 - fromPart
         diffTo = self.diff[toPart] + self.weight
         if diffTo > self.upperbound:
             return 0
@@ -52,7 +56,7 @@ class FMBiConstrMgr:
             return 1
         return 2
 
-    def check_constraints(self, fromPart, v):
+    def check_constraints(self, move_info_v):
         """[summary]
 
         Arguments:
@@ -62,18 +66,17 @@ class FMBiConstrMgr:
         Returns:
             [type] -- [description]
         """
+        _, toPart, v = move_info_v
         self.weight = self.H.G.nodes[v].get('weight', 1)
-        toPart = 1 - fromPart
         return self.diff[toPart] + self.weight <= self.upperbound
 
-    def update_move(self, fromPart, v):
+    def update_move(self, move_info_v):
         """[summary]
 
         Arguments:
             fromPart {[type]} -- [description]
             v {[type]} -- [description]
         """
-        # weight = self.H.G.nodes[v].get('weight', 1)
-        toPart = 1 - fromPart
+        fromPart, toPart, _ = move_info_v
         self.diff[toPart] += self.weight
         self.diff[fromPart] -= self.weight

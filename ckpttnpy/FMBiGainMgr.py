@@ -55,22 +55,24 @@ class FMBiGainMgr:
         self.waitinglist.append(vlink)
         return vlink.idx, gainmax
 
-    def update_move(self, part, fromPart, v, gain):
+    def update_move(self, part, move_info_v, gain):
         """[summary]
 
         Arguments:
             part {[type]} -- [description]
             v {[type]} -- [description]
         """
+        fromPart, toPart, v = move_info_v
         for net in self.H.G[v]:
-            move_info = [net, fromPart, 1-fromPart, v]
+            move_info = [net, fromPart, toPart, v]
             if self.H.G.degree[net] == 2:
                 self.update_move_2pin_net(part, move_info)
             elif self.H.G.degree[net] < 2:  # unlikely, self-loop, etc.
                 break  # does not provide any gain change when move
             else:
                 self.update_move_general_net(part, move_info)
-        self.vertex_list[v].key -= 2*gain
+        # self.vertex_list[v].key -= 2*gain
+        self.gainbucket.set_key(self.vertex_list[v], -gain)
 
     def update_move_2pin_net(self, part, move_info):
         """Update move for 2-pin net

@@ -11,8 +11,10 @@ def run_FMBiGainMgr(H, part, mgr):
         if gainmax <= 0:
             continue
         fromPart = part[v]
-        mgr.update_move(part, fromPart, v, gainmax)
-        part[v] = 1 - fromPart
+        toPart = 1 - fromPart
+        move_info_v = fromPart, toPart, v
+        mgr.update_move(part, move_info_v, gainmax)
+        part[v] = toPart
         assert v >= 0
 
 

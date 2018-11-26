@@ -27,7 +27,6 @@ class FMKWayConstrMgr:
         totalweight = 0
         for v in self.H.cell_list:
             weight = self.H.G.nodes[v].get('weight', 1)
-            # weight = 10
             self.diff[part[v]] += weight
             totalweight += weight
         totalweightK = totalweight * 2. / self.K
@@ -42,7 +41,7 @@ class FMKWayConstrMgr:
         toPart = self.diff.index(minb)
         return toPart
 
-    def check_legal(self, fromPart, toPart, v):
+    def check_legal(self, move_info_v):
         """[summary]
 
         Arguments:
@@ -52,6 +51,7 @@ class FMKWayConstrMgr:
         Returns:
             [type] -- [description]
         """
+        fromPart, toPart, v = move_info_v 
         self.weight = self.H.G.nodes[v].get('weight', 1)
         diffTo = self.diff[toPart] + self.weight
         diffFrom = self.diff[fromPart] - self.weight
@@ -64,7 +64,7 @@ class FMKWayConstrMgr:
             return 1  # get better, but still illegal
         return 2  # all satisfied
 
-    def check_constraints(self, fromPart, toPart, v):
+    def check_constraints(self, move_info_v):
         """[summary]
 
         Arguments:
@@ -74,20 +74,19 @@ class FMKWayConstrMgr:
         Returns:
             [type] -- [description]
         """
+        fromPart, toPart, v = move_info_v 
         self.weight = self.H.G.nodes[v].get('weight', 1)
-        # toPart = 1 - fromPart
         diffTo = self.diff[toPart] + self.weight
         diffFrom = self.diff[fromPart] - self.weight
         return diffTo <= self.upperbound and diffFrom >= self.lowerbound
 
-    def update_move(self, fromPart, toPart, v):
+    def update_move(self, move_info_v):
         """[summary]
 
         Arguments:
             fromPart {[type]} -- [description]
             v {[type]} -- [description]
         """
-        # self.weight = self.H.G.nodes[v].get('weight', 1)
-        # toPart = 1 - fromPart
+        fromPart, toPart, _ = move_info_v 
         self.diff[toPart] += self.weight
         self.diff[fromPart] -= self.weight

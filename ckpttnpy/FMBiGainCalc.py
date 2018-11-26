@@ -10,7 +10,7 @@ class FMBiGainCalc:
         """initialization
 
         Arguments:
-            cell_dict {dict} -- [description]
+            H {Netlist} -- [description]
         """
         self.H = H
 
@@ -19,6 +19,7 @@ class FMBiGainCalc:
 
         Arguments:
             part {list} -- [description]
+            vertex_list {list of dllink} -- [description]
         """
         for net in self.H.net_list:
             self.init_gain(net, part, vertex_list)
@@ -29,6 +30,7 @@ class FMBiGainCalc:
         Arguments:
             net {Graph's node} -- [description]
             part {list} -- [description]
+            vertex_list {list of dllink} -- [description]
         """
         if self.H.G.degree[net] == 2:
             self.init_gain_2pin_net(net, part, vertex_list)
@@ -43,6 +45,7 @@ class FMBiGainCalc:
         Arguments:
             net {Graph's node} -- [description]
             part {list} -- [description]
+            vertex_list {list of dllink} -- [description]
         """
         assert self.H.G.degree[net] == 2
         netCur = iter(self.H.G[net])
@@ -52,7 +55,6 @@ class FMBiGainCalc:
         part_v = part[v]
         weight = self.H.G.nodes[net].get('weight', 1)
         g = -weight if part_w == part_v else weight
-
         vertex_list[w].key += g
         vertex_list[v].key += g
 
@@ -62,6 +64,7 @@ class FMBiGainCalc:
         Arguments:
             net {Graph's node} -- [description]
             part {list} -- [description]
+            vertex_list {list of dllink} -- [description]
         """
         num = [0, 0]
         IdVec = []
@@ -85,10 +88,8 @@ class FMBiGainCalc:
         """Update move for 2-pin net
 
         Arguments:
-            net {Graph's node} -- [description]
             part {list} -- [description]
-            fromPart {int} -- [description]
-            v {Graph's node} -- [description]
+            move_info {tuple} -- [description]
         """
         net, fromPart, _, v = move_info
         assert self.H.G.degree[net] == 2
@@ -106,10 +107,8 @@ class FMBiGainCalc:
         """update move for general net
 
         Arguments:
-            net {Graph's node} -- [description]
             part {list} -- [description]
-            fromPart {int} -- [description]
-            v {Graph's node} -- [description]
+            move_info {tuple} -- [description]
         """
         net, fromPart, toPart, v = move_info
         assert self.H.G.degree[net] > 2
