@@ -22,8 +22,8 @@ class FMBiConstrMgr:
             part {[type]} -- [description]
         """
         totalweight = 0
-        for v in self.H.cell_list:
-            weight = self.H.G.nodes[v].get('weight', 1)
+        for v in self.H.module_list:
+            weight = self.H.get_module_weight(v)
             self.diff[part[v]] += weight
             totalweight += weight
         self.upperbound = round(totalweight * self.ratio)
@@ -47,7 +47,7 @@ class FMBiConstrMgr:
             [type] -- [description]
         """
         fromPart, toPart, v = move_info_v
-        self.weight = self.H.G.nodes[v].get('weight', 1)
+        self.weight = self.H.get_module_weight(v)
         diffTo = self.diff[toPart] + self.weight
         if diffTo > self.upperbound:
             return 0
@@ -67,7 +67,7 @@ class FMBiConstrMgr:
             [type] -- [description]
         """
         _, toPart, v = move_info_v
-        self.weight = self.H.G.nodes[v].get('weight', 1)
+        self.weight = self.H.get_module_weight(v)
         return self.diff[toPart] + self.weight <= self.upperbound
 
     def update_move(self, move_info_v):

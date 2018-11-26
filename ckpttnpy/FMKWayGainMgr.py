@@ -11,18 +11,18 @@ class FMKWayGainMgr:
         """initialization
 
         Arguments:
-            cell_dict {dict} -- [description]
+            module_dict {dict} -- [description]
         """
         self.H = H
         self.K = K
         self.gainCalc = FMKWayGainCalc(H, K)
         self.pmax = self.H.get_max_degree()
-        num_cells = H.number_of_cells()
+        num_modules = H.number_of_modules()
         self.gainbucket = []
         self.vertex_list = []
         for _ in range(K):
             self.gainbucket += [ bpqueue(-self.pmax, self.pmax) ]
-            self.vertex_list += [ list(dllink(i) for i in range(num_cells)) ]
+            self.vertex_list += [ list(dllink(i) for i in range(num_modules)) ]
         self.waitinglist = dllink(3734)
         # num = [0, 0]
 
@@ -34,13 +34,13 @@ class FMKWayGainMgr:
         """
         self.gainCalc.init(part, self.vertex_list)
 
-        for v in self.H.cell_fixed:
-            # i_v = self.H.cell_dict[v]
+        for v in self.H.module_fixed:
+            # i_v = self.H.module_dict[v]
             # force to the lowest gain
             for k in range(self.K):
                 self.vertex_list[k][v].key = -self.pmax
 
-        for v in self.H.cell_list:
+        for v in self.H.module_list:
             for k in range(self.K):
                 vlink = self.vertex_list[k][v]
                 if part[v] == k:
@@ -78,7 +78,7 @@ class FMKWayGainMgr:
             else:
                 self.update_move_general_net(part, move_info)
 
-        # i_v = self.H.cell_dict[v]
+        # i_v = self.H.module_dict[v]
         # gain = self.gainbucket.get_key(self.vertex_list[v])
         # self.gainbucket.modify_key(self.vertex_list[v], -2*gain)
         self.set_key(fromPart, v, -gain)

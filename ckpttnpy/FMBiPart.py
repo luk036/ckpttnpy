@@ -16,7 +16,7 @@ class FMBiPartMgr:
         self.gainMgr = gainMgr
         self.validator = constrMgr
         self.snapshot = None
-        self.part = list(0 for _ in range(self.H.number_of_cells()))
+        self.part = list(0 for _ in range(self.H.number_of_modules()))
 
         self.totalcost = 0
 

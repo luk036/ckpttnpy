@@ -25,8 +25,8 @@ class FMKWayConstrMgr:
             part {[type]} -- [description]
         """
         totalweight = 0
-        for v in self.H.cell_list:
-            weight = self.H.G.nodes[v].get('weight', 1)
+        for v in self.H.module_list:
+            weight = self.H.get_module_weight(v)
             self.diff[part[v]] += weight
             totalweight += weight
         totalweightK = totalweight * 2. / self.K
@@ -52,7 +52,7 @@ class FMKWayConstrMgr:
             [type] -- [description]
         """
         fromPart, toPart, v = move_info_v 
-        self.weight = self.H.G.nodes[v].get('weight', 1)
+        self.weight = self.H.get_module_weight(v)
         diffTo = self.diff[toPart] + self.weight
         diffFrom = self.diff[fromPart] - self.weight
         if diffTo > self.upperbound or diffFrom < self.lowerbound:
@@ -75,7 +75,7 @@ class FMKWayConstrMgr:
             [type] -- [description]
         """
         fromPart, toPart, v = move_info_v 
-        self.weight = self.H.G.nodes[v].get('weight', 1)
+        self.weight = self.H.get_module_weight(v)
         diffTo = self.diff[toPart] + self.weight
         diffFrom = self.diff[fromPart] - self.weight
         return diffTo <= self.upperbound and diffFrom >= self.lowerbound

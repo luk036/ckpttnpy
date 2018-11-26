@@ -20,7 +20,7 @@ class FMKWayPartMgr:
         self.validator = constrMgr
         self.snapshot = None
 
-        self.part = list(0 for _ in range(self.H.number_of_cells()))
+        self.part = list(0 for _ in range(self.H.number_of_modules()))
         self.totalcost = 0
 
     def init(self):
@@ -38,10 +38,10 @@ class FMKWayPartMgr:
             if self.gainMgr.is_empty(toPart):
                 break
             v, gainmax = self.gainMgr.select_togo(toPart)
-            # v = self.H.cell_list[i_v]
+            # v = self.H.module_list[i_v]
             fromPart = self.part[v]
             move_info_v = [fromPart, toPart, v]
-            # weight = self.H.G.nodes[v].get('weight', 1)
+            # weight = self.H.get_module_weight(v)
             # Check if the move of v can notsatisfied, makebetter, or satisfied
             legalcheck = self.validator.check_legal(move_info_v)
             if legalcheck == 0:  # notsatisfied
@@ -73,11 +73,11 @@ class FMKWayPartMgr:
             if self.gainMgr.is_empty(toPart):
                 break
             v, gainmax = self.gainMgr.select_togo(toPart)
-            # v = self.H.cell_list[i_v]
+            # v = self.H.module_list[i_v]
             fromPart = self.part[v]
             move_info_v = [fromPart, toPart, v]
             # Check if the move of v can satisfied or notsatisfied
-            # weight = self.H.G.nodes[v].get('weight', 1)
+            # weight = self.H.get_module_weight(v)
             satisfiedOK = self.validator.check_constraints(move_info_v)
 
             if not satisfiedOK:

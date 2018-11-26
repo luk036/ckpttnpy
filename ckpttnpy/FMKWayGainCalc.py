@@ -46,11 +46,11 @@ class FMKWayGainCalc:
         netCur = iter(self.H.G[net])
         w = next(netCur)
         v = next(netCur)
-        # i_w = self.H.cell_dict[w]
-        # i_v = self.H.cell_dict[v]
+        # i_w = self.H.module_dict[w]
+        # i_v = self.H.module_dict[v]
         part_w = part[w]
         part_v = part[v]
-        weight = self.H.G.nodes[net].get('weight', 1)
+        weight = self.H.get_net_weight(net)
         if part_v == part_w:
             for k in range(self.K):
                 vertex_list[k][w].key -= weight
@@ -68,11 +68,11 @@ class FMKWayGainCalc:
         num = list(0 for _ in range(self.K))
         IdVec = []
         for w in self.H.G[net]:
-            # i_w = self.H.cell_dict[w]
+            # i_w = self.H.module_dict[w]
             num[part[w]] += 1
             IdVec.append(w)
 
-        weight = self.H.G.nodes[net].get('weight', 1)
+        weight = self.H.get_net_weight(net)
 
         for k in range(self.K):
             if num[k] == 0:
@@ -99,9 +99,9 @@ class FMKWayGainCalc:
         netCur = iter(self.H.G[net])
         u = next(netCur)
         w = u if u != v else next(netCur)
-        # i_w = self.H.cell_dict[w]
+        # i_w = self.H.module_dict[w]
         part_w = part[w]
-        weight = self.H.G.nodes[net].get('weight', 1)
+        weight = self.H.get_net_weight(net)
         deltaGainW = list(0 for _ in range(self.K))
         if part_w == fromPart:
             for k in range(self.K):
@@ -132,7 +132,7 @@ class FMKWayGainCalc:
         for w in self.H.G[net]:
             if w == v:
                 continue
-            # i_w = self.H.cell_dict[w]
+            # i_w = self.H.module_dict[w]
             num[part[w]] += 1
             IdVec.append(w)
 
@@ -140,7 +140,7 @@ class FMKWayGainCalc:
         deltaGain = list(list(0 for _ in range(self.K))
                          for _ in range(degree))
 
-        weight = self.H.G.nodes[net].get('weight', 1)
+        weight = self.H.get_net_weight(net)
         # weight = m if fromPart == 0 else -m
         for l in [fromPart, toPart]:
             if num[l] == 0:
