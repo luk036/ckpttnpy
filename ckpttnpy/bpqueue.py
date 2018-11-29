@@ -119,6 +119,9 @@ class bpqueue:
         assert it.key > 0
         assert it.key <= self.high
         self.bucket[it.key].append(it)  # FIFO
+        if self.max < it.key:
+            self.max = it.key
+            return
         while self.bucket[self.max].is_empty():
             self.max -= 1
 

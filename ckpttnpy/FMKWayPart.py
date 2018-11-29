@@ -29,7 +29,7 @@ class FMKWayPartMgr:
         self.gainMgr.init(self.part)
         self.validator.init(self.part)
 
-        totalgain = 0
+        # totalgain = 0
 
         while True:
             # Take the gainmax with v from gainbucket
@@ -40,6 +40,7 @@ class FMKWayPartMgr:
             v, gainmax = self.gainMgr.select_togo(toPart)
             # v = self.H.module_list[i_v]
             fromPart = self.part[v]
+            assert fromPart != toPart
             move_info_v = [fromPart, toPart, v]
             # weight = self.H.get_module_weight(v)
             # Check if the move of v can notsatisfied, makebetter, or satisfied
@@ -52,10 +53,11 @@ class FMKWayPartMgr:
             self.gainMgr.update_move(self.part, move_info_v, gainmax)
             self.validator.update_move(move_info_v)
             self.part[v] = toPart
-            totalgain += gainmax
+            # totalgain += gainmax
+            self.totalcost -= gainmax
 
             if legalcheck == 2:  # satisfied
-                self.totalcost -= totalgain
+                # self.totalcost -= totalgain
                 # totalgain = 0 # reset to zero
                 break
         # assert not self.gainMgr.gainbucket.is_empty()
@@ -73,11 +75,10 @@ class FMKWayPartMgr:
             if self.gainMgr.is_empty(toPart):
                 break
             v, gainmax = self.gainMgr.select_togo(toPart)
-            # v = self.H.module_list[i_v]
             fromPart = self.part[v]
+            assert fromPart != toPart
             move_info_v = [fromPart, toPart, v]
             # Check if the move of v can satisfied or notsatisfied
-            # weight = self.H.get_module_weight(v)
             satisfiedOK = self.validator.check_constraints(move_info_v)
 
             if not satisfiedOK:

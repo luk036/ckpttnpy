@@ -21,10 +21,10 @@ class FMKWayGainMgr:
         self.gainbucket = []
         self.vertex_list = []
         for _ in range(K):
-            self.gainbucket += [ bpqueue(-self.pmax, self.pmax) ]
-            self.vertex_list += [ list(dllink(i) for i in range(num_modules)) ]
+            self.gainbucket += [bpqueue(-self.pmax, self.pmax)]
+            self.vertex_list += [list(dllink(i) for i in range(num_modules))]
         self.waitinglist = dllink(3734)
-        # num = [0, 0]
+        self.deltaGainV = list(0 for _ in range(self.K))
 
     def init(self, part):
         """(re)initialization after creation
@@ -44,6 +44,8 @@ class FMKWayGainMgr:
             for k in range(self.K):
                 vlink = self.vertex_list[k][v]
                 if part[v] == k:
+                    assert vlink.key == 0
+                    self.gainbucket[k].set_key(vlink, 0)
                     self.waitinglist.append(vlink)
                 else:
                     self.gainbucket[k].append(vlink, vlink.key)
@@ -68,7 +70,8 @@ class FMKWayGainMgr:
             part {[type]} -- [description]
             v {[type]} -- [description]
         """
-        fromPart, toPart, v = move_info_v 
+        fromPart, toPart, v = move_info_v
+        self.deltaGainV = list(0 for _ in range(self.K))
         for net in self.H.G[v]:
             move_info = [net, fromPart, toPart, v]
             if self.H.G.degree[net] == 2:
@@ -78,16 +81,22 @@ class FMKWayGainMgr:
             else:
                 self.update_move_general_net(part, move_info)
 
-        # i_v = self.H.module_dict[v]
-        # gain = self.gainbucket.get_key(self.vertex_list[v])
-        # self.gainbucket.modify_key(self.vertex_list[v], -2*gain)
+        for k in range(self.K):
+            if fromPart == k or toPart == k:
+                continue
+            self.gainbucket[k].modify_key(self.vertex_list[k][v],
+                                          self.deltaGainV[k])
+
         self.set_key(fromPart, v, -gain)
-        self.set_key(toPart, v, 0) # actually don't care
+        self.set_key(toPart, v, 0)  # actually don't care
 
     # private:
 
-    def modify_key(self, w, keys):
+    def modify_key(self, part, w, keys):
         for k in range(self.K):
+            if part[w] == k:
+                continue
+
             self.gainbucket[k].modify_key(
                 self.vertex_list[k][w], keys[k])
 
@@ -100,9 +109,11 @@ class FMKWayGainMgr:
             fromPart {int} -- [description]
             v {Graph's node} -- [description]
         """
-        w, deltaGainW = self.gainCalc.update_move_2pin_net(
-            part, move_info)
-        self.modify_key(w, deltaGainW)
+        w, deltaGainW, deltaGainV = \
+            self.gainCalc.update_move_2pin_net(part, move_info)
+        self.modify_key(part, w, deltaGainW)
+        for k in range(self.K):
+            self.deltaGainV[k] += deltaGainV[k]
 
     def update_move_general_net(self, part, move_info):
         """update move for general net
@@ -113,8 +124,11 @@ class FMKWayGainMgr:
             fromPart {int} -- [description]
             v {Graph's node} -- [description]
         """
-        IdVec, deltaGain = self.gainCalc.update_move_general_net(
-            part, move_info)
+        IdVec, deltaGain, deltaGainV = \
+            self.gainCalc.update_move_general_net(part, move_info)
         degree = len(IdVec)
         for idx in range(degree):
-            self.modify_key(IdVec[idx], deltaGain[idx])
+            self.modify_key(part, IdVec[idx], deltaGain[idx])
+
+        for k in range(self.K):
+            self.deltaGainV[k] += deltaGainV[k]

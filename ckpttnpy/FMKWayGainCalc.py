@@ -4,7 +4,7 @@ class FMKWayGainCalc:
 
     def __init__(self, H, K):
         """initialization
-        
+
         Arguments:
             H {Netlist} -- [description]
             K {size_t} -- number of partitions
@@ -99,21 +99,23 @@ class FMKWayGainCalc:
         netCur = iter(self.H.G[net])
         u = next(netCur)
         w = u if u != v else next(netCur)
-        # i_w = self.H.module_dict[w]
         part_w = part[w]
         weight = self.H.get_net_weight(net)
         deltaGainW = list(0 for _ in range(self.K))
+        deltaGainV = list(0 for _ in range(self.K))
         if part_w == fromPart:
             for k in range(self.K):
                 deltaGainW[k] += weight
+                deltaGainV[k] += weight
+
         elif part_w == toPart:
             for k in range(self.K):
-                deltaGainW[k] -= weight
+                deltaGainW[k] += weight
+                deltaGainV[k] += weight
+
         deltaGainW[fromPart] -= weight
         deltaGainW[toPart] += weight
-
-        return w, deltaGainW
-        # self.gainbucket[1-part_w].modify_key(self.vertex_list[w], deltaGainW)
+        return w, deltaGainW, deltaGainV
 
     def update_move_general_net(self, part, move_info):
         """update move for general net
@@ -132,21 +134,30 @@ class FMKWayGainCalc:
         for w in self.H.G[net]:
             if w == v:
                 continue
-            # i_w = self.H.module_dict[w]
             num[part[w]] += 1
             IdVec.append(w)
 
         degree = len(IdVec)
         deltaGain = list(list(0 for _ in range(self.K))
-                         for _ in range(degree))
+                                for _ in range(degree))
+        deltaGainV = list(0 for _ in range(self.K))
 
         weight = self.H.get_net_weight(net)
-        # weight = m if fromPart == 0 else -m
-        for l in [fromPart, toPart]:
-            if num[l] == 0:
+        if num[fromPart] == 0:
+            if num[toPart] > 0:
                 for idx in range(degree):
-                    deltaGain[idx][l] -= weight
-            elif num[l] == 1:
+                    deltaGain[idx][fromPart] -= weight
+                for k in range(self.K):
+                    deltaGainV[k] -= weight
+        else:
+            if num[toPart] == 0:
+                for idx in range(degree):
+                    deltaGain[idx][toPart] += weight
+                for k in range(self.K):
+                    deltaGainV[k] += weight
+
+        for l in [fromPart, toPart]:
+            if num[l] == 1:
                 for idx in range(degree):
                     part_w = part[IdVec[idx]]
                     if part_w == l:
@@ -155,4 +166,4 @@ class FMKWayGainCalc:
                         break
             weight = -weight
 
-        return IdVec, deltaGain
+        return IdVec, deltaGain, deltaGainV
