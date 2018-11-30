@@ -1,6 +1,6 @@
 from ckpttnpy.FMKWayGainMgr import FMKWayGainMgr
 from ckpttnpy.FMKWayConstrMgr import FMKWayConstrMgr
-from ckpttnpy.FMPart import FMPartMgr
+from ckpttnpy.FMPartMgr import FMPartMgr
 from ckpttnpy.tests.test_netlist import create_drawf
 
 
