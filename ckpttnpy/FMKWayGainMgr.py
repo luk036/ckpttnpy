@@ -15,7 +15,7 @@ class FMKWayGainMgr:
         """
         self.H = H
         self.K = K
-        self.gainCalc = FMKWayGainCalc(H, K)
+        # self.gainCalc = FMKWayGainCalc(H, K)
         self.pmax = self.H.get_max_degree()
         num_modules = H.number_of_modules()
         self.gainbucket = []
@@ -32,7 +32,8 @@ class FMKWayGainMgr:
         Arguments:
             part {list} -- [description]
         """
-        self.gainCalc.init(part, self.vertex_list)
+        gainCalc = FMKWayGainCalc(self.H, self.K)
+        gainCalc.init(part, self.vertex_list)
 
         for v in self.H.module_fixed:
             # i_v = self.H.module_dict[v]
@@ -86,6 +87,8 @@ class FMKWayGainMgr:
                 continue
             self.gainbucket[k].modify_key(self.vertex_list[k][v],
                                           self.deltaGainV[k])
+            # self.gainbucket[k].detach(self.vertex_list[k][v])
+            # self.waitinglist.append(self.vertex_list[k][v])
 
         self.set_key(fromPart, v, -gain)
         self.set_key(toPart, v, 0)  # actually don't care
@@ -109,11 +112,10 @@ class FMKWayGainMgr:
             fromPart {int} -- [description]
             v {Graph's node} -- [description]
         """
-        w, deltaGainW, deltaGainV = \
-            self.gainCalc.update_move_2pin_net(part, move_info)
+        gainCalc = FMKWayGainCalc(self.H, self.K)
+        w, deltaGainW = gainCalc.update_move_2pin_net(
+            part, move_info, self.deltaGainV)
         self.modify_key(part, w, deltaGainW)
-        for k in range(self.K):
-            self.deltaGainV[k] += deltaGainV[k]
 
     def update_move_general_net(self, part, move_info):
         """update move for general net
@@ -124,11 +126,9 @@ class FMKWayGainMgr:
             fromPart {int} -- [description]
             v {Graph's node} -- [description]
         """
-        IdVec, deltaGain, deltaGainV = \
-            self.gainCalc.update_move_general_net(part, move_info)
+        gainCalc = FMKWayGainCalc(self.H, self.K)
+        IdVec, deltaGain = gainCalc.update_move_general_net(
+            part, move_info, self.deltaGainV)
         degree = len(IdVec)
         for idx in range(degree):
             self.modify_key(part, IdVec[idx], deltaGain[idx])
-
-        for k in range(self.K):
-            self.deltaGainV[k] += deltaGainV[k]

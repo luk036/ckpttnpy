@@ -12,7 +12,7 @@ class FMBiConstrMgr:
         self.H = H
         self.ratio = ratio
         self.diff = [0, 0]
-        self.upperbound = 0
+        self.lowerbound = 0
         self.weight = 0  # cache value
 
     def init(self, part):
@@ -26,7 +26,7 @@ class FMBiConstrMgr:
             weight = self.H.get_module_weight(v)
             self.diff[part[v]] += weight
             totalweight += weight
-        self.upperbound = round(totalweight * self.ratio)
+        self.lowerbound = round(totalweight * self.ratio)
 
     def select(self):
         """[summary]
@@ -48,11 +48,11 @@ class FMBiConstrMgr:
         """
         fromPart, toPart, v = move_info_v
         self.weight = self.H.get_module_weight(v)
-        diffTo = self.diff[toPart] + self.weight
-        if diffTo > self.upperbound:
-            return 0
         diffFrom = self.diff[fromPart] - self.weight
-        if diffFrom > self.upperbound:
+        if diffFrom < self.lowerbound:
+            return 0
+        diffTo = self.diff[toPart] + self.weight
+        if diffTo < self.lowerbound:
             return 1
         return 2
 
@@ -66,9 +66,9 @@ class FMBiConstrMgr:
         Returns:
             [type] -- [description]
         """
-        _, toPart, v = move_info_v
+        fromPart, _, v = move_info_v
         self.weight = self.H.get_module_weight(v)
-        return self.diff[toPart] + self.weight <= self.upperbound
+        return self.diff[fromPart] - self.weight >= self.lowerbound
 
     def update_move(self, move_info_v):
         """[summary]

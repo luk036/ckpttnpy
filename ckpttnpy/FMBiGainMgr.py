@@ -13,7 +13,7 @@ class FMBiGainMgr:
             module_dict {dict} -- [description]
         """
         self.H = H
-        self.gainCalc = FMBiGainCalc(H)
+        # self.gainCalc = FMBiGainCalc(H)
         self.pmax = self.H.get_max_degree()
         self.gainbucket = bpqueue(-self.pmax, self.pmax)
         num_modules = H.number_of_modules()
@@ -27,7 +27,8 @@ class FMBiGainMgr:
         Arguments:
             part {list} -- [description]
         """
-        self.gainCalc.init(part, self.vertex_list)
+        gainCalc = FMBiGainCalc(self.H)
+        gainCalc.init(part, self.vertex_list)
 
         for v in self.H.module_fixed:
             # i_v = self.H.module_dict[v]
@@ -74,6 +75,8 @@ class FMBiGainMgr:
         # self.vertex_list[v].key -= 2*gain
         self.gainbucket.set_key(self.vertex_list[v], -gain)
 
+    # private
+    
     def update_move_2pin_net(self, part, move_info):
         """Update move for 2-pin net
 
@@ -83,7 +86,8 @@ class FMBiGainMgr:
             fromPart {int} -- [description]
             v {Graph's node} -- [description]
         """
-        w, deltaGainW = self.gainCalc.update_move_2pin_net(
+        gainCalc = FMBiGainCalc(self.H)
+        w, deltaGainW = gainCalc.update_move_2pin_net(
             part, move_info)
         self.gainbucket.modify_key(self.vertex_list[w], deltaGainW)
 
@@ -96,7 +100,8 @@ class FMBiGainMgr:
             fromPart {int} -- [description]
             v {Graph's node} -- [description]
         """
-        IdVec, deltaGain = self.gainCalc.update_move_general_net(
+        gainCalc = FMBiGainCalc(self.H)
+        IdVec, deltaGain = gainCalc.update_move_general_net(
             part, move_info)
         degree = len(IdVec)
         for idx in range(degree):

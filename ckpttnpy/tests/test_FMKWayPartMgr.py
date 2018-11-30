@@ -5,7 +5,7 @@ from ckpttnpy.tests.test_netlist import create_drawf
 
 
 def run_FMKWayPartMgr(H, K, gainMgr):
-    constrMgr = FMKWayConstrMgr(H, K, 0.7)
+    constrMgr = FMKWayConstrMgr(H, K, 0.45)
     partMgr = FMKWayPartMgr(H, K, gainMgr, constrMgr)
     partMgr.init()
     totalcostbefore = partMgr.totalcost

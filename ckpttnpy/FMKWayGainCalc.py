@@ -85,7 +85,7 @@ class FMKWayGainCalc:
                             vertex_list[k2][w].key += weight
                         break
 
-    def update_move_2pin_net(self, part, move_info):
+    def update_move_2pin_net(self, part, move_info, deltaGainV):
         """Update move for 2-pin net
 
         Arguments:
@@ -102,7 +102,7 @@ class FMKWayGainCalc:
         part_w = part[w]
         weight = self.H.get_net_weight(net)
         deltaGainW = list(0 for _ in range(self.K))
-        deltaGainV = list(0 for _ in range(self.K))
+        # deltaGainV = list(0 for _ in range(self.K))
         if part_w == fromPart:
             for k in range(self.K):
                 deltaGainW[k] += weight
@@ -115,9 +115,9 @@ class FMKWayGainCalc:
 
         deltaGainW[fromPart] -= weight
         deltaGainW[toPart] += weight
-        return w, deltaGainW, deltaGainV
+        return w, deltaGainW
 
-    def update_move_general_net(self, part, move_info):
+    def update_move_general_net(self, part, move_info, deltaGainV):
         """update move for general net
 
         Arguments:
@@ -140,7 +140,7 @@ class FMKWayGainCalc:
         degree = len(IdVec)
         deltaGain = list(list(0 for _ in range(self.K))
                                 for _ in range(degree))
-        deltaGainV = list(0 for _ in range(self.K))
+        # deltaGainV = list(0 for _ in range(self.K))
 
         weight = self.H.get_net_weight(net)
         if num[fromPart] == 0:
@@ -166,4 +166,4 @@ class FMKWayGainCalc:
                         break
             weight = -weight
 
-        return IdVec, deltaGain, deltaGainV
+        return IdVec, deltaGain

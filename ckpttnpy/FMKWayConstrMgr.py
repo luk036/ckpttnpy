@@ -14,7 +14,7 @@ class FMKWayConstrMgr:
         self.ratio = ratio
         self.diff = list(0 for _ in range(K))
         self.illegal = list(True for _ in range(K))
-        self.upperbound = 0
+        # self.upperbound = 0
         self.lowerbound = 0
         self.weight = 0
 
@@ -30,11 +30,10 @@ class FMKWayConstrMgr:
             self.diff[part[v]] += weight
             totalweight += weight
         totalweightK = totalweight * 2. / self.K
-        self.upperbound = round(totalweightK * self.ratio)
-        self.lowerbound = round(totalweightK - self.upperbound)
+        self.lowerbound = round(totalweightK * self.ratio)
+        # self.upperbound = round(totalweight - (self.K - 1) * self.lowerbound)
         for k in range(self.K):
-            self.illegal[k] = (self.diff[k] < self.lowerbound or
-                               self.diff[k] > self.upperbound)
+            self.illegal[k] = (self.diff[k] < self.lowerbound)
 
     def select_togo(self):
         minb = min(self.diff)
@@ -55,9 +54,9 @@ class FMKWayConstrMgr:
         self.weight = self.H.get_module_weight(v)
         diffTo = self.diff[toPart] + self.weight
         diffFrom = self.diff[fromPart] - self.weight
-        if diffTo > self.upperbound or diffFrom < self.lowerbound:
+        if diffFrom < self.lowerbound:
             return 0  # not ok, don't move
-        if diffFrom > self.upperbound or diffTo < self.lowerbound:
+        if diffTo < self.lowerbound:
             return 1  # get better, but still illegal
         self.illegal[fromPart] = self.illegal[toPart] = False
         if any(self.illegal):
@@ -74,11 +73,11 @@ class FMKWayConstrMgr:
         Returns:
             [type] -- [description]
         """
-        fromPart, toPart, v = move_info_v 
+        fromPart, _, v = move_info_v 
         self.weight = self.H.get_module_weight(v)
-        diffTo = self.diff[toPart] + self.weight
+        # diffTo = self.diff[toPart] + self.weight
         diffFrom = self.diff[fromPart] - self.weight
-        return diffTo <= self.upperbound and diffFrom >= self.lowerbound
+        return diffFrom >= self.lowerbound
 
     def update_move(self, move_info_v):
         """[summary]
