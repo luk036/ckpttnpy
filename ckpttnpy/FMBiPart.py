@@ -72,7 +72,7 @@ class FMBiPartMgr:
                     self.snapshot = self.part
                     deferredsnapshot = False
             else:  # totalgain < 0
-                if gainmax <= 0: # ???
+                if gainmax <= 0:  # ???
                     continue
 
             # Update v and its neigbours (even they are in waitinglist)

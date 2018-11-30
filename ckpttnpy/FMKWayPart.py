@@ -1,8 +1,8 @@
 # **Special code for two-pin nets**
 # Take a snapshot when a move make **negative** gain.
 # Snapshot in the form of "interface"???
-from .FMKWayGainMgr import FMKWayGainMgr
-from .FMKWayConstrMgr import FMKWayConstrMgr
+# from .FMKWayGainMgr import FMKWayGainMgr
+# from .FMKWayConstrMgr import FMKWayConstrMgr
 
 
 class FMKWayPartMgr:
@@ -68,7 +68,7 @@ class FMKWayPartMgr:
         totalgain = 0
         deferredsnapshot = True
 
-        while True: 
+        while True:
             # Take the gainmax with v from gainbucket
             # gainmax = self.gainMgr.gainbucket.get_max()
             toPart = self.validator.select_togo()
@@ -91,7 +91,7 @@ class FMKWayPartMgr:
                     self.snapshot = self.part
                     deferredsnapshot = False
             else:  # totalgain < 0
-                if gainmax <= 0: # ???
+                if gainmax <= 0:  # ???
                     continue
 
             # Update v and its neigbours (even they are in waitinglist)
@@ -110,4 +110,3 @@ class FMKWayPartMgr:
         if deferredsnapshot:
             # Take a snapshot
             self.snapshot = self.part
-

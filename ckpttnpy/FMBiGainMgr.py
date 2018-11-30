@@ -2,6 +2,7 @@ from .dllist import dllink
 from .bpqueue import bpqueue
 from .FMBiGainCalc import FMBiGainCalc
 
+
 class FMBiGainMgr:
 
     # public:
@@ -47,7 +48,7 @@ class FMBiGainMgr:
 
     def select(self):
         """[summary]
-        
+
         Returns:
             [type] -- [description]
         """
@@ -76,7 +77,7 @@ class FMBiGainMgr:
         self.gainbucket.set_key(self.vertex_list[v], -gain)
 
     # private
-    
+
     def update_move_2pin_net(self, part, move_info):
         """Update move for 2-pin net
 

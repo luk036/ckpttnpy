@@ -50,7 +50,7 @@ class FMKWayConstrMgr:
         Returns:
             [type] -- [description]
         """
-        fromPart, toPart, v = move_info_v 
+        fromPart, toPart, v = move_info_v
         self.weight = self.H.get_module_weight(v)
         diffTo = self.diff[toPart] + self.weight
         diffFrom = self.diff[fromPart] - self.weight
@@ -73,7 +73,7 @@ class FMKWayConstrMgr:
         Returns:
             [type] -- [description]
         """
-        fromPart, _, v = move_info_v 
+        fromPart, _, v = move_info_v
         self.weight = self.H.get_module_weight(v)
         # diffTo = self.diff[toPart] + self.weight
         diffFrom = self.diff[fromPart] - self.weight
@@ -86,6 +86,6 @@ class FMKWayConstrMgr:
             fromPart {[type]} -- [description]
             v {[type]} -- [description]
         """
-        fromPart, toPart, _ = move_info_v 
+        fromPart, toPart, _ = move_info_v
         self.diff[toPart] += self.weight
         self.diff[fromPart] -= self.weight

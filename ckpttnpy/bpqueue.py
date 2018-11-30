@@ -177,7 +177,7 @@ class bpqueue:
 class bpq_iterator:
     def __init__(self, bpq):
         """[summary]
-        
+
         Arguments:
             bpq {[type]} -- [description]
         """
@@ -205,7 +205,7 @@ class bpq_iterator:
 
     def __next__(self):
         """[summary]
-        
+
         Returns:
             [type] -- [description]
         """

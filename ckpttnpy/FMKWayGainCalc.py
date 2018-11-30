@@ -139,7 +139,7 @@ class FMKWayGainCalc:
 
         degree = len(IdVec)
         deltaGain = list(list(0 for _ in range(self.K))
-                                for _ in range(degree))
+                         for _ in range(degree))
         # deltaGainV = list(0 for _ in range(self.K))
 
         weight = self.H.get_net_weight(net)
