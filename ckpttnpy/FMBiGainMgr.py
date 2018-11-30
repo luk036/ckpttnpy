@@ -14,13 +14,12 @@ class FMBiGainMgr:
             module_dict {dict} -- [description]
         """
         self.H = H
-        # self.gainCalc = FMBiGainCalc(H)
+        self.gainCalc = FMBiGainCalc(H)
         self.pmax = self.H.get_max_degree()
-        self.gainbucket = bpqueue(-self.pmax, self.pmax)
         num_modules = H.number_of_modules()
         self.vertex_list = [dllink(i) for i in range(num_modules)]
         self.waitinglist = dllink(3734)
-        # num = [0, 0]
+        self.gainbucket = bpqueue(-self.pmax, self.pmax)
 
     def init(self, part):
         """(re)initialization after creation
@@ -28,8 +27,7 @@ class FMBiGainMgr:
         Arguments:
             part {list} -- [description]
         """
-        gainCalc = FMBiGainCalc(self.H)
-        gainCalc.init(part, self.vertex_list)
+        self.gainCalc.init(part, self.vertex_list)
 
         for v in self.H.module_fixed:
             # i_v = self.H.module_dict[v]
@@ -37,6 +35,9 @@ class FMBiGainMgr:
             self.vertex_list[v].key = -self.pmax
 
         self.gainbucket.appendfrom(self.vertex_list)
+
+    def is_empty_togo(self, toPart):
+        return self.gainbucket.is_empty()
 
     def is_empty(self):
         """[summary]
@@ -46,12 +47,21 @@ class FMBiGainMgr:
         """
         return self.gainbucket.is_empty()
 
-    def select(self):
+    def select(self, part):
         """[summary]
 
         Returns:
             [type] -- [description]
         """
+        gainmax = self.gainbucket.get_max()
+        vlink = self.gainbucket.popleft()
+        self.waitinglist.append(vlink)
+        v = vlink.idx
+        fromPart = part[v]
+        move_info_v = fromPart, 1-fromPart, v
+        return move_info_v, gainmax
+
+    def select_togo(self, toPart):
         gainmax = self.gainbucket.get_max()
         vlink = self.gainbucket.popleft()
         self.waitinglist.append(vlink)
@@ -87,8 +97,7 @@ class FMBiGainMgr:
             fromPart {int} -- [description]
             v {Graph's node} -- [description]
         """
-        gainCalc = FMBiGainCalc(self.H)
-        w, deltaGainW = gainCalc.update_move_2pin_net(
+        w, deltaGainW = self.gainCalc.update_move_2pin_net(
             part, move_info)
         self.gainbucket.modify_key(self.vertex_list[w], deltaGainW)
 
@@ -101,8 +110,7 @@ class FMBiGainMgr:
             fromPart {int} -- [description]
             v {Graph's node} -- [description]
         """
-        gainCalc = FMBiGainCalc(self.H)
-        IdVec, deltaGain = gainCalc.update_move_general_net(
+        IdVec, deltaGain = self.gainCalc.update_move_general_net(
             part, move_info)
         degree = len(IdVec)
         for idx in range(degree):

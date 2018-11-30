@@ -15,16 +15,18 @@ class FMKWayGainMgr:
         """
         self.H = H
         self.K = K
-        # self.gainCalc = FMKWayGainCalc(H, K)
+        self.gainCalc = FMKWayGainCalc(H, K)
         self.pmax = self.H.get_max_degree()
         num_modules = H.number_of_modules()
+        self.waitinglist = dllink(3734)
+
         self.gainbucket = []
         self.vertex_list = []
         for _ in range(K):
             self.gainbucket += [bpqueue(-self.pmax, self.pmax)]
             self.vertex_list += [list(dllink(i) for i in range(num_modules))]
-        self.waitinglist = dllink(3734)
-        self.deltaGainV = list(0 for _ in range(self.K))
+
+        self.deltaGainV = list()
 
     def init(self, part):
         """(re)initialization after creation
@@ -32,8 +34,7 @@ class FMKWayGainMgr:
         Arguments:
             part {list} -- [description]
         """
-        gainCalc = FMKWayGainCalc(self.H, self.K)
-        gainCalc.init(part, self.vertex_list)
+        self.gainCalc.init(part, self.vertex_list)
 
         for v in self.H.module_fixed:
             # i_v = self.H.module_dict[v]
@@ -51,8 +52,25 @@ class FMKWayGainMgr:
                 else:
                     self.gainbucket[k].append(vlink, vlink.key)
 
-    def is_empty(self, toPart):
+    def is_empty_togo(self, toPart):
         return self.gainbucket[toPart].is_empty()
+
+    def is_empty(self):
+        for k in range(self.K):
+            if not self.gainbucket[k].is_empty():
+                return False
+        return True
+
+    def select(self, part):
+        gainmax = list(self.gainbucket[k].get_max() for k in range(self.K))
+        maxk = max(gainmax)
+        toPart = gainmax.index(maxk)
+        vlink = self.gainbucket[toPart].popleft()
+        self.waitinglist.append(vlink)
+        v = vlink.idx
+        fromPart = part[v]
+        move_info_v = fromPart, toPart, v
+        return move_info_v, gainmax[toPart]
 
     def select_togo(self, toPart):
         gainmax = self.gainbucket[toPart].get_max()
@@ -71,8 +89,9 @@ class FMKWayGainMgr:
             part {[type]} -- [description]
             v {[type]} -- [description]
         """
-        fromPart, toPart, v = move_info_v
         self.deltaGainV = list(0 for _ in range(self.K))
+
+        fromPart, toPart, v = move_info_v
         for net in self.H.G[v]:
             move_info = [net, fromPart, toPart, v]
             if self.H.G.degree[net] == 2:
@@ -99,7 +118,6 @@ class FMKWayGainMgr:
         for k in range(self.K):
             if part[w] == k:
                 continue
-
             self.gainbucket[k].modify_key(
                 self.vertex_list[k][w], keys[k])
 
@@ -112,8 +130,7 @@ class FMKWayGainMgr:
             fromPart {int} -- [description]
             v {Graph's node} -- [description]
         """
-        gainCalc = FMKWayGainCalc(self.H, self.K)
-        w, deltaGainW = gainCalc.update_move_2pin_net(
+        w, deltaGainW = self.gainCalc.update_move_2pin_net(
             part, move_info, self.deltaGainV)
         self.modify_key(part, w, deltaGainW)
 
@@ -126,8 +143,7 @@ class FMKWayGainMgr:
             fromPart {int} -- [description]
             v {Graph's node} -- [description]
         """
-        gainCalc = FMKWayGainCalc(self.H, self.K)
-        IdVec, deltaGain = gainCalc.update_move_general_net(
+        IdVec, deltaGain = self.gainCalc.update_move_general_net(
             part, move_info, self.deltaGainV)
         degree = len(IdVec)
         for idx in range(degree):

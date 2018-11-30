@@ -25,12 +25,11 @@ class FMBiPartMgr:
         self.validator.init(self.part)
 
         totalgain = 0
-        while not self.gainMgr.is_empty():
+        while True:
             # Take the gainmax with v from gainbucket
-            v, gainmax = self.gainMgr.select()
-            fromPart = self.part[v]
-            toPart = 1 - fromPart
-            move_info_v = fromPart, toPart, v
+            if self.gainMgr.is_empty():
+                break
+            move_info_v, gainmax = self.gainMgr.select(self.part)
             # Check if the move of v can notsatisfied, makebetter, or satisfied
             legalcheck = self.validator.check_legal(move_info_v)
 
@@ -41,6 +40,7 @@ class FMBiPartMgr:
             # Put neigbours to bucket
             self.gainMgr.update_move(self.part, move_info_v, gainmax)
             self.validator.update_move(move_info_v)
+            _, toPart, v = move_info_v
             self.part[v] = toPart
             totalgain += gainmax
 
@@ -55,10 +55,7 @@ class FMBiPartMgr:
 
         while not self.gainMgr.is_empty():
             # Take the gainmax with v from gainbucket
-            v, gainmax = self.gainMgr.select()
-            fromPart = self.part[v]
-            toPart = 1 - fromPart
-            move_info_v = fromPart, toPart, v
+            move_info_v , gainmax = self.gainMgr.select(self.part)
             # Check if the move of v can satisfied or notsatisfied
             satisfiedOK = self.validator.check_constraints(move_info_v)
 
@@ -86,6 +83,7 @@ class FMBiPartMgr:
                 totalgain = 0  # reset to zero
                 deferredsnapshot = True
 
+            _, toPart, v = move_info_v
             self.part[v] = toPart
 
         if deferredsnapshot:

@@ -7,13 +7,11 @@ def run_FMBiGainMgr(H, part, mgr):
     mgr.init(part)
     while not mgr.is_empty():
         # Take the gainmax with v from gainbucket
-        v, gainmax = mgr.select()
+        move_info_v, gainmax = mgr.select(part)
         if gainmax <= 0:
             continue
-        fromPart = part[v]
-        toPart = 1 - fromPart
-        move_info_v = fromPart, toPart, v
         mgr.update_move(part, move_info_v, gainmax)
+        _, toPart, v = move_info_v
         part[v] = toPart
         assert v >= 0
 

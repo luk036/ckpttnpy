@@ -16,13 +16,12 @@ class FMBiGainMgr2:
         self.H = H
         self.gainCalc = FMBiGainCalc(H)
         self.pmax = self.H.get_max_degree()
-        self.gainbucket = []
-        for _ in [0, 1]:
-            self.gainbucket += [bpqueue(-self.pmax, self.pmax)]
         num_modules = H.number_of_modules()
         self.vertex_list = [dllink(i) for i in range(num_modules)]
         self.waitinglist = dllink(3734)
-        # num = [0, 0]
+        self.gainbucket = []
+        for _ in [0, 1]:
+            self.gainbucket += [bpqueue(-self.pmax, self.pmax)]
 
     def init(self, part):
         """(re)initialization after creation
@@ -42,20 +41,34 @@ class FMBiGainMgr2:
             toPart = 1 - part[v]
             self.gainbucket[toPart].append(vlink, vlink.key)
 
+    def is_empty_togo(self, toPart):
+        return self.gainbucket[toPart].is_empty()
+
     def is_empty(self):
         for k in [0, 1]:
             if not self.gainbucket[k].is_empty():
                 return False
         return True
 
-    def select(self):
-        gainmax = [0, 0]
-        for k in [0, 1]:
-            gainmax[k] = self.gainbucket[k].get_max()
+    def select(self, part):
+        gainmax = list(self.gainbucket[k].get_max() for k in range(2))
         toPart = 0 if gainmax[0] > gainmax[1] else 1
         vlink = self.gainbucket[toPart].popleft()
         self.waitinglist.append(vlink)
-        return vlink.idx, gainmax[toPart]
+        v = vlink.idx
+        fromPart = part[v]
+        move_info_v = fromPart, toPart, v
+        return move_info_v, gainmax[toPart]
+
+    def select_togo(self, toPart):
+        gainmax = self.gainbucket[toPart].get_max()
+        vlink = self.gainbucket[toPart].popleft()
+        self.waitinglist.append(vlink)
+        return vlink.idx, gainmax
+
+    def set_key(self, whichPart, v, key):
+        self.gainbucket[whichPart].set_key(
+            self.vertex_list[v], key)
 
     def update_move(self, part, move_info_v, gain):
         """[summary]
@@ -75,9 +88,14 @@ class FMBiGainMgr2:
                 self.update_move_general_net(part, move_info)
 
         # self.vertex_list[v].key -= 2*gain
-        self.gainbucket[toPart].set_key(self.vertex_list[v], -gain)
+        self.set_key(fromPart, v, -gain)
 
     # private:
+
+    def modify_key(self, part, w, key):
+        part_w = part[w]
+        self.gainbucket[1-part_w].modify_key(
+                self.vertex_list[w], key)
 
     def update_move_2pin_net(self, part, move_info):
         """Update move for 2-pin net
@@ -90,8 +108,7 @@ class FMBiGainMgr2:
         """
         w, deltaGainW = self.gainCalc.update_move_2pin_net(
             part, move_info)
-        part_w = part[w]
-        self.gainbucket[1-part_w].modify_key(self.vertex_list[w], deltaGainW)
+        self.modify_key(part, w, deltaGainW)
 
     def update_move_general_net(self, part, move_info):
         """update move for general net
@@ -106,6 +123,4 @@ class FMBiGainMgr2:
             part, move_info)
         degree = len(IdVec)
         for idx in range(degree):
-            part_w = part[IdVec[idx]]
-            self.gainbucket[1-part_w].modify_key(
-                self.vertex_list[IdVec[idx]], deltaGain[idx])
+           self.modify_key(part, IdVec[idx], deltaGain[idx])

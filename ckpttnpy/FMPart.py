@@ -1,12 +1,10 @@
 # **Special code for two-pin nets**
 # Take a snapshot when a move make **negative** gain.
 # Snapshot in the form of "interface"???
-# from .FMKWayGainMgr import FMKWayGainMgr
-# from .FMKWayConstrMgr import FMKWayConstrMgr
 
 
-class FMKWayPartMgr:
-    def __init__(self, H, K, gainMgr, constrMgr):
+class FMPartMgr:
+    def __init__(self, H, gainMgr, constrMgr):
         """[summary]
 
         Arguments:
@@ -15,7 +13,6 @@ class FMKWayPartMgr:
             constrMgr {[type]} -- [description]
         """
         self.H = H
-        self.K = K
         self.gainMgr = gainMgr
         self.validator = constrMgr
         self.snapshot = None
@@ -35,7 +32,7 @@ class FMKWayPartMgr:
             # Take the gainmax with v from gainbucket
             # gainmax = self.gainMgr.gainbucket.get_max()
             toPart = self.validator.select_togo()
-            if self.gainMgr.is_empty(toPart):
+            if self.gainMgr.is_empty_togo(toPart):
                 break
             v, gainmax = self.gainMgr.select_togo(toPart)
             # v = self.H.module_list[i_v]
@@ -68,16 +65,10 @@ class FMKWayPartMgr:
         totalgain = 0
         deferredsnapshot = True
 
-        while True:
+        while not self.gainMgr.is_empty():
             # Take the gainmax with v from gainbucket
             # gainmax = self.gainMgr.gainbucket.get_max()
-            toPart = self.validator.select_togo()
-            if self.gainMgr.is_empty(toPart):
-                break
-            v, gainmax = self.gainMgr.select_togo(toPart)
-            fromPart = self.part[v]
-            assert fromPart != toPart
-            move_info_v = [fromPart, toPart, v]
+            move_info_v, gainmax = self.gainMgr.select(self.part)
             # Check if the move of v can satisfied or notsatisfied
             satisfiedOK = self.validator.check_constraints(move_info_v)
 
@@ -105,6 +96,7 @@ class FMKWayPartMgr:
                 totalgain = 0  # reset to zero
                 deferredsnapshot = True
 
+            _, toPart, v = move_info_v
             self.part[v] = toPart
 
         if deferredsnapshot:

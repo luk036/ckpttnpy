@@ -1,12 +1,12 @@
 from ckpttnpy.FMKWayGainMgr import FMKWayGainMgr
 from ckpttnpy.FMKWayConstrMgr import FMKWayConstrMgr
-from ckpttnpy.FMKWayPart import FMKWayPartMgr
+from ckpttnpy.FMPart import FMPartMgr
 from ckpttnpy.tests.test_netlist import create_drawf
 
 
-def run_FMKWayPartMgr(H, K, gainMgr):
-    constrMgr = FMKWayConstrMgr(H, K, 0.45)
-    partMgr = FMKWayPartMgr(H, K, gainMgr, constrMgr)
+def run_FMKWayPartMgr(H, gainMgr, K):
+    constrMgr = FMKWayConstrMgr(H, 0.45, K)
+    partMgr = FMPartMgr(H, gainMgr, constrMgr)
     partMgr.init()
     totalcostbefore = partMgr.totalcost
     partMgr.optimize()
@@ -17,4 +17,4 @@ def run_FMKWayPartMgr(H, K, gainMgr):
 def test_FMKWayPartMgr2():
     H = create_drawf()
     gainMgr = FMKWayGainMgr(H, 3)
-    run_FMKWayPartMgr(H, 3, gainMgr)
+    run_FMKWayPartMgr(H, gainMgr, 3)

@@ -1,13 +1,13 @@
 from ckpttnpy.FMBiGainMgr import FMBiGainMgr
 from ckpttnpy.FMBiGainMgr2 import FMBiGainMgr2
 from ckpttnpy.FMBiConstrMgr import FMBiConstrMgr
-from ckpttnpy.FMBiPart import FMBiPartMgr
+from ckpttnpy.FMPart import FMPartMgr
 from ckpttnpy.tests.test_netlist import create_test_netlist, create_drawf
 
 
 def run_FMBiPartMgr(H, gainMgr):
     constrMgr = FMBiConstrMgr(H, 0.3)
-    partMgr = FMBiPartMgr(H, gainMgr, constrMgr)
+    partMgr = FMPartMgr(H, gainMgr, constrMgr)
     partMgr.init()
     totalcostbefore = partMgr.totalcost
     partMgr.optimize()
