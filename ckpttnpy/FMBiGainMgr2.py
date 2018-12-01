@@ -17,8 +17,8 @@ class FMBiGainMgr2:
         self.gainCalc = FMBiGainCalc(H)
         self.pmax = self.H.get_max_degree()
         num_modules = H.number_of_modules()
-        self.vertex_list = [dllink(i) for i in range(num_modules)]
         self.waitinglist = dllink(3734)
+        self.vertex_list = [dllink(i) for i in range(num_modules)]
         self.gainbucket = []
         for _ in [0, 1]:
             self.gainbucket += [bpqueue(-self.pmax, self.pmax)]
@@ -32,7 +32,6 @@ class FMBiGainMgr2:
         self.gainCalc.init(part, self.vertex_list)
 
         for v in self.H.module_fixed:
-            # i_v = self.H.module_dict[v]
             # force to the lowest gain
             self.vertex_list[v].key = -self.pmax
 

@@ -37,8 +37,7 @@ class FMPartMgr:
             v, gainmax = self.gainMgr.select_togo(toPart)
             # v = self.H.module_list[i_v]
             fromPart = self.part[v]
-            if fromPart == toPart:
-                toPart = 1 - fromPart
+            assert fromPart != toPart
             move_info_v = [fromPart, toPart, v]
             # weight = self.H.get_module_weight(v)
             # Check if the move of v can notsatisfied, makebetter, or satisfied
