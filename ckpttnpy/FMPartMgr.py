@@ -47,7 +47,8 @@ class FMPartMgr:
 
             # Update v and its neigbours (even they are in waitinglist)
             # Put neigbours to bucket
-            self.gainMgr.update_move(self.part, move_info_v, gainmax)
+            self.gainMgr.update_move(self.part, move_info_v)
+            self.gainMgr.update_move_v(self.part, move_info_v, gainmax)
             self.validator.update_move(move_info_v)
             self.part[v] = toPart
             # totalgain += gainmax
@@ -87,7 +88,8 @@ class FMPartMgr:
 
             # Update v and its neigbours (even they are in waitinglist)
             # Put neigbours to bucket
-            self.gainMgr.update_move(self.part, move_info_v, gainmax)
+            self.gainMgr.update_move(self.part, move_info_v)
+            self.gainMgr.update_move_v(self.part, move_info_v, gainmax)
             self.validator.update_move(move_info_v)
             totalgain += gainmax
 
