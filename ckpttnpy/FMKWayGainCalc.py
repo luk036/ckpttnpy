@@ -10,7 +10,7 @@ class FMKWayGainCalc:
 
         Arguments:
             H {Netlist} -- [description]
-            K {size_t} -- number of partitions
+            K {uint8_t} -- number of partitions
         """
         self.H = H
         self.K = K
@@ -35,7 +35,7 @@ class FMKWayGainCalc:
         """initialize gain
 
         Arguments:
-            net {Graph's node} -- [description]
+            net {node_t} -- [description]
             part {list} -- [description]
         """
         if self.H.G.degree[net] == 2:
@@ -46,10 +46,22 @@ class FMKWayGainCalc:
             self.init_gain_general_net(net, part)
 
     def set_key(self, v, key):
+        """[summary]
+
+        Arguments:
+            v {[type]} -- [description]
+            key {[type]} -- [description]
+        """
         for k in range(self.K):
             self.vertex_list[k][v].key = key
 
     def modify_gain(self, v, weight):
+        """Modify gain
+
+        Arguments:
+            v {node_t} -- [description]
+            weight {int} -- [description]
+        """
         for k in range(self.K):
             self.vertex_list[k][v].key += weight
 
@@ -57,7 +69,7 @@ class FMKWayGainCalc:
         """initialize gain for 2-pin net
 
         Arguments:
-            net {Graph's node} -- [description]
+            net {node_t} -- [description]
             part {list} -- [description]
         """
         assert self.H.G.degree[net] == 2
@@ -79,7 +91,7 @@ class FMKWayGainCalc:
         """initialize gain for general net
 
         Arguments:
-            net {Graph's node} -- [description]
+            net {node_t} -- [description]
             part {list} -- [description]
         """
         num = list(0 for _ in range(self.K))
@@ -102,16 +114,19 @@ class FMKWayGainCalc:
                         break
 
     def update_move_init(self):
+        """update move init
+        """
         self.deltaGainV = list(0 for _ in range(self.K))
 
     def update_move_2pin_net(self, part, move_info):
         """Update move for 2-pin net
 
         Arguments:
-            net {Graph's node} -- [description]
             part {list} -- [description]
-            fromPart {int} -- [description]
-            v {Graph's node} -- [description]
+            move_info {MoveInfoV} -- [description]
+
+        Returns:
+            [type] -- [description]
         """
         net, fromPart, toPart, v = move_info
         assert self.H.G.degree[net] == 2
@@ -137,13 +152,14 @@ class FMKWayGainCalc:
         return w, deltaGainW
 
     def update_move_general_net(self, part, move_info):
-        """update move for general net
+        """Update move for general net
 
         Arguments:
-            net {Graph's node} -- [description]
             part {list} -- [description]
-            fromPart {int} -- [description]
-            v {Graph's node} -- [description]
+            move_info {MoveInfoV} -- [description]
+
+        Returns:
+            [type] -- [description]
         """
         net, fromPart, toPart, v = move_info
         assert self.H.G.degree[net] > 2

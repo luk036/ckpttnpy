@@ -1,6 +1,3 @@
-from .dllist import dllink
-from .bpqueue import bpqueue
-from .FMKWayGainCalc import FMKWayGainCalc
 from .FMGainMgr import FMGainMgr
 
 
@@ -9,10 +6,12 @@ class FMKWayGainMgr(FMGainMgr):
     # public:
 
     def __init__(self, H, GainCalc, K):
-        """initialization
+        """Initialization
 
         Arguments:
-            module_dict {dict} -- [description]
+            H {Netlist} -- [description]
+            GainCalc {[type]} -- [description]
+            K {uint8_t} -- number of partitions
         """
         FMGainMgr.__init__(self, H, GainCalc, K)
 
@@ -35,10 +34,24 @@ class FMKWayGainMgr(FMGainMgr):
                     self.gainbucket[k].append(vlink, vlink.key)
 
     def set_key(self, whichPart, v, key):
+        """Set key
+
+        Arguments:
+            whichPart {uint8_t} -- [description]
+            v {node_t} -- [description]
+            key {int} -- [description]
+        """
         self.gainbucket[whichPart].set_key(
             self.gainCalc.vertex_list[whichPart][v], key)
 
     def update_move_v(self, part, move_info_v, gain):
+        """Update gain for the moving cell
+
+        Arguments:
+            part {[type]} -- [description]
+            move_info_v {[type]} -- [description]
+            gain {[type]} -- [description]
+        """
         fromPart, toPart, v = move_info_v
         for k in range(self.K):
             if fromPart == k or toPart == k:
@@ -50,9 +63,16 @@ class FMKWayGainMgr(FMGainMgr):
 
     # private:
 
-    def modify_key(self, part, w, keys):
+    def modify_key(self, part, w, key):
+        """[summary]
+
+        Arguments:
+            part {[type]} -- [description]
+            w {[type]} -- [description]
+            key {[type]} -- [description]
+        """
         for k in range(self.K):
             if part[w] == k:
                 continue
             self.gainbucket[k].modify_key(
-                self.gainCalc.vertex_list[k][w], keys[k])
+                self.gainCalc.vertex_list[k][w], key[k])

@@ -7,10 +7,13 @@ class FMBiGainCalc:
     # public:
 
     def __init__(self, H, K=2):
-        """initialization
+        """Initialization
 
         Arguments:
             H {Netlist} -- [description]
+
+        Keyword Arguments:
+            K {uint8_t} -- number of partitions (default: {2})
         """
         self.H = H
         self.vertex_list = []
@@ -22,7 +25,6 @@ class FMBiGainCalc:
 
         Arguments:
             part {list} -- [description]
-            vertex_list {list of dllink} -- [description]
         """
         for net in self.H.net_list:
             self.init_gain(net, part)
@@ -31,9 +33,8 @@ class FMBiGainCalc:
         """initialize gain
 
         Arguments:
-            net {Graph's node} -- [description]
+            net {node_t} -- [description]
             part {list} -- [description]
-            vertex_list {list of dllink} -- [description]
         """
         if self.H.G.degree[net] == 2:
             self.init_gain_2pin_net(net, part)
@@ -43,18 +44,29 @@ class FMBiGainCalc:
             self.init_gain_general_net(net, part)
 
     def set_key(self, v, weight, toPart=None):
+        """[summary]
+
+        Arguments:
+            v {[type]} -- [description]
+            key {[type]} -- [description]
+        """
         self.vertex_list[v].key = weight
 
     def modify_gain(self, v, weight, toPart=None):
+        """Modify gain
+
+        Arguments:
+            v {node_t} -- [description]
+            weight {int} -- [description]
+        """
         self.vertex_list[v].key += weight
 
     def init_gain_2pin_net(self, net, part):
         """initialize gain for 2-pin net
 
         Arguments:
-            net {Graph's node} -- [description]
+            net {node_t} -- [description]
             part {list} -- [description]
-            vertex_list {list of dllink} -- [description]
         """
         assert self.H.G.degree[net] == 2
         netCur = iter(self.H.G[net])
@@ -68,14 +80,12 @@ class FMBiGainCalc:
         self.modify_gain(w, g)
         self.modify_gain(v, g)
 
-
     def init_gain_general_net(self, net, part):
         """initialize gain for general net
 
         Arguments:
-            net {Graph's node} -- [description]
+            net {node_t} -- [description]
             part {list} -- [description]
-            vertex_list {list of dllink} -- [description]
         """
         num = [0, 0]
         IdVec = []
@@ -97,7 +107,10 @@ class FMBiGainCalc:
                         break
 
     def update_move_init(self):
-        # nothing to do in 2-way partitioning
+        """update move init
+
+           nothing to do in 2-way partitioning
+        """
         pass
 
     def update_move_2pin_net(self, part, move_info):
@@ -105,7 +118,10 @@ class FMBiGainCalc:
 
         Arguments:
             part {list} -- [description]
-            move_info {tuple} -- [description]
+            move_info {MoveInfoV} -- [description]
+
+        Returns:
+            [type] -- [description]
         """
         net, fromPart, _, v = move_info
         assert self.H.G.degree[net] == 2
@@ -117,18 +133,19 @@ class FMBiGainCalc:
         weight = self.H.get_net_weight(net)
         deltaGainW = 2*weight if part_w == fromPart else -2*weight
         return w, deltaGainW
-        # self.gainbucket[1-part_w].modify_key(self.vertex_list[w], deltaGainW)
 
     def update_move_general_net(self, part, move_info):
-        """update move for general net
+        """Update move for general net
 
         Arguments:
             part {list} -- [description]
-            move_info {tuple} -- [description]
+            move_info {MoveInfoV} -- [description]
+
+        Returns:
+            [type] -- [description]
         """
         net, fromPart, toPart, v = move_info
         assert self.H.G.degree[net] > 2
-
         num = [0, 0]
         IdVec = []
         deltaGain = []
@@ -142,7 +159,7 @@ class FMBiGainCalc:
         degree = len(IdVec)
         deltaGain = list(0 for _ in range(degree))
         weight = self.H.get_net_weight(net)
-        # weight = m if fromPart == 0 else -m
+
         for l in [fromPart, toPart]:
             if num[l] == 0:
                 for idx in range(degree):

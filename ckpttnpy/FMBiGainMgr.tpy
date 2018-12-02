@@ -92,10 +92,10 @@ class FMBiGainMgr:
         """Update move for 2-pin net
 
         Arguments:
-            net {Graph's node} -- [description]
+            net {node_t} -- [description]
             part {list} -- [description]
             fromPart {int} -- [description]
-            v {Graph's node} -- [description]
+            v {node_t} -- [description]
         """
         w, deltaGainW = self.gainCalc.update_move_2pin_net(
             part, move_info)
@@ -105,10 +105,10 @@ class FMBiGainMgr:
         """update move for general net
 
         Arguments:
-            net {Graph's node} -- [description]
+            net {node_t} -- [description]
             part {list} -- [description]
             fromPart {int} -- [description]
-            v {Graph's node} -- [description]
+            v {node_t} -- [description]
         """
         IdVec, deltaGain = self.gainCalc.update_move_general_net(
             part, move_info)

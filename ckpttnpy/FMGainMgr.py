@@ -1,6 +1,6 @@
 from .dllist import dllink
 from .bpqueue import bpqueue
-from abc import ABCMeta, abstractmethod
+from abc import abstractmethod
 
 
 class FMGainMgr:
@@ -8,10 +8,14 @@ class FMGainMgr:
     # public:
 
     def __init__(self, H, GainCalc, K=2):
-        """initialization
+        """initialiation
 
         Arguments:
-            module_dict {dict} -- [description]
+            H {Netlist} -- [description]
+            GainCalc {[type]} -- [description]
+
+        Keyword Arguments:
+            K {int} -- number of partitions (default: {2})
         """
         self.H = H
         self.K = K
@@ -21,11 +25,6 @@ class FMGainMgr:
         self.gainbucket = []
         for _ in range(K):
             self.gainbucket += [bpqueue(-self.pmax, self.pmax)]
-
-        # self.vertex_list = []
-        # num_modules = H.number_of_modules()
-        # for _ in range(K):
-        #     self.vertex_list += [list(dllink(i) for i in range(num_modules))]
 
     def init(self, part):
         """(re)initialization after creation
@@ -39,26 +38,37 @@ class FMGainMgr:
             # force to the lowest gain
             self.gainCalc.set_key(v, -self.pmax)
 
-        # for v in self.H.module_list:
-        #     for k in range(self.K):
-        #         vlink = self.vertex_list[k][v]
-        #         if part[v] == k:
-        #             assert vlink.key == 0
-        #             self.gainbucket[k].set_key(vlink, 0)
-        #             self.waitinglist.append(vlink)
-        #         else:
-        #             self.gainbucket[k].append(vlink, vlink.key)
-
     def is_empty_togo(self, toPart):
+        """[summary]
+
+        Arguments:
+            toPart {uint8_t} -- [description]
+
+        Returns:
+            bool -- [description]
+        """
         return self.gainbucket[toPart].is_empty()
 
     def is_empty(self):
+        """Any more candidate?
+
+        Returns:
+            bool -- [description]
+        """
         for k in range(self.K):
             if not self.gainbucket[k].is_empty():
                 return False
         return True
 
     def select(self, part):
+        """Select best candidate
+
+        Arguments:
+            part {list} -- [description]
+
+        Returns:
+            move_info_v -- [description]
+        """
         gainmax = list(self.gainbucket[k].get_max() for k in range(self.K))
         maxk = max(gainmax)
         toPart = gainmax.index(maxk)
@@ -70,6 +80,14 @@ class FMGainMgr:
         return move_info_v, gainmax[toPart]
 
     def select_togo(self, toPart):
+        """Select best candidaate togo
+
+        Arguments:
+            toPart {uint8_t} -- [description]
+
+        Returns:
+            node_t -- [description]
+        """
         gainmax = self.gainbucket[toPart].get_max()
         vlink = self.gainbucket[toPart].popleft()
         self.waitinglist.append(vlink)
@@ -79,8 +97,8 @@ class FMGainMgr:
         """[summary]
 
         Arguments:
-            part {[type]} -- [description]
-            v {[type]} -- [description]
+            part {list} -- [description]
+            move_info_v {[type]} -- [description]
         """
         # self.deltaGainV = list(0 for _ in range(self.K))
         self.gainCalc.update_move_init()
@@ -95,44 +113,35 @@ class FMGainMgr:
             else:
                 self.update_move_general_net(part, move_info)
 
-        # for k in range(self.K):
-        #     if fromPart == k or toPart == k:
-        #         continue
-        #     self.gainbucket[k].modify_key(self.vertex_list[k][v],
-        #                                   self.deltaGainV[k])
-        #     # self.gainbucket[k].detach(self.vertex_list[k][v])
-        #     # self.waitinglist.append(self.vertex_list[k][v])
-
-        # self.set_key(fromPart, v, -gain)
-        # self.set_key(toPart, v, 0)  # actually don't care
-
     # private:
 
     @abstractmethod
-    def modify_key(self, part, w, keys):
-        pass
+    def modify_key(self, part, w, key):
+        """Abstract method
+
+        Arguments:
+            part {uint8_t} -- [description]
+            w {node_t} -- [description]
+            key {int/int[]} -- [description]
+        """
 
     def update_move_2pin_net(self, part, move_info):
         """Update move for 2-pin net
 
         Arguments:
-            net {Graph's node} -- [description]
-            part {list} -- [description]
-            fromPart {int} -- [description]
-            v {Graph's node} -- [description]
+            part {list} -- Partition sol'n
+            move_info {[type]} -- [description]
         """
         w, deltaGainW = self.gainCalc.update_move_2pin_net(
             part, move_info)
         self.modify_key(part, w, deltaGainW)
 
     def update_move_general_net(self, part, move_info):
-        """update move for general net
+        """Update move for general net
 
         Arguments:
-            net {Graph's node} -- [description]
-            part {list} -- [description]
-            fromPart {int} -- [description]
-            v {Graph's node} -- [description]
+            part {list} -- Partition sol'n
+            move_info {[type]} -- [description]
         """
         IdVec, deltaGain = self.gainCalc.update_move_general_net(
             part, move_info)
