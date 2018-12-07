@@ -19,10 +19,10 @@ def create_drawf():
         10,
         11
     ])
-    module_list = [0, 1, 2, 3, 4, 5, 6]
+    # module_list = [0, 1, 2, 3, 4, 5, 6]
     # module_fixed = {}
     module_weight = [1, 3, 4, 2, 0, 0, 0]
-    net_list = [7, 8, 9, 10, 11]
+    # net_list = [7, 8, 9, 10, 11]
 
     G.add_edges_from([
         (4,  7),
@@ -40,9 +40,10 @@ def create_drawf():
         (6, 11)
     ])
 
-    H = Netlist(G, module_list, net_list)
+    H = Netlist(G, 7, 5)
     H.module_weight = module_weight
     H.module_name = module_name
+    H.net_weight = [1, 1, 1, 1, 1]
     H.num_pads = 3
     return H
 
@@ -57,10 +58,10 @@ def create_test_netlist():
         4,
         5
     ])
-    module_list = [0, 1, 2]
+    # module_list = [0, 1, 2]
     # module_fixed = {}
     module_weight = [533, 543, 532]
-    net_list = [3, 4, 5]
+    # net_list = [3, 4, 5]
 
     G.add_edges_from([
         (0, 3),
@@ -71,7 +72,7 @@ def create_test_netlist():
         (0, 5)  # self-loop
     ])
 
-    H = Netlist(G, module_list, net_list)
+    H = Netlist(G, 3, 3)
     H.module_weight = module_weight
     return H
 

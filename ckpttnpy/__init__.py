@@ -18,6 +18,7 @@ from ckpttnpy.dllist import *
 from ckpttnpy.bpqueue import *
 from ckpttnpy.netlist import *
 from ckpttnpy.FMBiGainMgr2 import *
+from ckpttnpy.min_cover import *
 
 # import ckpttnpy.oracles
 # from ckpttnpy.oracles import *

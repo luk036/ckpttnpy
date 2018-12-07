@@ -1,5 +1,5 @@
-from .dllist import dllink
 from .bpqueue import bpqueue
+from .dllist import dllink
 from abc import abstractmethod
 
 

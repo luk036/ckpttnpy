@@ -35,7 +35,6 @@ class FMPartMgr:
             if self.gainMgr.is_empty_togo(toPart):
                 break
             v, gainmax = self.gainMgr.select_togo(toPart)
-            # v = self.H.module_list[i_v]
             fromPart = self.part[v]
             assert fromPart != toPart
             move_info_v = [fromPart, toPart, v]

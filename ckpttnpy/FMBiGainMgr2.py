@@ -23,7 +23,7 @@ class FMBiGainMgr2(FMGainMgr):
         """
         FMGainMgr.init(self, part)
 
-        for v in self.H.module_list:
+        for v in range(self.H.number_of_modules()):
             vlink = self.gainCalc.vertex_list[v]
             toPart = 1 - part[v]
             self.gainbucket[toPart].append(vlink, vlink.key)

@@ -23,7 +23,7 @@ class FMKWayGainMgr(FMGainMgr):
         """
         FMGainMgr.init(self, part)
 
-        for v in self.H.module_list:
+        for v in range(self.H.number_of_modules()):
             for k in range(self.K):
                 vlink = self.gainCalc.vertex_list[k][v]
                 if part[v] == k:

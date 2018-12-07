@@ -26,7 +26,8 @@ class FMBiGainCalc:
         Arguments:
             part {list} -- [description]
         """
-        for net in self.H.net_list:
+        for net in range(self.H.number_of_modules(), self.H.number_of_nodes()):
+        # for net in self.H.net_list:
             self.init_gain(net, part)
 
     def init_gain(self, net, part):
