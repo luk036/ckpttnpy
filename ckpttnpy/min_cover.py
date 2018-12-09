@@ -17,7 +17,7 @@ def min_net_cover_pd(H, weight):
     if H.net_weight == {}:
         gap = list(1 for _ in range(H.number_of_nets()))
     else:
-        gap = H.net_weight.copy()
+        gap = list(w for w in H.net_weight)
     # gap = weight.copy()
 
     total_primal_cost = 0
