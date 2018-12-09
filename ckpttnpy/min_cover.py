@@ -11,48 +11,61 @@ import numpy as np
 
 
 def min_net_cover_pd(H, weight):
-    is_covered = set()
-    S = set()
-    gap = weight.copy()
+    covered = set()
+    # S = set()
+    L = list()
+    if H.net_weight == {}:
+        gap = list(1 for _ in range(H.number_of_nets()))
+    else:
+        gap = H.net_weight.copy()
+    # gap = weight.copy()
 
     total_primal_cost = 0
     total_dual_cost = 0
     offset = H.number_of_modules()
 
     for v in range(H.number_of_modules()):
-        if v in is_covered:
+        if v in covered:
             continue
         min_gap = 10000000
-        i_s = 0
+        s = 0
         for net in H.G[v]:
             i_net = net - offset
             if min_gap > gap[i_net]:
-                i_s = i_net
+                s = net
                 min_gap = gap[i_net]
         # is_net_cover[i_s] = True
         # S.append(i_s)
-        S.add(i_s)
+        L.append(s)
         for net in H.G[v]:
             i_net = net - offset
             gap[i_net] -= min_gap
-        assert gap[i_s] == 0
-        for v2 in H.G[i_s + offset]:
-            is_covered.add(v2)
-        total_primal_cost += weight[i_s]
+        assert gap[s - offset] == 0
+        for v2 in H.G[s]:
+            covered.add(v2)
+        total_primal_cost += H.get_net_weight(s)
         total_dual_cost += min_gap
 
-    # for net in S:
-    #     found = False
-    #     leda:: node w
-    #     forall_adj_nodes(w, v):
-    #         if not is_net_cover[w]:
-    #             found = True
-    #             break
-
-    #     if not found:
-    #         S.del_item(it)
-    #         total_primal_cost -= weight[v]
-    #         is_net_cover[v] = False
-
     assert total_primal_cost >= total_dual_cost
+
+    # S2 = S.copy()
+    S = set(v for v in L)
+    for net in L:
+        found = False
+        for v in H.G[net]:
+            covered = False
+            for net2 in H.G[v]:
+                if net2 == net:
+                    continue
+                if net2 in S:
+                    covered = True
+                    break
+            if not covered:
+                found = True
+                break
+        if found:
+            continue
+        total_primal_cost -= H.get_net_weight(net)
+        S.remove(net)
+
     return S, total_primal_cost
