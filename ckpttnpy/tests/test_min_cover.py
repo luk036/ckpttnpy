@@ -1,4 +1,4 @@
-# from ckpttnpy.min_cover import min_net_cover_pd
+from ckpttnpy.min_cover import min_net_cover_pd
 from ckpttnpy.tests.test_netlist import create_drawf
 
 from ckpttnpy.netlist import Netlist
@@ -8,7 +8,7 @@ from ckpttnpy.netlist import Netlist
 #
 
 
-def min_net_cover_pd(H, weight):
+def min_net_cover_pd2(H, weight):
     is_covered = {}
     is_net_cover = {}
     S = []
@@ -16,26 +16,25 @@ def min_net_cover_pd(H, weight):
 
     total_primal_cost = 0
     total_dual_cost = 0
+    offset = H.number_of_modules()
 
-    for v in H.module_list:
+    for v in range(H.number_of_modules()):
         if v in is_covered:
             continue
-        # min_gap = min(gap[net - H.number_of_modules()] for net in H.G[v])
-        # i_s = gap.index(min_gap)
         min_gap = 10000000
-        i_s = -1 
+        i_s = 0
         for net in H.G[v]:
-            i_net = net - H.number_of_modules()
+            i_net = net - offset
             if min_gap > gap[i_net]:
                 i_s = i_net
                 min_gap = gap[i_net]
         is_net_cover[i_s] = True
         S.append(i_s)
         for net in H.G[v]:
-            i_net = net - H.number_of_modules()
+            i_net = net - offset
             gap[i_net] -= min_gap
         assert gap[i_s] == 0
-        for v2 in H.G[i_s + H.number_of_modules()]:
+        for v2 in H.G[i_s + offset]:
             is_covered[v2] = True
         total_primal_cost += weight[i_s]
         total_dual_cost += min_gap
@@ -60,7 +59,7 @@ def min_net_cover_pd(H, weight):
 def test_min_net_cover_pd():
     # random_graph(G,5,20)
     H = create_drawf()
-    cost1 = min_net_cover_pd(H, H.net_weight)
+    _, cost1 = min_net_cover_pd(H, H.net_weight)
     print("total cost = ", cost1)
 
 if __name__ == "__main__":

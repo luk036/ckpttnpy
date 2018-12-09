@@ -11,29 +11,35 @@ import numpy as np
 
 
 def min_net_cover_pd(H, weight):
-    is_covered = {}
-    is_net_cover = {}
-    S = []
+    is_covered = set()
+    S = set()
     gap = weight.copy()
 
     total_primal_cost = 0
     total_dual_cost = 0
+    offset = H.number_of_modules()
 
-    for v in range(self.H.number_of_modules()):
+    for v in range(H.number_of_modules()):
         if v in is_covered:
             continue
-        min_gap = min(gap[net - H.number_of_modules()] for net in H.G[v])
-        i_s = gap.index(min_gap)
-        is_net_cover[i_s] = True
-        S.append(i_s)
+        min_gap = 10000000
+        i_s = 0
         for net in H.G[v]:
-            i_net = net - H.number_of_modules()
+            i_net = net - offset
+            if min_gap > gap[i_net]:
+                i_s = i_net
+                min_gap = gap[i_net]
+        # is_net_cover[i_s] = True
+        # S.append(i_s)
+        S.add(i_s)
+        for net in H.G[v]:
+            i_net = net - offset
             gap[i_net] -= min_gap
-        # assert gap[i_s] == 0
-        for v2 in H.G[i_s + H.number_of_modules()]:
-            is_covered[v2] = True
+        assert gap[i_s] == 0
+        for v2 in H.G[i_s + offset]:
+            is_covered.add(v2)
         total_primal_cost += weight[i_s]
-        total_dual_cost += gap[i_s]
+        total_dual_cost += min_gap
 
     # for net in S:
     #     found = False
@@ -49,4 +55,4 @@ def min_net_cover_pd(H, weight):
     #         is_net_cover[v] = False
 
     assert total_primal_cost >= total_dual_cost
-    return total_primal_cost
+    return S, total_primal_cost
