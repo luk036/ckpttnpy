@@ -15,10 +15,9 @@ class FMKWayGainCalc:
         self.H = H
         self.K = K
 
-        num_modules = H.number_of_modules()
         self.vertex_list = []
         for _ in range(K):
-            self.vertex_list += [list(dllink(i) for i in range(num_modules))]
+            self.vertex_list += [list(dllink(i) for i in H.modules)]
 
         self.deltaGainV = list()
 
@@ -28,7 +27,7 @@ class FMKWayGainCalc:
         Arguments:
             part {list} -- [description]
         """
-        for net in range(self.H.number_of_modules(), self.H.number_of_nodes()):
+        for net in self.H.nets:
             self.init_gain(net, part)
 
     def init_gain(self, net, part):
@@ -53,7 +52,7 @@ class FMKWayGainCalc:
             key {[type]} -- [description]
         """
         for k in range(self.K):
-            self.vertex_list[k][v].key = key
+            self.vertex_list[k][self.H.module_map[v]].key = key
 
     def modify_gain(self, v, weight):
         """Modify gain
@@ -63,7 +62,7 @@ class FMKWayGainCalc:
             weight {int} -- [description]
         """
         for k in range(self.K):
-            self.vertex_list[k][v].key += weight
+            self.vertex_list[k][self.H.module_map[v]].key += weight
 
     def init_gain_2pin_net(self, net, part):
         """initialize gain for 2-pin net
@@ -76,16 +75,16 @@ class FMKWayGainCalc:
         netCur = iter(self.H.G[net])
         w = next(netCur)
         v = next(netCur)
-        # i_w = self.H.module_dict[w]
-        # i_v = self.H.module_dict[v]
-        part_w = part[w]
-        part_v = part[v]
+        # i_w = self.H.module_dict[self.H.module_map[w]]
+        # i_v = self.H.module_dict[self.H.module_map[v]]
+        part_w = part[self.H.module_map[w]]
+        part_v = part[self.H.module_map[v]]
         weight = self.H.get_net_weight(net)
         if part_v == part_w:
             self.modify_gain(w, -weight)
             self.modify_gain(v, -weight)
-        self.vertex_list[part_v][w].key += weight
-        self.vertex_list[part_w][v].key += weight
+        self.vertex_list[part_v][self.H.module_map[w]].key += weight
+        self.vertex_list[part_w][self.H.module_map[v]].key += weight
 
     def init_gain_general_net(self, net, part):
         """initialize gain for general net
@@ -97,8 +96,8 @@ class FMKWayGainCalc:
         num = list(0 for _ in range(self.K))
         IdVec = []
         for w in self.H.G[net]:
-            # i_w = self.H.module_dict[w]
-            num[part[w]] += 1
+            # i_w = self.H.module_dict[self.H.module_map[w]]
+            num[part[self.H.module_map[w]]] += 1
             IdVec.append(w)
 
         weight = self.H.get_net_weight(net)
@@ -106,10 +105,10 @@ class FMKWayGainCalc:
         for k in range(self.K):
             if num[k] == 0:
                 for w in IdVec:
-                    self.vertex_list[k][w].key -= weight
+                    self.vertex_list[k][self.H.module_map[w]].key -= weight
             elif num[k] == 1:
                 for w in IdVec:
-                    if part[w] == k:
+                    if part[self.H.module_map[w]] == k:
                         self.modify_gain(w, weight)
                         break
 
@@ -133,7 +132,7 @@ class FMKWayGainCalc:
         netCur = iter(self.H.G[net])
         u = next(netCur)
         w = u if u != v else next(netCur)
-        part_w = part[w]
+        part_w = part[self.H.module_map[w]]
         weight = self.H.get_net_weight(net)
         deltaGainW = list(0 for _ in range(self.K))
         # deltaGainV = list(0 for _ in range(self.K))
@@ -169,7 +168,7 @@ class FMKWayGainCalc:
         for w in self.H.G[net]:
             if w == v:
                 continue
-            num[part[w]] += 1
+            num[part[self.H.module_map[w]]] += 1
             IdVec.append(w)
 
         degree = len(IdVec)

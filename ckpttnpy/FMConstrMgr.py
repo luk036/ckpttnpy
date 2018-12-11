@@ -24,9 +24,9 @@ class FMConstrMgr:
             part {[type]} -- [description]
         """
         totalweight = 0
-        for v in range(self.H.number_of_modules()):
+        for v in self.H.modules:
             weight = self.H.get_module_weight(v)
-            self.diff[part[v]] += weight
+            self.diff[part[self.H.module_map[v]]] += weight
             totalweight += weight
         totalweightK = totalweight * (2. / self.K)
         self.lowerbound = round(totalweightK * self.ratio)

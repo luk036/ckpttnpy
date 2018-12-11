@@ -23,10 +23,10 @@ class FMKWayGainMgr(FMGainMgr):
         """
         FMGainMgr.init(self, part)
 
-        for v in range(self.H.number_of_modules()):
+        for v in self.H.modules:
             for k in range(self.K):
-                vlink = self.gainCalc.vertex_list[k][v]
-                if part[v] == k:
+                vlink = self.gainCalc.vertex_list[k][self.H.module_map[v]]
+                if part[self.H.module_map[v]] == k:
                     assert vlink.key == 0
                     self.gainbucket[k].set_key(vlink, 0)
                     self.waitinglist.append(vlink)
@@ -42,7 +42,7 @@ class FMKWayGainMgr(FMGainMgr):
             key {int} -- [description]
         """
         self.gainbucket[whichPart].set_key(
-            self.gainCalc.vertex_list[whichPart][v], key)
+            self.gainCalc.vertex_list[whichPart][self.H.module_map[v]], key)
 
     def update_move_v(self, part, move_info_v, gain):
         """Update gain for the moving cell
@@ -56,7 +56,7 @@ class FMKWayGainMgr(FMGainMgr):
         for k in range(self.K):
             if fromPart == k or toPart == k:
                 continue
-            self.gainbucket[k].modify_key(self.gainCalc.vertex_list[k][v],
+            self.gainbucket[k].modify_key(self.gainCalc.vertex_list[k][self.H.module_map[v]],
                                           self.gainCalc.deltaGainV[k])
         self.set_key(fromPart, v, -gain)
         self.set_key(toPart, v, 0)  # actually don't care
@@ -72,7 +72,7 @@ class FMKWayGainMgr(FMGainMgr):
             key {[type]} -- [description]
         """
         for k in range(self.K):
-            if part[w] == k:
+            if part[self.H.module_map[w]] == k:
                 continue
             self.gainbucket[k].modify_key(
-                self.gainCalc.vertex_list[k][w], key[k])
+                self.gainCalc.vertex_list[k][self.H.module_map[w]], key[k])

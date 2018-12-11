@@ -75,7 +75,7 @@ class FMGainMgr:
         vlink = self.gainbucket[toPart].popleft()
         self.waitinglist.append(vlink)
         v = vlink.idx
-        fromPart = part[v]
+        fromPart = part[self.H.module_map[v]]
         move_info_v = fromPart, toPart, v
         return move_info_v, gainmax[toPart]
 

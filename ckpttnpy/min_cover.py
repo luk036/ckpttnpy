@@ -15,22 +15,22 @@ def min_net_cover_pd(H, weight):
     # S = set()
     L = list()
     if H.net_weight == {}:
-        gap = list(1 for _ in range(H.number_of_nets()))
+        gap = list(1 for _ in H.nets)
     else:
         gap = list(w for w in H.net_weight)
     # gap = weight.copy()
 
     total_primal_cost = 0
     total_dual_cost = 0
-    offset = H.number_of_modules()
+    # offset = H.number_of_modules()
 
-    for v in range(H.number_of_modules()):
+    for v in H.modules:
         if v in covered:
             continue
         min_gap = 10000000
         s = 0
         for net in H.G[v]:
-            i_net = net - offset
+            i_net = H.net_map[net]
             if min_gap > gap[i_net]:
                 s = net
                 min_gap = gap[i_net]
@@ -38,9 +38,9 @@ def min_net_cover_pd(H, weight):
         # S.append(i_s)
         L.append(s)
         for net in H.G[v]:
-            i_net = net - offset
+            i_net = H.net_map[net]
             gap[i_net] -= min_gap
-        assert gap[s - offset] == 0
+        assert gap[H.net_map[s]] == 0
         for v2 in H.G[s]:
             covered.add(v2)
         total_primal_cost += H.get_net_weight(s)

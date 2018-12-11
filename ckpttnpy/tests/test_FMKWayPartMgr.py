@@ -8,9 +8,11 @@ from ckpttnpy.tests.test_netlist import create_drawf
 def run_FMKWayPartMgr(H, gainMgr, K):
     constrMgr = FMKWayConstrMgr(H, 0.45, K)
     partMgr = FMPartMgr(H, gainMgr, constrMgr)
-    partMgr.init()
+    part = list(0 for _ in H.modules)
+    partMgr.init(part)
+    partMgr.legalize(part)
     totalcostbefore = partMgr.totalcost
-    partMgr.optimize()
+    partMgr.optimize(part)
     assert partMgr.totalcost <= totalcostbefore
     print(partMgr.snapshot)
 
