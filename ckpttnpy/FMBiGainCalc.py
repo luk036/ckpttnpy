@@ -17,7 +17,7 @@ class FMBiGainCalc:
         """
         self.H = H
         self.vertex_list = []
-        self.vertex_list = list(dllink(i) for i in H.modules)
+        self.vertex_list = list(dllink(i) for i in range(self.H.number_of_modules()))
 
     def init(self, part):
         """(re)initialization after creation
@@ -50,16 +50,17 @@ class FMBiGainCalc:
             v {[type]} -- [description]
             key {[type]} -- [description]
         """
-        self.vertex_list[self.H.module_map[v]].key = weight
+        i_v = self.H.module_map[v]
+        self.vertex_list[i_v].key = weight
 
-    def modify_gain(self, v, weight, toPart=None):
+    def modify_gain(self, i_w, weight):
         """Modify gain
 
         Arguments:
             v {node_t} -- [description]
             weight {int} -- [description]
         """
-        self.vertex_list[self.H.module_map[v]].key += weight
+        self.vertex_list[i_w].key += weight
 
     def init_gain_2pin_net(self, net, part):
         """initialize gain for 2-pin net
@@ -72,13 +73,15 @@ class FMBiGainCalc:
         netCur = iter(self.H.G[net])
         w = next(netCur)
         v = next(netCur)
-        part_w = part[self.H.module_map[w]]
-        part_v = part[self.H.module_map[v]]
+        i_w = self.H.module_map[w]
+        i_v = self.H.module_map[v]
+        part_w = part[i_w]
+        part_v = part[i_v]
         weight = self.H.get_net_weight(net)
 
         g = -weight if part_w == part_v else weight
-        self.modify_gain(w, g)
-        self.modify_gain(v, g)
+        self.modify_gain(i_w, g)
+        self.modify_gain(i_v, g)
 
     def init_gain_general_net(self, net, part):
         """initialize gain for general net
@@ -90,20 +93,20 @@ class FMBiGainCalc:
         num = [0, 0]
         IdVec = []
         for w in self.H.G[net]:
-            # i_w = self.H.module_dict[self.H.module_map[w]]
-            num[part[self.H.module_map[w]]] += 1
-            IdVec.append(w)
+            i_w = self.H.module_map[w]
+            num[part[i_w]] += 1
+            IdVec.append(i_w)
 
         weight = self.H.get_net_weight(net)
 
         for k in [0, 1]:
             if num[k] == 0:
-                for w in IdVec:
-                    self.modify_gain(w, -weight)
+                for i_w in IdVec:
+                    self.modify_gain(i_w, -weight)
             elif num[k] == 1:
-                for w in IdVec:
-                    if part[self.H.module_map[w]] == k:
-                        self.modify_gain(w, weight)
+                for i_w in IdVec:
+                    if part[i_w] == k:
+                        self.modify_gain(i_w, weight)
                         break
 
     def update_move_init(self):
@@ -128,11 +131,11 @@ class FMBiGainCalc:
         netCur = iter(self.H.G[net])
         u = next(netCur)
         w = u if u != v else next(netCur)
-        # i_w = self.H.module_dict[self.H.module_map[w]]
-        part_w = part[self.H.module_map[w]]
+        i_w = self.H.module_map[w]
+        part_w = part[i_w]
         weight = self.H.get_net_weight(net)
         deltaGainW = 2*weight if part_w == fromPart else -2*weight
-        return w, deltaGainW
+        return i_w, deltaGainW
 
     def update_move_general_net(self, part, move_info):
         """Update move for general net
@@ -152,9 +155,9 @@ class FMBiGainCalc:
         for w in self.H.G[net]:
             if w == v:
                 continue
-            # i_w = self.H.module_dict[self.H.module_map[w]]
-            num[part[self.H.module_map[w]]] += 1
-            IdVec.append(w)
+            i_w = self.H.module_map[w]
+            num[part[i_w]] += 1
+            IdVec.append(i_w)
 
         degree = len(IdVec)
         deltaGain = list(0 for _ in range(degree))

@@ -24,9 +24,9 @@ class FMConstrMgr:
             part {[type]} -- [description]
         """
         totalweight = 0
-        for v in self.H.modules:
-            weight = self.H.get_module_weight(v)
-            self.diff[part[self.H.module_map[v]]] += weight
+        for i_v in range(self.H.number_of_modules()):
+            weight = self.H.get_module_weight_by_id(i_v)
+            self.diff[part[i_v]] += weight
             totalweight += weight
         totalweightK = totalweight * (2. / self.K)
         self.lowerbound = round(totalweightK * self.ratio)
@@ -48,8 +48,8 @@ class FMConstrMgr:
         Returns:
             [type] -- [description]
         """
-        fromPart, toPart, v = move_info_v
-        self.weight = self.H.get_module_weight(v)
+        fromPart, toPart, _, i_v = move_info_v
+        self.weight = self.H.get_module_weight_by_id(i_v)
         diffFrom = self.diff[fromPart] - self.weight
         if diffFrom < self.lowerbound:
             return 0  # not ok, don't move
@@ -68,8 +68,8 @@ class FMConstrMgr:
         Returns:
             [type] -- [description]
         """
-        fromPart, _, v = move_info_v
-        self.weight = self.H.get_module_weight(v)
+        fromPart, _, _, i_v = move_info_v
+        self.weight = self.H.get_module_weight_by_id(i_v)
         diffFrom = self.diff[fromPart] - self.weight
         return diffFrom >= self.lowerbound
 
@@ -80,6 +80,6 @@ class FMConstrMgr:
             fromPart {[type]} -- [description]
             v {[type]} -- [description]
         """
-        fromPart, toPart, _ = move_info_v
+        fromPart, toPart, _, _ = move_info_v
         self.diff[toPart] += self.weight
         self.diff[fromPart] -= self.weight

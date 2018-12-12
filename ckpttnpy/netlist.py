@@ -96,8 +96,21 @@ class Netlist:
         Returns:
             [size_t] -- [description]
         """
+        i_v = self.module_map[v]
         return 1 if self.module_weight == [] \
-                 else self.module_weight[self.module_map[v]]
+                 else self.module_weight[i_v]
+
+    def get_module_weight_by_id(self, i_v):
+        """[summary]
+
+        Arguments:
+            i_v {size_t} -- [description]
+
+        Returns:
+            [size_t] -- [description]
+        """
+        return 1 if self.module_weight == [] \
+                 else self.module_weight[i_v]
 
     def get_net_weight(self, net):
         """[summary]
@@ -108,5 +121,6 @@ class Netlist:
         Returns:
             size_t -- [description]
         """
-        return 1 if self.net_weight == [] \
-                 else self.net_weight[self.net_map[net]]
+        # return 1 if self.net_weight == [] \
+        #          else self.net_weight[self.net_map[net]]
+        return 1

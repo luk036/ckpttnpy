@@ -41,7 +41,7 @@ class FMBiPartMgr:
             self.gainMgr.update_move(self.part, move_info_v, gainmax)
             self.validator.update_move(move_info_v)
             _, toPart, v = move_info_v
-            self.part[self.H.module_map[v]] = toPart
+            self.part[i_v] = toPart
             totalgain += gainmax
 
             if legalcheck == 2:  # satisfied
@@ -84,7 +84,7 @@ class FMBiPartMgr:
                 deferredsnapshot = True
 
             _, toPart, v = move_info_v
-            self.part[self.H.module_map[v]] = toPart
+            self.part[i_v] = toPart
 
         if deferredsnapshot:
             # Take a snapshot

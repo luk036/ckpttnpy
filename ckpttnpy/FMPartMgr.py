@@ -33,10 +33,10 @@ class FMPartMgr:
             toPart = self.validator.select_togo()
             if self.gainMgr.is_empty_togo(toPart):
                 break
-            v, gainmax = self.gainMgr.select_togo(toPart)
-            fromPart = part[self.H.module_map[v]]
+            v, i_v, gainmax = self.gainMgr.select_togo(toPart)
+            fromPart = part[i_v]
             assert fromPart != toPart
-            move_info_v = [fromPart, toPart, v]
+            move_info_v = [fromPart, toPart, v, i_v]
             # weight = self.H.get_module_weight(v)
             # Check if the move of v can notsatisfied, makebetter, or satisfied
             legalcheck = self.validator.check_legal(move_info_v)
@@ -48,7 +48,7 @@ class FMPartMgr:
             self.gainMgr.update_move(part, move_info_v)
             self.gainMgr.update_move_v(part, move_info_v, gainmax)
             self.validator.update_move(move_info_v)
-            part[self.H.module_map[v]] = toPart
+            part[i_v] = toPart
             # totalgain += gainmax
             self.totalcost -= gainmax
 
@@ -96,8 +96,8 @@ class FMPartMgr:
                 totalgain = 0  # reset to zero
                 deferredsnapshot = True
 
-            _, toPart, v = move_info_v
-            part[self.H.module_map[v]] = toPart
+            _, toPart, _, i_v = move_info_v
+            part[i_v] = toPart
 
         if deferredsnapshot:
             # Take a snapshot
