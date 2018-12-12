@@ -1,4 +1,7 @@
+import networkx as nx
+
 class Netlist:
+    parent = None
     num_pads = 0
     cost_model = 0
     net_weight = []
@@ -124,3 +127,22 @@ class Netlist:
         # return 1 if self.net_weight == [] \
         #          else self.net_weight[self.net_map[net]]
         return 1
+
+
+class CNetlist(Netlist):
+    module_up_map = {}
+    clusters = set() 
+
+    def __init__(self, G, modules, nets, module_map, net_map):
+        """[summary]
+
+        Arguments:
+            G {[type]} -- [description]
+            module_list {[type]} -- [description]
+            net_list {[type]} -- [description]
+
+        Keyword Arguments:
+            module_fixed {dict} -- [description] (default: {{}})
+        """
+        Netlist.__init__(self, G, modules, nets, module_map, net_map)
+        
