@@ -131,7 +131,7 @@ class Netlist:
 
 class CNetlist(Netlist):
     module_up_map = {}
-    clusters = set() 
+    cluster_map = {}
 
     def __init__(self, G, modules, nets, module_map, net_map):
         """[summary]
@@ -146,3 +146,14 @@ class CNetlist(Netlist):
         """
         Netlist.__init__(self, G, modules, nets, module_map, net_map)
         
+    def project_down(self, part, part_down):
+        H = self.parent
+        for i_v, v in enumerate(self.modules):
+            if v in self.cluster_map:
+                net = self.cluster_map[v]
+                for v2 in H.G[net]:
+                    i_v2 = H.module_map[v2]
+                    part_down[i_v2] = part[i_v]
+            else:
+                i_v2 = H.module_map[v]
+                part_down[i_v2] = part[i_v]

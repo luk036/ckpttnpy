@@ -4,27 +4,31 @@ from ckpttnpy.min_cover import min_net_cover_pd, max_independent_net_pd
 from ckpttnpy.tests.test_netlist import create_drawf
 from ckpttnpy.netlist import Netlist, CNetlist
 
-
 def create_contraction_subgraph(H):
-    L = max_independent_net_pd(H, H.module_weight)
-    C = set(v for net in L for v in H.G[net])
-    modules = list(v for v in H.modules if v not in C)
-    clusters = {}
+    S, _ = min_net_cover_pd(H, H.module_weight)
+
     module_up_map = {}
     for v in H.modules:
         module_up_map[v] = v
 
-    for net in L:
-        netCur = iter(H.G[net])
-        master = next(netCur)
-        modules.append(master)
-        cluster_weight = 0
-        for v in H.G[net]:
-            cluster_weight += H.get_module_weight(v)
-            module_up_map[v] = master
-        clusters[master] = cluster_weight
+    C = set()
+    nets = []
+    clusters = []
+    cluster_map = {}
+    for net in H.nets:
+        if net in S:
+            nets.append(net)
+        else:
+            netCur = iter(H.G[net])
+            master = next(netCur)
+            clusters.append(master)
+            for v in H.G[net]:
+                module_up_map[v] = master
+                C.add(v)
+            cluster_map[master] = net
 
-    nets = list(net for net in H.nets if net not in L)
+    modules = list(v for v in H.modules if v not in C)
+    modules += clusters
     nodes = modules + nets
     G = nx.Graph()
     G.add_nodes_from(nodes)
@@ -42,17 +46,21 @@ def create_contraction_subgraph(H):
 
     H2 = CNetlist(G, modules, nets, module_map, net_map)
     H2.module_up_map = module_up_map
-    H2.clusters = clusters
+    H2.cluster_map = cluster_map
 
     module_weight = []
     for v in modules:
         if v in clusters:
-            module_weight.append(clusters[v])
+            net = cluster_map[v]
+            cluster_weight = 0
+            for v2 in H.G[net]:
+                cluster_weight += H.get_module_weight(v2)
+            module_weight.append(cluster_weight)
         else:
             module_weight.append(H.get_module_weight(v))
 
     H2.module_weight = module_weight
-    H.parent = H2
+    H2.parent = H
     return H2
 
 
