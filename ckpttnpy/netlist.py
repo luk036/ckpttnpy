@@ -1,13 +1,17 @@
 import networkx as nx
 
+
 class Netlist:
-    parent = None
     num_pads = 0
     cost_model = 0
     net_weight = []
     module_weight = []
     module_fixed = {}
     module_name = []
+
+    parent = None
+    node_down_map = {}
+    cluster_down_map = {}
 
     def __init__(self, G, modules, nets, module_map, net_map):
         """[summary]
@@ -101,7 +105,7 @@ class Netlist:
         """
         i_v = self.module_map[v]
         return 1 if self.module_weight == [] \
-                 else self.module_weight[i_v]
+            else self.module_weight[i_v]
 
     def get_module_weight_by_id(self, i_v):
         """[summary]
@@ -113,7 +117,7 @@ class Netlist:
             [size_t] -- [description]
         """
         return 1 if self.module_weight == [] \
-                 else self.module_weight[i_v]
+            else self.module_weight[i_v]
 
     def get_net_weight(self, net):
         """[summary]
@@ -128,32 +132,15 @@ class Netlist:
         #          else self.net_weight[self.net_map[net]]
         return 1
 
-
-class CNetlist(Netlist):
-    module_up_map = {}
-    cluster_map = {}
-
-    def __init__(self, G, modules, nets, module_map, net_map):
-        """[summary]
-
-        Arguments:
-            G {[type]} -- [description]
-            module_list {[type]} -- [description]
-            net_list {[type]} -- [description]
-
-        Keyword Arguments:
-            module_fixed {dict} -- [description] (default: {{}})
-        """
-        Netlist.__init__(self, G, modules, nets, module_map, net_map)
-        
     def project_down(self, part, part_down):
         H = self.parent
         for i_v, v in enumerate(self.modules):
-            if v in self.cluster_map:
-                net = self.cluster_map[v]
+            if v in self.cluster_down_map:
+                net = self.cluster_down_map[v]
                 for v2 in H.G[net]:
                     i_v2 = H.module_map[v2]
                     part_down[i_v2] = part[i_v]
             else:
+                v2 = self.node_down_map[v]
                 i_v2 = H.module_map[v]
                 part_down[i_v2] = part[i_v]

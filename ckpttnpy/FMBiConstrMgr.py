@@ -1,6 +1,7 @@
 # Check if the move of v can satisfied, makebetter, or notsatisfied
 from .FMConstrMgr import FMConstrMgr
 
+
 class FMBiConstrMgr(FMConstrMgr):
     def __init__(self, H, ratio):
         """[summary]
@@ -18,4 +19,3 @@ class FMBiConstrMgr(FMConstrMgr):
             [type] -- [description]
         """
         return 0 if self.diff[0] < self.diff[1] else 1
-

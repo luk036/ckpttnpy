@@ -17,7 +17,8 @@ class FMBiGainCalc:
         """
         self.H = H
         self.vertex_list = []
-        self.vertex_list = list(dllink(i) for i in range(self.H.number_of_modules()))
+        self.vertex_list = list(dllink(i)
+                                for i in range(self.H.number_of_modules()))
 
     def init(self, part):
         """(re)initialization after creation
@@ -26,7 +27,7 @@ class FMBiGainCalc:
             part {list} -- [description]
         """
         for net in self.H.nets:
-        # for net in self.H.net_list:
+            # for net in self.H.net_list:
             self.init_gain(net, part)
 
     def init_gain(self, net, part):

@@ -9,13 +9,14 @@ import numpy as np
 # Primal-dual algorithm for minimum vertex cover problem
 #
 
+
 def max_independent_net_pd(H, weight):
     """Maximum Indepentent Net using Primal-Dual algorithm
-    
+
     Arguments:
         H {[type]} -- [description]
         weight {[type]} -- [description]
-    
+
     Returns:
         [type] -- [description]
     """
@@ -26,13 +27,13 @@ def max_independent_net_pd(H, weight):
 
 def min_net_cover_pd(H, weight):
     """Minimum Net Cover using Primal-Dual algorithm
-    
+
     @todo: sort cell weight to cover big cells first
 
     Arguments:
         H {[type]} -- [description]
         weight {[type]} -- [description]
-    
+
     Returns:
         [type] -- [description]
     """
