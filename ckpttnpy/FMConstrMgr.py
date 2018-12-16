@@ -16,6 +16,10 @@ class FMConstrMgr:
         # self.illegal = list(True for _ in range(K))
         self.lowerbound = 0
         self.weight = 0
+        self.totalweight = 0
+        for i_v in range(self.H.number_of_modules()):
+            weight = self.H.get_module_weight_by_id(i_v)
+            self.totalweight += weight
 
     def init(self, part):
         """[summary]
@@ -23,12 +27,11 @@ class FMConstrMgr:
         Arguments:
             part {[type]} -- [description]
         """
-        totalweight = 0
+        self.diff = list(0 for _ in range(self.K))
         for i_v in range(self.H.number_of_modules()):
             weight = self.H.get_module_weight_by_id(i_v)
             self.diff[part[i_v]] += weight
-            totalweight += weight
-        totalweightK = totalweight * (2. / self.K)
+        totalweightK = self.totalweight * (2. / self.K)
         self.lowerbound = round(totalweightK * self.ratio)
 
         # for k in range(self.K):

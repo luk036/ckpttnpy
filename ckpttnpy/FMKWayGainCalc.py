@@ -14,6 +14,7 @@ class FMKWayGainCalc:
         """
         self.H = H
         self.K = K
+        self.totalcost = 0
 
         self.vertex_list = []
         for _ in range(K):
@@ -27,6 +28,10 @@ class FMKWayGainCalc:
         Arguments:
             part {list} -- [description]
         """
+        for k in range(self.K):
+            for vlink in self.vertex_list[k]:
+                vlink.key = 0
+
         for net in self.H.nets:
             self.init_gain(net, part)
 
@@ -81,6 +86,9 @@ class FMKWayGainCalc:
         part_w = part[i_w]
         part_v = part[i_v]
         weight = self.H.get_net_weight(net)
+        if part_v != part_w:
+            self.totalcost += weight
+
         if part_v == part_w:
             self.modify_gain(i_w, -weight)
             self.modify_gain(i_v, -weight)
@@ -102,6 +110,11 @@ class FMKWayGainCalc:
             IdVec.append(i_w)
 
         weight = self.H.get_net_weight(net)
+
+        for k in range(self.K):
+            if num[k] > 0:
+                self.totalcost += weight
+        self.totalcost -= weight
 
         for k in range(self.K):
             if num[k] == 0:

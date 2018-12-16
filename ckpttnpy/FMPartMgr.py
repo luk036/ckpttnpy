@@ -22,6 +22,7 @@ class FMPartMgr:
         """[summary]
         """
         self.gainMgr.init(part)
+        self.totalcost = self.gainMgr.totalcost
         self.validator.init(part)
 
         # totalgain = 0
@@ -56,6 +57,8 @@ class FMPartMgr:
                 # self.totalcost -= totalgain
                 # totalgain = 0 # reset to zero
                 break
+
+        return legalcheck
         # assert not self.gainMgr.gainbucket.is_empty()
 
     def optimize(self, part):

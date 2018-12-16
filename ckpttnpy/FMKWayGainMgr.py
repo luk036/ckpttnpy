@@ -23,11 +23,14 @@ class FMKWayGainMgr(FMGainMgr):
         """
         FMGainMgr.init(self, part)
 
+        for k in range(self.K):
+            self.gainbucket[k].clear()
+
         for i_v in range(self.H.number_of_modules()):
             for k in range(self.K):
                 vlink = self.gainCalc.vertex_list[k][i_v]
                 if part[i_v] == k:
-                    assert vlink.key == 0
+                    # assert vlink.key == 0
                     self.gainbucket[k].set_key(vlink, 0)
                     self.waitinglist.append(vlink)
                 else:

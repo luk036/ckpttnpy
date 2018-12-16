@@ -22,6 +22,8 @@ class FMBiGainMgr2(FMGainMgr):
             part {list} -- [description]
         """
         FMGainMgr.init(self, part)
+        for k in range(self.K):
+            self.gainbucket[k].clear()
 
         for i_v in range(self.H.number_of_modules()):
             vlink = self.gainCalc.vertex_list[i_v]

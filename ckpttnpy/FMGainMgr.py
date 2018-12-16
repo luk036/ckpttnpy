@@ -19,6 +19,7 @@ class FMGainMgr:
         """
         self.H = H
         self.K = K
+        self.totalcost = 0
         self.gainCalc = GainCalc
         self.pmax = self.H.get_max_degree()
         self.waitinglist = dllink(3734)
@@ -33,7 +34,9 @@ class FMGainMgr:
             part {list} -- [description]
         """
         self.gainCalc.init(part)
-
+        self.totalcost = self.gainCalc.totalcost
+        self.waitinglist.clear()
+        
         for v in self.H.module_fixed:
             # force to the lowest gain
             self.gainCalc.set_key(v, -self.pmax)

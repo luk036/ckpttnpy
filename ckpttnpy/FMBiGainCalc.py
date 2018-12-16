@@ -19,6 +19,7 @@ class FMBiGainCalc:
         self.vertex_list = []
         self.vertex_list = list(dllink(i)
                                 for i in range(self.H.number_of_modules()))
+        self.totalcost = 0
 
     def init(self, part):
         """(re)initialization after creation
@@ -26,6 +27,9 @@ class FMBiGainCalc:
         Arguments:
             part {list} -- [description]
         """
+        self.totalcost = 0
+        for vlink in self.vertex_list:
+            vlink.key = 0
         for net in self.H.nets:
             # for net in self.H.net_list:
             self.init_gain(net, part)
@@ -52,6 +56,7 @@ class FMBiGainCalc:
             key {[type]} -- [description]
         """
         i_v = self.H.module_map[v]
+        assert i_v == v
         self.vertex_list[i_v].key = weight
 
     def modify_gain(self, i_w, weight):
@@ -79,6 +84,8 @@ class FMBiGainCalc:
         part_w = part[i_w]
         part_v = part[i_v]
         weight = self.H.get_net_weight(net)
+        if part_w != part_v:
+            self.totalcost += weight
 
         g = -weight if part_w == part_v else weight
         self.modify_gain(i_w, g)
@@ -99,6 +106,9 @@ class FMBiGainCalc:
             IdVec.append(i_w)
 
         weight = self.H.get_net_weight(net)
+
+        if num[0] > 0 and num[1] > 0:
+            self.totalcost += weight
 
         for k in [0, 1]:
             if num[k] == 0:

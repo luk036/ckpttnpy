@@ -10,6 +10,7 @@ class Netlist:
     module_name = []
 
     parent = None
+    node_up_map = {}
     node_down_map = {}
     cluster_down_map = {}
 
@@ -144,3 +145,8 @@ class Netlist:
                 v2 = self.node_down_map[v]
                 i_v2 = H.module_map[v]
                 part_down[i_v2] = part[i_v]
+
+    def project_up(self, part, part_up):
+        H = self.parent
+        for i_v, v in enumerate(H.modules):
+            part_up[self.node_up_map[v]] = part[i_v]
