@@ -26,5 +26,5 @@ def test_FMBiPartMgr():
 
 def test_FMBiPartMgr2():
     H = create_drawf()
-    H.has_fixed_modules = [3]
+    H.module_fixed = [3]
     run_FMBiPartMgr(H)
