@@ -32,7 +32,7 @@ class MLPartMgr:
         partMgr = FMPartMgr(H, gainMgr, constrMgr)
         partMgr.init(part)
         legalcheck = partMgr.legalize(part)
-        if legalcheck == 2 and H.number_of_modules() >= 7: # OK
+        if legalcheck == 2 and H.number_of_modules() >= 3: # OK
             H2 = create_contraction_subgraph(H)
             part2 = list(0 for _ in range(H2.number_of_modules()))
             H2.project_up(part, part2)
@@ -52,7 +52,7 @@ class MLPartMgr:
         partMgr = FMPartMgr(H, gainMgr, constrMgr)
         partMgr.init(part)
         legalcheck = partMgr.legalize(part)
-        if legalcheck == 2 and H.number_of_modules() >= 7: # OK
+        if legalcheck == 2 and H.number_of_modules() >= 3: # OK
             H2 = create_contraction_subgraph(H)
             part2 = list(0 for _ in range(H2.number_of_modules()))
             H2.project_up(part, part2)

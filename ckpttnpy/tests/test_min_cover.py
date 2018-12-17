@@ -15,6 +15,7 @@ def test_min_net_cover_pd():
 def test_create_contraction_subgraph():
     H = create_drawf()
     H2 = create_contraction_subgraph(H)
+    H3 = create_contraction_subgraph(H2)
     assert H2.number_of_modules() < 7
     assert H2.number_of_nets() == 2
     assert H2.number_of_pins() < 13

@@ -114,7 +114,7 @@ class FMGainMgr:
             if self.H.G.degree[net] == 2:
                 self.update_move_2pin_net(part, move_info)
             elif self.H.G.degree[net] < 2:  # unlikely, self-loop, etc.
-                break  # does not provide any gain change when move
+                continue  # does not provide any gain change when move
             else:
                 self.update_move_general_net(part, move_info)
 
