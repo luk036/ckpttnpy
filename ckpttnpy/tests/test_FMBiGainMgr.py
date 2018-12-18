@@ -4,8 +4,7 @@ from ckpttnpy.tests.test_netlist import create_test_netlist, create_drawf
 
 
 def run_FMBiGainMgr(H, part):
-    gainCalc = FMBiGainCalc(H)
-    mgr = FMBiGainMgr2(H, gainCalc)
+    mgr = FMBiGainMgr2(FMBiGainCalc, H)
     mgr.init(part)
     while not mgr.is_empty():
         # Take the gainmax with v from gainbucket

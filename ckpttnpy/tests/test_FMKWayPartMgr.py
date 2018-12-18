@@ -19,7 +19,6 @@ def run_FMKWayPartMgr(H, gainMgr, K):
 
 def test_FMKWayPartMgr2():
     H = create_drawf()
-    gainCalc = FMKWayGainCalc(H, 3)
-    gainMgr = FMKWayGainMgr(H, gainCalc, 3)
+    gainMgr = FMKWayGainMgr(FMKWayGainCalc, H, 3)
     H.module_fixed = [3]
     run_FMKWayPartMgr(H, gainMgr, 3)

@@ -6,8 +6,7 @@ from ckpttnpy.tests.test_netlist import create_test_netlist, create_drawf
 
 
 def run_FMBiPartMgr(H):
-    gainCalc = FMBiGainCalc(H)
-    gainMgr = FMBiGainMgr2(H, gainCalc)
+    gainMgr = FMBiGainMgr2(FMBiGainCalc, H)
     constrMgr = FMBiConstrMgr(H, 0.3)
     partMgr = FMPartMgr(H, gainMgr, constrMgr)
     part = list(0 for _ in H.modules)
