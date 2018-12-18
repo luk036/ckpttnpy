@@ -143,7 +143,7 @@ class Netlist:
                     part_down[i_v2] = part[i_v]
             else:
                 v2 = self.node_down_map[v]
-                i_v2 = H.module_map[v]
+                i_v2 = H.module_map[v2]
                 part_down[i_v2] = part[i_v]
 
     def project_up(self, part, part_up):

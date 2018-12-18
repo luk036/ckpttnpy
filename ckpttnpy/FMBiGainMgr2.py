@@ -5,7 +5,7 @@ class FMBiGainMgr2(FMGainMgr):
 
     # public:
 
-    def __init__(self, H, GainCalc):
+    def __init__(self, GainCalc, H):
         """Initialization
 
         Arguments:
@@ -13,7 +13,7 @@ class FMBiGainMgr2(FMGainMgr):
             GainCalc {[type]} -- [description]
             K {uint8_t} -- number of partitions
         """
-        FMGainMgr.__init__(self, H, GainCalc)
+        FMGainMgr.__init__(self, GainCalc, H)
 
     def init(self, part):
         """(re)initialization after creation

@@ -7,7 +7,7 @@ class FMGainMgr:
 
     # public:
 
-    def __init__(self, H, GainCalc, K=2):
+    def __init__(self, GainCalc, H, K=2):
         """initialiation
 
         Arguments:
@@ -19,10 +19,10 @@ class FMGainMgr:
         """
         self.H = H
         self.K = K
-        self.totalcost = 0
-        self.gainCalc = GainCalc
+        self.gainCalc = GainCalc(H, K)
         self.pmax = self.H.get_max_degree()
         self.waitinglist = dllink(3734)
+        self.totalcost = 0
         self.gainbucket = []
         for _ in range(K):
             self.gainbucket += [bpqueue(-self.pmax, self.pmax)]

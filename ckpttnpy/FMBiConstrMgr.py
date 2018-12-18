@@ -3,7 +3,7 @@ from .FMConstrMgr import FMConstrMgr
 
 
 class FMBiConstrMgr(FMConstrMgr):
-    def __init__(self, H, ratio):
+    def __init__(self, H, ratio, K=2):
         """[summary]
 
         Arguments:

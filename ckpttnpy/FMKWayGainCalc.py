@@ -28,6 +28,7 @@ class FMKWayGainCalc:
         Arguments:
             part {list} -- [description]
         """
+        self.totalcost = 0
         for k in range(self.K):
             for vlink in self.vertex_list[k]:
                 vlink.key = 0

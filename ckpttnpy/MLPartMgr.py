@@ -26,8 +26,7 @@ class MLPartMgr:
         self.totalcost = 0
 
     def run_BiPartition(self, H, part):
-        gainCalc = FMBiGainCalc(H)
-        gainMgr = FMBiGainMgr2(H, gainCalc)
+        gainMgr = FMBiGainMgr2(FMBiGainCalc, H)
         constrMgr = FMBiConstrMgr(H, self.BalTol)
         partMgr = FMPartMgr(H, gainMgr, constrMgr)
         partMgr.init(part)
@@ -41,13 +40,14 @@ class MLPartMgr:
             partMgr.init(part)
             if legalcheck != 2:
                 legalcheck = partMgr.legalize(part)
+                assert partMgr.totalcost >= 0
         partMgr.optimize(part)
+        assert partMgr.totalcost >= 0
         self.totalcost = partMgr.totalcost
         return legalcheck
 
     def run_KWayPartition(self, H, part):
-        gainCalc = FMKWayGainCalc(H, self.K)
-        gainMgr = FMKWayGainMgr(H, gainCalc, self.K)
+        gainMgr = FMKWayGainMgr(FMKWayGainCalc, H, self.K)
         constrMgr = FMKWayConstrMgr(H, self.BalTol, self.K)
         partMgr = FMPartMgr(H, gainMgr, constrMgr)
         partMgr.init(part)
@@ -61,6 +61,8 @@ class MLPartMgr:
             partMgr.init(part)
             if legalcheck != 2:
                 legalcheck = partMgr.legalize(part)
+                assert partMgr.totalcost >= 0
         partMgr.optimize(part)
+        assert partMgr.totalcost >= 0
         self.totalcost = partMgr.totalcost
         return legalcheck

@@ -82,13 +82,13 @@ class bpqueue:
         it.key = key
         self.bucket[key].append(it)
 
-    def appendfrom(self, C):
+    def appendfrom(self, nodes):
         """append from list
 
         Arguments:
             C {list} -- [description]
         """
-        for it in C:
+        for it in nodes:
             it.key -= self.offset
             self.bucket[it.key].append(it)
         self.max = self.high

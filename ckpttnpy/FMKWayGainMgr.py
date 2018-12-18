@@ -5,7 +5,7 @@ class FMKWayGainMgr(FMGainMgr):
 
     # public:
 
-    def __init__(self, H, GainCalc, K):
+    def __init__(self, GainCalc, H, K):
         """Initialization
 
         Arguments:
@@ -13,7 +13,7 @@ class FMKWayGainMgr(FMGainMgr):
             GainCalc {[type]} -- [description]
             K {uint8_t} -- number of partitions
         """
-        FMGainMgr.__init__(self, H, GainCalc, K)
+        FMGainMgr.__init__(self, GainCalc, H, K)
 
     def init(self, part):
         """(re)initialization after creation
