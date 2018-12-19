@@ -28,7 +28,23 @@ class FMBiGainMgr2(FMGainMgr):
         for i_v in range(self.H.number_of_modules()):
             vlink = self.gainCalc.vertex_list[i_v]
             toPart = 1 - part[i_v]
-            self.gainbucket[toPart].append(vlink, vlink.key)
+            self.gainbucket[toPart].append_direct(vlink)
+
+    def init_luk(self, soln_info):
+        """(re)initialization after creation
+
+        Arguments:
+            part {list} -- [description]
+        """
+        FMGainMgr.init_luk(self, soln_info)
+        for k in range(self.K):
+            self.gainbucket[k].clear()
+
+        part, _ = soln_info
+        for i_v in range(self.H.number_of_modules()):
+            vlink = self.gainCalc.vertex_list[i_v]
+            toPart = 1 - part[i_v]
+            self.gainbucket[toPart].append_direct(vlink)
 
     # private:
     def set_key(self, whichPart, i_v, key):

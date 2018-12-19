@@ -62,7 +62,7 @@ class FMKWayGainMgr(FMGainMgr):
             self.gainbucket[k].modify_key(self.gainCalc.vertex_list[k][i_v],
                                           self.gainCalc.deltaGainV[k])
         self.set_key(fromPart, i_v, -gain)
-        self.set_key(toPart, i_v, 0)  # actually don't care
+        self.set_key(toPart, i_v, -2*self.pmax)
 
     # private:
 

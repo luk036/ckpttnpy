@@ -69,6 +69,17 @@ class bpqueue:
             self.bucket[self.max].clear()
             self.max -= 1
 
+    def append_direct(self, it):
+        """append
+
+        Arguments:
+            it {dllink} -- [description]
+            k {int} -- key
+        """
+        if it.key <= self.offset:
+            return
+        self.append(it, it.key)
+
     def append(self, it, k):
         """append
 
@@ -76,11 +87,10 @@ class bpqueue:
             it {dllink} -- [description]
             k {int} -- key
         """
-        key = k - self.offset
-        if self.max < key:
-            self.max = key
-        it.key = key
-        self.bucket[key].append(it)
+        it.key = k - self.offset
+        if self.max < it.key:
+            self.max = it.key
+        self.bucket[it.key].append(it)
 
     def appendfrom(self, nodes):
         """append from list
@@ -90,6 +100,8 @@ class bpqueue:
         """
         for it in nodes:
             it.key -= self.offset
+            if it.key <= 0:
+                continue
             self.bucket[it.key].append(it)
         self.max = self.high
         while self.bucket[self.max].is_empty():
@@ -149,6 +161,8 @@ class bpqueue:
             it {dllink} -- [description]
             delta {int} -- [description]
         """
+        if it.key <= 0:
+            return
         if delta > 0:
             self.increase_key(it, delta)
         elif delta < 0:

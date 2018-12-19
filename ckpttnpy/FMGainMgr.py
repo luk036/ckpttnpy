@@ -39,7 +39,21 @@ class FMGainMgr:
         
         for v in self.H.module_fixed:
             # force to the lowest gain
-            self.gainCalc.set_key(v, -self.pmax)
+            self.gainCalc.set_key(v, -2*self.pmax)
+
+    def init_luk(self, soln_info):
+        """(re)initialization after creation
+
+        Arguments:
+            part {list} -- [description]
+        """
+        self.gainCalc.init(soln_info)
+        self.totalcost = self.gainCalc.totalcost
+        self.waitinglist.clear()
+        
+        for v in self.H.module_fixed:
+            # force to the lowest gain
+            self.gainCalc.set_key(v, -2*self.pmax)
 
     def is_empty_togo(self, toPart):
         """[summary]
@@ -98,6 +112,26 @@ class FMGainMgr:
         i_v = vlink.idx
         return self.H.modules[i_v], i_v, gainmax
 
+    def update_move_luk(self, soln_info, move_info_v):
+        """[summary]
+
+        Arguments:
+            part {list} -- [description]
+            move_info_v {[type]} -- [description]
+        """
+        # self.deltaGainV = list(0 for _ in range(self.K))
+        self.gainCalc.update_move_init()
+
+        fromPart, toPart, v, _ = move_info_v
+        for net in self.H.G[v]:
+            move_info = [net, fromPart, toPart, v]
+            if self.H.G.degree[net] < 2:  # unlikely, self-loop, etc.
+                continue  # does not provide any gain change when move
+            if self.H.G.degree[net] == 2:
+                self.update_move_2pin_net_luk(soln_info, move_info)
+            else:
+                self.update_move_general_net_luk(soln_info, move_info)
+
     def update_move(self, part, move_info_v):
         """[summary]
 
@@ -150,6 +184,32 @@ class FMGainMgr:
         """
         IdVec, deltaGain = self.gainCalc.update_move_general_net(
             part, move_info)
+        degree = len(IdVec)
+        for idx in range(degree):
+            self.modify_key(part, IdVec[idx], deltaGain[idx])
+
+    def update_move_2pin_net_luk(self, soln_info, move_info):
+        """Update move for 2-pin net
+
+        Arguments:
+            part {list} -- Partition sol'n
+            move_info {[type]} -- [description]
+        """
+        i_w, deltaGainW = self.gainCalc.update_move_2pin_net_luk(
+            soln_info, move_info)
+        part, _ = soln_info 
+        self.modify_key(part, i_w, deltaGainW)
+
+    def update_move_general_net_luk(self, soln_info, move_info):
+        """Update move for general net
+
+        Arguments:
+            part {list} -- Partition sol'n
+            move_info {[type]} -- [description]
+        """
+        IdVec, deltaGain = self.gainCalc.update_move_general_net_luk(
+            soln_info, move_info)
+        part, _ = soln_info 
         degree = len(IdVec)
         for idx in range(degree):
             self.modify_key(part, IdVec[idx], deltaGain[idx])

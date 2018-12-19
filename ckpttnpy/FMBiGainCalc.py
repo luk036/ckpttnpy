@@ -34,6 +34,64 @@ class FMBiGainCalc:
             # for net in self.H.net_list:
             self.init_gain(net, part)
 
+    def init_luk(self, soln_info):
+        """(re)initialization after creation
+
+        Arguments:
+            part {list} -- [description]
+        """
+        self.totalcost = 0
+        for vlink in self.vertex_list:
+            vlink.key = 0
+        for net in self.H.nets:
+            # for net in self.H.net_list:
+            self.init_gain_luk(net, soln_info)
+
+    def init_gain_luk(self, net, soln_info):
+        """initialize gain
+
+        Arguments:
+            net {node_t} -- [description]
+            part {list} -- [description]
+        """
+        if self.H.G.degree[net] < 2:  # unlikely, self-loop, etc.
+            return  # does not provide any gain when move
+        part, extern_nets = soln_info
+        weight = self.H.get_net_weight(net)
+        if net in extern_nets:
+            self.totalcost += weight
+            if self.H.G.degree[net] == 2:
+                for w in self.H.G[net]:
+                    i_w = self.H.module_map[w]
+                    self.modify_gain(i_w, weight)
+            else:
+                self.init_gain_general_net_luk(net, part, weight)
+        else: # 90%
+            for w in self.H.G[net]:
+                i_w = self.H.module_map[w]
+                self.modify_gain(i_w, -weight)
+
+    def init_gain_general_net_luk(self, net, part, weight):
+        """initialize gain for general net
+
+        Arguments:
+            net {node_t} -- [description]
+            part {list} -- [description]
+        """
+        num = [0, 0]
+        IdVec = []
+        for w in self.H.G[net]:
+            i_w = self.H.module_map[w]
+            num[part[i_w]] += 1
+            IdVec.append(i_w)
+
+        for k in [0, 1]:
+            if num[k] == 1:
+                for i_w in IdVec:
+                    if part[i_w] == k:
+                        self.modify_gain(i_w, weight)
+                        break
+
     def init_gain(self, net, part):
         """initialize gain
 
@@ -41,9 +99,10 @@ class FMBiGainCalc:
             net {node_t} -- [description]
             part {list} -- [description]
         """
-        if self.H.G.degree[net] == 2:
+        degree = self.H.G.degree[net]
+        if degree == 2:
             self.init_gain_2pin_net(net, part)
-        elif self.H.G.degree[net] < 2:  # unlikely, self-loop, etc.
+        elif degree < 2:  # unlikely, self-loop, etc.
             return  # does not provide any gain when move
         else:
             self.init_gain_general_net(net, part)
@@ -148,6 +207,33 @@ class FMBiGainCalc:
         deltaGainW = 2*weight if part_w == fromPart else -2*weight
         return i_w, deltaGainW
 
+    def update_move_2pin_net_luk(self, soln_info, move_info):
+        """Update move for 2-pin net
+
+        Arguments:
+            part {list} -- [description]
+            move_info {MoveInfoV} -- [description]
+
+        Returns:
+            [type] -- [description]
+        """
+        part, extern_nets = soln_info
+        net, fromPart, _, v = move_info
+        assert self.H.G.degree[net] == 2
+        netCur = iter(self.H.G[net])
+        u = next(netCur)
+        w = u if u != v else next(netCur)
+        i_w = self.H.module_map[w]
+        part_w = part[i_w]
+        weight = self.H.get_net_weight(net)
+        if part_w == fromPart:
+            deltaGainW = 2*weight
+            extern_nets.add(net)
+        else:
+            deltaGainW = -2*weight
+            extern_nets.remove(net)
+        return i_w, deltaGainW
+
     def update_move_general_net(self, part, move_info):
         """Update move for general net
 
@@ -178,7 +264,58 @@ class FMBiGainCalc:
             if num[l] == 0:
                 for idx in range(degree):
                     deltaGain[idx] -= weight
-            elif num[l] == 1:
+                return IdVec, deltaGain
+            if num[l] == 1:
+                for idx in range(degree):
+                    part_w = part[IdVec[idx]]
+                    if part_w == l:
+                        deltaGain[idx] += weight
+                        break
+            weight = -weight
+
+        return IdVec, deltaGain
+
+    def update_move_general_net_luk(self, soln_info, move_info):
+        """Update move for general net
+
+        Arguments:
+            part {list} -- [description]
+            move_info {MoveInfoV} -- [description]
+
+        Returns:
+            [type] -- [description]
+        """
+        net, fromPart, toPart, v = move_info
+        part, extern_nets = soln_info
+        assert self.H.G.degree[net] > 2
+        num = [0, 0]
+        IdVec = []
+        deltaGain = []
+        for w in self.H.G[net]:
+            if w == v:
+                continue
+            i_w = self.H.module_map[w]
+            num[part[i_w]] += 1
+            IdVec.append(i_w)
+
+        degree = len(IdVec)
+        deltaGain = list(0 for _ in range(degree))
+        weight = self.H.get_net_weight(net)
+
+        if num[fromPart] == 0:
+            extern_nets.remove(net)
+            for idx in range(degree):
+                deltaGain[idx] -= weight
+            return IdVec, deltaGain
+            
+        if num[toPart] == 0:
+            extern_nets.add(net)
+            for idx in range(degree):
+                deltaGain[idx] += weight
+            return IdVec, deltaGain
+
+        for l in [fromPart, toPart]:
+            if num[l] == 1:
                 for idx in range(degree):
                     part_w = part[IdVec[idx]]
                     if part_w == l:
