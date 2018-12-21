@@ -3,7 +3,7 @@
 # Snapshot in the form of "interface"???
 from .min_cover import create_contraction_subgraph
 from .FMPartMgr import FMPartMgr
-from .FMBiGainMgr2 import FMBiGainMgr2
+from .FMBiGainMgr import FMBiGainMgr
 from .FMBiGainCalc import FMBiGainCalc
 from .FMBiConstrMgr import FMBiConstrMgr
 from .FMKWayGainMgr import FMKWayGainMgr
@@ -26,7 +26,7 @@ class MLPartMgr:
         self.totalcost = 0
 
     def run_BiPartition(self, H, part):
-        gainMgr = FMBiGainMgr2(FMBiGainCalc, H)
+        gainMgr = FMBiGainMgr(FMBiGainCalc, H)
         constrMgr = FMBiConstrMgr(H, self.BalTol)
         partMgr = FMPartMgr(H, gainMgr, constrMgr)
         partMgr.init(part)

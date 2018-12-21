@@ -2,7 +2,7 @@ from ckpttnpy.MLPartMgr import MLPartMgr
 from ckpttnpy.tests.test_netlist import create_drawf
 # from ckpttnpy.min_cover import create_contraction_subgraph
 # from ckpttnpy.FMPartMgr import FMPartMgr
-# from ckpttnpy.FMBiGainMgr2 import FMBiGainMgr2
+# from ckpttnpy.FMBiGainMgr import FMBiGainMgr
 # from ckpttnpy.FMBiGainCalc import FMBiGainCalc
 # from ckpttnpy.FMBiConstrMgr import FMBiConstrMgr
 
@@ -31,5 +31,5 @@ def run_MLKWayPartMgr(H):
 #     run_MLKWayPartMgr(H)
 
 
-if __name__ == "__main__":
-    test_MLKWayPartMgr()
+# if __name__ == "__main__":
+#     test_MLKWayPartMgr()

@@ -1,10 +1,10 @@
-from ckpttnpy.FMBiGainMgr2 import FMBiGainMgr2
+from ckpttnpy.FMBiGainMgr import FMBiGainMgr
 from ckpttnpy.FMBiGainCalc import FMBiGainCalc
 from ckpttnpy.tests.test_netlist import create_test_netlist, create_drawf
 
 
 def run_FMBiGainMgr(H, part):
-    mgr = FMBiGainMgr2(FMBiGainCalc, H)
+    mgr = FMBiGainMgr(FMBiGainCalc, H)
     mgr.init(part)
     while not mgr.is_empty():
         # Take the gainmax with v from gainbucket

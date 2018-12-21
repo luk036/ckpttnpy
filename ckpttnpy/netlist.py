@@ -150,3 +150,43 @@ class Netlist:
         H = self.parent
         for v in H.modules:
             part_up[self.node_up_map[v]] = part[v]
+
+    def projection_down(self, soln_info, soln_info_down):
+        H = self.parent
+        part, extern_nets = soln_info
+        part_down, extern_nets_down = soln_info_down
+
+        extern_nets_down = set()
+        for net in extern_nets:
+            extern_nets_down.add(self.node_down_map[net])
+
+        for v in self.modules:
+            if v in self.cluster_down_map:
+                net = self.cluster_down_map[v]
+                for v2 in H.G[net]:
+                    # i_v2 = H.module_map[v2]
+                    part_down[v2] = part[v]
+            else:
+                v2 = self.node_down_map[v]
+                # i_v2 = H.module_map[v2]
+                part_down[v2] = part[v]
+
+    def projection_up(self, soln_info, soln_info_up):
+        H = self.parent
+        part, extern_nets = soln_info
+        part_up, extern_nets_up = soln_info_up
+
+        extern_nets_up = set()
+        for net in extern_nets:
+            extern_nets_up.add(self.node_up_map[net])
+
+        for v in H.modules:
+            part_up[self.node_up_map[v]] = part[v]
+
+        # K = len(extern_modules)
+        # extern_modules_up = list(set() for _ in K)
+
+        # for k in range(K):
+        #     for v in extern_modules[k]:
+        #         v2 = self.node_up_map[v]
+        #         extern_modules_up[k].add(v2)

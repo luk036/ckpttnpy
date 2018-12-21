@@ -1,7 +1,7 @@
-from .FMGainMgr import FMGainMgr
+from .HWGainMgr import HWGainMgr
 
 
-class FMBiGainMgr2(FMGainMgr):
+class HWBiGainMgr(HWGainMgr):
 
     # public:
 
@@ -13,34 +13,19 @@ class FMBiGainMgr2(FMGainMgr):
             GainCalc {[type]} -- [description]
             K {uint8_t} -- number of partitions
         """
-        FMGainMgr.__init__(self, GainCalc, H)
+        HWGainMgr.__init__(self, GainCalc, H)
 
-    def init(self, part):
+    def init(self, soln_info):
         """(re)initialization after creation
 
         Arguments:
             part {list} -- [description]
         """
-        FMGainMgr.init(self, part)
+        HWGainMgr.init(self, soln_info)
         for k in range(self.K):
             self.gainbucket[k].clear()
 
-        for v in range(self.H.number_of_modules()):
-            vlink = self.gainCalc.vertex_list[v]
-            toPart = 1 - part[v]
-            self.gainbucket[toPart].append_direct(vlink)
-
-    def init_luk(self, soln_info):
-        """(re)initialization after creation
-
-        Arguments:
-            part {list} -- [description]
-        """
-        FMGainMgr.init_luk(self, soln_info)
-        for k in range(self.K):
-            self.gainbucket[k].clear()
-
-        part, _ = soln_info
+        part, _, _ = soln_info
         for v in range(self.H.number_of_modules()):
             vlink = self.gainCalc.vertex_list[v]
             toPart = 1 - part[v]
