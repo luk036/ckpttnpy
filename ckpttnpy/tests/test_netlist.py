@@ -40,7 +40,7 @@ def create_drawf():
         (6, 11)
     ])
 
-    H = Netlist(G, range(7), range(7, 12), range(7), range(-7, 5))
+    H = Netlist(G, range(7), range(7, 12), range(-7, 5))
     H.module_weight = module_weight
     H.module_name = module_name
     H.net_weight = [1, 1, 1, 1, 1]
@@ -72,7 +72,7 @@ def create_test_netlist():
         (0, 5)  # self-loop
     ])
 
-    H = Netlist(G, range(3), range(3, 6), range(3), range(-3, 3))
+    H = Netlist(G, range(3), range(3, 6), range(-3, 3))
     H.module_weight = module_weight
     return H
 

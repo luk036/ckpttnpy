@@ -17,8 +17,8 @@ class FMConstrMgr:
         self.lowerbound = 0
         self.weight = 0
         self.totalweight = 0
-        for i_v in range(self.H.number_of_modules()):
-            weight = self.H.get_module_weight_by_id(i_v)
+        for v in range(self.H.number_of_modules()):
+            weight = self.H.get_module_weight_by_id(v)
             self.totalweight += weight
 
     def init(self, part):
@@ -28,9 +28,9 @@ class FMConstrMgr:
             part {[type]} -- [description]
         """
         self.diff = list(0 for _ in range(self.K))
-        for i_v in range(self.H.number_of_modules()):
-            weight = self.H.get_module_weight_by_id(i_v)
-            self.diff[part[i_v]] += weight
+        for v in range(self.H.number_of_modules()):
+            weight = self.H.get_module_weight_by_id(v)
+            self.diff[part[v]] += weight
         totalweightK = self.totalweight * (2. / self.K)
         self.lowerbound = round(totalweightK * self.ratio)
 
@@ -51,8 +51,8 @@ class FMConstrMgr:
         Returns:
             [type] -- [description]
         """
-        fromPart, toPart, _, i_v = move_info_v
-        self.weight = self.H.get_module_weight_by_id(i_v)
+        fromPart, toPart, v = move_info_v
+        self.weight = self.H.get_module_weight_by_id(v)
         diffFrom = self.diff[fromPart] - self.weight
         if diffFrom < self.lowerbound:
             return 0  # not ok, don't move
@@ -71,8 +71,8 @@ class FMConstrMgr:
         Returns:
             [type] -- [description]
         """
-        fromPart, _, _, i_v = move_info_v
-        self.weight = self.H.get_module_weight_by_id(i_v)
+        fromPart, _, v = move_info_v
+        self.weight = self.H.get_module_weight_by_id(v)
         diffFrom = self.diff[fromPart] - self.weight
         return diffFrom >= self.lowerbound
 
@@ -83,6 +83,6 @@ class FMConstrMgr:
             fromPart {[type]} -- [description]
             v {[type]} -- [description]
         """
-        fromPart, toPart, _, _ = move_info_v
+        fromPart, toPart, _ = move_info_v
         self.diff[toPart] += self.weight
         self.diff[fromPart] -= self.weight

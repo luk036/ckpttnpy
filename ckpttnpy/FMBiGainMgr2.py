@@ -25,9 +25,9 @@ class FMBiGainMgr2(FMGainMgr):
         for k in range(self.K):
             self.gainbucket[k].clear()
 
-        for i_v in range(self.H.number_of_modules()):
-            vlink = self.gainCalc.vertex_list[i_v]
-            toPart = 1 - part[i_v]
+        for v in range(self.H.number_of_modules()):
+            vlink = self.gainCalc.vertex_list[v]
+            toPart = 1 - part[v]
             self.gainbucket[toPart].append_direct(vlink)
 
     def init_luk(self, soln_info):
@@ -41,13 +41,13 @@ class FMBiGainMgr2(FMGainMgr):
             self.gainbucket[k].clear()
 
         part, _ = soln_info
-        for i_v in range(self.H.number_of_modules()):
-            vlink = self.gainCalc.vertex_list[i_v]
-            toPart = 1 - part[i_v]
+        for v in range(self.H.number_of_modules()):
+            vlink = self.gainCalc.vertex_list[v]
+            toPart = 1 - part[v]
             self.gainbucket[toPart].append_direct(vlink)
 
     # private:
-    def set_key(self, whichPart, i_v, key):
+    def set_key(self, whichPart, v, key):
         """Set key
 
         Arguments:
@@ -56,9 +56,9 @@ class FMBiGainMgr2(FMGainMgr):
             key {int} -- [description]
         """
         self.gainbucket[whichPart].set_key(
-            self.gainCalc.vertex_list[i_v], key)
+            self.gainCalc.vertex_list[v], key)
 
-    def modify_key(self, part, i_w, key):
+    def modify_key(self, part, w, key):
         """Update gain for the moving cell
 
         Arguments:
@@ -66,9 +66,9 @@ class FMBiGainMgr2(FMGainMgr):
             move_info_v {[type]} -- [description]
             gain {[type]} -- [description]
         """
-        part_w = part[i_w]
+        part_w = part[w]
         self.gainbucket[1-part_w].modify_key(
-            self.gainCalc.vertex_list[i_w], key)
+            self.gainCalc.vertex_list[w], key)
 
     def update_move_v(self, part, move_info_v, gain):
         """[summary]
@@ -78,5 +78,5 @@ class FMBiGainMgr2(FMGainMgr):
             w {[type]} -- [description]
             key {[type]} -- [description]
         """
-        fromPart, _, _, i_v = move_info_v
-        self.set_key(fromPart, i_v, -gain)
+        fromPart, _, v = move_info_v
+        self.set_key(fromPart, v, -gain)

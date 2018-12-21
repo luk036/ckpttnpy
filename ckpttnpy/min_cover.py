@@ -158,7 +158,7 @@ def create_contraction_subgraph(H):
             G.add_edge(node_up_map[v], node_up_map[net])
 
     H2 = Netlist(G, range(numModules), range(numModules, numModules + numNets),
-                 range(numModules), range(-numModules, numNets))
+                 range(-numModules, numNets))
     H2.node_up_map = node_up_map
 
     node_down_map = {}

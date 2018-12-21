@@ -29,9 +29,9 @@ class FMBiGainMgr:
         self.gainCalc.init(part, self.vertex_list)
 
         for v in self.H.module_fixed:
-            # i_v = self.H.module_dict[i_v]
+            # v = self.H.module_dict[v]
             # force to the lowest gain
-            self.vertex_list[i_v].key = -self.pmax
+            self.vertex_list[v].key = -self.pmax
 
         self.gainbucket.appendfrom(self.vertex_list)
 
@@ -56,7 +56,7 @@ class FMBiGainMgr:
         vlink = self.gainbucket.popleft()
         self.waitinglist.append(vlink)
         v = vlink.idx
-        fromPart = part[i_v]
+        fromPart = part[v]
         move_info_v = fromPart, 1-fromPart, v
         return move_info_v, gainmax
 
@@ -82,8 +82,8 @@ class FMBiGainMgr:
                 continue  # does not provide any gain change when move
             else:
                 self.update_move_general_net(part, move_info)
-        # self.vertex_list[i_v].key -= 2*gain
-        self.gainbucket.set_key(self.vertex_list[i_v], -gain)
+        # self.vertex_list[v].key -= 2*gain
+        self.gainbucket.set_key(self.vertex_list[v], -gain)
 
     # private
 
@@ -98,7 +98,7 @@ class FMBiGainMgr:
         """
         w, deltaGainW = self.gainCalc.update_move_2pin_net(
             part, move_info)
-        self.gainbucket.modify_key(self.vertex_list[i_w], deltaGainW)
+        self.gainbucket.modify_key(self.vertex_list[w], deltaGainW)
 
     def update_move_general_net(self, part, move_info):
         """update move for general net

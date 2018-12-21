@@ -14,7 +14,7 @@ class Netlist:
     node_down_map = {}
     cluster_down_map = {}
 
-    def __init__(self, G, modules, nets, module_map, net_map):
+    def __init__(self, G, modules, nets, net_map):
         """[summary]
 
         Arguments:
@@ -28,14 +28,14 @@ class Netlist:
         self.G = G
         self.modules = modules
         self.nets = nets
-        self.module_map = module_map
+        # self.module_map = module_map
         self.net_map = net_map
         self.num_modules = len(modules)
         self.num_nets = len(nets)
 
         # self.module_dict = {}
-        # for i_v, v in enumerate(self.module_list):
-        #     self.module_dict[v] = i_v
+        # for v in enumerate(self.module_list):
+        #     self.module_dict[v] = v
 
         # self.net_dict = {}
         # for i_net, net in enumerate(self.net_list):
@@ -99,26 +99,26 @@ class Netlist:
         """[summary]
 
         Arguments:
-            i_v {size_t} -- [description]
+            v {size_t} -- [description]
 
         Returns:
             [size_t] -- [description]
         """
-        i_v = self.module_map[v]
+        # i_v = self.module_map[v]
         return 1 if self.module_weight == [] \
-            else self.module_weight[i_v]
+            else self.module_weight[v]
 
-    def get_module_weight_by_id(self, i_v):
+    def get_module_weight_by_id(self, v):
         """[summary]
 
         Arguments:
-            i_v {size_t} -- [description]
+            v {size_t} -- [description]
 
         Returns:
             [size_t] -- [description]
         """
         return 1 if self.module_weight == [] \
-            else self.module_weight[i_v]
+            else self.module_weight[v]
 
     def get_net_weight(self, net):
         """[summary]
@@ -135,18 +135,18 @@ class Netlist:
 
     def project_down(self, part, part_down):
         H = self.parent
-        for i_v, v in enumerate(self.modules):
+        for v in self.modules:
             if v in self.cluster_down_map:
                 net = self.cluster_down_map[v]
                 for v2 in H.G[net]:
-                    i_v2 = H.module_map[v2]
-                    part_down[i_v2] = part[i_v]
+                    # i_v2 = H.module_map[v2]
+                    part_down[v2] = part[v]
             else:
                 v2 = self.node_down_map[v]
-                i_v2 = H.module_map[v2]
-                part_down[i_v2] = part[i_v]
+                # i_v2 = H.module_map[v2]
+                part_down[v2] = part[v]
 
     def project_up(self, part, part_up):
         H = self.parent
-        for i_v, v in enumerate(H.modules):
-            part_up[self.node_up_map[v]] = part[i_v]
+        for v in H.modules:
+            part_up[self.node_up_map[v]] = part[v]

@@ -91,10 +91,10 @@ class FMGainMgr:
         toPart = gainmax.index(maxk)
         vlink = self.gainbucket[toPart].popleft()
         self.waitinglist.append(vlink)
-        i_v = vlink.idx
-        v = self.H.modules[i_v]
-        fromPart = part[i_v]
-        move_info_v = fromPart, toPart, v, i_v
+        v = vlink.idx
+        v = self.H.modules[v]
+        fromPart = part[v]
+        move_info_v = fromPart, toPart, v
         return move_info_v, gainmax[toPart]
 
     def select_togo(self, toPart):
@@ -109,8 +109,8 @@ class FMGainMgr:
         gainmax = self.gainbucket[toPart].get_max()
         vlink = self.gainbucket[toPart].popleft()
         self.waitinglist.append(vlink)
-        i_v = vlink.idx
-        return self.H.modules[i_v], i_v, gainmax
+        v = vlink.idx
+        return v, gainmax
 
     def update_move_luk(self, soln_info, move_info_v):
         """[summary]
@@ -122,7 +122,7 @@ class FMGainMgr:
         # self.deltaGainV = list(0 for _ in range(self.K))
         self.gainCalc.update_move_init()
 
-        fromPart, toPart, v, _ = move_info_v
+        fromPart, toPart, v = move_info_v
         for net in self.H.G[v]:
             move_info = [net, fromPart, toPart, v]
             if self.H.G.degree[net] < 2:  # unlikely, self-loop, etc.
@@ -142,7 +142,7 @@ class FMGainMgr:
         # self.deltaGainV = list(0 for _ in range(self.K))
         self.gainCalc.update_move_init()
 
-        fromPart, toPart, v, _ = move_info_v
+        fromPart, toPart, v = move_info_v
         for net in self.H.G[v]:
             move_info = [net, fromPart, toPart, v]
             if self.H.G.degree[net] == 2:
@@ -171,9 +171,9 @@ class FMGainMgr:
             part {list} -- Partition sol'n
             move_info {[type]} -- [description]
         """
-        i_w, deltaGainW = self.gainCalc.update_move_2pin_net(
+        w, deltaGainW = self.gainCalc.update_move_2pin_net(
             part, move_info)
-        self.modify_key(part, i_w, deltaGainW)
+        self.modify_key(part, w, deltaGainW)
 
     def update_move_general_net(self, part, move_info):
         """Update move for general net
@@ -195,10 +195,10 @@ class FMGainMgr:
             part {list} -- Partition sol'n
             move_info {[type]} -- [description]
         """
-        i_w, deltaGainW = self.gainCalc.update_move_2pin_net_luk(
+        w, deltaGainW = self.gainCalc.update_move_2pin_net_luk(
             soln_info, move_info)
         part, _ = soln_info 
-        self.modify_key(part, i_w, deltaGainW)
+        self.modify_key(part, w, deltaGainW)
 
     def update_move_general_net_luk(self, soln_info, move_info):
         """Update move for general net
