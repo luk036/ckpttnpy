@@ -15,7 +15,7 @@ def run_FMBiPartMgr(H):
     totalcostbefore = partMgr.totalcost
     partMgr.optimize(part)
     assert partMgr.totalcost <= totalcostbefore
-    print(partMgr.snapshot)
+    # print(partMgr.snapshot)
 
 
 def test_FMBiPartMgr():

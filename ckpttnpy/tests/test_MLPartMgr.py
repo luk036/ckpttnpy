@@ -8,7 +8,7 @@ from ckpttnpy.tests.test_netlist import create_drawf
 
 
 def run_MLBiPartMgr(H):
-    partMgr = MLPartMgr(0.3)
+    partMgr = MLPartMgr(0.2)
     part = list(0 for _ in H.modules)
     partMgr.run_BiPartition(H, part)
     assert partMgr.totalcost == 2
@@ -20,15 +20,15 @@ def test_MLBiPartMgr():
 
 
 def run_MLKWayPartMgr(H):
-    partMgr = MLPartMgr(0.2, 3)
+    partMgr = MLPartMgr(0.3, 3)
     part = list(0 for _ in H.modules)
     partMgr.run_KWayPartition(H, part)
     assert partMgr.totalcost == 4
 
 
-# def test_MLKWayPartMgr():
-#     H = create_drawf()
-#     run_MLKWayPartMgr(H)
+def test_MLKWayPartMgr():
+    H = create_drawf()
+    run_MLKWayPartMgr(H)
 
 
 # if __name__ == "__main__":

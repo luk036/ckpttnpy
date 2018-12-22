@@ -15,7 +15,7 @@ class FMPartMgr:
         self.H = H
         self.gainMgr = gainMgr
         self.validator = constrMgr
-        self.snapshot = None
+        # self.snapshot = None
         self.totalcost = 0
 
     def init(self, part):
@@ -65,11 +65,11 @@ class FMPartMgr:
         return legalcheck
         # assert not self.gainMgr.gainbucket.is_empty()
 
-    def optimize(self, part):
-        """[summary]
-        """
+    def optimize_1pass(self, part):
         totalgain = 0
         deferredsnapshot = False
+        snapshot = part.copy()
+        besttotalgain = 0
 
         while not self.gainMgr.is_empty():
             # Take the gainmax with v from gainbucket
@@ -77,41 +77,41 @@ class FMPartMgr:
             move_info_v, gainmax = self.gainMgr.select(part)
             # Check if the move of v can satisfied or notsatisfied
             satisfiedOK = self.validator.check_constraints(move_info_v)
-
             if not satisfiedOK:
                 continue
-
-            if totalgain >= 0:
-                if totalgain + gainmax < 0:
-                    # become down turn
+            if gainmax < 0:
+                # become down turn
+                if totalgain > besttotalgain:
                     # Take a snapshot before move
-                    self.snapshot = part
-                    deferredsnapshot = False
-                else:
-                    deferredsnapshot = True
-            else:  # totalgain < 0
-                if gainmax <= 0:  # ???
-                    continue
-                else:
-                    deferredsnapshot = True
+                    snapshot = part.copy()
+                    besttotalgain = totalgain
+                deferredsnapshot = True
+
+            elif totalgain + gainmax > besttotalgain:
+                deferredsnapshot = False
 
             # Update v and its neigbours (even they are in waitinglist)
             # Put neigbours to bucket
             self.gainMgr.update_move(part, move_info_v)
-            self.gainMgr.update_move_v(part, move_info_v, gainmax)
+            self.gainMgr.update_move_v(part, move_info_v, 2*self.gainMgr.pmax)
             self.validator.update_move(move_info_v)
             totalgain += gainmax
-
-            if totalgain > 0:
-                self.totalcost -= totalgain
-                assert self.totalcost >= 0
-                totalgain = 0  # reset to zero
-                # deferredsnapshot = True
-
             _, toPart, v = move_info_v
             part[v] = toPart
 
         if deferredsnapshot:
             # restore previous best solution
-            part = self.snapshot
+            part = snapshot.copy()
+            totalgain = besttotalgain
+
+        self.totalcost -= totalgain
+
+    def optimize(self, part):
+        while True:
+            self.init(part)
+            totalcostbefore = self.totalcost
+            self.optimize_1pass(part)
+            assert self.totalcost <= totalcostbefore
+            if self.totalcost == totalcostbefore:
+                break
 
