@@ -3,14 +3,14 @@ from .FMConstrMgr import FMConstrMgr
 
 
 class FMKWayConstrMgr(FMConstrMgr):
-    def __init__(self, H, ratio, K):
+    def __init__(self, H, BalTol, K):
         """[summary]
 
         Arguments:
             H {[type]} -- [description]
-            ratio {[type]} -- [description]
+            BalTol {[type]} -- [description]
         """
-        FMConstrMgr.__init__(self, H, ratio, K)
+        FMConstrMgr.__init__(self, H, BalTol, K)
         self.illegal = list(True for _ in range(K))
 
     def init(self, part):

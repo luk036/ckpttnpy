@@ -1,7 +1,7 @@
 from .dllist import dllink
 
 
-class HWKWayGainCalc:
+class FDKWayGainCalc:
 
     # public:
 
@@ -161,12 +161,11 @@ class HWKWayGainCalc:
             for k in range(self.K):
                 deltaGainW[k] += weight
                 self.deltaGainV[k] += weight
-
         elif part_w == toPart:
             extern_nets.remove(net)
             for k in range(self.K):
-                deltaGainW[k] += weight
-                self.deltaGainV[k] += weight
+                deltaGainW[k] -= weight
+                self.deltaGainV[k] -= weight
 
         deltaGainW[fromPart] -= weight
         deltaGainW[toPart] += weight
@@ -210,23 +209,22 @@ class HWKWayGainCalc:
 
         if num[fromPart] == 0:
             if num[toPart] > 0:
-                for idx in range(degree):
-                    deltaGain[idx][fromPart] -= weight
                 for k in range(self.K):
                     self.deltaGainV[k] -= weight
                 if count == 1:
                     extern_nets.remove(net)
         else:
             if num[toPart] == 0:
-                for idx in range(degree):
-                    deltaGain[idx][toPart] += weight
                 for k in range(self.K):
                     self.deltaGainV[k] += weight
                 if count == 1:
                     extern_nets.add(net)
 
         for l in [fromPart, toPart]:
-            if num[l] == 1:
+            if num[l] == 0:
+                for idx in range(degree):
+                    deltaGain[idx][l] -= weight
+            elif num[l] == 1:
                 for idx in range(degree):
                     part_w = part[IdVec[idx]]
                     if part_w == l:

@@ -2,7 +2,7 @@ from .dllist import dllink
 # from .bpqueue import bpqueue
 
 
-class HWBiGainCalc:
+class FDBiGainCalc:
 
     # public:
 

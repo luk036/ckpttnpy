@@ -1,7 +1,7 @@
-from .HWGainMgr import HWGainMgr
+from .FDGainMgr import FDGainMgr
 
 
-class HWBiGainMgr(HWGainMgr):
+class FDBiGainMgr(FDGainMgr):
 
     # public:
 
@@ -13,7 +13,7 @@ class HWBiGainMgr(HWGainMgr):
             GainCalc {[type]} -- [description]
             K {uint8_t} -- number of partitions
         """
-        HWGainMgr.__init__(self, GainCalc, H)
+        FDGainMgr.__init__(self, GainCalc, H)
 
     def init(self, soln_info):
         """(re)initialization after creation
@@ -21,7 +21,7 @@ class HWBiGainMgr(HWGainMgr):
         Arguments:
             part {list} -- [description]
         """
-        HWGainMgr.init(self, soln_info)
+        FDGainMgr.init(self, soln_info)
         for k in range(self.K):
             self.gainbucket[k].clear()
 

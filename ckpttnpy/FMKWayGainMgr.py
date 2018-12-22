@@ -31,7 +31,7 @@ class FMKWayGainMgr(FMGainMgr):
                 vlink = self.gainCalc.vertex_list[k][v]
                 if part[v] == k:
                     # assert vlink.key == 0
-                    self.gainbucket[k].set_key(vlink, 0)
+                    self.gainbucket[k].set_key(vlink, -2*self.pmax)
                     self.waitinglist.append(vlink)
                 else:
                     self.gainbucket[k].append(vlink, vlink.key)

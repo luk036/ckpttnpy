@@ -3,7 +3,7 @@ from .dllist import dllink
 from abc import abstractmethod
 
 
-class HWGainMgr:
+class FDGainMgr:
 
     # public:
 

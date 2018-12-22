@@ -20,7 +20,7 @@ class FMGainMgr:
         self.H = H
         self.K = K
         self.gainCalc = GainCalc(H, K)
-        self.pmax = self.H.get_max_degree()
+        self.pmax = self.H.get_max_degree()+2
         self.waitinglist = dllink(3734)
         self.totalcost = 0
         self.gainbucket = []

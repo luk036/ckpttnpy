@@ -3,14 +3,14 @@ from .FMConstrMgr import FMConstrMgr
 
 
 class FMBiConstrMgr(FMConstrMgr):
-    def __init__(self, H, ratio, K=2):
+    def __init__(self, H, BalTol, K=2):
         """[summary]
 
         Arguments:
             H {[type]} -- [description]
-            ratio {[type]} -- [description]
+            BalTol {[type]} -- [description]
         """
-        FMConstrMgr.__init__(self, H, ratio, 2)
+        FMConstrMgr.__init__(self, H, BalTol, 2)
 
     def select_togo(self):
         """[summary]
