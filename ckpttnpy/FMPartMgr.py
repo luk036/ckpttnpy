@@ -68,7 +68,8 @@ class FMPartMgr:
     def optimize_1pass(self, part):
         totalgain = 0
         deferredsnapshot = False
-        snapshot = part.copy()
+        # snapshot = part.copy()
+        snapshot = list(k for k in part)
         besttotalgain = 0
 
         while not self.gainMgr.is_empty():
@@ -83,7 +84,8 @@ class FMPartMgr:
                 # become down turn
                 if totalgain > besttotalgain:
                     # Take a snapshot before move
-                    snapshot = part.copy()
+                    # snapshot = part.copy()
+                    snapshot = list(k for k in part)
                     besttotalgain = totalgain
                 deferredsnapshot = True
 
@@ -101,7 +103,8 @@ class FMPartMgr:
 
         if deferredsnapshot:
             # restore previous best solution
-            part = snapshot.copy()
+            # part = snapshot.copy()
+            part = list(k for k in snapshot)
             totalgain = besttotalgain
 
         self.totalcost -= totalgain
