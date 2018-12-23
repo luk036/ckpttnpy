@@ -151,10 +151,10 @@ class Netlist:
         for v in H.modules:
             part_up[self.node_up_map[v]] = part[v]
 
-    def projection_down(self, soln_info, soln_info_down):
+    def projection_down(self, part_info, part_info_down):
         H = self.parent
-        part, extern_nets = soln_info
-        part_down, extern_nets_down = soln_info_down
+        part, extern_nets = part_info
+        part_down, extern_nets_down = part_info_down
 
         extern_nets_down = set()
         for net in extern_nets:
@@ -171,10 +171,10 @@ class Netlist:
                 # i_v2 = H.module_map[v2]
                 part_down[v2] = part[v]
 
-    def projection_up(self, soln_info, soln_info_up):
+    def projection_up(self, part_info, part_info_up):
         H = self.parent
-        part, extern_nets = soln_info
-        part_up, extern_nets_up = soln_info_up
+        part, extern_nets = part_info
+        part_up, extern_nets_up = part_info_up
 
         extern_nets_up = set()
         for net in extern_nets:

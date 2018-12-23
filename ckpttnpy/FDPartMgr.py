@@ -1,9 +1,9 @@
 # **Special code for two-pin nets**
 # Take a snapshot when a move make **negative** gain.
 # Snapshot in the form of "interface"???
+from collections import deque
 
-
-class FMPartMgr:
+class FDPartMgr:
     def __init__(self, H, gainMgr, constrMgr):
         """[summary]
 
@@ -16,20 +16,23 @@ class FMPartMgr:
         self.gainMgr = gainMgr
         self.validator = constrMgr
         # self.snapshot = None
+        self.K = gainMgr.K
         self.totalcost = 0
 
-    def init(self, part):
+    def init(self, part_info):
         """[summary]
         """
-        self.totalcost = self.gainMgr.init(part)
+        self.totalcost = self.gainMgr.init(part_info)
         # self.totalcost = self.gainMgr.totalcost
         assert self.totalcost >= 0
+        part, _ = part_info
         self.validator.init(part)
 
         # totalgain = 0
 
-    def legalize(self, part):
-        self.init(part)
+    def legalize(self, part_info):
+        part, _ = part_info
+        self.init(part_info)
         legalcheck = 0
         while True:
             # Take the gainmax with v from gainbucket
@@ -50,11 +53,10 @@ class FMPartMgr:
 
             # Update v and its neigbours (even they are in waitinglist)
             # Put neigbours to bucket
-            self.gainMgr.update_move(part, move_info_v)
+            self.gainMgr.update_move(part_info, move_info_v)
             weight = self.H.get_module_weight(v)
             g = gainmax if weight != 0 else 2*self.gainMgr.pmax
-            self.gainMgr.update_move_v(part, move_info_v, g)
-
+            self.gainMgr.update_move_v(part_info, move_info_v, g)
             self.validator.update_move(move_info_v)
             part[v] = toPart
             # totalgain += gainmax
@@ -69,13 +71,14 @@ class FMPartMgr:
         return legalcheck
         # assert not self.gainMgr.gainbucket.is_empty()
 
-    def optimize_1pass(self, part):
+    def optimize_1pass(self, part_info):
         totalgain = 0
         deferredsnapshot = False
         # snapshot = part.copy()
         # snapshot = list(k for k in part)
         snapshot = None
         besttotalgain = -1
+        part, _ = part_info
 
         while not self.gainMgr.is_empty():
             # Take the gainmax with v from gainbucket
@@ -90,7 +93,7 @@ class FMPartMgr:
                 if totalgain > besttotalgain:
                     # Take a snapshot before move
                     # snapshot = part.copy()
-                    snapshot = list(k for k in part)
+                    snapshot = self.take_snapshot(part_info)
                     besttotalgain = totalgain
                 deferredsnapshot = True
 
@@ -99,7 +102,7 @@ class FMPartMgr:
 
             # Update v and its neigbours (even they are in waitinglist)
             # Put neigbours to bucket
-            self.gainMgr.update_move(part, move_info_v)
+            self.gainMgr.update_move(part_info, move_info_v)
             self.gainMgr.update_move_v(part, move_info_v, 2*self.gainMgr.pmax)
             self.validator.update_move(move_info_v)
             totalgain += gainmax
@@ -109,16 +112,50 @@ class FMPartMgr:
         if deferredsnapshot:
             # restore previous best solution
             # part = snapshot.copy()
-            part = list(k for k in snapshot)
+            part_info = self.restore_part_info(snapshot)
             totalgain = besttotalgain
 
         self.totalcost -= totalgain
 
-    def optimize(self, part):
+    def take_snapshot(self, part_info):
+        part, extern_nets = part_info
+        extern_nets_ss = extern_nets.copy()
+        extern_modules_ss = dict()
+        for net in extern_nets:
+            for v in self.H.G[net]:
+                extern_modules_ss[v] = part[v]
+        return extern_nets_ss, extern_modules_ss
+
+    def restore_part_info(self, snapshot):
+        extern_nets_ss, extern_modules_ss = snapshot
+        part_ss = list(self.K for _ in range(self.H.number_of_modules()))
+        Q = deque(v for v, _ in extern_modules_ss.items())
+        while Q:
+            v = Q.popleft()
+            if part_ss[v] < self.K:
+                continue
+            part_v = part_ss[v] = extern_modules_ss[v]
+            Q2 = deque()
+            Q2.append(v)
+            while Q2:
+                v2 = Q2.popleft()
+                # if part_ss[v2] < self.K:
+                #     continue
+                for net in self.H.G[v2]:
+                    if net in extern_nets_ss:
+                        continue
+                    for v3 in self.H.G[net]:
+                        if part_ss[v3] < self.K:
+                            continue
+                        part_ss[v3] = part_v
+                        Q2.append(v3)
+        return part_ss, extern_nets_ss
+
+    def optimize(self, part_info):
         while True:
-            self.init(part)
+            self.init(part_info)
             totalcostbefore = self.totalcost
-            self.optimize_1pass(part)
+            self.optimize_1pass(part_info)
             assert self.totalcost <= totalcostbefore
             if self.totalcost == totalcostbefore:
                 break

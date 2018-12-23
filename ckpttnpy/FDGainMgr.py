@@ -22,24 +22,26 @@ class FDGainMgr:
         self.gainCalc = GainCalc(H, K)
         self.pmax = self.H.get_max_degree()
         self.waitinglist = dllink(3734)
-        self.totalcost = 0
+        # self.totalcost = 0
         self.gainbucket = []
         for _ in range(K):
             self.gainbucket += [bpqueue(-self.pmax, self.pmax)]
 
-    def init(self, soln_info):
+    def init(self, part_info):
         """(re)initialization after creation
 
         Arguments:
             part {list} -- [description]
         """
-        self.gainCalc.init(soln_info)
-        self.totalcost = self.gainCalc.totalcost
+        self.gainCalc.init(part_info)
+        totalcost = self.gainCalc.totalcost
         self.waitinglist.clear()
         
         for v in self.H.module_fixed:
             # force to the lowest gain
             self.gainCalc.set_key(v, -2*self.pmax)
+
+        return totalcost
 
     def is_empty_togo(self, toPart):
         """[summary]
@@ -98,7 +100,7 @@ class FDGainMgr:
         v = vlink.idx
         return v, gainmax
 
-    def update_move(self, soln_info, move_info_v):
+    def update_move(self, part_info, move_info_v):
         """[summary]
 
         Arguments:
@@ -114,9 +116,9 @@ class FDGainMgr:
             if self.H.G.degree[net] < 2:  # unlikely, self-loop, etc.
                 continue  # does not provide any gain change when move
             if self.H.G.degree[net] == 2:
-                self.update_move_2pin_net(soln_info, move_info)
+                self.update_move_2pin_net(part_info, move_info)
             else:
-                self.update_move_general_net(soln_info, move_info)
+                self.update_move_general_net(part_info, move_info)
 
     # private:
 
@@ -130,7 +132,7 @@ class FDGainMgr:
             key {int/int[]} -- [description]
         """
 
-    def update_move_2pin_net(self, soln_info, move_info):
+    def update_move_2pin_net(self, part_info, move_info):
         """Update move for 2-pin net
 
         Arguments:
@@ -138,11 +140,11 @@ class FDGainMgr:
             move_info {[type]} -- [description]
         """
         w, deltaGainW = self.gainCalc.update_move_2pin_net(
-            soln_info, move_info)
-        part, _, _ = soln_info 
+            part_info, move_info)
+        part, _ = part_info 
         self.modify_key(w, part[w], deltaGainW)
 
-    def update_move_general_net(self, soln_info, move_info):
+    def update_move_general_net(self, part_info, move_info):
         """Update move for general net
 
         Arguments:
@@ -150,8 +152,8 @@ class FDGainMgr:
             move_info {[type]} -- [description]
         """
         IdVec, deltaGain = self.gainCalc.update_move_general_net(
-            soln_info, move_info)
-        part, _, _ = soln_info 
+            part_info, move_info)
+        part, _ = part_info 
         degree = len(IdVec)
         for idx in range(degree):
             w = IdVec[idx]

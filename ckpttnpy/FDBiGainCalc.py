@@ -21,7 +21,7 @@ class FDBiGainCalc:
                                 for i in range(self.H.number_of_modules()))
         self.totalcost = 0
 
-    def init(self, soln_info):
+    def init(self, part_info):
         """(re)initialization after creation
 
         Arguments:
@@ -32,9 +32,9 @@ class FDBiGainCalc:
             vlink.key = 0
         for net in self.H.nets:
             # for net in self.H.net_list:
-            self.init_gain(net, soln_info)
+            self.init_gain(net, part_info)
 
-    def init_gain(self, net, soln_info):
+    def init_gain(self, net, part_info):
         """initialize gain
 
         Arguments:
@@ -43,7 +43,7 @@ class FDBiGainCalc:
         """
         if self.H.G.degree[net] < 2:  # unlikely, self-loop, etc.
             return  # does not provide any gain when move
-        part, extern_nets = soln_info
+        part, extern_nets = part_info
         weight = self.H.get_net_weight(net)
         if net in extern_nets:
             self.totalcost += weight
@@ -106,7 +106,7 @@ class FDBiGainCalc:
         """
         pass
 
-    def update_move_2pin_net(self, soln_info, move_info):
+    def update_move_2pin_net(self, part_info, move_info):
         """Update move for 2-pin net
 
         Arguments:
@@ -116,7 +116,7 @@ class FDBiGainCalc:
         Returns:
             [type] -- [description]
         """
-        part, extern_nets, _ = soln_info
+        part, extern_nets = part_info
         net, fromPart, _, v = move_info
         assert self.H.G.degree[net] == 2
         netCur = iter(self.H.G[net])
@@ -133,7 +133,7 @@ class FDBiGainCalc:
             extern_nets.remove(net)
         return w, deltaGainW
 
-    def update_move_general_net(self, soln_info, move_info):
+    def update_move_general_net(self, part_info, move_info):
         """Update move for general net
 
         Arguments:
@@ -144,7 +144,7 @@ class FDBiGainCalc:
             [type] -- [description]
         """
         net, fromPart, toPart, v = move_info
-        part, extern_nets, _ = soln_info
+        part, extern_nets = part_info
         assert self.H.G.degree[net] > 2
         num = [0, 0]
         IdVec = []

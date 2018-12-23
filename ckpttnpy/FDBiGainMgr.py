@@ -15,22 +15,23 @@ class FDBiGainMgr(FDGainMgr):
         """
         FDGainMgr.__init__(self, GainCalc, H)
 
-    def init(self, soln_info):
+    def init(self, part_info):
         """(re)initialization after creation
 
         Arguments:
             part {list} -- [description]
         """
-        FDGainMgr.init(self, soln_info)
+        totalcost = FDGainMgr.init(self, part_info)
         for k in range(self.K):
             self.gainbucket[k].clear()
 
-        part, _, _ = soln_info
+        part, _ = part_info
         for v in range(self.H.number_of_modules()):
             vlink = self.gainCalc.vertex_list[v]
             toPart = 1 - part[v]
             self.gainbucket[toPart].append_direct(vlink)
-
+        return totalcost
+        
     # private:
     def set_key(self, whichPart, v, key):
         """Set key

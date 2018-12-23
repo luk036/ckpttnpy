@@ -1,11 +1,11 @@
-from ckpttnpy.FMKWayGainMgr import FMKWayGainMgr
-from ckpttnpy.FMKWayGainCalc import FMKWayGainCalc
+from ckpttnpy.FDKWayGainMgr import FDKWayGainMgr
+from ckpttnpy.FDKWayGainCalc import FDKWayGainCalc
 from ckpttnpy.FMKWayConstrMgr import FMKWayConstrMgr
-from ckpttnpy.FMPartMgr import FMPartMgr
+from ckpttnpy.FDPartMgr import FDPartMgr
 from ckpttnpy.tests.test_netlist import create_drawf
 
 
-def run_FMKWayPartMgr(H, gainMgr, K):
+def run_FDKWayPartMgr(H, gainMgr, K):
     """[summary]
 
     Arguments:
@@ -14,24 +14,26 @@ def run_FMKWayPartMgr(H, gainMgr, K):
         K {int} -- number of partitions
     """
     constrMgr = FMKWayConstrMgr(H, 0.4, K)  # 0.2 ???
-    partMgr = FMPartMgr(H, gainMgr, constrMgr)
+    partMgr = FDPartMgr(H, gainMgr, constrMgr)
     part = list(0 for _ in H.modules)
+    extern_nets = set()
+    part_info = part, extern_nets
     # partMgr.init(part)
-    partMgr.legalize(part)  # ???
+    partMgr.legalize(part_info)  # ???
     totalcostbefore = partMgr.totalcost
-    partMgr.init(part)
+    partMgr.init(part_info)
     assert partMgr.totalcost == totalcostbefore
-    partMgr.optimize(part)
+    partMgr.optimize(part_info)
     assert partMgr.totalcost <= totalcostbefore
     # print(partMgr.snapshot)
 
 
-def test_FMKWayPartMgr2():
+def test_FDKWayPartMgr2():
     H = create_drawf()
-    gainMgr = FMKWayGainMgr(FMKWayGainCalc, H, 3)
+    gainMgr = FDKWayGainMgr(FDKWayGainCalc, H, 3)
     H.module_fixed = [3]
-    run_FMKWayPartMgr(H, gainMgr, 3)
+    run_FDKWayPartMgr(H, gainMgr, 3)
 
 
 if __name__ == "__main__":
-    test_FMKWayPartMgr2()
+    test_FDKWayPartMgr2()

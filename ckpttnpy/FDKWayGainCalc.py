@@ -24,7 +24,7 @@ class FDKWayGainCalc:
                                       for i in range(self.H.number_of_modules()))]
         self.deltaGainV = list()
 
-    def init(self, soln_info):
+    def init(self, part_info):
         """(re)initialization after creation
 
         Arguments:
@@ -36,9 +36,9 @@ class FDKWayGainCalc:
                 vlink.key = 0
 
         for net in self.H.nets:
-            self.init_gain(net, soln_info)
+            self.init_gain(net, part_info)
 
-    def init_gain(self, net, soln_info):
+    def init_gain(self, net, part_info):
         """initialize gain
 
         Arguments:
@@ -47,7 +47,7 @@ class FDKWayGainCalc:
         """
         if self.H.G.degree[net] < 2:  # unlikely, self-loop, etc.
             return  # does not provide any gain when move
-        part, extern_nets, _ = soln_info
+        part, extern_nets = part_info
         weight = self.H.get_net_weight(net)
         if net in extern_nets:
             # self.totalcost += weight
@@ -134,7 +134,7 @@ class FDKWayGainCalc:
         """
         self.deltaGainV = list(0 for _ in range(self.K))
 
-    def update_move_2pin_net(self, soln_info, move_info):
+    def update_move_2pin_net(self, part_info, move_info):
         """Update move for 2-pin net
 
         Arguments:
@@ -146,7 +146,7 @@ class FDKWayGainCalc:
         """
         net, fromPart, toPart, v = move_info
         assert self.H.G.degree[net] == 2
-        part, extern_nets, _ = soln_info
+        part, extern_nets = part_info
         netCur = iter(self.H.G[net])
         u = next(netCur)
         w = u if u != v else next(netCur)
@@ -170,7 +170,7 @@ class FDKWayGainCalc:
         deltaGainW[toPart] += weight
         return w, deltaGainW
 
-    def update_move_general_net(self, soln_info, move_info):
+    def update_move_general_net(self, part_info, move_info):
         """Update move for general net
 
         Arguments:
@@ -182,7 +182,7 @@ class FDKWayGainCalc:
         """
         net, fromPart, toPart, v = move_info
         assert self.H.G.degree[net] > 2
-        part, extern_nets, _ = soln_info
+        part, extern_nets = part_info
 
         num = list(0 for _ in range(self.K))
         IdVec = []
