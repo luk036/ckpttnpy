@@ -22,7 +22,7 @@ class FMGainMgr:
         self.gainCalc = GainCalc(H, K)
         self.pmax = self.H.get_max_degree()+2
         self.waitinglist = dllink(3734)
-        self.totalcost = 0
+        # self.totalcost = 0
         self.gainbucket = []
         for _ in range(K):
             self.gainbucket += [bpqueue(-self.pmax, self.pmax)]
@@ -34,12 +34,13 @@ class FMGainMgr:
             part {list} -- [description]
         """
         self.gainCalc.init(part)
-        self.totalcost = self.gainCalc.totalcost
+        # self.totalcost = self.gainCalc.totalcost
         self.waitinglist.clear()
         
         for v in self.H.module_fixed:
             # force to the lowest gain
             self.gainCalc.set_key(v, -2*self.pmax)
+        return self.gainCalc.totalcost
 
     def is_empty_togo(self, toPart):
         """[summary]
@@ -121,7 +122,7 @@ class FMGainMgr:
     # private:
 
     @abstractmethod
-    def modify_key(self, part, w, key):
+    def modify_key(self, w, part_w, key):
         """Abstract method
 
         Arguments:
@@ -139,7 +140,7 @@ class FMGainMgr:
         """
         w, deltaGainW = self.gainCalc.update_move_2pin_net(
             part, move_info)
-        self.modify_key(part, w, deltaGainW)
+        self.modify_key(w, part[w], deltaGainW)
 
     def update_move_general_net(self, part, move_info):
         """Update move for general net
@@ -152,4 +153,5 @@ class FMGainMgr:
             part, move_info)
         degree = len(IdVec)
         for idx in range(degree):
-            self.modify_key(part, IdVec[idx], deltaGain[idx])
+            w = IdVec[idx]
+            self.modify_key(w, part[w], deltaGain[idx])

@@ -21,8 +21,8 @@ class FMPartMgr:
     def init(self, part):
         """[summary]
         """
-        self.gainMgr.init(part)
-        self.totalcost = self.gainMgr.totalcost
+        self.totalcost = self.gainMgr.init(part)
+        # self.totalcost = self.gainMgr.totalcost
         assert self.totalcost >= 0
         self.validator.init(part)
 
@@ -50,7 +50,10 @@ class FMPartMgr:
             # Update v and its neigbours (even they are in waitinglist)
             # Put neigbours to bucket
             self.gainMgr.update_move(part, move_info_v)
-            self.gainMgr.update_move_v(part, move_info_v, gainmax)
+            weight = self.H.get_module_weight(v)
+            g = gainmax if weight != 0 else 2*self.gainMgr.pmax
+            self.gainMgr.update_move_v(part, move_info_v, g)
+
             self.validator.update_move(move_info_v)
             part[v] = toPart
             # totalgain += gainmax
@@ -69,8 +72,9 @@ class FMPartMgr:
         totalgain = 0
         deferredsnapshot = False
         # snapshot = part.copy()
-        snapshot = list(k for k in part)
-        besttotalgain = 0
+        # snapshot = list(k for k in part)
+        snapshot = None
+        besttotalgain = -1
 
         while not self.gainMgr.is_empty():
             # Take the gainmax with v from gainbucket

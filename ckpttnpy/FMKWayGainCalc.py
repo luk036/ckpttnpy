@@ -1,4 +1,5 @@
 from .dllist import dllink
+from .robin import robin
 
 
 class FMKWayGainCalc:
@@ -14,6 +15,7 @@ class FMKWayGainCalc:
         """
         self.H = H
         self.K = K
+        self.RR = robin(K)
         self.totalcost = 0
 
         self.vertex_list = []
@@ -62,14 +64,14 @@ class FMKWayGainCalc:
         for k in range(self.K):
             self.vertex_list[k][v].key = key
 
-    def modify_gain(self, v, weight):
+    def modify_gain(self, v, pv, weight):
         """Modify gain
 
         Arguments:
             v {node_t} -- [description]
             weight {int} -- [description]
         """
-        for k in range(self.K):
+        for k in self.RR.exclude(pv):
             self.vertex_list[k][v].key += weight
 
     def init_gain_2pin_net(self, net, part):
@@ -90,11 +92,11 @@ class FMKWayGainCalc:
         weight = self.H.get_net_weight(net)
         if part_v != part_w:
             self.totalcost += weight
+            self.vertex_list[part_v][w].key += weight
+            self.vertex_list[part_w][v].key += weight
         else:
-            self.modify_gain(w, -weight)
-            self.modify_gain(v, -weight)
-        self.vertex_list[part_v][w].key += weight
-        self.vertex_list[part_w][v].key += weight
+            self.modify_gain(w, part_w, -weight)
+            self.modify_gain(v, part_v, -weight)
 
     def init_gain_general_net(self, net, part):
         """initialize gain for general net
@@ -124,7 +126,7 @@ class FMKWayGainCalc:
             elif num[k] == 1:
                 for w in IdVec:
                     if part[w] == k:
-                        self.modify_gain(w, weight)
+                        self.modify_gain(w, part[w], weight)
                         break
 
     def update_move_init(self):
@@ -160,7 +162,7 @@ class FMKWayGainCalc:
             for k in range(self.K):
                 deltaGainW[k] -= weight
                 self.deltaGainV[k] -= weight
-
+    
         deltaGainW[fromPart] -= weight
         deltaGainW[toPart] += weight
         return w, deltaGainW

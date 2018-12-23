@@ -1,5 +1,5 @@
 from .FMGainMgr import FMGainMgr
-
+from .robin import robin
 
 class FMKWayGainMgr(FMGainMgr):
 
@@ -14,6 +14,7 @@ class FMKWayGainMgr(FMGainMgr):
             K {uint8_t} -- number of partitions
         """
         FMGainMgr.__init__(self, GainCalc, H, K)
+        self.RR = robin(K)
 
     def init(self, part):
         """(re)initialization after creation
@@ -21,21 +22,22 @@ class FMKWayGainMgr(FMGainMgr):
         Arguments:
             part {list} -- [description]
         """
-        FMGainMgr.init(self, part)
+        totalcost = FMGainMgr.init(self, part)
 
         for k in range(self.K):
             self.gainbucket[k].clear()
 
         for v in range(self.H.number_of_modules()):
-            for k in range(self.K):
+            pv = part[v]
+            for k in self.RR.exclude(pv):
                 vlink = self.gainCalc.vertex_list[k][v]
-                if part[v] == k:
-                    # assert vlink.key == 0
-                    self.gainbucket[k].set_key(vlink, -2*self.pmax)
-                    self.waitinglist.append(vlink)
-                else:
-                    self.gainbucket[k].append(vlink, vlink.key)
+                self.gainbucket[k].append(vlink, vlink.key)
+            vlink = self.gainCalc.vertex_list[pv][v]
+            self.gainbucket[k].set_key(vlink, -2*self.pmax)
+            self.waitinglist.append(vlink)
 
+        return totalcost
+        
     def set_key(self, whichPart, v, key):
         """Set key
 
@@ -66,7 +68,7 @@ class FMKWayGainMgr(FMGainMgr):
 
     # private:
 
-    def modify_key(self, part, w, key):
+    def modify_key(self, w, part_w, key):
         """[summary]
 
         Arguments:
@@ -74,8 +76,6 @@ class FMKWayGainMgr(FMGainMgr):
             w {[type]} -- [description]
             key {[type]} -- [description]
         """
-        for k in range(self.K):
-            if part[w] == k:
-                continue
+        for k in self.RR.exclude(part_w):
             self.gainbucket[k].modify_key(
                 self.gainCalc.vertex_list[k][w], key[k])

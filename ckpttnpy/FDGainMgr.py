@@ -121,7 +121,7 @@ class FDGainMgr:
     # private:
 
     @abstractmethod
-    def modify_key(self, part, w, key):
+    def modify_key(self, w, part_w, key):
         """Abstract method
 
         Arguments:
@@ -140,7 +140,7 @@ class FDGainMgr:
         w, deltaGainW = self.gainCalc.update_move_2pin_net(
             soln_info, move_info)
         part, _, _ = soln_info 
-        self.modify_key(part, w, deltaGainW)
+        self.modify_key(w, part[w], deltaGainW)
 
     def update_move_general_net(self, soln_info, move_info):
         """Update move for general net
@@ -154,4 +154,5 @@ class FDGainMgr:
         part, _, _ = soln_info 
         degree = len(IdVec)
         for idx in range(degree):
-            self.modify_key(part, IdVec[idx], deltaGain[idx])
+            w = IdVec[idx]
+            self.modify_key(w, part[w], deltaGain[idx])

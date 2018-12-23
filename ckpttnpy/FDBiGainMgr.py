@@ -43,7 +43,7 @@ class FDBiGainMgr(FDGainMgr):
         self.gainbucket[whichPart].set_key(
             self.gainCalc.vertex_list[v], key)
 
-    def modify_key(self, part, w, key):
+    def modify_key(self, w, part_w, key):
         """Update gain for the moving cell
 
         Arguments:
@@ -51,7 +51,6 @@ class FDBiGainMgr(FDGainMgr):
             move_info_v {[type]} -- [description]
             gain {[type]} -- [description]
         """
-        part_w = part[w]
         self.gainbucket[1-part_w].modify_key(
             self.gainCalc.vertex_list[w], key)
 

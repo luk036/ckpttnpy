@@ -1,5 +1,5 @@
 from .FDGainMgr import FDGainMgr
-
+from .robin import robin
 
 class FDKWayGainMgr(FDGainMgr):
 
@@ -14,7 +14,8 @@ class FDKWayGainMgr(FDGainMgr):
             K {uint8_t} -- number of partitions
         """
         FDGainMgr.__init__(self, GainCalc, H, K)
-
+        self.RR = robin(K)
+        
     def init(self, soln_info):
         """(re)initialization after creation
 
@@ -66,7 +67,7 @@ class FDKWayGainMgr(FDGainMgr):
 
     # private:
 
-    def modify_key(self, part, w, key):
+    def modify_key(self, w, part_w, key):
         """[summary]
 
         Arguments:
@@ -74,8 +75,6 @@ class FDKWayGainMgr(FDGainMgr):
             w {[type]} -- [description]
             key {[type]} -- [description]
         """
-        for k in range(self.K):
-            if part[w] == k:
-                continue
+        for k in self.RR.exclude(part_w):
             self.gainbucket[k].modify_key(
                 self.gainCalc.vertex_list[k][w], key[k])

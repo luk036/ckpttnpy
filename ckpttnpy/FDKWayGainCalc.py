@@ -1,4 +1,5 @@
 from .dllist import dllink
+from .robin import robin
 
 
 class FDKWayGainCalc:
@@ -14,6 +15,7 @@ class FDKWayGainCalc:
         """
         self.H = H
         self.K = K
+        self.RR = robin(K)
         self.totalcost = 0
 
         self.vertex_list = []
@@ -54,11 +56,8 @@ class FDKWayGainCalc:
             else:
                 self.init_gain_general_net(net, part)
         else: # 90%
-            for k in range(self.K):
-                for w in self.H.G[net]:
-                    # w = self.H.module_map[w]
-                    if part[w] == k:
-                        continue
+            for w in self.H.G[net]:
+                for k in self.RR.exclude(part[w]):
                     self.vertex_list[k][w].key -= weight
 
     def set_key(self, v, key):
@@ -72,14 +71,14 @@ class FDKWayGainCalc:
         for k in range(self.K):
             self.vertex_list[k][v].key = key
 
-    def modify_gain(self, v, weight):
+    def modify_gain(self, v, part_v, weight):
         """Modify gain
 
         Arguments:
             v {node_t} -- [description]
             weight {int} -- [description]
         """
-        for k in range(self.K):
+        for k in self.RR.exclude(part_v):
             self.vertex_list[k][v].key += weight
 
     def init_gain_2pin_net(self, net, part):
@@ -123,7 +122,7 @@ class FDKWayGainCalc:
                 if num[k] == 1:
                     for w in IdVec:
                         if part[w] == k:
-                            self.modify_gain(w, weight)
+                            self.modify_gain(w, part[w], weight)
                             break
             else: # num[k] == 0
                 for w in IdVec:
