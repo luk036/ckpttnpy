@@ -45,17 +45,18 @@ class FDKWayGainCalc:
             net {node_t} -- [description]
             part {list} -- [description]
         """
-        if self.H.G.degree[net] < 2:  # unlikely, self-loop, etc.
+        degree = self.H.G.degree[net]
+        if degree < 2:  # unlikely, self-loop, etc.
             return  # does not provide any gain when move
         part, extern_nets = part_info
-        weight = self.H.get_net_weight(net)
         if net in extern_nets:
             # self.totalcost += weight
-            if self.H.G.degree[net] == 2:
+            if degree == 2:
                 self.init_gain_2pin_net(net, part)
             else:
                 self.init_gain_general_net(net, part)
         else: # 90%
+            weight = self.H.get_net_weight(net)
             for w in self.H.G[net]:
                 for k in self.RR.exclude(part[w]):
                     self.vertex_list[k][w].key -= weight
@@ -88,7 +89,6 @@ class FDKWayGainCalc:
             net {node_t} -- [description]
             part {list} -- [description]
         """
-        assert self.H.G.degree[net] == 2
         weight = self.H.get_net_weight(net)
         self.totalcost += weight
         netCur = iter(self.H.G[net])
@@ -145,7 +145,6 @@ class FDKWayGainCalc:
             [type] -- [description]
         """
         net, fromPart, toPart, v = move_info
-        assert self.H.G.degree[net] == 2
         part, extern_nets = part_info
         netCur = iter(self.H.G[net])
         u = next(netCur)
@@ -181,7 +180,6 @@ class FDKWayGainCalc:
             [type] -- [description]
         """
         net, fromPart, toPart, v = move_info
-        assert self.H.G.degree[net] > 2
         part, extern_nets = part_info
 
         num = list(0 for _ in range(self.K))

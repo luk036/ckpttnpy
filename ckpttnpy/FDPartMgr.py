@@ -128,28 +128,29 @@ class FDPartMgr:
 
     def restore_part_info(self, snapshot):
         extern_nets_ss, extern_modules_ss = snapshot
-        part_ss = list(self.K for _ in range(self.H.number_of_modules()))
+        part = list(self.K for _ in range(self.H.number_of_modules()))
         Q = deque(v for v, _ in extern_modules_ss.items())
         while Q:
             v = Q.popleft()
-            if part_ss[v] < self.K:
+            if part[v] < self.K:
                 continue
-            part_v = part_ss[v] = extern_modules_ss[v]
+            part_v = part[v] = extern_modules_ss[v]
             Q2 = deque()
             Q2.append(v)
             while Q2:
                 v2 = Q2.popleft()
-                # if part_ss[v2] < self.K:
+                # if part[v2] < self.K:
                 #     continue
                 for net in self.H.G[v2]:
                     if net in extern_nets_ss:
                         continue
                     for v3 in self.H.G[net]:
-                        if part_ss[v3] < self.K:
+                        if part[v3] < self.K:
                             continue
-                        part_ss[v3] = part_v
+                        part[v3] = part_v
                         Q2.append(v3)
-        return part_ss, extern_nets_ss
+        extern_nets = extern_nets_ss.copy()
+        return part, extern_nets
 
     def optimize(self, part_info):
         while True:

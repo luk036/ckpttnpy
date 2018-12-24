@@ -41,13 +41,14 @@ class FDBiGainCalc:
             net {node_t} -- [description]
             part {list} -- [description]
         """
-        if self.H.G.degree[net] < 2:  # unlikely, self-loop, etc.
+        degree = self.H.G.degree[net]
+        if degree < 2:  # unlikely, self-loop, etc.
             return  # does not provide any gain when move
         part, extern_nets = part_info
         weight = self.H.get_net_weight(net)
         if net in extern_nets:
             self.totalcost += weight
-            if self.H.G.degree[net] == 2:
+            if degree == 2:
                 for w in self.H.G[net]:
                     # w = self.H.module_map[w]
                     self.modify_gain(w, weight)
@@ -118,7 +119,6 @@ class FDBiGainCalc:
         """
         part, extern_nets = part_info
         net, fromPart, _, v = move_info
-        assert self.H.G.degree[net] == 2
         netCur = iter(self.H.G[net])
         u = next(netCur)
         w = u if u != v else next(netCur)
@@ -145,7 +145,6 @@ class FDBiGainCalc:
         """
         net, fromPart, toPart, v = move_info
         part, extern_nets = part_info
-        assert self.H.G.degree[net] > 2
         num = [0, 0]
         IdVec = []
         deltaGain = []

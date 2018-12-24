@@ -112,10 +112,11 @@ class FDGainMgr:
 
         fromPart, toPart, v = move_info_v
         for net in self.H.G[v]:
-            move_info = [net, fromPart, toPart, v]
-            if self.H.G.degree[net] < 2:  # unlikely, self-loop, etc.
+            degree = self.H.G.degree[net]
+            if degree < 2:  # unlikely, self-loop, etc.
                 continue  # does not provide any gain change when move
-            if self.H.G.degree[net] == 2:
+            move_info = [net, fromPart, toPart, v]
+            if degree == 2:
                 self.update_move_2pin_net(part_info, move_info)
             else:
                 self.update_move_general_net(part_info, move_info)

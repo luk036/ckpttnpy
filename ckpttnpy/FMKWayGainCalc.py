@@ -81,7 +81,6 @@ class FMKWayGainCalc:
             net {node_t} -- [description]
             part {list} -- [description]
         """
-        assert self.H.G.degree[net] == 2
         netCur = iter(self.H.G[net])
         w = next(netCur)
         v = next(netCur)
@@ -145,7 +144,6 @@ class FMKWayGainCalc:
             [type] -- [description]
         """
         net, fromPart, toPart, v = move_info
-        assert self.H.G.degree[net] == 2
         netCur = iter(self.H.G[net])
         u = next(netCur)
         w = u if u != v else next(netCur)
@@ -178,7 +176,6 @@ class FMKWayGainCalc:
             [type] -- [description]
         """
         net, fromPart, toPart, v = move_info
-        assert self.H.G.degree[net] > 2
         num = list(0 for _ in range(self.K))
         IdVec = []
         deltaGain = []
