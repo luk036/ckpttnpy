@@ -156,7 +156,7 @@ class Netlist:
         part, extern_nets = part_info
         part_down, extern_nets_down = part_info_down
 
-        extern_nets_down = set()
+        extern_nets_down.clear()
         for net in extern_nets:
             extern_nets_down.add(self.node_down_map[net])
 
@@ -176,7 +176,7 @@ class Netlist:
         part, extern_nets = part_info
         part_up, extern_nets_up = part_info_up
 
-        extern_nets_up = set()
+        extern_nets_up.clear()
         for net in extern_nets:
             extern_nets_up.add(self.node_up_map[net])
 

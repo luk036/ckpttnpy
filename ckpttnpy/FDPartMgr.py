@@ -87,13 +87,17 @@ class FDPartMgr:
         Arguments:
             part_info {[type]} -- [description]
         """
+        self.init(part_info)
+        totalcostafter = self.totalcost
         while True:
             self.init(part_info)
             totalcostbefore = self.totalcost
+            assert totalcostafter == totalcostbefore
             self.optimize_1pass(part_info)
             assert self.totalcost <= totalcostbefore
             if self.totalcost == totalcostbefore:
                 break
+            totalcostafter = self.totalcost
 
     def optimize_1pass(self, part_info):
         """[summary]

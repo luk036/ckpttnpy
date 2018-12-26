@@ -13,7 +13,7 @@ def run_FDKWayPartMgr(H, gainMgr, K):
         gainMgr {gainMgr} -- [description]
         K {int} -- number of partitions
     """
-    constrMgr = FMKWayConstrMgr(H, 0.4, K)  # 0.2 ???
+    constrMgr = FMKWayConstrMgr(H, 0.2, K)  # 0.3 ???
     partMgr = FDPartMgr(H, gainMgr, constrMgr)
     part = list(0 for _ in H.modules)
     extern_nets = set()
@@ -31,7 +31,7 @@ def run_FDKWayPartMgr(H, gainMgr, K):
 def test_FDKWayPartMgr2():
     H = create_drawf()
     gainMgr = FDKWayGainMgr(FDKWayGainCalc, H, 3)
-    H.module_fixed = [3]
+    # H.module_fixed = [3]
     run_FDKWayPartMgr(H, gainMgr, 3)
 
 

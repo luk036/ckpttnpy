@@ -39,7 +39,6 @@ class FMPartMgr:
                 break
             v, gainmax = self.gainMgr.select_togo(toPart)
             fromPart = part[v]
-            assert v == v
             assert fromPart != toPart
             move_info_v = [fromPart, toPart, v]
             # weight = self.H.get_module_weight(v)
@@ -115,11 +114,14 @@ class FMPartMgr:
         self.totalcost -= totalgain
 
     def optimize(self, part):
+        self.init(part)
+        totalcostafter = self.totalcost
         while True:
             self.init(part)
             totalcostbefore = self.totalcost
+            assert totalcostafter == totalcostbefore
             self.optimize_1pass(part)
             assert self.totalcost <= totalcostbefore
             if self.totalcost == totalcostbefore:
                 break
-
+            totalcostafter = self.totalcost

@@ -7,7 +7,7 @@ from ckpttnpy.tests.test_netlist import create_test_netlist, create_drawf
 
 def run_FDBiPartMgr(H):
     gainMgr = FDBiGainMgr(FDBiGainCalc, H)
-    constrMgr = FMBiConstrMgr(H, 0.3)
+    constrMgr = FMBiConstrMgr(H, 0.4)
     partMgr = FDPartMgr(H, gainMgr, constrMgr)
     part = list(0 for _ in H.modules)
     extern_nets = set()

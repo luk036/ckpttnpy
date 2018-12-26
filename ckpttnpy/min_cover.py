@@ -7,7 +7,7 @@ import numpy as np
 #
 
 
-def max_independent_net(H, weight):
+def max_independent_net(H, weight, DontSelect):
     """Maximal Indepentent Net
 
     Arguments:
@@ -22,6 +22,10 @@ def max_independent_net(H, weight):
     total_cost = 0
     for i_net, net in enumerate(H.nets):
         if visited[i_net]:
+            continue
+        if H.G.degree(net) < 2:
+            continue
+        if net in DontSelect:
             continue
         S.add(net)
         total_cost += H.get_net_weight(net)
@@ -104,8 +108,8 @@ def min_net_cover_pd(H, weight):
     return S, total_primal_cost
 
 
-def create_contraction_subgraph(H):
-    S, total_cost = max_independent_net(H, H.module_weight)
+def create_contraction_subgraph(H, DontSelect):
+    S, total_cost = max_independent_net(H, H.module_weight, DontSelect)
 
     module_up_map = {}
     for v in H.modules:

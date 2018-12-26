@@ -5,7 +5,7 @@ class FDBiGainMgr(FDGainMgr):
 
     # public:
 
-    def __init__(self, GainCalc, H):
+    def __init__(self, GainCalc, H, K=2):
         """Initialization
 
         Arguments:
