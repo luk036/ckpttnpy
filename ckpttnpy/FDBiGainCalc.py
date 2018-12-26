@@ -25,7 +25,7 @@ class FDBiGainCalc:
         """(re)initialization after creation
 
         Arguments:
-            part {list} -- [description]
+            part_info {[type]} -- [description]
         """
         self.totalcost = 0
         for vlink in self.vertex_list:
@@ -39,7 +39,7 @@ class FDBiGainCalc:
 
         Arguments:
             net {node_t} -- [description]
-            part {list} -- [description]
+            part_info {[type]} -- [description]
         """
         degree = self.H.G.degree[net]
         if degree < 2:  # unlikely, self-loop, etc.
@@ -54,7 +54,7 @@ class FDBiGainCalc:
                     self.modify_gain(w, weight)
             else:
                 self.init_gain_general_net(net, part, weight)
-        else: # 90%
+        else:  # 90%
             for w in self.H.G[net]:
                 # w = self.H.module_map[w]
                 self.modify_gain(w, -weight)
@@ -84,11 +84,12 @@ class FDBiGainCalc:
         """[summary]
 
         Arguments:
-            v {[type]} -- [description]
-            key {[type]} -- [description]
+            v {node_t} -- [description]
+            weight {int} -- [description]
+
+        Keyword Arguments:
+            toPart {[type]} -- [description] (default: {None})
         """
-        # i_v = self.H.module_map[v]
-        # assert i_v == v
         self.vertex_list[v].key = weight
 
     def modify_gain(self, w, weight):
@@ -111,7 +112,7 @@ class FDBiGainCalc:
         """Update move for 2-pin net
 
         Arguments:
-            part {list} -- [description]
+            part_info {[type]} -- [description]
             move_info {MoveInfoV} -- [description]
 
         Returns:
@@ -137,7 +138,7 @@ class FDBiGainCalc:
         """Update move for general net
 
         Arguments:
-            part {list} -- [description]
+            part_info {[type]} -- [description]
             move_info {MoveInfoV} -- [description]
 
         Returns:
@@ -164,7 +165,7 @@ class FDBiGainCalc:
             for idx in range(degree):
                 deltaGain[idx] -= weight
             return IdVec, deltaGain
-            
+
         if num[toPart] == 0:
             extern_nets.add(net)
             for idx in range(degree):

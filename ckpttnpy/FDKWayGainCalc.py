@@ -28,7 +28,7 @@ class FDKWayGainCalc:
         """(re)initialization after creation
 
         Arguments:
-            part {list} -- [description]
+            part_info {[type]} -- [description]
         """
         self.totalcost = 0
         for k in range(self.K):
@@ -43,7 +43,7 @@ class FDKWayGainCalc:
 
         Arguments:
             net {node_t} -- [description]
-            part {list} -- [description]
+            part_info {[type]} -- [description]
         """
         degree = self.H.G.degree[net]
         if degree < 2:  # unlikely, self-loop, etc.
@@ -77,6 +77,7 @@ class FDKWayGainCalc:
 
         Arguments:
             v {node_t} -- [description]
+            part_v {uint8_t} -- [description]
             weight {int} -- [description]
         """
         for k in self.RR.exclude(part_v):
@@ -138,7 +139,7 @@ class FDKWayGainCalc:
         """Update move for 2-pin net
 
         Arguments:
-            part {list} -- [description]
+            part_info {[type]} -- [description]
             move_info {MoveInfoV} -- [description]
 
         Returns:
@@ -173,7 +174,7 @@ class FDKWayGainCalc:
         """Update move for general net
 
         Arguments:
-            part {list} -- [description]
+            part_info {[type]} -- [description]
             move_info {MoveInfoV} -- [description]
 
         Returns:

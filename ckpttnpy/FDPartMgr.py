@@ -3,6 +3,7 @@
 # Snapshot in the form of "interface"???
 from collections import deque
 
+
 class FDPartMgr:
     def __init__(self, H, gainMgr, constrMgr):
         """[summary]
@@ -15,12 +16,14 @@ class FDPartMgr:
         self.H = H
         self.gainMgr = gainMgr
         self.validator = constrMgr
-        # self.snapshot = None
         self.K = gainMgr.K
         self.totalcost = 0
 
     def init(self, part_info):
         """[summary]
+
+        Arguments:
+            part_info {[type]} -- [description]
         """
         self.totalcost = self.gainMgr.init(part_info)
         # self.totalcost = self.gainMgr.totalcost
@@ -31,6 +34,14 @@ class FDPartMgr:
         # totalgain = 0
 
     def legalize(self, part_info):
+        """[summary]
+
+        Arguments:
+            part_info {[type]} -- [description]
+
+        Returns:
+            [type] -- [description]
+        """
         part, _ = part_info
         self.init(part_info)
         legalcheck = 0
@@ -42,7 +53,6 @@ class FDPartMgr:
                 break
             v, gainmax = self.gainMgr.select_togo(toPart)
             fromPart = part[v]
-            assert v == v
             assert fromPart != toPart
             move_info_v = [fromPart, toPart, v]
             # weight = self.H.get_module_weight(v)
@@ -71,7 +81,26 @@ class FDPartMgr:
         return legalcheck
         # assert not self.gainMgr.gainbucket.is_empty()
 
+    def optimize(self, part_info):
+        """[summary]
+
+        Arguments:
+            part_info {[type]} -- [description]
+        """
+        while True:
+            self.init(part_info)
+            totalcostbefore = self.totalcost
+            self.optimize_1pass(part_info)
+            assert self.totalcost <= totalcostbefore
+            if self.totalcost == totalcostbefore:
+                break
+
     def optimize_1pass(self, part_info):
+        """[summary]
+
+        Arguments:
+            part_info {[type]} -- [description]
+        """
         totalgain = 0
         deferredsnapshot = False
         # snapshot = part.copy()
@@ -118,6 +147,14 @@ class FDPartMgr:
         self.totalcost -= totalgain
 
     def take_snapshot(self, part_info):
+        """[summary]
+
+        Arguments:
+            part_info {[type]} -- [description]
+
+        Returns:
+            [type] -- [description]
+        """
         part, extern_nets = part_info
         extern_nets_ss = extern_nets.copy()
         extern_modules_ss = dict()
@@ -127,6 +164,14 @@ class FDPartMgr:
         return extern_nets_ss, extern_modules_ss
 
     def restore_part_info(self, snapshot):
+        """[summary]
+
+        Arguments:
+            snapshot {[type]} -- [description]
+
+        Returns:
+            [type] -- [description]
+        """
         extern_nets_ss, extern_modules_ss = snapshot
         part = list(self.K for _ in range(self.H.number_of_modules()))
         Q = deque(v for v, _ in extern_modules_ss.items())
@@ -151,13 +196,3 @@ class FDPartMgr:
                         Q2.append(v3)
         extern_nets = extern_nets_ss.copy()
         return part, extern_nets
-
-    def optimize(self, part_info):
-        while True:
-            self.init(part_info)
-            totalcostbefore = self.totalcost
-            self.optimize_1pass(part_info)
-            assert self.totalcost <= totalcostbefore
-            if self.totalcost == totalcostbefore:
-                break
-

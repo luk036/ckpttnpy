@@ -104,7 +104,7 @@ class FDGainMgr:
         """[summary]
 
         Arguments:
-            part {list} -- [description]
+            part_info {[type]} -- [description]
             move_info_v {[type]} -- [description]
         """
         # self.deltaGainV = list(0 for _ in range(self.K))
@@ -128,8 +128,8 @@ class FDGainMgr:
         """Abstract method
 
         Arguments:
-            part {uint8_t} -- [description]
             w {node_t} -- [description]
+            part_w {uint8_t} -- [description]
             key {int/int[]} -- [description]
         """
 
@@ -137,7 +137,7 @@ class FDGainMgr:
         """Update move for 2-pin net
 
         Arguments:
-            part {list} -- Partition sol'n
+            part_info {[type]} -- [description]
             move_info {[type]} -- [description]
         """
         w, deltaGainW = self.gainCalc.update_move_2pin_net(
@@ -149,7 +149,7 @@ class FDGainMgr:
         """Update move for general net
 
         Arguments:
-            part {list} -- Partition sol'n
+            part_info {[type]} -- [description]
             move_info {[type]} -- [description]
         """
         IdVec, deltaGain = self.gainCalc.update_move_general_net(

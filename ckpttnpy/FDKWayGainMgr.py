@@ -1,6 +1,7 @@
 from .FDGainMgr import FDGainMgr
 from .robin import robin
 
+
 class FDKWayGainMgr(FDGainMgr):
 
     # public:
@@ -9,18 +10,18 @@ class FDKWayGainMgr(FDGainMgr):
         """Initialization
 
         Arguments:
-            H {Netlist} -- [description]
             GainCalc {[type]} -- [description]
+            H {Netlist} -- [description]
             K {uint8_t} -- number of partitions
         """
         FDGainMgr.__init__(self, GainCalc, H, K)
         self.RR = robin(K)
-        
+
     def init(self, part_info):
         """(re)initialization after creation
 
         Arguments:
-            part {list} -- [description]
+            part_info {[type]} -- [description]
         """
         totalcost = FDGainMgr.init(self, part_info)
         part, _ = part_info
@@ -38,7 +39,7 @@ class FDKWayGainMgr(FDGainMgr):
                     self.gainbucket[k].append(vlink, vlink.key)
 
         return totalcost
-        
+
     def set_key(self, whichPart, v, key):
         """Set key
 
@@ -73,8 +74,8 @@ class FDKWayGainMgr(FDGainMgr):
         """[summary]
 
         Arguments:
-            part {[type]} -- [description]
             w {[type]} -- [description]
+            part_w {[type]} -- [description]
             key {[type]} -- [description]
         """
         for k in self.RR.exclude(part_w):

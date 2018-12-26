@@ -9,9 +9,8 @@ class FDBiGainMgr(FDGainMgr):
         """Initialization
 
         Arguments:
-            H {Netlist} -- [description]
             GainCalc {[type]} -- [description]
-            K {uint8_t} -- number of partitions
+            H {Netlist} -- [description]
         """
         FDGainMgr.__init__(self, GainCalc, H)
 
@@ -19,7 +18,7 @@ class FDBiGainMgr(FDGainMgr):
         """(re)initialization after creation
 
         Arguments:
-            part {list} -- [description]
+            part_info {[type]} -- [description]
         """
         totalcost = FDGainMgr.init(self, part_info)
         for k in range(self.K):
@@ -48,20 +47,20 @@ class FDBiGainMgr(FDGainMgr):
         """Update gain for the moving cell
 
         Arguments:
-            part {[type]} -- [description]
-            move_info_v {[type]} -- [description]
-            gain {[type]} -- [description]
+            w {node_t} -- [description]
+            part_w {[type]} -- [description]
+            key {[type]} -- [description]
         """
         self.gainbucket[1-part_w].modify_key(
             self.gainCalc.vertex_list[w], key)
 
     def update_move_v(self, part, move_info_v, gain):
         """[summary]
-
+        
         Arguments:
             part {[type]} -- [description]
-            w {[type]} -- [description]
-            key {[type]} -- [description]
+            move_info_v {[type]} -- [description]
+            gain {[type]} -- [description]
         """
         fromPart, _, v = move_info_v
         self.set_key(fromPart, v, -gain)
