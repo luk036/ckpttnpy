@@ -123,7 +123,7 @@ class FDPartMgr:
                 continue
             if gainmax < 0:
                 # become down turn
-                if totalgain > besttotalgain:
+                if (not deferredsnapshot) or (totalgain > besttotalgain):
                     # Take a snapshot before move
                     # snapshot = part.copy()
                     snapshot = self.take_snapshot(part_info)
@@ -131,6 +131,7 @@ class FDPartMgr:
                 deferredsnapshot = True
 
             elif totalgain + gainmax > besttotalgain:
+                besttotalgain = totalgain + gainmax
                 deferredsnapshot = False
 
             # Update v and its neigbours (even they are in waitinglist)

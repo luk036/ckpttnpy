@@ -28,7 +28,7 @@ class MLPartMgr:
         self.K = K
         self.totalcost = 0
 
-    def run_Partition(self, H, part, limitsize = 3):
+    def run_Partition(self, H, part, limitsize = 7):
         gainMgr = self.GainMgr(self.GainCalc, H, self.K)
         constrMgr = self.ConstrMgr(H, self.BalTol, self.K)
         partMgr = FMPartMgr(H, gainMgr, constrMgr)

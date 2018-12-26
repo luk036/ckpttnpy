@@ -10,22 +10,22 @@ from ckpttnpy.FDKWayGainMgr import FDKWayGainMgr
 from ckpttnpy.FMKWayConstrMgr import FMKWayConstrMgr
 
 
-# def run_MLBiPartMgr(H):
-#     partMgr = MLPartMgr(FDBiGainCalc, FDBiGainMgr, FMBiConstrMgr, 0.4)
-#     part = list(0 for _ in H.modules)
-#     extern_nets = set()
-#     part_info = part, extern_nets
-#     partMgr.run_FDPartition(H, part_info)
-#     assert partMgr.totalcost == 2
+def run_MLBiPartMgr(H):
+    partMgr = MLPartMgr(FDBiGainCalc, FDBiGainMgr, FMBiConstrMgr, 0.4)
+    part = list(0 for _ in H.modules)
+    extern_nets = set()
+    part_info = part, extern_nets
+    partMgr.run_FDPartition(H, part_info)
+    assert partMgr.totalcost == 2
 
 
-# def test_MLBiPartMgr():
-#     H = create_drawf()
-#     run_MLBiPartMgr(H)
+def test_MLBiPartMgr():
+    H = create_drawf()
+    run_MLBiPartMgr(H)
 
 
 # def run_MLKWayPartMgr(H):
-#     partMgr = MLPartMgr(FDKWayGainCalc, FDKWayGainMgr, FMKWayConstrMgr, 0.3, 3)
+#     partMgr = MLPartMgr(FDKWayGainCalc, FDKWayGainMgr, FMKWayConstrMgr, 0.4, 3)
 #     part = list(0 for _ in H.modules)
 #     extern_nets = set()
 #     part_info = part, extern_nets
