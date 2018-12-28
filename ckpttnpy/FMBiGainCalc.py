@@ -49,12 +49,12 @@ class FMBiGainCalc:
         else:
             self.init_gain_general_net(net, part)
 
-    def set_key(self, v, weight, toPart=None):
+    def set_key(self, v, weight):
         """[summary]
 
         Arguments:
             v {[type]} -- [description]
-            key {[type]} -- [description]
+            weight {[type]} -- [description]
         """
         # i_v = self.H.module_map[v]
         # assert i_v == v

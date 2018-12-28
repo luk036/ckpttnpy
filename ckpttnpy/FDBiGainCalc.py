@@ -33,7 +33,8 @@ class FDBiGainCalc:
         for net in self.H.nets:
             # for net in self.H.net_list:
             self.init_gain(net, part_info)
-
+        return self.totalcost
+        
     def init_gain(self, net, part_info):
         """initialize gain
 
@@ -80,15 +81,12 @@ class FDBiGainCalc:
                         self.modify_gain(w, weight)
                         break
 
-    def set_key(self, v, weight, toPart=None):
+    def set_key(self, v, weight):
         """[summary]
 
         Arguments:
             v {node_t} -- [description]
             weight {int} -- [description]
-
-        Keyword Arguments:
-            toPart {[type]} -- [description] (default: {None})
         """
         self.vertex_list[v].key = weight
 

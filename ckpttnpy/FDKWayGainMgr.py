@@ -29,16 +29,35 @@ class FDKWayGainMgr(FDGainMgr):
             self.gainbucket[k].clear()
 
         for v in range(self.H.number_of_modules()):
-            for k in range(self.K):
+            pv = part[v]
+            for k in self.RR.exclude(pv):
                 vlink = self.gainCalc.vertex_list[k][v]
-                if part[v] == k:
-                    # assert vlink.key == 0
-                    self.gainbucket[k].set_key(vlink, 0)
-                    self.waitinglist.append(vlink)
-                else:
-                    self.gainbucket[k].append(vlink, vlink.key)
+                self.gainbucket[k].append(vlink, vlink.key)
+
+            vlink = self.gainCalc.vertex_list[pv][v]
+            self.gainbucket[pv].set_key(vlink, 0)
+            self.waitinglist.append(vlink)
+
+        for v in self.H.module_fixed:
+            self.lock_all(part[v], v)
 
         return totalcost
+
+    def lock(self, whichPart, v):
+        """Set key
+
+        Arguments:
+            whichPart {uint8_t} -- [description]
+            v {node_t} -- [description]
+            key {int} -- [description]
+        """
+        vlink = self.gainCalc.vertex_list[whichPart][v]
+        self.gainbucket[whichPart].detach(vlink)
+        vlink.lock()
+
+    def lock_all(self, fromPart, v):
+        for k in range(self.K):
+            self.lock(k, v)
 
     def set_key(self, whichPart, v, key):
         """Set key
@@ -66,7 +85,7 @@ class FDKWayGainMgr(FDGainMgr):
             self.gainbucket[k].modify_key(self.gainCalc.vertex_list[k][v],
                                           self.gainCalc.deltaGainV[k])
         self.set_key(fromPart, v, -gain)
-        self.set_key(toPart, v, -2*self.pmax)
+        # self.lock(toPart, v)
 
     # private:
 

@@ -30,6 +30,15 @@ class FMPartMgr:
 
     def legalize(self, part):
         self.init(part)
+
+        # Zero-weighted modules does not contribute legalization
+        for v in self.H.modules:
+            if self.H.get_module_weight(v) != 0:
+                continue
+            if v in self.H.module_fixed: # already locked
+                continue
+            self.gainMgr.lock_all(part[v], v)
+
         legalcheck = 0
         while True:
             # Take the gainmax with v from gainbucket
@@ -50,10 +59,9 @@ class FMPartMgr:
             # Update v and its neigbours (even they are in waitinglist)
             # Put neigbours to bucket
             self.gainMgr.update_move(part, move_info_v)
-            weight = self.H.get_module_weight(v)
-            g = gainmax if weight != 0 else 2*self.gainMgr.pmax
-            self.gainMgr.update_move_v(part, move_info_v, g)
-
+            # weight = self.H.get_module_weight(v)
+            # g = gainmax if weight != 0 else 2*self.gainMgr.pmax
+            self.gainMgr.update_move_v(part, move_info_v, gainmax)
             self.validator.update_move(move_info_v)
             part[v] = toPart
             # totalgain += gainmax
@@ -74,7 +82,7 @@ class FMPartMgr:
         # snapshot = part.copy()
         # snapshot = list(k for k in part)
         snapshot = None
-        besttotalgain = -1
+        besttotalgain = 0
 
         while not self.gainMgr.is_empty():
             # Take the gainmax with v from gainbucket
@@ -93,23 +101,26 @@ class FMPartMgr:
                     besttotalgain = totalgain
                 deferredsnapshot = True
 
-            elif totalgain + gainmax > besttotalgain:
+            elif totalgain + gainmax >= besttotalgain:
                 besttotalgain = totalgain + gainmax
                 deferredsnapshot = False
 
             # Update v and its neigbours (even they are in waitinglist)
             # Put neigbours to bucket
+            _, toPart, v = move_info_v
             self.gainMgr.update_move(part, move_info_v)
-            self.gainMgr.update_move_v(part, move_info_v, 2*self.gainMgr.pmax)
+            self.gainMgr.update_move_v(part, move_info_v, gainmax)
+            self.gainMgr.lock(toPart, v)
             self.validator.update_move(move_info_v)
             totalgain += gainmax
-            _, toPart, v = move_info_v
             part[v] = toPart
 
         if deferredsnapshot:
             # restore previous best solution
             # part = snapshot.copy()
-            part = list(k for k in snapshot)
+            # part = list(k for k in snapshot)
+            for v, k in enumerate(snapshot):
+                part[v] = k
             totalgain = besttotalgain
 
         self.totalcost -= totalgain

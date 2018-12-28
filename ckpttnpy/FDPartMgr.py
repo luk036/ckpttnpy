@@ -44,6 +44,15 @@ class FDPartMgr:
         """
         part, _ = part_info
         self.init(part_info)
+
+        # Zero-weighted modules does not contribute legalization
+        for v in self.H.modules:
+            if self.H.get_module_weight(v) != 0:
+                continue
+            if v in self.H.module_fixed: # already locked
+                continue
+            self.gainMgr.lock_all(part[v], v)
+
         legalcheck = 0
         while True:
             # Take the gainmax with v from gainbucket
@@ -64,9 +73,9 @@ class FDPartMgr:
             # Update v and its neigbours (even they are in waitinglist)
             # Put neigbours to bucket
             self.gainMgr.update_move(part_info, move_info_v)
-            weight = self.H.get_module_weight(v)
-            g = gainmax if weight != 0 else 2*self.gainMgr.pmax
-            self.gainMgr.update_move_v(part_info, move_info_v, g)
+            # weight = self.H.get_module_weight(v)
+            # g = gainmax if weight != 0 else 2*self.gainMgr.pmax
+            self.gainMgr.update_move_v(part_info, move_info_v, gainmax)
             self.validator.update_move(move_info_v)
             part[v] = toPart
             # totalgain += gainmax
@@ -109,7 +118,7 @@ class FDPartMgr:
         deferredsnapshot = False
         # snapshot = part.copy()
         # snapshot = list(k for k in part)
-        snapshot = None
+        snapshot = set(), dict()
         besttotalgain = -1
         part, _ = part_info
 
@@ -126,32 +135,33 @@ class FDPartMgr:
                 if (not deferredsnapshot) or (totalgain > besttotalgain):
                     # Take a snapshot before move
                     # snapshot = part.copy()
-                    snapshot = self.take_snapshot(part_info)
+                    self.take_snapshot(part_info, snapshot)
                     besttotalgain = totalgain
                 deferredsnapshot = True
 
-            elif totalgain + gainmax > besttotalgain:
+            elif totalgain + gainmax >= besttotalgain:
                 besttotalgain = totalgain + gainmax
                 deferredsnapshot = False
 
             # Update v and its neigbours (even they are in waitinglist)
             # Put neigbours to bucket
+            _, toPart, v = move_info_v
             self.gainMgr.update_move(part_info, move_info_v)
-            self.gainMgr.update_move_v(part, move_info_v, 2*self.gainMgr.pmax)
+            self.gainMgr.update_move_v(part, move_info_v, gainmax)
+            self.gainMgr.lock(toPart, v)
             self.validator.update_move(move_info_v)
             totalgain += gainmax
-            _, toPart, v = move_info_v
             part[v] = toPart
 
         if deferredsnapshot:
             # restore previous best solution
             # part = snapshot.copy()
-            part_info = self.restore_part_info(snapshot)
+            self.restore_part_info(snapshot, part_info)
             totalgain = besttotalgain
 
         self.totalcost -= totalgain
 
-    def take_snapshot(self, part_info):
+    def take_snapshot(self, part_info, snapshot):
         """[summary]
 
         Arguments:
@@ -160,15 +170,18 @@ class FDPartMgr:
         Returns:
             [type] -- [description]
         """
+        extern_nets_ss, extern_modules_ss = snapshot
         part, extern_nets = part_info
-        extern_nets_ss = extern_nets.copy()
-        extern_modules_ss = dict()
+        # extern_nets_ss = extern_nets.copy()
+        extern_modules_ss.clear()
         for net in extern_nets:
             for v in self.H.G[net]:
                 extern_modules_ss[v] = part[v]
-        return extern_nets_ss, extern_modules_ss
+        extern_nets_ss.clear()
+        for net in extern_nets:
+            extern_nets_ss.add(net)
 
-    def restore_part_info(self, snapshot):
+    def restore_part_info(self, snapshot, part_info):
         """[summary]
 
         Arguments:
@@ -178,7 +191,10 @@ class FDPartMgr:
             [type] -- [description]
         """
         extern_nets_ss, extern_modules_ss = snapshot
-        part = list(self.K for _ in range(self.H.number_of_modules()))
+        part, extern_nets = part_info
+        # part = list(self.K for _ in range(self.H.number_of_modules()))
+        for v in range(self.H.number_of_modules()):
+            part[v] = self.K
         Q = deque(v for v, _ in extern_modules_ss.items())
         while Q:
             v = Q.popleft()
@@ -199,5 +215,7 @@ class FDPartMgr:
                             continue
                         part[v3] = part_v
                         Q2.append(v3)
-        extern_nets = extern_nets_ss.copy()
-        return part, extern_nets
+
+        extern_nets.clear()
+        for net in extern_nets_ss:
+            extern_nets.add(net)

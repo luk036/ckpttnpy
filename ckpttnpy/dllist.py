@@ -21,10 +21,17 @@ class dllink:
 
     def detach(self):
         """detach"""
+        assert self.next is not None
         n = self.next
         p = self.prev
         p.next = n
         n.prev = p
+
+    def lock(self):
+        self.next = None
+
+    def is_locked(self):
+        return self.next is None
 
     def is_empty(self):
         """is_empty

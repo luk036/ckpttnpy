@@ -24,18 +24,18 @@ def test_MLBiPartMgr():
     run_MLBiPartMgr(H)
 
 
-# def run_MLKWayPartMgr(H):
-#     partMgr = MLPartMgr(FDKWayGainCalc, FDKWayGainMgr, FMKWayConstrMgr, 0.4, 3)
-#     part = list(0 for _ in H.modules)
-#     extern_nets = set()
-#     part_info = part, extern_nets
-#     partMgr.run_FDPartition(H, part_info)
-#     assert partMgr.totalcost == 4
+def run_MLKWayPartMgr(H):
+    partMgr = MLPartMgr(FDKWayGainCalc, FDKWayGainMgr, FMKWayConstrMgr, 0.4, 3)
+    part = list(0 for _ in H.modules)
+    extern_nets = set()
+    part_info = part, extern_nets
+    partMgr.run_FDPartition(H, part_info)
+    assert partMgr.totalcost == 4
 
 
-# def test_MLKWayPartMgr():
-#     H = create_drawf()
-#     run_MLKWayPartMgr(H)
+def test_MLKWayPartMgr():
+    H = create_drawf()
+    run_MLKWayPartMgr(H)
 
 
 # if __name__ == "__main__":

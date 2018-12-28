@@ -29,8 +29,33 @@ class FDBiGainMgr(FDGainMgr):
             vlink = self.gainCalc.vertex_list[v]
             toPart = 1 - part[v]
             self.gainbucket[toPart].append_direct(vlink)
+
+        for v in self.H.module_fixed:
+            self.lock_all(part[v], v)
+
         return totalcost
         
+    def lock(self, whichPart, v):
+        """Lock
+
+        Arguments:
+            whichPart {uint8_t} -- [description]
+            v {node_t} -- [description]
+        """
+        vlink = self.gainCalc.vertex_list[v]
+        self.gainbucket[whichPart].detach(vlink)
+        vlink.lock()
+
+    def lock_all(self, fromPart, v):
+        """Lock
+
+        Arguments:
+            whichPart {uint8_t} -- [description]
+            v {node_t} -- [description]
+        """
+        toPart = 1 - fromPart
+        self.lock(toPart, v)
+
     # private:
     def set_key(self, whichPart, v, key):
         """Set key

@@ -76,8 +76,7 @@ class bpqueue:
             it {dllink} -- [description]
             k {int} -- key
         """
-        if it.key <= self.offset:
-            return
+        assert it.key > self.offset
         self.append(it, it.key)
 
     def append(self, it, k):
@@ -87,6 +86,7 @@ class bpqueue:
             it {dllink} -- [description]
             k {int} -- key
         """
+        assert k > self.offset
         it.key = k - self.offset
         if self.max < it.key:
             self.max = it.key
@@ -100,8 +100,7 @@ class bpqueue:
         """
         for it in nodes:
             it.key -= self.offset
-            if it.key <= 0:
-                continue
+            assert it.key > 0
             self.bucket[it.key].append(it)
         self.max = self.high
         while self.bucket[self.max].is_empty():
@@ -161,23 +160,23 @@ class bpqueue:
             it {dllink} -- [description]
             delta {int} -- [description]
         """
-        if it.key <= 0:
+        if it.next is None: # locked
             return
         if delta > 0:
             self.increase_key(it, delta)
         elif delta < 0:
             self.decrease_key(it, delta)
 
-    # def detach(self, it):
-    #     """detach a node from bpqueue
+    def detach(self, it):
+        """detach a node from bpqueue
 
-    #     Arguments:
-    #         it {[type]} -- [description]
-    #     """
-    #     # self.bucket[it.key].detach(it)
-    #     it.detach()
-    #     while self.bucket[self.max].is_empty():
-    #         self.max -= 1
+        Arguments:
+            it {[type]} -- [description]
+        """
+        # self.bucket[it.key].detach(it)
+        it.detach()
+        while self.bucket[self.max].is_empty():
+            self.max -= 1
 
     def __iter__(self):
         """iterator

@@ -35,11 +35,7 @@ class FMGainMgr:
         """
         self.gainCalc.init(part)
         # self.totalcost = self.gainCalc.totalcost
-        self.waitinglist.clear()
-        
-        for v in self.H.module_fixed:
-            # force to the lowest gain
-            self.gainCalc.set_key(v, -2*self.pmax)
+        self.waitinglist.clear()        
         return self.gainCalc.totalcost
 
     def is_empty_togo(self, toPart):
@@ -79,7 +75,7 @@ class FMGainMgr:
         vlink = self.gainbucket[toPart].popleft()
         self.waitinglist.append(vlink)
         v = vlink.idx
-        v = self.H.modules[v]
+        # v = self.H.modules[v]
         fromPart = part[v]
         move_info_v = fromPart, toPart, v
         return move_info_v, gainmax[toPart]

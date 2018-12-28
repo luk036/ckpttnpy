@@ -22,16 +22,16 @@ def test_MLBiPartMgr():
     run_MLBiPartMgr(H)
 
 
-# def run_MLKWayPartMgr(H):
-#     partMgr = MLPartMgr(FMKWayGainCalc, FMKWayGainMgr, FMKWayConstrMgr, 0.4, 3)
-#     part = list(0 for _ in H.modules)
-#     partMgr.run_Partition(H, part)
-#     assert partMgr.totalcost == 4
+def run_MLKWayPartMgr(H):
+    partMgr = MLPartMgr(FMKWayGainCalc, FMKWayGainMgr, FMKWayConstrMgr, 0.4, 3)
+    part = list(0 for _ in H.modules)
+    partMgr.run_Partition(H, part)
+    assert partMgr.totalcost == 4
 
 
-# def test_MLKWayPartMgr():
-#     H = create_drawf()
-#     run_MLKWayPartMgr(H)
+def test_MLKWayPartMgr():
+    H = create_drawf()
+    run_MLKWayPartMgr(H)
 
 
 # if __name__ == "__main__":

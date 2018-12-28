@@ -37,7 +37,8 @@ class FDKWayGainCalc:
 
         for net in self.H.nets:
             self.init_gain(net, part_info)
-
+        return self.totalcost
+        
     def init_gain(self, net, part_info):
         """initialize gain
 

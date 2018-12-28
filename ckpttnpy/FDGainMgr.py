@@ -33,14 +33,8 @@ class FDGainMgr:
         Arguments:
             part {list} -- [description]
         """
-        self.gainCalc.init(part_info)
-        totalcost = self.gainCalc.totalcost
-        self.waitinglist.clear()
-        
-        for v in self.H.module_fixed:
-            # force to the lowest gain
-            self.gainCalc.set_key(v, -2*self.pmax)
-
+        totalcost = self.gainCalc.init(part_info)
+        self.waitinglist.clear()        
         return totalcost
 
     def is_empty_togo(self, toPart):
@@ -80,7 +74,7 @@ class FDGainMgr:
         vlink = self.gainbucket[toPart].popleft()
         self.waitinglist.append(vlink)
         v = vlink.idx
-        v = self.H.modules[v]
+        # v = self.H.modules[v]
         fromPart = part[v]
         move_info_v = fromPart, toPart, v
         return move_info_v, gainmax[toPart]
