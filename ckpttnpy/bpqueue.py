@@ -25,17 +25,6 @@ class bpqueue:
         self.bucket = list(dllink(4848) for _ in range(self.high + 1))
         self.bucket[0].append(self.sentinel)  # sentinel
 
-    def get_key(self, it):
-        """Get the key value
-
-        Arguments:
-            it {dllink} -- [description]
-
-        Returns:
-            int -- key
-        """
-        return it.key + self.offset
-
     def set_key(self, it, gain):
         """Get the key value
 
