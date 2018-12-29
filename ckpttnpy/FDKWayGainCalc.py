@@ -38,7 +38,7 @@ class FDKWayGainCalc:
         for net in self.H.nets:
             self.init_gain(net, part_info)
         return self.totalcost
-        
+
     def init_gain(self, net, part_info):
         """initialize gain
 
@@ -56,22 +56,11 @@ class FDKWayGainCalc:
                 self.init_gain_2pin_net(net, part)
             else:
                 self.init_gain_general_net(net, part)
-        else: # 90%
+        else:  # 90%
             weight = self.H.get_net_weight(net)
             for w in self.H.G[net]:
                 for k in self.RR.exclude(part[w]):
                     self.vertex_list[k][w].key -= weight
-
-    def set_key(self, v, key):
-        """[summary]
-
-        Arguments:
-            v {[type]} -- [description]
-            key {[type]} -- [description]
-        """
-        # v = self.H.module_map[v]
-        for k in range(self.K):
-            self.vertex_list[k][v].key = key
 
     def modify_gain(self, v, part_v, weight):
         """Modify gain
@@ -126,7 +115,7 @@ class FDKWayGainCalc:
                         if part[w] == k:
                             self.modify_gain(w, part[w], weight)
                             break
-            else: # num[k] == 0
+            else:  # num[k] == 0
                 for w in IdVec:
                     self.vertex_list[k][w].key -= weight
         self.totalcost -= weight

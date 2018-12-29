@@ -34,7 +34,7 @@ class FDBiGainCalc:
             # for net in self.H.net_list:
             self.init_gain(net, part_info)
         return self.totalcost
-        
+
     def init_gain(self, net, part_info):
         """initialize gain
 
@@ -80,15 +80,6 @@ class FDBiGainCalc:
                     if part[w] == k:
                         self.modify_gain(w, weight)
                         break
-
-    def set_key(self, v, weight):
-        """[summary]
-
-        Arguments:
-            v {node_t} -- [description]
-            weight {int} -- [description]
-        """
-        self.vertex_list[v].key = weight
 
     def modify_gain(self, w, weight):
         """Modify gain

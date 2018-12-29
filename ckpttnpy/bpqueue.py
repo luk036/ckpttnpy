@@ -160,7 +160,7 @@ class bpqueue:
             it {dllink} -- [description]
             delta {int} -- [description]
         """
-        if it.next is None: # locked
+        if it.next is None:  # locked
             return
         if delta > 0:
             self.increase_key(it, delta)

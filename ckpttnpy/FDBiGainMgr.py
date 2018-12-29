@@ -34,7 +34,7 @@ class FDBiGainMgr(FDGainMgr):
             self.lock_all(part[v], v)
 
         return totalcost
-        
+
     def lock(self, whichPart, v):
         """Lock
 
@@ -81,7 +81,7 @@ class FDBiGainMgr(FDGainMgr):
 
     def update_move_v(self, part, move_info_v, gain):
         """[summary]
-        
+
         Arguments:
             part {[type]} -- [description]
             move_info_v {[type]} -- [description]

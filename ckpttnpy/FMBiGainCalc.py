@@ -49,17 +49,6 @@ class FMBiGainCalc:
         else:
             self.init_gain_general_net(net, part)
 
-    def set_key(self, v, weight):
-        """[summary]
-
-        Arguments:
-            v {[type]} -- [description]
-            weight {[type]} -- [description]
-        """
-        # i_v = self.H.module_map[v]
-        # assert i_v == v
-        self.vertex_list[v].key = weight
-
     def modify_gain(self, w, weight):
         """Modify gain
 

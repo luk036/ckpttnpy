@@ -34,7 +34,7 @@ class FDGainMgr:
             part {list} -- [description]
         """
         totalcost = self.gainCalc.init(part_info)
-        self.waitinglist.clear()        
+        self.waitinglist.clear()
         return totalcost
 
     def is_empty_togo(self, toPart):
@@ -136,7 +136,7 @@ class FDGainMgr:
         """
         w, deltaGainW = self.gainCalc.update_move_2pin_net(
             part_info, move_info)
-        part, _ = part_info 
+        part, _ = part_info
         self.modify_key(w, part[w], deltaGainW)
 
     def update_move_general_net(self, part_info, move_info):
@@ -148,7 +148,7 @@ class FDGainMgr:
         """
         IdVec, deltaGain = self.gainCalc.update_move_general_net(
             part_info, move_info)
-        part, _ = part_info 
+        part, _ = part_info
         degree = len(IdVec)
         for idx in range(degree):
             w = IdVec[idx]

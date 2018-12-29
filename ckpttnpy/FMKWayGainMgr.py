@@ -1,6 +1,7 @@
 from .FMGainMgr import FMGainMgr
 from .robin import robin
 
+
 class FMKWayGainMgr(FMGainMgr):
 
     # public:
@@ -40,7 +41,7 @@ class FMKWayGainMgr(FMGainMgr):
             self.lock_all(part[v], v)
 
         return totalcost
-        
+
     def lock(self, whichPart, v):
         """Set key
 

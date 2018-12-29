@@ -49,7 +49,7 @@ class FDPartMgr:
         for v in self.H.modules:
             if self.H.get_module_weight(v) != 0:
                 continue
-            if v in self.H.module_fixed: # already locked
+            if v in self.H.module_fixed:  # already locked
                 continue
             self.gainMgr.lock_all(part[v], v)
 

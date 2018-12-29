@@ -53,17 +53,6 @@ class FMKWayGainCalc:
         else:
             self.init_gain_general_net(net, part)
 
-    def set_key(self, v, key):
-        """[summary]
-
-        Arguments:
-            v {[type]} -- [description]
-            key {[type]} -- [description]
-        """
-        # v = self.H.module_map[v]
-        for k in range(self.K):
-            self.vertex_list[k][v].key = key
-
     def modify_gain(self, v, pv, weight):
         """Modify gain
 
@@ -160,7 +149,7 @@ class FMKWayGainCalc:
             for k in range(self.K):
                 deltaGainW[k] -= weight
                 self.deltaGainV[k] -= weight
-    
+
         deltaGainW[fromPart] -= weight
         deltaGainW[toPart] += weight
         return w, deltaGainW

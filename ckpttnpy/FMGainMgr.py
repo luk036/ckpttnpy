@@ -35,7 +35,7 @@ class FMGainMgr:
         """
         self.gainCalc.init(part)
         # self.totalcost = self.gainCalc.totalcost
-        self.waitinglist.clear()        
+        self.waitinglist.clear()
         return self.gainCalc.totalcost
 
     def is_empty_togo(self, toPart):
