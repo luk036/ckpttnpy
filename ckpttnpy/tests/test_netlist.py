@@ -37,13 +37,14 @@ def create_drawf():
         (2, 10),
         (5, 10),
         (3, 11),
-        (6, 11)
+        (6, 11),
+        (5, 12)
     ])
 
-    H = Netlist(G, range(7), range(7, 12), range(-7, 5))
+    H = Netlist(G, range(7), range(7, 13), range(-7, 6))
     H.module_weight = module_weight
     H.module_name = module_name
-    H.net_weight = [1, 1, 1, 1, 1]
+    H.net_weight = [1, 1, 1, 1, 1, 1]
     H.num_pads = 3
     return H
 
@@ -94,8 +95,8 @@ def test_drawf():
     H = create_drawf()
 
     assert H.number_of_modules() == 7
-    assert H.number_of_nets() == 5
-    assert H.number_of_pins() == 13
+    assert H.number_of_nets() == 6
+    assert H.number_of_pins() == 14
     assert H.get_max_degree() == 3
     assert H.get_max_net_degree() == 3
     assert not H.has_fixed_modules

@@ -17,7 +17,7 @@ def test_create_contraction_subgraph():
     H2 = create_contraction_subgraph(H, set())
     H3 = create_contraction_subgraph(H2, set())
     assert H2.number_of_modules() < 7
-    assert H2.number_of_nets() == 2
+    assert H2.number_of_nets() == 3
     assert H2.number_of_pins() < 13
     assert H2.get_max_degree() <= 3
     assert H2.get_max_net_degree() <= 3

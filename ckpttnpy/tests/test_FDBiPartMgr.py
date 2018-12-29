@@ -27,7 +27,7 @@ def test_FDBiPartMgr():
 
 def test_FDBiPartMgr2():
     H = create_drawf()
-    # H.module_fixed = [3]
+    H.module_fixed = [3]
     run_FDBiPartMgr(H)
 
 

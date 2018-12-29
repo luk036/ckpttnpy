@@ -66,6 +66,7 @@ class FDBiGainCalc:
         Arguments:
             net {node_t} -- [description]
             part {list} -- [description]
+            weight {int} -- [description]
         """
         num = [0, 0]
         IdVec = []
