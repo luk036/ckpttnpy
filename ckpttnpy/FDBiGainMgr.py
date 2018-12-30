@@ -5,14 +5,14 @@ class FDBiGainMgr(FDGainMgr):
 
     # public:
 
-    def __init__(self, GainCalc, H, K=2):
-        """Initialization
+    # def __init__(self, GainCalc, H, K=2):
+    #     """Initialization
 
-        Arguments:
-            GainCalc {[type]} -- [description]
-            H {Netlist} -- [description]
-        """
-        FDGainMgr.__init__(self, GainCalc, H)
+    #     Arguments:
+    #         GainCalc {[type]} -- [description]
+    #         H {Netlist} -- [description]
+    #     """
+    #     FDGainMgr.__init__(self, GainCalc, H)
 
     def init(self, part_info):
         """(re)initialization after creation

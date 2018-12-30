@@ -1,9 +1,10 @@
 # **Special code for two-pin nets**
 # Take a snapshot when a move make **negative** gain.
 # Snapshot in the form of "interface"???
+from abc import abstractmethod
 
 
-class FMPartMgr:
+class PartMgrBase:
     def __init__(self, H, gainMgr, constrMgr):
         """[summary]
 
@@ -15,20 +16,31 @@ class FMPartMgr:
         self.H = H
         self.gainMgr = gainMgr
         self.validator = constrMgr
+        self.K = gainMgr.K
         self.totalcost = 0
 
-    def init(self, part):
+    def init(self, part_info):
         """[summary]
+
+        Arguments:
+            part_info {[type]} -- [description]
         """
-        self.totalcost = self.gainMgr.init(part)
-        # self.totalcost = self.gainMgr.totalcost
+        self.totalcost = self.gainMgr.init(part_info)
         assert self.totalcost >= 0
+        part, _ = part_info
         self.validator.init(part)
 
-        # totalgain = 0
+    def legalize(self, part_info):
+        """[summary]
 
-    def legalize(self, part):
-        self.init(part)
+        Arguments:
+            part_info {[type]} -- [description]
+
+        Returns:
+            [type] -- [description]
+        """
+        part, _ = part_info
+        self.init(part_info)
 
         # Zero-weighted modules does not contribute legalization
         for v in self.H.modules:
@@ -49,7 +61,6 @@ class FMPartMgr:
             fromPart = part[v]
             assert fromPart != toPart
             move_info_v = [fromPart, toPart, v]
-            # weight = self.H.get_module_weight(v)
             # Check if the move of v can notsatisfied, makebetter, or satisfied
             legalcheck = self.validator.check_legal(move_info_v)
             if legalcheck == 0:  # notsatisfied
@@ -57,33 +68,46 @@ class FMPartMgr:
 
             # Update v and its neigbours (even they are in waitinglist)
             # Put neigbours to bucket
-            self.gainMgr.update_move(part, move_info_v)
-            # weight = self.H.get_module_weight(v)
-            # g = gainmax if weight != 0 else 2*self.gainMgr.pmax
-            self.gainMgr.update_move_v(part, move_info_v, gainmax)
+            self.gainMgr.update_move(part_info, move_info_v)
+            self.gainMgr.update_move_v(part_info, move_info_v, gainmax)
             self.validator.update_move(move_info_v)
             part[v] = toPart
-            # totalgain += gainmax
             self.totalcost -= gainmax
             assert self.totalcost >= 0
 
             if legalcheck == 2:  # satisfied
-                # self.totalcost -= totalgain
-                # totalgain = 0 # reset to zero
                 break
 
         return legalcheck
-        # assert not self.gainMgr.gainbucket.is_empty()
 
-    def optimize_1pass(self, part):
+    def optimize(self, part_info):
+        """[summary]
+
+        Arguments:
+            part_info {[type]} -- [description]
+        """
+        while True:
+            self.init(part_info)
+            totalcostbefore = self.totalcost
+            self.optimize_1pass(part_info)
+            assert self.totalcost <= totalcostbefore
+            if self.totalcost == totalcostbefore:
+                break
+
+    def optimize_1pass(self, part_info):
+        """[summary]
+
+        Arguments:
+            part_info {[type]} -- [description]
+        """
         totalgain = 0
         deferredsnapshot = False
         snapshot = None
         besttotalgain = 0
+        part, _ = part_info
 
         while not self.gainMgr.is_empty():
             # Take the gainmax with v from gainbucket
-            # gainmax = self.gainMgr.gainbucket.get_max()
             move_info_v, gainmax = self.gainMgr.select(part)
             # Check if the move of v can satisfied or notsatisfied
             satisfiedOK = self.validator.check_constraints(move_info_v)
@@ -93,7 +117,7 @@ class FMPartMgr:
                 # become down turn
                 if (not deferredsnapshot) or (totalgain > besttotalgain):
                     # Take a snapshot before move
-                    snapshot = list(part)
+                    snapshot = self.take_snapshot(part_info)
                     besttotalgain = totalgain
                 deferredsnapshot = True
 
@@ -105,7 +129,7 @@ class FMPartMgr:
             # Put neigbours to bucket
             _, toPart, v = move_info_v
             self.gainMgr.lock(toPart, v)
-            self.gainMgr.update_move(part, move_info_v)
+            self.gainMgr.update_move(part_info, move_info_v)
             self.gainMgr.update_move_v(part, move_info_v, gainmax)
             self.validator.update_move(move_info_v)
             totalgain += gainmax
@@ -113,19 +137,29 @@ class FMPartMgr:
 
         if deferredsnapshot:
             # restore previous best solution
-            # part = snapshot.copy()
-            # part = list(k for k in snapshot)
-            for v, k in enumerate(snapshot):
-                part[v] = k
+            self.restore_part_info(snapshot, part_info)
             totalgain = besttotalgain
 
         self.totalcost -= totalgain
 
-    def optimize(self, part):
-        while True:
-            self.init(part)
-            totalcostbefore = self.totalcost
-            self.optimize_1pass(part)
-            assert self.totalcost <= totalcostbefore
-            if self.totalcost == totalcostbefore:
-                break
+    @abstractmethod
+    def take_snapshot(self, part_info):
+        """[summary]
+
+        Arguments:
+            part_info {[type]} -- [description]
+
+        Returns:
+            [type] -- [description]
+        """
+
+    @abstractmethod
+    def restore_part_info(self, snapshot, part_info):
+        """[summary]
+
+        Arguments:
+            snapshot {[type]} -- [description]
+
+        Returns:
+            [type] -- [description]
+        """

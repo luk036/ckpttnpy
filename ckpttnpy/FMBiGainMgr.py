@@ -5,15 +5,15 @@ class FMBiGainMgr(FMGainMgr):
 
     # public:
 
-    def __init__(self, GainCalc, H, K=2):
-        """Initialization
+    # def __init__(self, GainCalc, H, K=2):
+    #     """Initialization
 
-        Arguments:
-            H {Netlist} -- [description]
-            GainCalc {[type]} -- [description]
-            K {uint8_t} -- number of partitions
-        """
-        FMGainMgr.__init__(self, GainCalc, H)
+    #     Arguments:
+    #         H {Netlist} -- [description]
+    #         GainCalc {[type]} -- [description]
+    #         K {uint8_t} -- number of partitions
+    #     """
+    #     FMGainMgr.__init__(self, GainCalc, H)
 
     def init(self, part):
         """(re)initialization after creation

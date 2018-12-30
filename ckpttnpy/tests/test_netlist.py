@@ -84,6 +84,7 @@ def test_netlist():
     H = create_test_netlist()
     assert H.number_of_modules() == 3
     assert H.number_of_nets() == 3
+    assert H.number_of_nodes() == 6
     assert H.number_of_pins() == 6
     assert H.get_max_degree() == 3
     assert H.get_max_net_degree() == 3

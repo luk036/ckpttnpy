@@ -15,11 +15,15 @@ from .FDPartMgr import FDPartMgr
 class MLPartMgr:
     def __init__(self, GainCalc, GainMgr, ConstrMgr, BalTol, K=2):
         """[summary]
-
+        
         Arguments:
-            H {[type]} -- [description]
-            gainMgr {[type]} -- [description]
-            constrMgr {[type]} -- [description]
+            GainCalc {[type]} -- [description]
+            GainMgr {[type]} -- [description]
+            ConstrMgr {[type]} -- [description]
+            BalTol {[type]} -- [description]
+        
+        Keyword Arguments:
+            K {int} -- [description] (default: {2})
         """
         self.GainCalc = GainCalc
         self.GainMgr = GainMgr
@@ -29,6 +33,18 @@ class MLPartMgr:
         self.totalcost = 0
 
     def run_Partition(self, H, part, limitsize=7):
+        """[summary]
+        
+        Arguments:
+            H {[type]} -- [description]
+            part {[type]} -- [description]
+        
+        Keyword Arguments:
+            limitsize {int} -- [description] (default: {7})
+        
+        Returns:
+            [type] -- [description]
+        """
         gainMgr = self.GainMgr(self.GainCalc, H, self.K)
         constrMgr = self.ConstrMgr(H, self.BalTol, self.K)
         partMgr = FMPartMgr(H, gainMgr, constrMgr)
@@ -48,6 +64,18 @@ class MLPartMgr:
         return legalcheck
 
     def run_FDPartition(self, H, part_info, limitsize=7):
+        """[summary]
+        
+        Arguments:
+            H {[type]} -- [description]
+            part_info {[type]} -- [description]
+        
+        Keyword Arguments:
+            limitsize {int} -- [description] (default: {7})
+        
+        Returns:
+            [type] -- [description]
+        """
         gainMgr = self.GainMgr(self.GainCalc, H, self.K)
         constrMgr = self.ConstrMgr(H, self.BalTol, self.K)
         partMgr = FDPartMgr(H, gainMgr, constrMgr)
