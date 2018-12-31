@@ -69,7 +69,7 @@ class PartMgrBase:
             # Update v and its neigbours (even they are in waitinglist)
             # Put neigbours to bucket
             self.gainMgr.update_move(part_info, move_info_v)
-            self.gainMgr.update_move_v(part_info, move_info_v, gainmax)
+            self.gainMgr.update_move_v(move_info_v, gainmax)
             self.validator.update_move(move_info_v)
             part[v] = toPart
             self.totalcost -= gainmax
@@ -130,7 +130,7 @@ class PartMgrBase:
             _, toPart, v = move_info_v
             self.gainMgr.lock(toPart, v)
             self.gainMgr.update_move(part_info, move_info_v)
-            self.gainMgr.update_move_v(part, move_info_v, gainmax)
+            self.gainMgr.update_move_v(move_info_v, gainmax)
             self.validator.update_move(move_info_v)
             totalgain += gainmax
             part[v] = toPart

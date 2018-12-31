@@ -69,7 +69,7 @@ class FMKWayGainMgr(FMGainMgr):
         self.gainbucket[whichPart].set_key(
             self.gainCalc.vertex_list[whichPart][v], key)
 
-    def update_move_v(self, part, move_info_v, gain):
+    def update_move_v(self, move_info_v, gain):
         """Update gain for the moving cell
 
         Arguments:

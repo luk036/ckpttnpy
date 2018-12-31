@@ -60,7 +60,7 @@ class FMPartMgr:
             self.gainMgr.update_move(part, move_info_v)
             # weight = self.H.get_module_weight(v)
             # g = gainmax if weight != 0 else 2*self.gainMgr.pmax
-            self.gainMgr.update_move_v(part, move_info_v, gainmax)
+            self.gainMgr.update_move_v(move_info_v, gainmax)
             self.validator.update_move(move_info_v)
             part[v] = toPart
             # totalgain += gainmax
@@ -106,7 +106,7 @@ class FMPartMgr:
             _, toPart, v = move_info_v
             self.gainMgr.lock(toPart, v)
             self.gainMgr.update_move(part, move_info_v)
-            self.gainMgr.update_move_v(part, move_info_v, gainmax)
+            self.gainMgr.update_move_v(move_info_v, gainmax)
             self.validator.update_move(move_info_v)
             totalgain += gainmax
             part[v] = toPart

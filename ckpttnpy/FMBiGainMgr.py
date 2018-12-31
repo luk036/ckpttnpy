@@ -79,7 +79,7 @@ class FMBiGainMgr(FMGainMgr):
         self.gainbucket[1-part_w].modify_key(
             self.gainCalc.vertex_list[w], key)
 
-    def update_move_v(self, part, move_info_v, gain):
+    def update_move_v(self, move_info_v, gain):
         """[summary]
 
         Arguments:
