@@ -1,4 +1,4 @@
-from ckpttnpy.FMKWayGainMgr import FMKWayGainMgr
+from ckpttnpy.FDKWayGainMgr import FDKWayGainMgr
 from ckpttnpy.FMKWayGainCalc import FMKWayGainCalc
 from ckpttnpy.FMKWayConstrMgr import FMKWayConstrMgr
 from ckpttnpy.FMPartMgr import FMPartMgr
@@ -16,19 +16,20 @@ def run_FMKWayPartMgr(H, gainMgr, K):
     constrMgr = FMKWayConstrMgr(H, 0.4, K)  # 0.2 ???
     partMgr = FMPartMgr(H, gainMgr, constrMgr)
     part = list(0 for _ in H.modules)
+    part_info = part, set()
     # partMgr.init(part)
-    partMgr.legalize(part)  # ???
+    partMgr.legalize(part_info)  # ???
     totalcostbefore = partMgr.totalcost
-    partMgr.init(part)
+    partMgr.init(part_info)
     assert partMgr.totalcost == totalcostbefore
-    partMgr.optimize(part)
+    partMgr.optimize(part_info)
     assert partMgr.totalcost <= totalcostbefore
     # print(partMgr.snapshot)
 
 
 def test_FMKWayPartMgr2():
     H = create_drawf()
-    gainMgr = FMKWayGainMgr(FMKWayGainCalc, H, 3)
+    gainMgr = FDKWayGainMgr(FMKWayGainCalc, H, 3)
     H.module_fixed = [4]
     run_FMKWayPartMgr(H, gainMgr, 3)
 

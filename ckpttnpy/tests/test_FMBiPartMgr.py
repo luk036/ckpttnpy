@@ -1,4 +1,4 @@
-from ckpttnpy.FMBiGainMgr import FMBiGainMgr
+from ckpttnpy.FDBiGainMgr import FDBiGainMgr
 from ckpttnpy.FMBiGainCalc import FMBiGainCalc
 from ckpttnpy.FMBiConstrMgr import FMBiConstrMgr
 from ckpttnpy.FMPartMgr import FMPartMgr
@@ -6,14 +6,15 @@ from ckpttnpy.tests.test_netlist import create_test_netlist, create_drawf
 
 
 def run_FMBiPartMgr(H):
-    gainMgr = FMBiGainMgr(FMBiGainCalc, H)
+    gainMgr = FDBiGainMgr(FMBiGainCalc, H)
     constrMgr = FMBiConstrMgr(H, 0.3)
     partMgr = FMPartMgr(H, gainMgr, constrMgr)
     part = list(0 for _ in H.modules)
+    part_info = part, set()
     # partMgr.init(part)
-    partMgr.legalize(part)
+    partMgr.legalize(part_info)
     totalcostbefore = partMgr.totalcost
-    partMgr.optimize(part)
+    partMgr.optimize(part_info)
     assert partMgr.totalcost <= totalcostbefore
     # print(partMgr.snapshot)
 

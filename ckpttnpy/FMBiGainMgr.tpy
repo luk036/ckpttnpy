@@ -1,117 +1,93 @@
-from .dllist import dllink
-from .bpqueue import bpqueue
-from .FMBiGainCalc import FMBiGainCalc
+from .FMGainMgr import FMGainMgr
 
 
-class FMBiGainMgr:
+class FMBiGainMgr(FMGainMgr):
 
     # public:
 
-    def __init__(self, H):
-        """initialization
+    # def __init__(self, GainCalc, H, K=2):
+    #     """Initialization
 
-        Arguments:
-            module_dict {dict} -- [description]
-        """
-        self.H = H
-        self.gainCalc = FMBiGainCalc(H)
-        self.pmax = self.H.get_max_degree()
-        self.vertex_list = [dllink(i) for i in H.modules]
-        self.waitinglist = dllink(3734)
-        self.gainbucket = bpqueue(-self.pmax, self.pmax)
+    #     Arguments:
+    #         H {Netlist} -- [description]
+    #         GainCalc {[type]} -- [description]
+    #         K {uint8_t} -- number of partitions
+    #     """
+    #     FMGainMgr.__init__(self, GainCalc, H)
 
-    def init(self, part):
+    def init(self, part_info):
         """(re)initialization after creation
 
         Arguments:
             part {list} -- [description]
         """
-        self.gainCalc.init(part, self.vertex_list)
+        part, _ = part_info
+        totalcost = FMGainMgr.init(self, part_info)
+        
+        for k in range(self.K):
+            self.gainbucket[k].clear()
+
+        for v in range(self.H.number_of_modules()):
+            vlink = self.gainCalc.vertex_list[v]
+            toPart = 1 - part[v]
+            self.gainbucket[toPart].append_direct(vlink)
 
         for v in self.H.module_fixed:
-            # v = self.H.module_dict[v]
-            # force to the lowest gain
-            self.vertex_list[v].key = -self.pmax
+            self.lock_all(part[v], v)
 
-        self.gainbucket.appendfrom(self.vertex_list)
+        return totalcost
 
-    def is_empty_togo(self, toPart):
-        return self.gainbucket.is_empty()
+    def lock(self, whichPart, v):
+        """Lock
 
-    def is_empty(self):
-        """[summary]
-
-        Returns:
-            [type] -- [description]
+        Arguments:
+            whichPart {uint8_t} -- [description]
+            v {node_t} -- [description]
         """
-        return self.gainbucket.is_empty()
+        vlink = self.gainCalc.vertex_list[v]
+        self.gainbucket[whichPart].detach(vlink)
+        vlink.lock()
 
-    def select(self, part):
-        """[summary]
+    def lock_all(self, fromPart, v):
+        """Lock
 
-        Returns:
-            [type] -- [description]
+        Arguments:
+            whichPart {uint8_t} -- [description]
+            v {node_t} -- [description]
         """
-        gainmax = self.gainbucket.get_max()
-        vlink = self.gainbucket.popleft()
-        self.waitinglist.append(vlink)
-        v = vlink.idx
-        fromPart = part[v]
-        move_info_v = fromPart, 1-fromPart, v
-        return move_info_v, gainmax
+        toPart = 1 - fromPart
+        self.lock(toPart, v)
 
-    def select_togo(self, toPart):
-        gainmax = self.gainbucket.get_max()
-        vlink = self.gainbucket.popleft()
-        self.waitinglist.append(vlink)
-        return vlink.idx, gainmax
+    # private:
+    def set_key(self, whichPart, v, key):
+        """Set key
 
-    def update_move(self, part, move_info_v, gain):
+        Arguments:
+            whichPart {uint8_t} -- [description]
+            v {node_t} -- [description]
+            key {int} -- [description]
+        """
+        self.gainbucket[whichPart].set_key(
+            self.gainCalc.vertex_list[v], key)
+
+    def modify_key(self, w, part_w, key):
+        """Update gain for the moving cell
+
+        Arguments:
+            part {[type]} -- [description]
+            move_info_v {[type]} -- [description]
+            gain {[type]} -- [description]
+        """
+        self.gainbucket[1-part_w].modify_key(
+            self.gainCalc.vertex_list[w], key)
+
+    def update_move_v(self, move_info_v, gain):
         """[summary]
 
         Arguments:
             part {[type]} -- [description]
-            v {[type]} -- [description]
+            w {[type]} -- [description]
+            key {[type]} -- [description]
         """
-        fromPart, toPart, v = move_info_v
-        for net in self.H.G[v]:
-            move_info = [net, fromPart, toPart, v]
-            if self.H.G.degree[net] == 2:
-                self.update_move_2pin_net(part, move_info)
-            elif self.H.G.degree[net] < 2:  # unlikely, self-loop, etc.
-                continue  # does not provide any gain change when move
-            else:
-                self.update_move_general_net(part, move_info)
-        # self.vertex_list[v].key -= 2*gain
-        self.gainbucket.set_key(self.vertex_list[v], -gain)
-
-    # private
-
-    def update_move_2pin_net(self, part, move_info):
-        """Update move for 2-pin net
-
-        Arguments:
-            net {node_t} -- [description]
-            part {list} -- [description]
-            fromPart {int} -- [description]
-            v {node_t} -- [description]
-        """
-        w, deltaGainW = self.gainCalc.update_move_2pin_net(
-            part, move_info)
-        self.gainbucket.modify_key(self.vertex_list[w], deltaGainW)
-
-    def update_move_general_net(self, part, move_info):
-        """update move for general net
-
-        Arguments:
-            net {node_t} -- [description]
-            part {list} -- [description]
-            fromPart {int} -- [description]
-            v {node_t} -- [description]
-        """
-        IdVec, deltaGain = self.gainCalc.update_move_general_net(
-            part, move_info)
-        degree = len(IdVec)
-        for idx in range(degree):
-            self.gainbucket.modify_key(
-                self.vertex_list[IdVec[idx]], deltaGain[idx])
+        fromPart, _, v = move_info_v
+        self.set_key(fromPart, v, -gain)

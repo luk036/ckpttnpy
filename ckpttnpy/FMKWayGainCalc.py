@@ -24,7 +24,7 @@ class FMKWayGainCalc:
                                       for i in range(self.H.number_of_modules()))]
         self.deltaGainV = list()
 
-    def init(self, part):
+    def init(self, part_info):
         """(re)initialization after creation
 
         Arguments:
@@ -36,9 +36,10 @@ class FMKWayGainCalc:
                 vlink.key = 0
 
         for net in self.H.nets:
-            self.init_gain(net, part)
-
-    def init_gain(self, net, part):
+            self.init_gain(net, part_info)
+        return self.totalcost
+        
+    def init_gain(self, net, part_info):
         """initialize gain
 
         Arguments:
@@ -46,10 +47,11 @@ class FMKWayGainCalc:
             part {list} -- [description]
         """
         degree = self.H.G.degree[net]
+        if degree < 2:  # unlikely, self-loop, etc.
+            return  # does not provide any gain when move
+        part, _ = part_info
         if degree == 2:
             self.init_gain_2pin_net(net, part)
-        elif degree < 2:  # unlikely, self-loop, etc.
-            return  # does not provide any gain when move
         else:
             self.init_gain_general_net(net, part)
 
@@ -122,7 +124,7 @@ class FMKWayGainCalc:
         """
         self.deltaGainV = list(0 for _ in range(self.K))
 
-    def update_move_2pin_net(self, part, move_info):
+    def update_move_2pin_net(self, part_info, move_info):
         """Update move for 2-pin net
 
         Arguments:
@@ -133,6 +135,7 @@ class FMKWayGainCalc:
             [type] -- [description]
         """
         net, fromPart, toPart, v = move_info
+        part, _ = part_info
         netCur = iter(self.H.G[net])
         u = next(netCur)
         w = u if u != v else next(netCur)
@@ -154,7 +157,7 @@ class FMKWayGainCalc:
         deltaGainW[toPart] += weight
         return w, deltaGainW
 
-    def update_move_general_net(self, part, move_info):
+    def update_move_general_net(self, part_info, move_info):
         """Update move for general net
 
         Arguments:
@@ -165,6 +168,7 @@ class FMKWayGainCalc:
             [type] -- [description]
         """
         net, fromPart, toPart, v = move_info
+        part, _ = part_info
         num = list(0 for _ in range(self.K))
         IdVec = []
         deltaGain = []
