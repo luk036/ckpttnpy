@@ -109,7 +109,7 @@ def min_net_cover_pd(H, weight):
 
 
 def create_contraction_subgraph(H, DontSelect):
-    S, total_cost = max_independent_net(H, H.module_weight, DontSelect)
+    S, _ = max_independent_net(H, H.module_weight, DontSelect)
 
     module_up_map = {}
     for v in H.modules:
@@ -148,9 +148,7 @@ def create_contraction_subgraph(H, DontSelect):
     node_up_map = {}
     for v in H.modules:
         node_up_map[v] = module_map[module_up_map[v]]
-    for net in H.nets:
-        if net in S:
-            continue
+    for net in nets:
         node_up_map[net] = net_map[net] + numModules
 
     G = nx.Graph()
@@ -163,17 +161,14 @@ def create_contraction_subgraph(H, DontSelect):
 
     H2 = Netlist(G, range(numModules), range(numModules, numModules + numNets),
                  range(-numModules, numNets))
-    H2.node_up_map = node_up_map
 
     node_down_map = {}
     for v1, v2 in node_up_map.items():
         node_down_map[v2] = v1
-    H2.node_down_map = node_down_map
 
     cluster_down_map = {}
     for v, net in cluster_map.items():
         cluster_down_map[node_up_map[v]] = net
-    H2.cluster_down_map = cluster_down_map
 
     module_weight = []
     for v in range(numModules):
@@ -187,6 +182,9 @@ def create_contraction_subgraph(H, DontSelect):
             v2 = node_down_map[v]
             module_weight.append(H.get_module_weight(v2))
 
+    H2.node_up_map = node_up_map
+    H2.node_down_map = node_down_map
+    H2.cluster_down_map = cluster_down_map
     H2.module_weight = module_weight
     H2.parent = H
     return H2
