@@ -3,18 +3,18 @@ from ckpttnpy.tests.test_netlist import create_drawf
 # from ckpttnpy.min_cover import create_contraction_subgraph
 from ckpttnpy.FMPartMgr import FMPartMgr
 from ckpttnpy.FMBiGainCalc import FMBiGainCalc
-from ckpttnpy.FDBiGainMgr import FDBiGainMgr
+from ckpttnpy.FMBiGainMgr import FMBiGainMgr
 from ckpttnpy.FMBiConstrMgr import FMBiConstrMgr
 from ckpttnpy.FMKWayGainCalc import FMKWayGainCalc
-from ckpttnpy.FDKWayGainMgr import FDKWayGainMgr
+from ckpttnpy.FMKWayGainMgr import FMKWayGainMgr
 from ckpttnpy.FMKWayConstrMgr import FMKWayConstrMgr
 
 
 def run_MLBiPartMgr(H):
-    partMgr = MLPartMgr(FMBiGainCalc, FDBiGainMgr, FMBiConstrMgr, FMPartMgr, 0.4)
+    partMgr = MLPartMgr(FMBiGainCalc, FMBiGainMgr, FMBiConstrMgr, FMPartMgr, 0.4)
     part = list(0 for _ in H.modules)
     part_info = part, set()
-    partMgr.run_Partition(H, part_info)
+    partMgr.run_FMPartition(H, part_info)
     assert partMgr.totalcost == 2
 
 
@@ -24,10 +24,10 @@ def test_MLBiPartMgr():
 
 
 def run_MLKWayPartMgr(H):
-    partMgr = MLPartMgr(FMKWayGainCalc, FDKWayGainMgr, FMKWayConstrMgr, FMPartMgr, 0.4, 3)
+    partMgr = MLPartMgr(FMKWayGainCalc, FMKWayGainMgr, FMKWayConstrMgr, FMPartMgr, 0.4, 3)
     part = list(0 for _ in H.modules)
     part_info = part, set()
-    partMgr.run_Partition(H, part_info)
+    partMgr.run_FMPartition(H, part_info)
     assert partMgr.totalcost == 4
 
 
