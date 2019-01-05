@@ -1,11 +1,10 @@
 class dllink:
-    """doubly linked list
+    """doubly linked list/node
 
-    Raises:
-        StopIteration -- [description]
-
-    Returns:
-        [type] -- [description]
+    Generic Node. For efficiency, the objects of this class can be
+    attached to bpqueue (bounded priority queue) and dllink (list). 
+    In the FM algorithm, a node is either attached to a gain bucket
+    or waitinglist.
     """
 
     def __init__(self, idx=None, key=0):
@@ -15,9 +14,9 @@ class dllink:
             idx {[type]} -- [description] (default: {None})
             key {int} -- [description] (default: {0})
         """
+        self.next = self.prev = self
         self.idx = idx
         self.key = key
-        self.next = self.prev = self
 
     def detach(self):
         """detach"""
@@ -32,6 +31,9 @@ class dllink:
 
     def is_locked(self):
         return self.next is None
+
+    def __bool__(self):
+        return self.next != self
 
     def is_empty(self):
         """is_empty

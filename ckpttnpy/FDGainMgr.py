@@ -55,7 +55,7 @@ class FDGainMgr:
             bool -- [description]
         """
         for k in range(self.K):
-            if not self.gainbucket[k].is_empty():
+            if self.gainbucket[k]:
                 return False
         return True
 

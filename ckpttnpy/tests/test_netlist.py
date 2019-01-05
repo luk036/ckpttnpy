@@ -1,5 +1,20 @@
 import networkx as nx
 from ckpttnpy.netlist import Netlist
+from networkx.readwrite import json_graph
+import json
+
+
+def create_p1():
+    with open('testcases/p1.json', 'r') as fr:
+        data = json.load(fr)
+    G = json_graph.node_link_graph(data)
+    num_modules = G.graph['num_modules']
+    num_nets = G.graph['num_nets']
+    num_pads = G.graph['num_pads']
+    H = Netlist(G, range(num_modules), range(num_modules, num_modules + num_nets),
+                range(-num_modules, num_nets))
+    H.num_pads = num_pads
+    return H
 
 
 def create_drawf():
@@ -26,15 +41,15 @@ def create_drawf():
     # net_list = [7, 8, 9, 10, 11]
 
     G.add_edges_from([
-        ( 7, 4, {'dir': 'I'}),
-        ( 7, 0, {'dir': 'I'}),
-        ( 7, 1, {'dir': 'O'}),
-        ( 8, 0, {'dir': 'I'}),
-        ( 8, 2, {'dir': 'I'}),
-        ( 8, 3, {'dir': 'O'}),
-        ( 9, 1, {'dir': 'I'}),
-        ( 9, 2, {'dir': 'I'}),
-        ( 9, 3, {'dir': 'O'}),
+        (7, 4, {'dir': 'I'}),
+        (7, 0, {'dir': 'I'}),
+        (7, 1, {'dir': 'O'}),
+        (8, 0, {'dir': 'I'}),
+        (8, 2, {'dir': 'I'}),
+        (8, 3, {'dir': 'O'}),
+        (9, 1, {'dir': 'I'}),
+        (9, 2, {'dir': 'I'}),
+        (9, 3, {'dir': 'O'}),
         (10, 2, {'dir': 'I'}),
         (10, 5, {'dir': 'O'}),
         (11, 3, {'dir': 'I'}),
@@ -116,12 +131,24 @@ def test_json():
     import json
     H = create_drawf()
     data = json_graph.node_link_data(H.G)
-    with open('drawf.json', 'w') as fw:
+    with open('testcases/drawf.json', 'w') as fw:
         json.dump(data, fw, indent=1)
-    with open('drawf.json', 'r') as fr:
+    with open('testcases/drawf.json', 'r') as fr:
         data2 = json.load(fr)
     G = json_graph.node_link_graph(data2)
     assert G.number_of_nodes() == 13
     assert G.graph['num_modules'] == 7
     assert G.graph['num_nets'] == 6
     assert G.graph['num_pads'] == 3
+
+
+def test_json2():
+    from networkx.readwrite import json_graph
+    import json
+    with open('testcases/p1.json', 'r') as fr:
+        data = json.load(fr)
+    G = json_graph.node_link_graph(data)
+    assert G.number_of_nodes() == 1735
+    assert G.graph['num_modules'] == 833
+    assert G.graph['num_nets'] == 902
+    assert G.graph['num_pads'] == 81

@@ -42,21 +42,14 @@ class FDPartMgr(PartMgrBase):
         """
         extern_nets_ss, extern_modules_ss = snapshot
         part, extern_nets = part_info
-        # part = list(self.K for _ in range(self.H.number_of_modules()))
         for v in range(self.H.number_of_modules()):
             part[v] = self.K
-        # Q = deque(v for v, _ in extern_modules_ss.items())
-        # while Q:
-        #     v = Q.popleft()
         for v, part_v in extern_modules_ss.items():
-            # if part[v] < self.K:
-            #    continue
-            #part_v = part[v] = extern_modules_ss[v]
             part[v] = part_v
-            Q2 = deque()
-            Q2.append(v)
-            while Q2:
-                v2 = Q2.popleft()
+            Q = deque([ v ])
+            # Q.append(v)
+            while Q:
+                v2 = Q.popleft()
                 for net in self.H.G[v2]:
                     if self.H.G.degree(net) < 2:
                         continue
@@ -66,7 +59,7 @@ class FDPartMgr(PartMgrBase):
                         if part[v3] < self.K:
                             continue
                         part[v3] = part_v
-                        Q2.append(v3)
+                        Q.append(v3)
 
         extern_nets.clear()
         for net in extern_nets_ss:

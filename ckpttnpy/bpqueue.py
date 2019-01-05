@@ -44,6 +44,9 @@ class bpqueue:
         """
         return self.max + self.offset
 
+    def __bool__(self):
+        return self.max != 0
+
     def is_empty(self):
         """is_empty
 
