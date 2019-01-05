@@ -1,14 +1,14 @@
 import networkx as nx
 
-from ckpttnpy.min_cover import min_net_cover_pd, max_independent_net, create_contraction_subgraph
+from ckpttnpy.min_cover import max_independent_net, create_contraction_subgraph
 from ckpttnpy.tests.test_netlist import create_drawf
 from ckpttnpy.netlist import Netlist
 
 
-def test_min_net_cover_pd():
+def test_max_independent_net():
     # random_graph(G,5,20)
     H = create_drawf()
-    _, cost1 = min_net_cover_pd(H, H.net_weight)
+    _, cost1 = max_independent_net(H, H.module_weight, set())
     assert cost1 == 3
 
 
@@ -25,5 +25,5 @@ def test_create_contraction_subgraph():
     assert H.get_module_weight(1) == 3
 
 
-if __name__ == "__main__":
-    test_min_net_cover_pd()
+# if __name__ == "__main__":
+#     test_min_net_cover_pd()

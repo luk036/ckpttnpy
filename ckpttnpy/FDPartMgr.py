@@ -4,6 +4,7 @@
 from collections import deque
 from .PartMgrBase import PartMgrBase
 
+
 class FDPartMgr(PartMgrBase):
     # def __init__(self, H, gainMgr, constrMgr):
     #     """[summary]
@@ -24,16 +25,9 @@ class FDPartMgr(PartMgrBase):
         Returns:
             [type] -- [description]
         """
-        # extern_nets_ss, extern_modules_ss = snapshot
         part, extern_nets = part_info
-        # extern_nets_ss = extern_nets.copy()
-        extern_modules_ss = {}
-        for net in extern_nets:
-            for v in self.H.G[net]:
-                extern_modules_ss[v] = part[v]
-        # extern_nets_ss = set()
-        # for net in extern_nets:
-        #     extern_nets_ss.add(net)
+        extern_modules_ss = {v: part[v]
+                             for net in extern_nets for v in self.H.G[net] }
         extern_nets_ss = extern_nets.copy()
         return extern_nets_ss, extern_modules_ss
 
@@ -55,7 +49,7 @@ class FDPartMgr(PartMgrBase):
         # while Q:
         #     v = Q.popleft()
         for v, part_v in extern_modules_ss.items():
-            #if part[v] < self.K:
+            # if part[v] < self.K:
             #    continue
             #part_v = part[v] = extern_modules_ss[v]
             part[v] = part_v

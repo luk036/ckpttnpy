@@ -17,7 +17,8 @@ def create_drawf():
         8,
         9,
         10,
-        11
+        11,
+        12
     ])
     # module_list = [0, 1, 2, 3, 4, 5, 6]
     # module_fixed = {}
@@ -25,26 +26,28 @@ def create_drawf():
     # net_list = [7, 8, 9, 10, 11]
 
     G.add_edges_from([
-        (4,  7),
-        (0,  7),
-        (1,  7),
-        (0,  8),
-        (2,  8),
-        (3,  8),
-        (1,  9),
-        (2,  9),
-        (3,  9),
-        (2, 10),
-        (5, 10),
-        (3, 11),
-        (6, 11),
-        (5, 12)
+        ( 7, 4, {'dir': 'I'}),
+        ( 7, 0, {'dir': 'I'}),
+        ( 7, 1, {'dir': 'O'}),
+        ( 8, 0, {'dir': 'I'}),
+        ( 8, 2, {'dir': 'I'}),
+        ( 8, 3, {'dir': 'O'}),
+        ( 9, 1, {'dir': 'I'}),
+        ( 9, 2, {'dir': 'I'}),
+        ( 9, 3, {'dir': 'O'}),
+        (10, 2, {'dir': 'I'}),
+        (10, 5, {'dir': 'O'}),
+        (11, 3, {'dir': 'I'}),
+        (11, 6, {'dir': 'O'}),
+        (12, 5, {'dir': 'B'})
     ])
-
+    G.graph['num_modules'] = 7
+    G.graph['num_nets'] = 6
+    G.graph['num_pads'] = 3
     H = Netlist(G, range(7), range(7, 13), range(-7, 6))
     H.module_weight = module_weight
     H.module_name = module_name
-    H.net_weight = [1, 1, 1, 1, 1, 1]
+    # H.net_weight = [1, 1, 1, 1, 1, 1]
     H.num_pads = 3
     return H
 
@@ -65,14 +68,16 @@ def create_test_netlist():
     # net_list = [3, 4, 5]
 
     G.add_edges_from([
-        (0, 3),
-        (0, 4),
-        (1, 3),
-        (1, 4),
-        (2, 4),
-        (0, 5)  # self-loop
+        (3, 0),
+        (3, 1),
+        (4, 0),
+        (4, 1),
+        (4, 2),
+        (5, 0)  # self-loop
     ])
 
+    G.graph['num_modules'] = 3
+    G.graph['num_nets'] = 3
     H = Netlist(G, range(3), range(3, 6), range(-3, 3))
     H.module_weight = module_weight
     return H
@@ -104,3 +109,19 @@ def test_drawf():
     assert H.get_module_weight(1) == 3
 
     # nx.nx_agraph.write_dot(H.G, 'drawf.dot')
+
+
+def test_json():
+    from networkx.readwrite import json_graph
+    import json
+    H = create_drawf()
+    data = json_graph.node_link_data(H.G)
+    with open('drawf.json', 'w') as fw:
+        json.dump(data, fw, indent=1)
+    with open('drawf.json', 'r') as fr:
+        data2 = json.load(fr)
+    G = json_graph.node_link_graph(data2)
+    assert G.number_of_nodes() == 13
+    assert G.graph['num_modules'] == 7
+    assert G.graph['num_nets'] == 6
+    assert G.graph['num_pads'] == 3
