@@ -46,8 +46,8 @@ class FDPartMgr(PartMgrBase):
             part[v] = self.K
         for v, part_v in extern_modules_ss.items():
             part[v] = part_v
-            Q = deque([ v ])
-            # Q.append(v)
+            Q = deque()
+            Q.append(v)
             while Q:
                 v2 = Q.popleft()
                 for net in self.H.G[v2]:
