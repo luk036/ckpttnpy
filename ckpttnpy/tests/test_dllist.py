@@ -16,7 +16,7 @@ def test_dllink():
     L1.append(d)
     L2.append(L1.pop())
     L2.append(L1.popleft())
-    assert L1
+    assert not L1.is_empty()
     assert not L2.is_empty()
     e.detach()
     assert L1.is_empty()

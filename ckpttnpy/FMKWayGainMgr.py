@@ -25,7 +25,7 @@ class FMKWayGainMgr(FMGainMgr):
         """
         part, _ = part_info
         totalcost = FMGainMgr.init(self, part_info)
-    
+
         for k in range(self.K):
             self.gainbucket[k].clear()
 

@@ -32,8 +32,8 @@ class dllink:
     def is_locked(self):
         return self.next is None
 
-    def __bool__(self):
-        return self.next != self
+    # def __bool__(self):
+    #     return self.next != self
 
     def is_empty(self):
         """is_empty

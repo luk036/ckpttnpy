@@ -27,7 +27,7 @@ class FDPartMgr(PartMgrBase):
         """
         part, extern_nets = part_info
         extern_modules_ss = {v: part[v]
-                             for net in extern_nets for v in self.H.G[net] }
+                             for net in extern_nets for v in self.H.G[net]}
         extern_nets_ss = extern_nets.copy()
         return extern_nets_ss, extern_modules_ss
 

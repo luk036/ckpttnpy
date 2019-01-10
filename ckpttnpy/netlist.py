@@ -169,7 +169,7 @@ class Netlist:
 
         if not extern_nets:
             return
-            
+
         extern_nets_down.clear()
         for net in extern_nets:
             extern_nets_down.add(self.node_down_map[net])
@@ -188,7 +188,7 @@ class Netlist:
         extern_nets_up.clear()
         for net in extern_nets:
             extern_nets_up.add(self.node_up_map[net])
-        
+
         # K = len(extern_modules)
         # extern_modules_up = list(set() for _ in K)
 

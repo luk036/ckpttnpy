@@ -15,13 +15,13 @@ from .FDPartMgr import FDPartMgr
 class MLPartMgr:
     def __init__(self, GainCalc, GainMgr, ConstrMgr, PartMgr, BalTol, K=2):
         """[summary]
-        
+
         Arguments:
             GainCalc {[type]} -- [description]
             GainMgr {[type]} -- [description]
             ConstrMgr {[type]} -- [description]
             BalTol {[type]} -- [description]
-        
+
         Keyword Arguments:
             K {int} -- [description] (default: {2})
         """
@@ -35,14 +35,14 @@ class MLPartMgr:
 
     def run_FMPartition(self, H, part_info, limitsize=7):
         """[summary]
-        
+
         Arguments:
             H {[type]} -- [description]
             part_info {[type]} -- [description]
-        
+
         Keyword Arguments:
             limitsize {int} -- [description] (default: {7})
-        
+
         Returns:
             [type] -- [description]
         """
@@ -69,14 +69,14 @@ class MLPartMgr:
 
     def run_Partition(self, H, part_info, limitsize=7):
         """[summary]
-        
+
         Arguments:
             H {[type]} -- [description]
             part_info {[type]} -- [description]
-        
+
         Keyword Arguments:
             limitsize {int} -- [description] (default: {7})
-        
+
         Returns:
             [type] -- [description]
         """
@@ -91,7 +91,7 @@ class MLPartMgr:
             return legalcheck
         self.run_Partition_recur(H, part_info, limitsize)
         return legalcheck
-        
+
     def run_Partition_recur(self, H, part_info, limitsize=7):
         _, extern_nets = part_info
         if H.number_of_modules() >= limitsize:  # OK

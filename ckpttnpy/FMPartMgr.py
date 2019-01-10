@@ -32,4 +32,3 @@ class FMPartMgr(PartMgrBase):
         part, _ = part_info
         for v, k in enumerate(snapshot):
             part[v] = k
-
