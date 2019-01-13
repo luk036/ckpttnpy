@@ -37,4 +37,4 @@ def test_FDBiPartMgr3():
 
 
 if __name__ == "__main__":
-    test_FDBiPartMgr2()
+    test_FDBiPartMgr3()
