@@ -46,7 +46,9 @@ class FMBiGainCalc:
         if degree < 2:  # unlikely, self-loop, etc.
             return  # does not provide any gain when move
         part, _ = part_info
-        if degree == 2:
+        if degree == 3:
+            self.init_gain_3pin_net(net, part)
+        elif degree == 2:
             self.init_gain_2pin_net(net, part)
         else:
             self.init_gain_general_net(net, part)
@@ -77,10 +79,40 @@ class FMBiGainCalc:
         weight = self.H.get_net_weight(net)
         if part_w != part_v:
             self.totalcost += weight
+            self.modify_gain(w, weight)
+            self.modify_gain(v, weight)
+        else:
+            self.modify_gain(w, -weight)
+            self.modify_gain(v, -weight)
 
-        g = -weight if part_w == part_v else weight
-        self.modify_gain(w, g)
-        self.modify_gain(v, g)
+    def init_gain_3pin_net(self, net, part):
+        """initialize gain for 3-pin net
+
+        Arguments:
+            net {node_t} -- [description]
+            part {list} -- [description]
+        """
+        netCur = iter(self.H.G[net])
+        w = next(netCur)
+        v = next(netCur)
+        u = next(netCur)
+        part_w = part[w]
+        part_v = part[v]
+        part_u = part[u]
+        weight = self.H.get_net_weight(net)
+        if part_u == part_v:
+            if part_w == part_v:
+                for a in [u, v, w]:
+                    self.modify_gain(a, -weight)
+            else:
+                self.totalcost += weight
+                self.modify_gain(w, weight)
+        else:
+            self.totalcost += weight
+            if part_w == part_v:
+                self.modify_gain(u, weight)
+            else:
+                self.modify_gain(v, weight)
 
     def init_gain_general_net(self, net, part):
         """initialize gain for general net

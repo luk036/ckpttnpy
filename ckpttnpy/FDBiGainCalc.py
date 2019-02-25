@@ -50,7 +50,9 @@ class FDBiGainCalc:
         weight = self.H.get_net_weight(net)
         if net in extern_nets:
             self.totalcost += weight
-            if degree == 2:
+            if degree == 3:
+                self.init_gain_3pin_net(net, part, weight)
+            elif degree == 2:
                 for w in self.H.G[net]:
                     # w = self.H.module_map[w]
                     self.modify_gain(w, weight)
@@ -60,6 +62,29 @@ class FDBiGainCalc:
             for w in self.H.G[net]:
                 # w = self.H.module_map[w]
                 self.modify_gain(w, -weight)
+
+    def init_gain_3pin_net(self, net, part, weight):
+        """initialize gain for 3-pin net
+
+        Arguments:
+            net {node_t} -- [description]
+            part {list} -- [description]
+            weight {int} -- [description]
+        """
+        netCur = iter(self.H.G[net])
+        w = next(netCur)
+        v = next(netCur)
+        u = next(netCur)
+        part_w = part[w]
+        part_v = part[v]
+        part_u = part[u]
+        weight = self.H.get_net_weight(net)
+        if part_u == part_v:
+            self.modify_gain(w, weight)
+        elif part_w == part_v:
+            self.modify_gain(u, weight)
+        else:
+            self.modify_gain(v, weight)
 
     def init_gain_general_net(self, net, part, weight):
         """initialize gain for general net
