@@ -72,12 +72,8 @@ class FMBiGainCalc:
         netCur = iter(self.H.G[net])
         w = next(netCur)
         v = next(netCur)
-        # w = self.H.module_map[w]
-        # v = self.H.module_map[v]
-        part_w = part[w]
-        part_v = part[v]
         weight = self.H.get_net_weight(net)
-        if part_w != part_v:
+        if part[w] != part[v]:
             self.totalcost += weight
             self.modify_gain(w, weight)
             self.modify_gain(v, weight)
@@ -96,12 +92,9 @@ class FMBiGainCalc:
         w = next(netCur)
         v = next(netCur)
         u = next(netCur)
-        part_w = part[w]
-        part_v = part[v]
-        part_u = part[u]
         weight = self.H.get_net_weight(net)
-        if part_u == part_v:
-            if part_w == part_v:
+        if part[u] == part[v]:
+            if part[w] == part[v]:
                 for a in [u, v, w]:
                     self.modify_gain(a, -weight)
             else:
@@ -109,7 +102,7 @@ class FMBiGainCalc:
                 self.modify_gain(w, weight)
         else:
             self.totalcost += weight
-            if part_w == part_v:
+            if part[w] == part[v]:
                 self.modify_gain(u, weight)
             else:
                 self.modify_gain(v, weight)
@@ -165,11 +158,9 @@ class FMBiGainCalc:
         netCur = iter(self.H.G[net])
         u = next(netCur)
         w = u if u != v else next(netCur)
-        # w = self.H.module_map[w]
-        part_w = part[w]
         weight = self.H.get_net_weight(net)
-        deltaGainW = 2*weight if part_w == fromPart else -2*weight
-        return w, deltaGainW
+        delta = 2 if part[w] == fromPart else -2
+        return w, delta * weight
 
     def update_move_general_net(self, part_info, move_info):
         """Update move for general net

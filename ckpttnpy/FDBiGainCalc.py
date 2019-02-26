@@ -1,5 +1,4 @@
 from .dllist import dllink
-# from .bpqueue import bpqueue
 
 
 class FDBiGainCalc:
@@ -75,13 +74,10 @@ class FDBiGainCalc:
         w = next(netCur)
         v = next(netCur)
         u = next(netCur)
-        part_w = part[w]
-        part_v = part[v]
-        part_u = part[u]
         weight = self.H.get_net_weight(net)
-        if part_u == part_v:
+        if part[u] == part[v]:
             self.modify_gain(w, weight)
-        elif part_w == part_v:
+        elif part[w] == part[v]:
             self.modify_gain(u, weight)
         else:
             self.modify_gain(v, weight)
@@ -139,16 +135,13 @@ class FDBiGainCalc:
         netCur = iter(self.H.G[net])
         u = next(netCur)
         w = u if u != v else next(netCur)
-        # w = self.H.module_map[w]
-        part_w = part[w]
         weight = self.H.get_net_weight(net)
-        if part_w == fromPart:
-            deltaGainW = 2*weight
+        if part[w] == fromPart:
             extern_nets.add(net)
-        else:
-            deltaGainW = -2*weight
-            extern_nets.remove(net)
-        return w, deltaGainW
+            return w, 2 * weight
+
+        extern_nets.remove(net)
+        return w, -2 * weight
 
     def update_move_general_net(self, part_info, move_info):
         """Update move for general net

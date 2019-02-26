@@ -1,25 +1,27 @@
 class dllink:
-    """doubly linked list/node
+    """doubly linked node (that may also be a "head" a list)
 
-    Generic Node. For efficiency, the objects of this class can be
-    attached to bpqueue (bounded priority queue) and dllink (list). 
-    In the FM algorithm, a node is either attached to a gain bucket
-    or waitinglist.
+    A Doubly-linked List class. This class simply contains a link of
+    node's. By adding a "head" node (sentinel), deleting a node is
+    extremely fast (see "Introduction to Algorithm"). This class does
+    not keep the length information as it is not necessary for the FM
+    algorithm. This saves memory and run-time to update the length
+    information. Note that this class does not own the list node. They
+    are supplied by the caller in order to better reuse the nodes.
     """
 
-    def __init__(self, idx=None, key=0):
+    def __init__(self, idx=None):
         """initialization
 
         Keyword Arguments:
             idx {[type]} -- [description] (default: {None})
-            key {int} -- [description] (default: {0})
         """
         self.next = self.prev = self
         self.idx = idx
-        self.key = key
+        self.key = 0
 
     def detach(self):
-        """detach"""
+        """detach from a list """
         assert self.next is not None
         n = self.next
         p = self.prev
@@ -27,16 +29,22 @@ class dllink:
         n.prev = p
 
     def lock(self):
+        """lock the node (and don't append it to any list) """
         self.next = None
 
     def is_locked(self):
+        """whether the node is locked
+
+        Returns:
+            bool -- [description]
+        """
         return self.next is None
 
     # def __bool__(self):
     #     return self.next != self
 
     def is_empty(self):
-        """is_empty
+        """whether the list is empty
 
         Returns:
             bool -- [description]
@@ -48,7 +56,7 @@ class dllink:
         self.next = self.prev = self
 
     def appendleft(self, node):
-        """append left
+        """append the node to the front
 
         Arguments:
             node {dllink} -- [description]
@@ -59,7 +67,7 @@ class dllink:
         node.prev = self
 
     def append(self, node):
-        """append
+        """append the node to the back
 
         Arguments:
             node {dllink} -- [description]
@@ -70,7 +78,7 @@ class dllink:
         node.next = self
 
     def popleft(self):
-        """pop left
+        """pop a node from the front
 
         Returns:
             dllink -- [description]
@@ -81,7 +89,7 @@ class dllink:
         return res
 
     def pop(self):
-        """pop
+        """pop a node from the back
 
         Returns:
             dllink -- [description]
@@ -101,23 +109,29 @@ class dllink:
 
 
 class dll_iterator:
+    """List iterator
+    
+    Traverse the list from the first item. Usually it is safe
+    to attach/detach list items during the iterator is active.
+    """
+
     def __init__(self, link):
-        """[summary]
+        """Initialization
 
         Arguments:
-            link {[type]} -- [description]
+            link {dllink} -- [description]
         """
         self.link = link
         self.cur = link.next
 
     def next(self):
-        """next
+        """Get the next item
 
         Raises:
             StopIteration -- [description]
 
         Returns:
-            dllink -- [description]
+            dllink -- the next item
         """
         if self.cur != self.link:
             res = self.cur

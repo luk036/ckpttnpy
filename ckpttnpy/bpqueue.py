@@ -4,11 +4,21 @@ from .dllist import dllink
 class bpqueue:
     """bounded priority queue
 
-    Raises:
-        StopIteration -- [description]
-
-    Returns:
-        [type] -- [description]
+    Bounded Priority Queue with integer keys in [a..b]. 
+    Implemented by array (bucket) of doubly-linked lists. 
+    Efficient if key is bounded by a small integer value.
+   
+    Note that this class does not own the PQ nodes. This feature
+    makes the nodes sharable between doubly linked list class and
+    this class. In the FM algorithm, the node either attached to 
+    the gain buckets (PQ) or in the waitinglist (doubly linked list),
+    but not in both of them in the same time.
+   
+    Another improvement is to make the array size one element bigger
+    i.e. (b - a + 2). The extra dummy array element (which is called
+    sentinel) is used to reduce the boundary checking during updating.
+   
+    All the member functions assume that the keys are within the bound.
     """
 
     def __init__(self, a, b):
@@ -18,6 +28,7 @@ class bpqueue:
             a {int} -- lower bound
             b {int} -- upper bound
         """
+        assert a <= b
         self.offset = a - 1
         self.high = b - self.offset
         self.max = 0
@@ -26,13 +37,11 @@ class bpqueue:
         self.bucket[0].append(self.sentinel)  # sentinel
 
     def set_key(self, it, gain):
-        """Get the key value
+        """Set the key value
 
         Arguments:
-            it {dllink} -- [description]
-
-        Returns:
-            int -- key
+            it {dllink} -- the item
+            gain {int} -- the key of it
         """
         it.key = gain - self.offset
 
@@ -48,7 +57,7 @@ class bpqueue:
     #     return self.max != 0
 
     def is_empty(self):
-        """is_empty
+        """whether empty
 
         Returns:
             bool -- [description]
@@ -56,23 +65,23 @@ class bpqueue:
         return self.max == 0
 
     def clear(self):
-        """clear"""
+        """reset the PQ """
         while self.max > 0:
             self.bucket[self.max].clear()
             self.max -= 1
 
     def append_direct(self, it):
-        """append
+        """append item with internal key
 
         Arguments:
-            it {dllink} -- [description]
-            k {int} -- key
+            it {dllink} -- the item
+            k {int} -- the key
         """
         assert it.key > self.offset
         self.append(it, it.key)
 
     def append(self, it, k):
-        """append
+        """append item with external key
 
         Arguments:
             it {dllink} -- [description]
@@ -99,7 +108,7 @@ class bpqueue:
             self.max -= 1
 
     def popleft(self):
-        """pop node with maximum key
+        """pop node with the highest key
 
         Returns:
             dllink -- [description]
@@ -110,11 +119,15 @@ class bpqueue:
         return res
 
     def decrease_key(self, it, delta):
-        """decrease key
+        """decrease key by delta
 
         Arguments:
-            it {dllink} -- [description]
-            delta {int} -- [description]
+            it {dllink} -- the item
+            delta {int} -- the change of the key
+
+        Note that the order of items with same key will
+        not be preserved.
+        For FM algorithm, this is a prefered behavior.
         """
         # self.bucket[it.key].detach(it)
         it.detach()
@@ -129,11 +142,15 @@ class bpqueue:
             self.max -= 1
 
     def increase_key(self, it, delta):
-        """increase key
+        """increase key by delta
 
         Arguments:
-            it {dllink} -- [description]
-            delta {int} -- [description]
+            it {dllink} -- the item
+            delta {int} -- the change of the key
+
+        Note that the order of items with same key will
+        not be preserved.
+        For FM algorithm, this is a prefered behavior.
         """
         # self.bucket[it.key].detach(it)
         it.detach()
@@ -146,11 +163,15 @@ class bpqueue:
             self.max = it.key
 
     def modify_key(self, it, delta):
-        """modify key
+        """modify key by delta
 
         Arguments:
-            it {dllink} -- [description]
-            delta {int} -- [description]
+            it {dllink} -- the item
+            delta {int} -- the change of the key
+
+        Note that the order of items with same key will
+        not be preserved.
+        For FM algorithm, this is a prefered behavior.
         """
         if it.next is None:  # locked
             return
@@ -160,10 +181,10 @@ class bpqueue:
             self.decrease_key(it, delta)
 
     def detach(self, it):
-        """detach a node from bpqueue
+        """detach the item from bpqueue
 
         Arguments:
-            it {[type]} -- [description]
+            it {[type]} -- the item
         """
         # self.bucket[it.key].detach(it)
         it.detach()
@@ -180,6 +201,13 @@ class bpqueue:
 
 
 class bpq_iterator:
+    """bounded priority queue iterator
+
+    Bounded Priority Queue Iterator. Traverse the queue in descending
+    order. Detaching queue items may invalidate the iterator because 
+    the iterator makes a copy of current key. 
+    """
+
     def __init__(self, bpq):
         """[summary]
 
