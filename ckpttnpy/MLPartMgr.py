@@ -55,13 +55,14 @@ class MLPartMgr:
             return legalcheck
         if H.number_of_modules() >= limitsize:  # OK
             H2 = create_contraction_subgraph(H, extern_nets)
-            part2 = list(0 for _ in range(H2.number_of_modules()))
-            extern_nets2 = set()
-            part2_info = part2, extern_nets2
-            H2.projection_up(part_info, part2_info)
-            legalcheck = self.run_FMPartition(H2, part2_info, limitsize)
-            if legalcheck == 2:
-                H2.projection_down(part2_info, part_info)
+            if 2 * H2.number_of_modules() <= H.number_of_modules():
+                part2 = list(0 for _ in range(H2.number_of_modules()))
+                extern_nets2 = set()
+                part2_info = part2, extern_nets2
+                H2.projection_up(part_info, part2_info)
+                legalcheck = self.run_FMPartition(H2, part2_info, limitsize)
+                if legalcheck == 2:
+                    H2.projection_down(part2_info, part_info)
         partMgr.optimize(part_info)
         assert partMgr.totalcost >= 0
         self.totalcost = partMgr.totalcost
@@ -96,12 +97,14 @@ class MLPartMgr:
         _, extern_nets = part_info
         if H.number_of_modules() >= limitsize:  # OK
             H2 = create_contraction_subgraph(H, extern_nets)
-            part2 = list(0 for _ in range(H2.number_of_modules()))
-            extern_nets2 = set()
-            part2_info = part2, extern_nets2
-            H2.projection_up(part_info, part2_info)
-            self.run_Partition_recur(H2, part2_info, limitsize)
-            H2.projection_down(part2_info, part_info)
+            if 2 * H2.number_of_modules() <= H.number_of_modules():
+                part2 = list(0 for _ in range(H2.number_of_modules()))
+                extern_nets2 = set()
+                part2_info = part2, extern_nets2
+                H2.projection_up(part_info, part2_info)
+                self.run_Partition_recur(H2, part2_info, limitsize)
+                H2.projection_down(part2_info, part_info)
+                
         gainMgr = self.GainMgr(self.GainCalc, H, self.K)
         constrMgr = self.ConstrMgr(H, self.BalTol, self.K)
         partMgr = self.PartMgr(H, gainMgr, constrMgr)
