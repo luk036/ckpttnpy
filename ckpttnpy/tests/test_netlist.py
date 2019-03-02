@@ -1,5 +1,5 @@
 import networkx as nx
-from ckpttnpy.netlist import Netlist
+from ckpttnpy.netlist import Netlist, ThinGraph
 from networkx.readwrite import json_graph
 import json
 
@@ -18,7 +18,7 @@ def create_p1():
 
 
 def create_drawf():
-    G = nx.Graph()
+    G = ThinGraph()
     module_name = ['a0', 'a1', 'a2', 'a3', 'p1', 'p2', 'p3']
     G.add_nodes_from([
         0,
@@ -68,7 +68,7 @@ def create_drawf():
 
 
 def create_test_netlist():
-    G = nx.Graph()
+    G = ThinGraph()
     G.add_nodes_from([
         0,
         1,
