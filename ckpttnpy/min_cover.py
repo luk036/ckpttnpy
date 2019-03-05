@@ -13,12 +13,25 @@ def max_independent_net(H, weight, DontSelect):
     Returns:
         [type] -- [description]
     """
+
+    # bpqueue bpq{-int(H.get_max_net_degree()), 0};
+    # auto nets = std::vector<dllink<int>>(H.nets.size());
+
+    # for (auto i_net = 0U; i_net < H.nets.size(); ++i_net) {
+    #     auto net = H.nets[i_net];
+    #     bpq.append(nets[i_net], -H.G.degree(net));
+    # }
+
     visited = list(False for _ in H.nets)
     for net in DontSelect:
         visited[H.net_map[net]] = True
 
     S = set()
     total_cost = 0
+
+    # while (!bpq.is_empty()) {
+    #     dllink<int>& item = bpq.popleft();
+    #     auto i_net = std::distance(&nets[0], &item);
     for i_net, net in enumerate(H.nets):
         if visited[i_net]:
             continue
@@ -152,21 +165,21 @@ def create_contraction_subgraph(H, DontSelect):
             G.add_edge(node_up_map[v], node_up_map[net])
 
     H2 = Netlist(G, range(numModules), range(numModules, numModules + numNets),
-                 range(-numModules, numNets))
+                 range(numModules), range(-numModules, numNets))
 
     node_down_map = {v2: v1 for v1, v2 in node_up_map.items()}
     cluster_down_map = {node_up_map[v]: net for v, net in cluster_map.items()}
 
     module_weight = []
-    for v in range(numModules):
-        if v in cluster_down_map:
-            net = cluster_down_map[v]
+    for i_v in range(numModules):
+        if i_v in cluster_down_map:
+            net = cluster_down_map[i_v]
             cluster_weight = 0
             for v2 in H.G[net]:
                 cluster_weight += H.get_module_weight(v2)
             module_weight.append(cluster_weight)
         else:
-            v2 = node_down_map[v]
+            v2 = node_down_map[i_v]
             module_weight.append(H.get_module_weight(v2))
 
     H2.node_up_map = node_up_map

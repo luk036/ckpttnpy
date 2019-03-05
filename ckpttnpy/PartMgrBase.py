@@ -43,12 +43,12 @@ class PartMgrBase:
         self.init(part_info)
 
         # Zero-weighted modules does not contribute legalization
-        for v in self.H.modules:
-            if self.H.get_module_weight(v) != 0:
+        for i_v, v in enumerate(self.H.modules):
+            if self.H.get_module_weight_by_id(i_v) != 0:
                 continue
             if v in self.H.module_fixed:  # already locked
                 continue
-            self.gainMgr.lock_all(part[v], v)
+            self.gainMgr.lock_all(part[i_v], i_v)
 
         legalcheck = 0
         while True:
@@ -57,10 +57,10 @@ class PartMgrBase:
             toPart = self.validator.select_togo()
             if self.gainMgr.is_empty_togo(toPart):
                 break
-            v, gainmax = self.gainMgr.select_togo(toPart)
-            fromPart = part[v]
+            i_v, gainmax = self.gainMgr.select_togo(toPart)
+            fromPart = part[i_v]
             assert fromPart != toPart
-            move_info_v = [fromPart, toPart, v]
+            move_info_v = [fromPart, toPart, i_v]
             # Check if the move of v can notsatisfied, makebetter, or satisfied
             legalcheck = self.validator.check_legal(move_info_v)
             if legalcheck == 0:  # notsatisfied
@@ -71,7 +71,7 @@ class PartMgrBase:
             self.gainMgr.update_move(part_info, move_info_v)
             self.gainMgr.update_move_v(move_info_v, gainmax)
             self.validator.update_move(move_info_v)
-            part[v] = toPart
+            part[i_v] = toPart
             self.totalcost -= gainmax
             assert self.totalcost >= 0
 
@@ -127,13 +127,13 @@ class PartMgrBase:
 
             # Update v and its neigbours (even they are in waitinglist)
             # Put neigbours to bucket
-            _, toPart, v = move_info_v
-            self.gainMgr.lock(toPart, v)
+            _, toPart, i_v = move_info_v
+            self.gainMgr.lock(toPart, i_v)
             self.gainMgr.update_move(part_info, move_info_v)
             self.gainMgr.update_move_v(move_info_v, gainmax)
             self.validator.update_move(move_info_v)
             totalgain += gainmax
-            part[v] = toPart
+            part[i_v] = toPart
 
         if deferredsnapshot:
             # restore previous best solution

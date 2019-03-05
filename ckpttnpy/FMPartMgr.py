@@ -30,5 +30,5 @@ class FMPartMgr(PartMgrBase):
             [type] -- [description]
         """
         part, _ = part_info
-        for v, k in enumerate(snapshot):
-            part[v] = k
+        for i_v, k in enumerate(snapshot):
+            part[i_v] = k

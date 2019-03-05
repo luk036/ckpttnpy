@@ -26,8 +26,15 @@ class FDPartMgr(PartMgrBase):
             [type] -- [description]
         """
         part, extern_nets = part_info
-        extern_modules_ss = {v: part[v]
-                             for net in extern_nets for v in self.H.G[net]}
+
+        # extern_modules_ss = {v: part[v]
+        #                      for net in extern_nets for v in self.H.G[net]}
+        extern_modules_ss = {}
+        for net in extern_nets:
+            for v in self.H.G[net]:
+                i_v = self.H.module_map[v]
+                extern_modules_ss[v] = part[i_v]
+
         extern_nets_ss = extern_nets.copy()
         return extern_nets_ss, extern_modules_ss
 
@@ -42,10 +49,11 @@ class FDPartMgr(PartMgrBase):
         """
         extern_nets_ss, extern_modules_ss = snapshot
         part, extern_nets = part_info
-        for v in range(self.H.number_of_modules()):
-            part[v] = self.K
+        for i_v in range(self.H.number_of_modules()):
+            part[i_v] = self.K
         for v, part_v in extern_modules_ss.items():
-            part[v] = part_v
+            i_v = self.H.module_map[v]
+            part[i_v] = part_v
             Q = deque()
             Q.append(v)
             while Q:
@@ -56,9 +64,10 @@ class FDPartMgr(PartMgrBase):
                     if net in extern_nets_ss:
                         continue
                     for v3 in self.H.G[net]:
-                        if part[v3] < self.K:
+                        i_v3 = self.H.module_map[v3]
+                        if part[i_v3] < self.K:
                             continue
-                        part[v3] = part_v
+                        part[i_v3] = part_v
                         Q.append(v3)
 
         extern_nets.clear()

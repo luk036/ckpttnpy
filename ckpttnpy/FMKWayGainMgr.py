@@ -29,21 +29,22 @@ class FMKWayGainMgr(FMGainMgr):
         for k in range(self.K):
             self.gainbucket[k].clear()
 
-        for v in range(self.H.number_of_modules()):
-            pv = part[v]
+        for i_v in range(self.H.number_of_modules()):
+            pv = part[i_v]
             for k in self.RR.exclude(pv):
-                vlink = self.gainCalc.vertex_list[k][v]
+                vlink = self.gainCalc.vertex_list[k][i_v]
                 self.gainbucket[k].append(vlink, vlink.key)
-            vlink = self.gainCalc.vertex_list[pv][v]
+            vlink = self.gainCalc.vertex_list[pv][i_v]
             self.gainbucket[pv].set_key(vlink, 0)
             self.waitinglist.append(vlink)
 
         for v in self.H.module_fixed:
-            self.lock_all(part[v], v)
+            i_v = self.H.module_map[v]
+            self.lock_all(part[i_v], i_v)
 
         return totalcost
 
-    def lock(self, whichPart, v):
+    def lock(self, whichPart, i_v):
         """Set key
 
         Arguments:
@@ -51,15 +52,15 @@ class FMKWayGainMgr(FMGainMgr):
             v {node_t} -- [description]
             key {int} -- [description]
         """
-        vlink = self.gainCalc.vertex_list[whichPart][v]
+        vlink = self.gainCalc.vertex_list[whichPart][i_v]
         self.gainbucket[whichPart].detach(vlink)
         vlink.lock()
 
-    def lock_all(self, fromPart, v):
+    def lock_all(self, fromPart, i_v):
         for k in range(self.K):
-            self.lock(k, v)
+            self.lock(k, i_v)
 
-    def set_key(self, whichPart, v, key):
+    def set_key(self, whichPart, i_v, key):
         """Set key
 
         Arguments:
@@ -68,7 +69,7 @@ class FMKWayGainMgr(FMGainMgr):
             key {int} -- [description]
         """
         self.gainbucket[whichPart].set_key(
-            self.gainCalc.vertex_list[whichPart][v], key)
+            self.gainCalc.vertex_list[whichPart][i_v], key)
 
     def update_move_v(self, move_info_v, gain):
         """Update gain for the moving cell
@@ -78,18 +79,18 @@ class FMKWayGainMgr(FMGainMgr):
             move_info_v {[type]} -- [description]
             gain {[type]} -- [description]
         """
-        fromPart, toPart, v = move_info_v
+        fromPart, toPart, i_v = move_info_v
         for k in range(self.K):
             if fromPart == k or toPart == k:
                 continue
-            self.gainbucket[k].modify_key(self.gainCalc.vertex_list[k][v],
+            self.gainbucket[k].modify_key(self.gainCalc.vertex_list[k][i_v],
                                           self.gainCalc.deltaGainV[k])
-        self.set_key(fromPart, v, -gain)
-        # self.lock(toPart, v)
+        self.set_key(fromPart, i_v, -gain)
+        # self.lock(toPart, i_v)
 
     # private:
 
-    def modify_key(self, w, part_w, key):
+    def modify_key(self, i_w, part_w, key):
         """[summary]
 
         Arguments:
@@ -99,4 +100,4 @@ class FMKWayGainMgr(FMGainMgr):
         """
         for k in self.RR.exclude(part_w):
             self.gainbucket[k].modify_key(
-                self.gainCalc.vertex_list[k][w], key[k])
+                self.gainCalc.vertex_list[k][i_w], key[k])

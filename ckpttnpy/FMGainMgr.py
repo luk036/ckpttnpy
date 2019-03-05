@@ -74,10 +74,9 @@ class FMGainMgr:
         toPart = gainmax.index(maxk)
         vlink = self.gainbucket[toPart].popleft()
         self.waitinglist.append(vlink)
-        v = vlink.idx
-        # v = self.H.modules[v]
-        fromPart = part[v]
-        move_info_v = fromPart, toPart, v
+        i_v = vlink.idx
+        fromPart = part[i_v]
+        move_info_v = fromPart, toPart, i_v
         return move_info_v, gainmax[toPart]
 
     def select_togo(self, toPart):
@@ -92,8 +91,8 @@ class FMGainMgr:
         gainmax = self.gainbucket[toPart].get_max()
         vlink = self.gainbucket[toPart].popleft()
         self.waitinglist.append(vlink)
-        v = vlink.idx
-        return v, gainmax
+        i_v = vlink.idx
+        return i_v, gainmax
 
     def update_move(self, part_info, move_info_v):
         """[summary]
@@ -104,7 +103,8 @@ class FMGainMgr:
         """
         # self.deltaGainV = list(0 for _ in range(self.K))
         self.gainCalc.update_move_init()
-        fromPart, toPart, v = move_info_v
+        fromPart, toPart, i_v = move_info_v
+        v = self.H.modules[i_v]
         for net in self.H.G[v]:
             degree = self.H.G.degree[net]
             if degree < 2:  # unlikely, self-loop, etc.
@@ -118,7 +118,7 @@ class FMGainMgr:
     # private:
 
     @abstractmethod
-    def modify_key(self, w, part_w, key):
+    def modify_key(self, i_w, part_w, key):
         """Abstract method
 
         Arguments:
@@ -134,10 +134,10 @@ class FMGainMgr:
             part {list} -- Partition sol'n
             move_info {[type]} -- [description]
         """
-        w, deltaGainW = self.gainCalc.update_move_2pin_net(
+        i_w, deltaGainW = self.gainCalc.update_move_2pin_net(
             part_info, move_info)
         part, _ = part_info
-        self.modify_key(w, part[w], deltaGainW)
+        self.modify_key(i_w, part[i_w], deltaGainW)
 
     def update_move_general_net(self, part_info, move_info):
         """Update move for general net
@@ -149,7 +149,8 @@ class FMGainMgr:
         IdVec, deltaGain = self.gainCalc.update_move_general_net(
             part_info, move_info)
         part, _ = part_info
-        degree = len(IdVec)
-        for idx in range(degree):
-            w = IdVec[idx]
-            self.modify_key(w, part[w], deltaGain[idx])
+        # degree = len(IdVec)
+        # for idx in range(degree):
+        #     w = IdVec[idx]
+        for idx, i_w in enumerate(IdVec):
+            self.modify_key(i_w, part[i_w], deltaGain[idx])

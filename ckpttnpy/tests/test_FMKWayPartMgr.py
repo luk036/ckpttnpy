@@ -30,7 +30,7 @@ def run_FMKWayPartMgr(H, gainMgr, K):
 def test_FMKWayPartMgr2():
     H = create_drawf()
     gainMgr = FDKWayGainMgr(FMKWayGainCalc, H, 3)
-    H.module_fixed = [4]
+    H.module_fixed = ['p1']
     run_FMKWayPartMgr(H, gainMgr, 3)
 
 

@@ -29,9 +29,9 @@ class FMConstrMgr:
             part {[type]} -- [description]
         """
         self.diff = list(0 for _ in range(self.K))
-        for v in range(self.H.number_of_modules()):
-            weight = self.H.get_module_weight_by_id(v)
-            self.diff[part[v]] += weight
+        for i_v in range(self.H.number_of_modules()):
+            weight = self.H.get_module_weight_by_id(i_v)
+            self.diff[part[i_v]] += weight
 
         # for k in range(self.K):
         #     self.illegal[k] = (self.diff[k] < self.lowerbound)
