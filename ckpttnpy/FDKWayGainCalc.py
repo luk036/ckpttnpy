@@ -52,10 +52,12 @@ class FDKWayGainCalc:
         part, extern_nets = part_info
         if net in extern_nets:
             # self.totalcost += weight
-            if degree == 2:
-                self.init_gain_2pin_net(net, part)
-            else:
+            if degree > 3:
                 self.init_gain_general_net(net, part)
+            elif degree == 3:
+                self.init_gain_3pin_net(net, part)
+            else: # degree == 2
+                self.init_gain_2pin_net(net, part)
         else:  # 90%
             weight = self.H.get_net_weight(net)
             for w in self.H.G[net]:
@@ -91,6 +93,49 @@ class FDKWayGainCalc:
         part_v = part[i_v]
         self.vertex_list[part_v][i_w].key += weight
         self.vertex_list[part_w][i_v].key += weight
+
+    def init_gain_3pin_net(self, net, part):
+        """initialize gain for 3-pin net
+
+        Arguments:
+            net {node_t} -- [description]
+            part {list} -- [description]
+        """
+        netCur = iter(self.H.G[net])
+        w = next(netCur)
+        v = next(netCur)
+        u = next(netCur)
+        i_w = self.H.module_map[w]
+        i_v = self.H.module_map[v]
+        i_u = self.H.module_map[u]
+        part_v = part[i_v]
+        part_w = part[i_w]
+        part_u = part[i_u]
+        weight = self.H.get_net_weight(net)
+        self.totalcost += weight
+        if part_u == part_v:
+            self.vertex_list[part_v][i_w].key += weight
+            for i_a in [i_u, i_v]:
+                self.modify_gain(i_a, part_v, -weight)
+                self.vertex_list[part_w][i_a].key += weight
+        elif part_w == part_v:
+            self.vertex_list[part_v][i_u].key += weight
+            for i_a in [i_w, i_v]:
+                self.modify_gain(i_a, part_v, -weight)
+                self.vertex_list[part_u][i_a].key += weight
+        elif part_w == part_u:
+            self.vertex_list[part_w][i_v].key += weight
+            for i_a in [i_w, i_u]:
+                self.modify_gain(i_a, part_w, -weight)
+                self.vertex_list[part_v][i_a].key += weight
+        else:
+            self.totalcost += weight
+            self.vertex_list[part_v][i_u].key += weight
+            self.vertex_list[part_w][i_u].key += weight
+            self.vertex_list[part_w][i_v].key += weight
+            self.vertex_list[part_u][i_v].key += weight
+            self.vertex_list[part_u][i_w].key += weight
+            self.vertex_list[part_v][i_w].key += weight
 
     def init_gain_general_net(self, net, part):
         """initialize gain for general net
@@ -145,20 +190,78 @@ class FDKWayGainCalc:
         weight = self.H.get_net_weight(net)
         deltaGainW = list(0 for _ in range(self.K))
         # deltaGainV = list(0 for _ in range(self.K))
-        if part_w == fromPart:
-            extern_nets.add(net)
-            for k in range(self.K):
-                deltaGainW[k] += weight
-                self.deltaGainV[k] += weight
-        elif part_w == toPart:
-            extern_nets.remove(net)
-            for k in range(self.K):
-                deltaGainW[k] -= weight
-                self.deltaGainV[k] -= weight
+        action = [extern_nets.add, extern_nets.remove]
+        l, u = fromPart, toPart
+        for i in [0, 1]:
+            if part_w == l:
+                action[i](net)
+                for k in range(self.K):
+                    deltaGainW[k] += weight
+                    self.deltaGainV[k] += weight
+            deltaGainW[l] -= weight
+            weight = -weight
+            l, u = u, l
 
-        deltaGainW[fromPart] -= weight
-        deltaGainW[toPart] += weight
         return i_w, deltaGainW
+
+    def update_move_3pin_net(self, part_info, move_info):
+        """Update move for 3-pin net
+
+        Arguments:
+            part {list} -- [description]
+            move_info {MoveInfoV} -- [description]
+
+        Returns:
+            [type] -- [description]
+        """
+        net, fromPart, toPart, v = move_info
+        part, extern_nets = part_info
+        IdVec = []
+        deltaGain = []
+        for w in self.H.G[net]:
+            if w == v:
+                continue
+            i_w = self.H.module_map[w]
+            IdVec.append(i_w)
+
+        degree = len(IdVec)
+        deltaGain = list(list(0 for _ in range(self.K))
+                         for _ in range(degree))
+
+        weight = self.H.get_net_weight(net)
+        part_w = part[IdVec[0]]
+
+        action = [extern_nets.add, extern_nets.remove]
+
+        l, u = fromPart, toPart
+        if part_w == part[IdVec[1]]:
+            for i in [0, 1]:
+                if part_w == l:
+                    for k in range(self.K):
+                        self.deltaGainV[k] += weight
+                    for idx in [0, 1]:
+                        deltaGain[idx][u] += weight
+                    action[i](net)
+                weight = -weight
+                l, u = u, l
+        else:
+            a, b = 0, 1
+            for i in [0, 1]:
+                for j in [0, 1]:
+                    if part[IdVec[a]] == l:
+                        if part[IdVec[b]] == u:
+                            for k in range(self.K):
+                                deltaGain[b][k] -= weight
+                        else:
+                            for k in range(self.K):
+                                self.deltaGainV[k] += weight
+                            for idx in [0, 1]:
+                                deltaGain[idx][u] += weight
+                    a, b = b, a
+                weight = -weight
+                l, u = u, l
+        return IdVec, deltaGain
+        # return self.update_move_general_net(part_info, move_info)
 
     def update_move_general_net(self, part_info, move_info):
         """Update move for general net
@@ -195,23 +298,17 @@ class FDKWayGainCalc:
             if num[k] > 0:
                 count += 1
 
-        if num[fromPart] == 0:
-            if num[toPart] > 0:
-                for k in range(self.K):
-                    self.deltaGainV[k] -= weight
-                if count == 1:
-                    extern_nets.remove(net)
-        else:
-            if num[toPart] == 0:
-                for k in range(self.K):
-                    self.deltaGainV[k] += weight
-                if count == 1:
-                    extern_nets.add(net)
-
-        for l in [fromPart, toPart]:
+        action = [extern_nets.remove, extern_nets.add]
+        l, u = fromPart, toPart
+        for i in [0, 1]:
             if num[l] == 0:
                 for idx in range(degree):
                     deltaGain[idx][l] -= weight
+                if num[u] > 0:
+                    for k in range(self.K):
+                        self.deltaGainV[k] -= weight
+                    if count == 1:
+                        action[i](net)
             elif num[l] == 1:
                 for idx in range(degree):
                     part_w = part[IdVec[idx]]
@@ -220,5 +317,6 @@ class FDKWayGainCalc:
                             deltaGain[idx][k] += weight
                         break
             weight = -weight
+            l, u = u, l
 
         return IdVec, deltaGain

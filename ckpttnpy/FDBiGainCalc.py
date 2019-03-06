@@ -82,7 +82,7 @@ class FDBiGainCalc:
             self.modify_gain(i_w, weight)
         elif part[i_w] == part[i_v]:
             self.modify_gain(i_u, weight)
-        else:
+        else: # part[i_u] == part[i_w]
             self.modify_gain(i_v, weight)
 
     def init_gain_general_net(self, net, part, weight):
@@ -148,6 +148,48 @@ class FDBiGainCalc:
             weight *= -2
         return i_w, weight
 
+    def update_move_3pin_net(self, part_info, move_info):
+        """Update move for 3-pin net
+
+        Arguments:
+            part {list} -- [description]
+            move_info {MoveInfoV} -- [description]
+
+        Returns:
+            [type] -- [description]
+        """
+        net, fromPart, toPart, v = move_info
+        part, extern_nets = part_info
+        IdVec = []
+        deltaGain = []
+        for w in self.H.G[net]:
+            if w == v:
+                continue
+            i_w = self.H.module_map[w]
+            IdVec.append(i_w)
+
+        deltaGain = [0, 0]
+        weight = self.H.get_net_weight(net)
+
+        part_w = part[IdVec[0]]
+        if part_w == part[IdVec[1]]:
+            if part_w == fromPart:
+                extern_nets.add(net)
+                for idx in [0, 1]:
+                    deltaGain[idx] += weight
+            else:
+                extern_nets.remove(net)
+                for idx in [0, 1]:
+                    deltaGain[idx] -= weight
+        else:
+            if part_w == fromPart:
+                deltaGain[0] += weight
+                deltaGain[1] -= weight
+            else:
+                deltaGain[0] -= weight
+                deltaGain[1] += weight
+        return IdVec, deltaGain
+
     def update_move_general_net(self, part_info, move_info):
         """Update move for general net
 
@@ -174,25 +216,20 @@ class FDBiGainCalc:
         deltaGain = list(0 for _ in range(degree))
         weight = self.H.get_net_weight(net)
 
-        if num[fromPart] == 0:
-            extern_nets.remove(net)
-            for idx in range(degree):
-                deltaGain[idx] -= weight
-            return IdVec, deltaGain
-
-        if num[toPart] == 0:
-            extern_nets.add(net)
-            for idx in range(degree):
-                deltaGain[idx] += weight
-            return IdVec, deltaGain
-
-        for l in [fromPart, toPart]:
-            if num[l] == 1:
+        action = [extern_nets.remove, extern_nets.add]
+        l, u = fromPart, toPart
+        for i in [0, 1]:
+            if num[l] == 0:
+                action[i](net)
+                for idx in range(degree):
+                    deltaGain[idx] -= weight
+            elif num[l] == 1:
                 for idx in range(degree):
                     part_w = part[IdVec[idx]]
                     if part_w == l:
                         deltaGain[idx] += weight
                         break
             weight = -weight
+            l, u = u, l
 
         return IdVec, deltaGain
