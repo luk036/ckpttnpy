@@ -28,7 +28,8 @@ def test_MLBiPartMgr():
 def test_MLBiPartMgr2():
     H = create_p1()
     totalcost = run_MLBiPartMgr(H)
-    assert totalcost == 70
+    assert totalcost >= 55
+    assert totalcost <= 70
 
 
 def run_MLKWayPartMgr(H):
@@ -49,7 +50,8 @@ def test_MLKWayPartMgr():
 def test_MLKWayPartMgr2():
     H = create_p1()
     totalcost = run_MLKWayPartMgr(H)
-    assert totalcost == 152
+    assert totalcost >= 109
+    assert totalcost <= 152
 
 
 # if __name__ == "__main__":
