@@ -106,7 +106,7 @@ class FMBiGainCalc:
             self.modify_gain(i_w, weight)
         elif part[i_w] == part[i_v]:
             self.modify_gain(i_u, weight)
-        else: # part[i_u] == part[i_w]
+        else:  # part[i_u] == part[i_w]
             self.modify_gain(i_v, weight)
         self.totalcost += weight
 
@@ -176,7 +176,7 @@ class FMBiGainCalc:
         Returns:
             [type] -- [description]
         """
-        net, fromPart, toPart, v = move_info
+        net, fromPart, _, v = move_info
         part, _ = part_info
         IdVec = []
         deltaGain = []
@@ -195,12 +195,12 @@ class FMBiGainCalc:
             weight = -weight
 
         if part_w == part[IdVec[1]]:
-            for idx in [0, 1]:
-                deltaGain[idx] += weight
+            deltaGain[0] += weight
+            deltaGain[1] += weight
         else:
             deltaGain[0] += weight
             deltaGain[1] -= weight
-            
+
         return IdVec, deltaGain
 
     def update_move_general_net(self, part_info, move_info):

@@ -7,17 +7,17 @@ class bpqueue:
     Bounded Priority Queue with integer keys in [a..b]. 
     Implemented by array (bucket) of doubly-linked lists. 
     Efficient if key is bounded by a small integer value.
-   
+
     Note that this class does not own the PQ nodes. This feature
     makes the nodes sharable between doubly linked list class and
     this class. In the FM algorithm, the node either attached to 
     the gain buckets (PQ) or in the waitinglist (doubly linked list),
     but not in both of them in the same time.
-   
+
     Another improvement is to make the array size one element bigger
     i.e. (b - a + 2). The extra dummy array element (which is called
     sentinel) is used to reduce the boundary checking during updating.
-   
+
     All the member functions assume that the keys are within the bound.
     """
 

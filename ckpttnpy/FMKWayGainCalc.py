@@ -54,7 +54,7 @@ class FMKWayGainCalc:
             self.init_gain_general_net(net, part)
         elif degree == 3:
             self.init_gain_3pin_net(net, part)
-        else: # degree == 2
+        else:  # degree == 2
             self.init_gain_2pin_net(net, part)
 
     def modify_gain(self, i_v, pv, weight):
@@ -198,10 +198,10 @@ class FMKWayGainCalc:
             if part_w == l:
                 for k in range(self.K):
                     deltaGainW[k] += weight
-                    self.deltaGainV[k] += weight    
+                    self.deltaGainV[k] += weight
             deltaGainW[l] -= weight
             weight = -weight
-            
+
         return i_w, deltaGainW
 
     def update_move_3pin_net(self, part_info, move_info):
@@ -238,10 +238,10 @@ class FMKWayGainCalc:
 
         # action = [extern_nets.add, extern_nets.remove]
         if part_w == part_u:
-            for i in [0, 1]:
+            for _ in [0, 1]:
                 if part_w != l:
-                    for idx in [0, 1]:
-                        deltaGain[idx][l] -= weight
+                    deltaGain[0][l] -= weight
+                    deltaGain[1][l] -= weight
                     if part_w == u:
                         for k in range(self.K):
                             self.deltaGainV[k] -= weight
@@ -249,7 +249,7 @@ class FMKWayGainCalc:
                 l, u = u, l
             return IdVec, deltaGain
 
-        for i in [0, 1]:
+        for _ in [0, 1]:
             if part_w == l:
                 for k in range(self.K):
                     deltaGain[0][k] += weight
@@ -257,8 +257,8 @@ class FMKWayGainCalc:
                 for k in range(self.K):
                     deltaGain[1][k] += weight
             else:
-                for idx in [0, 1]:
-                    deltaGain[idx][l] -= weight
+                deltaGain[0][l] -= weight
+                deltaGain[1][l] -= weight
                 if part_w == u or part_u == u:
                     for k in range(self.K):
                         self.deltaGainV[k] -= weight
@@ -297,7 +297,7 @@ class FMKWayGainCalc:
         weight = self.H.get_net_weight(net)
 
         l, u = fromPart, toPart
-        for i in [0, 1]:
+        for _ in [0, 1]:
             if num[l] == 0:
                 for idx in range(degree):
                     deltaGain[idx][l] -= weight

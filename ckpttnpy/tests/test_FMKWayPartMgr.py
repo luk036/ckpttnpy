@@ -27,7 +27,7 @@ def run_FMKWayPartMgr(H, gainMgr, K):
     # print(partMgr.snapshot)
 
 
-def test_FMKWayPartMgr2():
+def test_FMKWayPartMgr():
     H = create_drawf()
     gainMgr = FDKWayGainMgr(FMKWayGainCalc, H, 3)
     H.module_fixed = ['p1']
@@ -40,5 +40,5 @@ def test_FMKWayPartMgr2():
     run_FMKWayPartMgr(H, gainMgr, 3)
 
 
-if __name__ == "__main__":
-    test_FMKWayPartMgr2()
+# if __name__ == "__main__":
+#     test_FMKWayPartMgr2()

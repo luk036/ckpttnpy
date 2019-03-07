@@ -82,7 +82,7 @@ class FDBiGainCalc:
             self.modify_gain(i_w, weight)
         elif part[i_w] == part[i_v]:
             self.modify_gain(i_u, weight)
-        else: # part[i_u] == part[i_w]
+        else:  # part[i_u] == part[i_w]
             self.modify_gain(i_v, weight)
 
     def init_gain_general_net(self, net, part, weight):
@@ -158,7 +158,7 @@ class FDBiGainCalc:
         Returns:
             [type] -- [description]
         """
-        net, fromPart, toPart, v = move_info
+        net, fromPart, _, v = move_info
         part, extern_nets = part_info
         IdVec = []
         deltaGain = []
@@ -175,17 +175,17 @@ class FDBiGainCalc:
         if part_w == part[IdVec[1]]:
             if part_w == fromPart:
                 extern_nets.add(net)
-                for idx in [0, 1]:
-                    deltaGain[idx] += weight
-            else:
+                deltaGain[0] += weight
+                deltaGain[1] += weight
+            else:  # part_w == toPart
                 extern_nets.remove(net)
-                for idx in [0, 1]:
-                    deltaGain[idx] -= weight
+                deltaGain[0] -= weight
+                deltaGain[1] -= weight
         else:
             if part_w == fromPart:
                 deltaGain[0] += weight
                 deltaGain[1] -= weight
-            else:
+            else:  # part_w == toPart
                 deltaGain[0] -= weight
                 deltaGain[1] += weight
         return IdVec, deltaGain

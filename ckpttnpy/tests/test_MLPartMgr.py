@@ -11,7 +11,8 @@ from ckpttnpy.FMKWayConstrMgr import FMKWayConstrMgr
 
 
 def run_MLBiPartMgr(H):
-    partMgr = MLPartMgr(FMBiGainCalc, FMBiGainMgr, FMBiConstrMgr, FMPartMgr, 0.4)
+    partMgr = MLPartMgr(FMBiGainCalc, FMBiGainMgr,
+                        FMBiConstrMgr, FMPartMgr, 0.4)
     part = list(0 for _ in H.modules)
     part_info = part, set()
     partMgr.run_FMPartition(H, part_info)
@@ -24,8 +25,15 @@ def test_MLBiPartMgr():
     assert totalcost == 2
 
 
+def test_MLBiPartMgr2():
+    H = create_p1()
+    totalcost = run_MLBiPartMgr(H)
+    assert totalcost == 70
+
+
 def run_MLKWayPartMgr(H):
-    partMgr = MLPartMgr(FMKWayGainCalc, FMKWayGainMgr, FMKWayConstrMgr, FMPartMgr, 0.4, 3)
+    partMgr = MLPartMgr(FMKWayGainCalc, FMKWayGainMgr,
+                        FMKWayConstrMgr, FMPartMgr, 0.4, 3)
     part = list(0 for _ in H.modules)
     part_info = part, set()
     partMgr.run_FMPartition(H, part_info)
@@ -36,6 +44,12 @@ def test_MLKWayPartMgr():
     H = create_drawf()
     totalcost = run_MLKWayPartMgr(H)
     assert totalcost == 4
+
+
+def test_MLKWayPartMgr2():
+    H = create_p1()
+    totalcost = run_MLKWayPartMgr(H)
+    assert totalcost == 152
 
 
 # if __name__ == "__main__":

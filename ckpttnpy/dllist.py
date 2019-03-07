@@ -110,7 +110,7 @@ class dllink:
 
 class dll_iterator:
     """List iterator
-    
+
     Traverse the list from the first item. Usually it is safe
     to attach/detach list items during the iterator is active.
     """

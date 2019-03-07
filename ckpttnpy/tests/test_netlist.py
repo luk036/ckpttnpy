@@ -42,7 +42,7 @@ def create_drawf():
         'n4',
         'n5',
     ]
-    net_map = {net : i_net for i_net, net in enumerate(nets)}
+    net_map = {net: i_net for i_net, net in enumerate(nets)}
     modules = [
         'a0',
         'a1',
@@ -52,7 +52,7 @@ def create_drawf():
         'p2',
         'p3'
     ]
-    module_map = {v : i_v for i_v, v in enumerate(modules)}
+    module_map = {v: i_v for i_v, v in enumerate(modules)}
     module_weight = [1, 3, 4, 2, 0, 0, 0]
 
     G.add_edges_from([
@@ -77,8 +77,6 @@ def create_drawf():
     # H = Netlist(G, range(7), range(7, 13), range(7), range(-7, 6))
     H = Netlist(G, modules, nets, module_map, net_map)
     H.module_weight = module_weight
-    # H.module_name = module_name
-    # H.net_weight = [1, 1, 1, 1, 1, 1]
     H.num_pads = 3
     return H
 
@@ -93,10 +91,7 @@ def create_test_netlist():
         'a4',
         'a5'
     ])
-    # module_list = [0, 1, 2]
-    # module_fixed = {}
     module_weight = [533, 543, 532]
-    # net_list = [3, 4, 5]
 
     G.add_edges_from([
         ('a3', 'a0'),
@@ -114,21 +109,19 @@ def create_test_netlist():
         'a1',
         'a2'
     ]
-    module_map = {v : i_v for i_v, v in enumerate(modules)}
+    module_map = {v: i_v for i_v, v in enumerate(modules)}
     nets = [
         'a3',
         'a4',
         'a5'
     ]
-    net_map = {net : i_net for i_net, net in enumerate(nets)}
+    net_map = {net: i_net for i_net, net in enumerate(nets)}
 
     # H = Netlist(G, range(3), range(3, 6), range(3), range(-3, 3))
     H = Netlist(G, modules, nets, module_map, net_map)
     H.module_weight = module_weight
     return H
 
-
-# G = nx.DiGraph(G)
 
 def test_netlist():
     H = create_test_netlist()
@@ -144,7 +137,6 @@ def test_netlist():
 
 def test_drawf():
     H = create_drawf()
-
     assert H.number_of_modules() == 7
     assert H.number_of_nets() == 6
     assert H.number_of_pins() == 14
@@ -152,8 +144,6 @@ def test_drawf():
     assert H.get_max_net_degree() == 3
     assert not H.has_fixed_modules
     assert H.get_module_weight_by_id(1) == 3
-
-    # nx.nx_agraph.write_dot(H.G, 'drawf.dot')
 
 
 def test_json():
