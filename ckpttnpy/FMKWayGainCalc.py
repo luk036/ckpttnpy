@@ -205,7 +205,7 @@ class FMKWayGainCalc:
         return i_w, deltaGainW
 
     def update_move_3pin_net(self, part_info, move_info):
-        """Update move for general net
+        """Update move for 3-pin net
 
         Arguments:
             part {list} -- [description]
@@ -216,6 +216,7 @@ class FMKWayGainCalc:
         """
         net, fromPart, toPart, v = move_info
         part, _ = part_info
+
         IdVec = []
         deltaGain = []
         for w in self.H.G[net]:
@@ -229,34 +230,41 @@ class FMKWayGainCalc:
                          for _ in range(degree))
 
         weight = self.H.get_net_weight(net)
-        part_w = part[IdVec[0]]
 
         l, u = fromPart, toPart
-        if part_w == part[IdVec[1]]:
+
+        part_w = part[IdVec[0]]
+        part_u = part[IdVec[1]]
+
+        # action = [extern_nets.add, extern_nets.remove]
+        if part_w == part_u:
             for i in [0, 1]:
-                if part_w == l:
-                    for k in range(self.K):
-                        self.deltaGainV[k] += weight
+                if part_w != l:
                     for idx in [0, 1]:
-                        deltaGain[idx][u] += weight
+                        deltaGain[idx][l] -= weight
+                    if part_w == u:
+                        for k in range(self.K):
+                            self.deltaGainV[k] -= weight
                 weight = -weight
                 l, u = u, l
-        else:
-            a, b = 0, 1
-            for i in [0, 1]:
-                for j in [0, 1]:
-                    if part[IdVec[a]] == l:
-                        if part[IdVec[b]] == u:
-                            for k in range(self.K):
-                                deltaGain[b][k] -= weight
-                        else:
-                            for k in range(self.K):
-                                self.deltaGainV[k] += weight
-                            for idx in [0, 1]:
-                                deltaGain[idx][u] += weight
-                    a, b = b, a
-                weight = -weight
-                l, u = u, l
+            return IdVec, deltaGain
+
+        for i in [0, 1]:
+            if part_w == l:
+                for k in range(self.K):
+                    deltaGain[0][k] += weight
+            elif part_u == l:
+                for k in range(self.K):
+                    deltaGain[1][k] += weight
+            else:
+                for idx in [0, 1]:
+                    deltaGain[idx][l] -= weight
+                if part_w == u or part_u == u:
+                    for k in range(self.K):
+                        self.deltaGainV[k] -= weight
+            weight = -weight
+            l, u = u, l
+
         return IdVec, deltaGain
         # return self.update_move_general_net(part_info, move_info)
 

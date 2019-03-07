@@ -2,7 +2,7 @@ from ckpttnpy.FDKWayGainMgr import FDKWayGainMgr
 from ckpttnpy.FMKWayGainCalc import FMKWayGainCalc
 from ckpttnpy.FMKWayConstrMgr import FMKWayConstrMgr
 from ckpttnpy.FMPartMgr import FMPartMgr
-from ckpttnpy.tests.test_netlist import create_drawf
+from ckpttnpy.tests.test_netlist import create_drawf, create_p1
 
 
 def run_FMKWayPartMgr(H, gainMgr, K):
@@ -31,6 +31,12 @@ def test_FMKWayPartMgr2():
     H = create_drawf()
     gainMgr = FDKWayGainMgr(FMKWayGainCalc, H, 3)
     H.module_fixed = ['p1']
+    run_FMKWayPartMgr(H, gainMgr, 3)
+
+
+def test_FMKWayPartMgr2():
+    H = create_p1()
+    gainMgr = FDKWayGainMgr(FMKWayGainCalc, H, 3)
     run_FMKWayPartMgr(H, gainMgr, 3)
 
 
