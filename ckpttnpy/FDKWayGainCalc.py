@@ -232,12 +232,10 @@ class FDKWayGainCalc:
         weight = self.H.get_net_weight(net)
 
         l, u = fromPart, toPart
-
         part_w = part[IdVec[0]]
         part_u = part[IdVec[1]]
         action = [extern_nets.remove, extern_nets.add]
 
-        # action = [extern_nets.add, extern_nets.remove]
         if part_w == part_u:
             for i in [0, 1]:
                 if part_w != l:

@@ -22,10 +22,8 @@ class FMGainMgr:
         self.gainCalc = GainCalc(H, K)
         self.pmax = self.H.get_max_degree()
         self.waitinglist = dllink(3734)
-        # self.totalcost = 0
-        self.gainbucket = []
-        for _ in range(K):
-            self.gainbucket += [bpqueue(-self.pmax, self.pmax)]
+        self.gainbucket = [bpqueue(-self.pmax, self.pmax)
+                           for _ in range(K)]
 
     def init(self, part_info):
         """(re)initialization after creation
