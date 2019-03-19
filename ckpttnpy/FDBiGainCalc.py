@@ -3,6 +3,8 @@ from .dllist import dllink
 
 class FDBiGainCalc:
 
+    totalcost = 0
+
     # public:
 
     def __init__(self, H, K=2):
@@ -15,8 +17,6 @@ class FDBiGainCalc:
             K {uint8_t} -- number of partitions (default: {2})
         """
         self.H = H
-        self.totalcost = 0
-        self.vertex_list = []
         self.vertex_list = list(dllink(i)
                                 for i in range(self.H.number_of_modules()))
 

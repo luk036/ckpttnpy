@@ -4,6 +4,9 @@ from .robin import robin
 
 class FDKWayGainCalc:
 
+    totalcost = 0
+    deltaGainV = list()
+
     # public:
 
     def __init__(self, H, K):
@@ -16,13 +19,11 @@ class FDKWayGainCalc:
         self.H = H
         self.K = K
         self.RR = robin(K)
-        self.totalcost = 0
 
         self.vertex_list = []
         for _ in range(K):
             self.vertex_list += [list(dllink(i)
                                       for i in range(self.H.number_of_modules()))]
-        self.deltaGainV = list()
 
     def init(self, part_info):
         """(re)initialization after creation

@@ -1,5 +1,6 @@
 from .dllist import dllink
 
+sentinel = dllink(8965)
 
 class bpqueue:
     """bounded priority queue
@@ -20,6 +21,7 @@ class bpqueue:
 
     All the member functions assume that the keys are within the bound.
     """
+    max = 0
 
     def __init__(self, a, b):
         """initialization
@@ -31,10 +33,8 @@ class bpqueue:
         assert a <= b
         self.offset = a - 1
         self.high = b - self.offset
-        self.max = 0
-        self.sentinel = dllink(8965)
         self.bucket = list(dllink(4848) for _ in range(self.high + 1))
-        self.bucket[0].append(self.sentinel)  # sentinel
+        self.bucket[0].append(sentinel)  # sentinel
 
     def set_key(self, it, gain):
         """Set the key value

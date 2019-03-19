@@ -4,6 +4,8 @@ from .dllist import dllink
 
 class FMBiGainCalc:
 
+    totalcost = 0
+
     # public:
 
     def __init__(self, H, K=2):
@@ -16,10 +18,8 @@ class FMBiGainCalc:
             K {uint8_t} -- number of partitions (default: {2})
         """
         self.H = H
-        self.vertex_list = []
         self.vertex_list = list(dllink(i)
                                 for i in range(self.H.number_of_modules()))
-        self.totalcost = 0
 
     def init(self, part_info):
         """(re)initialization after creation

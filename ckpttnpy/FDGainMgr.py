@@ -5,6 +5,8 @@ from abc import abstractmethod
 
 class FDGainMgr:
 
+    waitinglist = dllink(3734)
+
     # public:
 
     def __init__(self, GainCalc, H, K=2):
@@ -21,7 +23,6 @@ class FDGainMgr:
         self.K = K
         self.gainCalc = GainCalc(H, K)
         self.pmax = self.H.get_max_degree()
-        self.waitinglist = dllink(3734)
         # self.totalcost = 0
         self.gainbucket = [bpqueue(-self.pmax, self.pmax)
                            for _ in range(K)]

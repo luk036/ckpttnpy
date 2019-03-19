@@ -8,15 +8,21 @@ from ckpttnpy.FMBiConstrMgr import FMBiConstrMgr
 from ckpttnpy.FMKWayGainCalc import FMKWayGainCalc
 from ckpttnpy.FMKWayGainMgr import FMKWayGainMgr
 from ckpttnpy.FMKWayConstrMgr import FMKWayConstrMgr
-
+from numpy.random import randint
 
 def run_MLBiPartMgr(H):
     partMgr = MLPartMgr(FMBiGainCalc, FMBiGainMgr,
                         FMBiConstrMgr, FMPartMgr, 0.4)
-    part = list(0 for _ in H.modules)
-    part_info = part, set()
-    partMgr.run_FMPartition(H, part_info)
-    return partMgr.totalcost
+    mincost = 1000
+    for _ in range(10):
+        # part = list(0 for _ in H.modules)
+        randseq = randint(2, size=H.number_of_modules())
+        part = list(randseq)
+        part_info = part, set()
+        partMgr.run_FMPartition(H, part_info)
+        if mincost > partMgr.totalcost:
+            mincost = partMgr.totalcost
+    return mincost
 
 
 def test_MLBiPartMgr():
@@ -28,30 +34,40 @@ def test_MLBiPartMgr():
 def test_MLBiPartMgr2():
     H = create_p1()
     totalcost = run_MLBiPartMgr(H)
-    assert totalcost >= 55
-    assert totalcost <= 70
+    # assert totalcost >= 55
+    # assert totalcost <= 70
+    assert totalcost >= 44
+    assert totalcost <= 58
 
 
-def run_MLKWayPartMgr(H):
+def run_MLKWayPartMgr(H, K):
     partMgr = MLPartMgr(FMKWayGainCalc, FMKWayGainMgr,
-                        FMKWayConstrMgr, FMPartMgr, 0.4, 3)
-    part = list(0 for _ in H.modules)
-    part_info = part, set()
-    partMgr.run_FMPartition(H, part_info)
-    return partMgr.totalcost
+                        FMKWayConstrMgr, FMPartMgr, 0.4, K)
+    mincost = 1000
+    for _ in range(10):
+        # part = list(0 for _ in H.modules)
+        randseq = randint(K, size=H.number_of_modules())
+        part = list(randseq)
+        part_info = part, set()
+        partMgr.run_FMPartition(H, part_info)
+        if mincost > partMgr.totalcost:
+            mincost = partMgr.totalcost
+    return mincost
 
 
 def test_MLKWayPartMgr():
     H = create_drawf()
-    totalcost = run_MLKWayPartMgr(H)
+    totalcost = run_MLKWayPartMgr(H, 3)
     assert totalcost == 4
 
 
 def test_MLKWayPartMgr2():
     H = create_p1()
-    totalcost = run_MLKWayPartMgr(H)
-    assert totalcost >= 109
-    assert totalcost <= 152
+    totalcost = run_MLKWayPartMgr(H, 3)
+    # assert totalcost >= 109
+    # assert totalcost <= 152
+    assert totalcost >= 86
+    assert totalcost <= 111
 
 
 # if __name__ == "__main__":
