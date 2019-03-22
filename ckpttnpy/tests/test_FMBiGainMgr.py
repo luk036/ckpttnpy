@@ -1,10 +1,10 @@
-from ckpttnpy.FDBiGainMgr import FDBiGainMgr
+from ckpttnpy.FMBiGainMgr import FMBiGainMgr
 from ckpttnpy.FMBiGainCalc import FMBiGainCalc
 from ckpttnpy.tests.test_netlist import create_test_netlist, create_drawf
 
 
 def run_FMBiGainMgr(H, part_info):
-    mgr = FDBiGainMgr(FMBiGainCalc, H)
+    mgr = FMBiGainMgr(FMBiGainCalc, H)
     mgr.init(part_info)
     part, _ = part_info
     while not mgr.is_empty():

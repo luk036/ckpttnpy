@@ -18,12 +18,12 @@ from ckpttnpy.dllist import *
 from ckpttnpy.bpqueue import *
 from ckpttnpy.robin import *
 from ckpttnpy.netlist import *
-from ckpttnpy.FDBiGainCalc import *
-from ckpttnpy.FDBiGainMgr import *
-from ckpttnpy.FDKWayGainCalc import *
-from ckpttnpy.FDKWayGainMgr import *
-from ckpttnpy.FDGainMgr import *
-from ckpttnpy.FDPartMgr import *
+# from ckpttnpy.FDBiGainCalc import *
+# from ckpttnpy.FDBiGainMgr import *
+# from ckpttnpy.FDKWayGainCalc import *
+# from ckpttnpy.FDKWayGainMgr import *
+# from ckpttnpy.FDGainMgr import *
+# from ckpttnpy.FDPartMgr import *
 from ckpttnpy.FMBiGainCalc import *
 #from ckpttnpy.FMBiGainMgr import *
 from ckpttnpy.FMBiConstrMgr import *
