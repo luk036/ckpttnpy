@@ -1,6 +1,6 @@
 from .dllist import dllink
 from .robin import robin
-
+from itertools import permutations
 
 class FMKWayGainCalc:
 
@@ -114,28 +114,21 @@ class FMKWayGainCalc:
                 for i_a in [i_u, i_v, i_w]:
                     self.modify_gain(i_a, part_v, -weight)
                 return
-            self.vertex_list[part_v][i_w].key += weight
-            for i_a in [i_u, i_v]:
-                self.modify_gain(i_a, part_v, -weight)
-                self.vertex_list[part_w][i_a].key += weight
+            i_a, i_b, i_c = i_w, i_u, i_v
         elif part_w == part_v:
-            self.vertex_list[part_v][i_u].key += weight
-            for i_a in [i_w, i_v]:
-                self.modify_gain(i_a, part_v, -weight)
-                self.vertex_list[part_u][i_a].key += weight
+            i_a, i_b, i_c = i_u, i_v, i_w
         elif part_w == part_u:
-            self.vertex_list[part_w][i_v].key += weight
-            for i_a in [i_w, i_u]:
-                self.modify_gain(i_a, part_w, -weight)
-                self.vertex_list[part_v][i_a].key += weight
+            i_a, i_b, i_c = i_v, i_w, i_u
         else:
-            self.totalcost += weight
-            self.vertex_list[part_v][i_u].key += weight
-            self.vertex_list[part_w][i_u].key += weight
-            self.vertex_list[part_w][i_v].key += weight
-            self.vertex_list[part_u][i_v].key += weight
-            self.vertex_list[part_u][i_w].key += weight
-            self.vertex_list[part_v][i_w].key += weight
+            self.totalcost += 2 * weight
+            for i_a, i_b in permutations([i_u, i_v, i_w], 2):
+                self.vertex_list[part[i_b]][i_a].key += weight
+            return
+
+        self.vertex_list[part[i_b]][i_a].key += weight
+        for i_e in [i_b, i_c]:
+            self.modify_gain(i_e, part[i_e], -weight)
+            self.vertex_list[part[i_a]][i_e].key += weight
         self.totalcost += weight
 
     def init_gain_general_net(self, net, part):

@@ -141,23 +141,23 @@ class Netlist:
         #          else self.net_weight[self.net_map[net]]
         return 1
 
-    def project_down(self, part, part_down):
-        H = self.parent
-        for i_v, v in enumerate(self.modules):
-            if v in self.cluster_down_map:
-                net = self.cluster_down_map[v]
-                for v2 in H.G[net]:
-                    i_v2 = H.module_map[v2]
-                    part_down[i_v2] = part[i_v]
-            else:
-                v2 = self.node_down_map[v]
-                i_v2 = H.module_map[v2]
-                part_down[i_v2] = part[i_v]
+    # def project_down(self, part, part_down):
+    #     H = self.parent
+    #     for i_v, v in enumerate(self.modules):
+    #         if v in self.cluster_down_map:
+    #             net = self.cluster_down_map[v]
+    #             for v2 in H.G[net]:
+    #                 i_v2 = H.module_map[v2]
+    #                 part_down[i_v2] = part[i_v]
+    #         else:
+    #             v2 = self.node_down_map[v]
+    #             i_v2 = H.module_map[v2]
+    #             part_down[i_v2] = part[i_v]
 
-    def project_up(self, part, part_up):
-        H = self.parent
-        for i_v, v in enumerate(H.modules):
-            part_up[self.node_up_map[v]] = part[i_v]
+    # def project_up(self, part, part_up):
+    #     H = self.parent
+    #     for i_v, v in enumerate(H.modules):
+    #         part_up[self.node_up_map[v]] = part[i_v]
 
     def projection_down(self, part_info, part_info_down):
         H = self.parent
