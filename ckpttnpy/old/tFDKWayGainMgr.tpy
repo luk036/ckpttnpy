@@ -17,14 +17,14 @@ class FDKWayGainMgr(FDGainMgr):
         FDGainMgr.__init__(self, GainCalc, H, K)
         self.RR = robin(K)
 
-    def init(self, part_info):
+    def init(self, part):
         """(re)initialization after creation
 
         Arguments:
             part_info {[type]} -- [description]
         """
-        totalcost = FDGainMgr.init(self, part_info)
-        part, _ = part_info
+        totalcost = FDGainMgr.init(self, part)
+        # part, _ = part_info
         for k in range(self.K):
             self.gainbucket[k].clear()
 

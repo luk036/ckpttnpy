@@ -25,7 +25,7 @@ class FMKWayGainCalc:
             self.vertex_list += [list(dllink(i)
                                       for i in range(self.H.number_of_modules()))]
 
-    def init(self, part_info):
+    def init(self, part):
         """(re)initialization after creation
 
         Arguments:
@@ -37,10 +37,10 @@ class FMKWayGainCalc:
                 vlink.key = 0
 
         for net in self.H.nets:
-            self.init_gain(net, part_info)
+            self.init_gain(net, part)
         return self.totalcost
 
-    def init_gain(self, net, part_info):
+    def init_gain(self, net, part):
         """initialize gain
 
         Arguments:
@@ -50,7 +50,7 @@ class FMKWayGainCalc:
         degree = self.H.G.degree[net]
         if degree < 2:  # unlikely, self-loop, etc.
             return  # does not provide any gain when move
-        part, _ = part_info
+        # part, _ = part_info
         if degree > 3:
             self.init_gain_general_net(net, part)
         elif degree == 3:
@@ -167,7 +167,7 @@ class FMKWayGainCalc:
         """
         self.deltaGainV = list(0 for _ in range(self.K))
 
-    def update_move_2pin_net(self, part_info, move_info):
+    def update_move_2pin_net(self, part, move_info):
         """Update move for 2-pin net
 
         Arguments:
@@ -178,7 +178,7 @@ class FMKWayGainCalc:
             [type] -- [description]
         """
         net, fromPart, toPart, v = move_info
-        part, _ = part_info
+        # part, _ = part_info
         netCur = iter(self.H.G[net])
         u = next(netCur)
         w = u if u != v else next(netCur)
@@ -198,7 +198,7 @@ class FMKWayGainCalc:
 
         return i_w, deltaGainW
 
-    def update_move_3pin_net(self, part_info, move_info):
+    def update_move_3pin_net(self, part, move_info):
         """Update move for 3-pin net
 
         Arguments:
@@ -209,7 +209,7 @@ class FMKWayGainCalc:
             [type] -- [description]
         """
         net, fromPart, toPart, v = move_info
-        part, _ = part_info
+        # part, _ = part_info
 
         IdVec = []
         deltaGain = []
@@ -260,9 +260,9 @@ class FMKWayGainCalc:
             l, u = u, l
 
         return IdVec, deltaGain
-        # return self.update_move_general_net(part_info, move_info)
+        # return self.update_move_general_net(part, move_info)
 
-    def update_move_general_net(self, part_info, move_info):
+    def update_move_general_net(self, part, move_info):
         """Update move for general net
 
         Arguments:
@@ -273,7 +273,7 @@ class FMKWayGainCalc:
             [type] -- [description]
         """
         net, fromPart, toPart, v = move_info
-        part, _ = part_info
+        # part, _ = part_info
         num = list(0 for _ in range(self.K))
         IdVec = []
         deltaGain = []

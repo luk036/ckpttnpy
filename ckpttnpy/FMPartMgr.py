@@ -7,7 +7,7 @@ from .PartMgrBase import PartMgrBase
 
 class FMPartMgr(PartMgrBase):
 
-    def take_snapshot(self, part_info):
+    def take_snapshot(self, part):
         """[summary]
 
         Arguments:
@@ -17,10 +17,10 @@ class FMPartMgr(PartMgrBase):
             [type] -- [description]
         """
         # extern_nets_ss, extern_modules_ss = snapshot
-        part, _ = part_info
+        # part, _ = part_info
         return list(part)
 
-    def restore_part_info(self, snapshot, part_info):
+    def restore_part_info(self, snapshot, part):
         """[summary]
 
         Arguments:
@@ -29,6 +29,6 @@ class FMPartMgr(PartMgrBase):
         Returns:
             [type] -- [description]
         """
-        part, _ = part_info
+        # part, _ = part_info
         for i_v, k in enumerate(snapshot):
             part[i_v] = k

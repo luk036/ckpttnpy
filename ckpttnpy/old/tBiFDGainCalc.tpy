@@ -20,7 +20,7 @@ class FDBiGainCalc:
         self.vertex_list = list(dllink(i)
                                 for i in range(self.H.number_of_modules()))
 
-    def init(self, part_info):
+    def init(self, part):
         """(re)initialization after creation
 
         Arguments:
@@ -32,10 +32,10 @@ class FDBiGainCalc:
         self.totalcost = 0
         for net in self.H.nets:
             # for net in self.H.net_list:
-            self.init_gain(net, part_info)
+            self.init_gain(net, part)
         return self.totalcost
 
-    def init_gain(self, net, part_info):
+    def init_gain(self, net, part):
         """initialize gain
 
         Arguments:
@@ -45,7 +45,7 @@ class FDBiGainCalc:
         degree = self.H.G.degree[net]
         if degree < 2:  # unlikely, self-loop, etc.
             return  # does not provide any gain when move
-        part, extern_nets = part_info
+        # part, extern_nets = part_info
         weight = self.H.get_net_weight(net)
         if net in extern_nets:
             self.totalcost += weight
@@ -123,7 +123,7 @@ class FDBiGainCalc:
         """
         pass
 
-    def update_move_2pin_net(self, part_info, move_info):
+    def update_move_2pin_net(self, part, move_info):
         """Update move for 2-pin net
 
         Arguments:
@@ -133,7 +133,7 @@ class FDBiGainCalc:
         Returns:
             [type] -- [description]
         """
-        part, extern_nets = part_info
+        # part, extern_nets = part_info
         net, fromPart, _, v = move_info
         netCur = iter(self.H.G[net])
         u = next(netCur)
@@ -148,7 +148,7 @@ class FDBiGainCalc:
             weight *= -2
         return i_w, weight
 
-    def update_move_3pin_net(self, part_info, move_info):
+    def update_move_3pin_net(self, part, move_info):
         """Update move for 3-pin net
 
         Arguments:
@@ -159,7 +159,7 @@ class FDBiGainCalc:
             [type] -- [description]
         """
         net, fromPart, _, v = move_info
-        part, extern_nets = part_info
+        # part, extern_nets = part_info
         IdVec = []
         deltaGain = []
         for w in self.H.G[net]:
@@ -190,7 +190,7 @@ class FDBiGainCalc:
                 deltaGain[1] += weight
         return IdVec, deltaGain
 
-    def update_move_general_net(self, part_info, move_info):
+    def update_move_general_net(self, part, move_info):
         """Update move for general net
 
         Arguments:
@@ -201,7 +201,7 @@ class FDBiGainCalc:
             [type] -- [description]
         """
         net, fromPart, toPart, v = move_info
-        part, extern_nets = part_info
+        # part, extern_nets = part_info
         num = [0, 0]
         IdVec = []
         deltaGain = []

@@ -14,17 +14,17 @@ class FDBiGainMgr(FDGainMgr):
     #     """
     #     FDGainMgr.__init__(self, GainCalc, H)
 
-    def init(self, part_info):
+    def init(self, part):
         """(re)initialization after creation
 
         Arguments:
             part_info {[type]} -- [description]
         """
-        totalcost = FDGainMgr.init(self, part_info)
+        totalcost = FDGainMgr.init(self, part)
         for k in range(self.K):
             self.gainbucket[k].clear()
 
-        part, _ = part_info
+        # part, _ = part_info
         for i_v in range(self.H.number_of_modules()):
             vlink = self.gainCalc.vertex_list[i_v]
             toPart = 1 - part[i_v]

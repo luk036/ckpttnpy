@@ -18,11 +18,11 @@ def run_FMKWayPartMgr(H, gainMgr, K):
     part = list(0 for _ in H.modules)
     part_info = part, set()
     # partMgr.init(part)
-    partMgr.legalize(part_info)  # ???
+    partMgr.legalize(part)  # ???
     totalcostbefore = partMgr.totalcost
-    partMgr.init(part_info)
+    partMgr.init(part)
     assert partMgr.totalcost == totalcostbefore
-    partMgr.optimize(part_info)
+    partMgr.optimize(part)
     assert partMgr.totalcost <= totalcostbefore
     # print(partMgr.snapshot)
 

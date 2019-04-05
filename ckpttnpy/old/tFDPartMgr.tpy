@@ -16,7 +16,7 @@ class FDPartMgr(PartMgrBase):
     #     """
     #     PartMgrBase.__init__(self, H, gainMgr, constrMgr)
 
-    def take_snapshot(self, part_info):
+    def take_snapshot(self, part):
         """[summary]
 
         Arguments:
@@ -25,7 +25,7 @@ class FDPartMgr(PartMgrBase):
         Returns:
             [type] -- [description]
         """
-        part, extern_nets = part_info
+        # part, extern_nets = part_info
 
         # extern_modules_ss = {v: part[v]
         #                      for net in extern_nets for v in self.H.G[net]}
@@ -38,7 +38,7 @@ class FDPartMgr(PartMgrBase):
         extern_nets_ss = extern_nets.copy()
         return extern_nets_ss, extern_modules_ss
 
-    def restore_part_info(self, snapshot, part_info):
+    def restore_part_info(self, snapshot, part):
         """[summary]
 
         Arguments:
@@ -48,7 +48,7 @@ class FDPartMgr(PartMgrBase):
             [type] -- [description]
         """
         extern_nets_ss, extern_modules_ss = snapshot
-        part, extern_nets = part_info
+        # part, extern_nets = part_info
         for i_v in range(self.H.number_of_modules()):
             part[i_v] = self.K
         for v, part_v in extern_modules_ss.items():

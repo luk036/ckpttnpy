@@ -25,13 +25,13 @@ class FMGainMgr:
         self.gainbucket = [bpqueue(-self.pmax, self.pmax)
                            for _ in range(K)]
 
-    def init(self, part_info):
+    def init(self, part):
         """(re)initialization after creation
 
         Arguments:
             part {list} -- [description]
         """
-        totalcost = self.gainCalc.init(part_info)
+        totalcost = self.gainCalc.init(part)
         # self.totalcost = self.gainCalc.totalcost
         self.waitinglist.clear()
         return totalcost
@@ -92,7 +92,7 @@ class FMGainMgr:
         i_v = vlink.idx
         return i_v, gainmax
 
-    def update_move(self, part_info, move_info_v):
+    def update_move(self, part, move_info_v):
         """[summary]
 
         Arguments:
@@ -109,11 +109,11 @@ class FMGainMgr:
                 continue  # does not provide any gain change when move
             move_info = [net, fromPart, toPart, v]
             if degree == 3:
-                self.update_move_3pin_net(part_info, move_info)
+                self.update_move_3pin_net(part, move_info)
             elif degree == 2:
-                self.update_move_2pin_net(part_info, move_info)
+                self.update_move_2pin_net(part, move_info)
             else:
-                self.update_move_general_net(part_info, move_info)
+                self.update_move_general_net(part, move_info)
 
     # private:
 
@@ -127,7 +127,7 @@ class FMGainMgr:
             key {int/int[]} -- [description]
         """
 
-    def update_move_2pin_net(self, part_info, move_info):
+    def update_move_2pin_net(self, part, move_info):
         """Update move for 2-pin net
 
         Arguments:
@@ -135,11 +135,11 @@ class FMGainMgr:
             move_info {[type]} -- [description]
         """
         i_w, deltaGainW = self.gainCalc.update_move_2pin_net(
-            part_info, move_info)
-        part, _ = part_info
+            part, move_info)
+        # part, _ = part_info
         self.modify_key(i_w, part[i_w], deltaGainW)
 
-    def update_move_3pin_net(self, part_info, move_info):
+    def update_move_3pin_net(self, part, move_info):
         """Update move for 3-pin net
 
         Arguments:
@@ -147,12 +147,12 @@ class FMGainMgr:
             move_info {[type]} -- [description]
         """
         IdVec, deltaGain = self.gainCalc.update_move_3pin_net(
-            part_info, move_info)
-        part, _ = part_info
+            part, move_info)
+        # part, _ = part_info
         for idx, i_w in enumerate(IdVec):
             self.modify_key(i_w, part[i_w], deltaGain[idx])
 
-    def update_move_general_net(self, part_info, move_info):
+    def update_move_general_net(self, part, move_info):
         """Update move for general net
 
         Arguments:
@@ -160,7 +160,7 @@ class FMGainMgr:
             move_info {[type]} -- [description]
         """
         IdVec, deltaGain = self.gainCalc.update_move_general_net(
-            part_info, move_info)
-        part, _ = part_info
+            part, move_info)
+        # part, _ = part_info
         for idx, i_w in enumerate(IdVec):
             self.modify_key(i_w, part[i_w], deltaGain[idx])

@@ -10,12 +10,12 @@ def run_FDBiPartMgr(H):
     constrMgr = FMBiConstrMgr(H, 0.4)
     partMgr = FDPartMgr(H, gainMgr, constrMgr)
     part = list(0 for _ in H.modules)
-    extern_nets = set()
+    # extern_nets = set()
     part_info = part, extern_nets
     # partMgr.init(part)
-    partMgr.legalize(part_info)
+    partMgr.legalize(part)
     totalcostbefore = partMgr.totalcost
-    partMgr.optimize(part_info)
+    partMgr.optimize(part)
     assert partMgr.totalcost <= totalcostbefore
     # print(partMgr.snapshot)
 

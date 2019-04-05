@@ -19,18 +19,18 @@ class PartMgrBase:
         self.K = gainMgr.K
         self.totalcost = 0
 
-    def init(self, part_info):
+    def init(self, part):
         """[summary]
 
         Arguments:
             part_info {[type]} -- [description]
         """
-        self.totalcost = self.gainMgr.init(part_info)
+        self.totalcost = self.gainMgr.init(part)
         assert self.totalcost >= 0
-        part, _ = part_info
+        # part, _ = part_info
         self.validator.init(part)
 
-    def legalize(self, part_info):
+    def legalize(self, part):
         """[summary]
 
         Arguments:
@@ -39,8 +39,8 @@ class PartMgrBase:
         Returns:
             [type] -- [description]
         """
-        part, _ = part_info
-        self.init(part_info)
+        # part, _ = part_info
+        self.init(part)
 
         # Zero-weighted modules does not contribute legalization
         for i_v, v in enumerate(self.H.modules):
@@ -68,7 +68,7 @@ class PartMgrBase:
 
             # Update v and its neigbours (even they are in waitinglist)
             # Put neigbours to bucket
-            self.gainMgr.update_move(part_info, move_info_v)
+            self.gainMgr.update_move(part, move_info_v)
             self.gainMgr.update_move_v(move_info_v, gainmax)
             self.validator.update_move(move_info_v)
             part[i_v] = toPart
@@ -80,21 +80,21 @@ class PartMgrBase:
 
         return legalcheck
 
-    def optimize(self, part_info):
+    def optimize(self, part):
         """[summary]
 
         Arguments:
             part_info {[type]} -- [description]
         """
         while True:
-            self.init(part_info)
+            self.init(part)
             totalcostbefore = self.totalcost
-            self.optimize_1pass(part_info)
+            self.optimize_1pass(part)
             assert self.totalcost <= totalcostbefore
             if self.totalcost == totalcostbefore:
                 break
 
-    def optimize_1pass(self, part_info):
+    def optimize_1pass(self, part):
         """[summary]
 
         Arguments:
@@ -104,7 +104,7 @@ class PartMgrBase:
         deferredsnapshot = False
         snapshot = None
         besttotalgain = 0
-        part, _ = part_info
+        # part, _ = part_info
 
         while not self.gainMgr.is_empty():
             # Take the gainmax with v from gainbucket
@@ -117,7 +117,7 @@ class PartMgrBase:
                 # become down turn
                 if (not deferredsnapshot) or (totalgain > besttotalgain):
                     # Take a snapshot before move
-                    snapshot = self.take_snapshot(part_info)
+                    snapshot = self.take_snapshot(part)
                     besttotalgain = totalgain
                 deferredsnapshot = True
 
@@ -129,7 +129,7 @@ class PartMgrBase:
             # Put neigbours to bucket
             _, toPart, i_v = move_info_v
             self.gainMgr.lock(toPart, i_v)
-            self.gainMgr.update_move(part_info, move_info_v)
+            self.gainMgr.update_move(part, move_info_v)
             self.gainMgr.update_move_v(move_info_v, gainmax)
             self.validator.update_move(move_info_v)
             totalgain += gainmax
@@ -137,13 +137,13 @@ class PartMgrBase:
 
         if deferredsnapshot:
             # restore previous best solution
-            self.restore_part_info(snapshot, part_info)
+            self.restore_part_info(snapshot, part)
             totalgain = besttotalgain
 
         self.totalcost -= totalgain
 
     @abstractmethod
-    def take_snapshot(self, part_info):
+    def take_snapshot(self, part):
         """[summary]
 
         Arguments:
@@ -154,7 +154,7 @@ class PartMgrBase:
         """
 
     @abstractmethod
-    def restore_part_info(self, snapshot, part_info):
+    def restore_part_info(self, snapshot, part):
         """[summary]
 
         Arguments:

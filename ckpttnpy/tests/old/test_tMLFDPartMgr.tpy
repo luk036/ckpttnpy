@@ -13,9 +13,9 @@ def run_MLBiPartMgr(H):
     partMgr = MLPartMgr(FDBiGainCalc, FDBiGainMgr,
                         FMBiConstrMgr, FDPartMgr, 0.4)
     part = list(0 for _ in H.modules)
-    extern_nets = set()
+    # extern_nets = set()
     part_info = part, extern_nets
-    partMgr.run_Partition(H, part_info)
+    partMgr.run_Partition(H, part)
     return partMgr.totalcost
 
 
@@ -36,9 +36,9 @@ def run_MLKWayPartMgr(H):
     partMgr = MLPartMgr(FDKWayGainCalc, FDKWayGainMgr,
                         FMKWayConstrMgr, FDPartMgr, 0.4, 3)
     part = list(0 for _ in H.modules)
-    extern_nets = set()
+    # extern_nets = set()
     part_info = part, extern_nets
-    partMgr.run_Partition(H, part_info)
+    partMgr.run_Partition(H, part)
     return partMgr.totalcost
 
 

@@ -159,10 +159,10 @@ class Netlist:
     #     for i_v, v in enumerate(H.modules):
     #         part_up[self.node_up_map[v]] = part[i_v]
 
-    def projection_down(self, part_info, part_info_down):
+    def projection_down(self, part, part_down):
         H = self.parent
-        part, extern_nets = part_info
-        part_down, extern_nets_down = part_info_down
+        # part, extern_nets = part_info
+        # part_down, extern_nets_down = part_info_down
 
         for i_v, v in enumerate(self.modules):
             if v in self.cluster_down_map:
@@ -175,27 +175,27 @@ class Netlist:
                 i_v2 = H.module_map[v2]
                 part_down[i_v2] = part[i_v]
 
-        if not extern_nets:
-            return
+        # if not extern_nets:
+        #     return
 
-        extern_nets_down.clear()
-        for net in extern_nets:
-            extern_nets_down.add(self.node_down_map[net])
+        # extern_nets_down.clear()
+        # for net in extern_nets:
+        #     extern_nets_down.add(self.node_down_map[net])
 
-    def projection_up(self, part_info, part_info_up):
+    def projection_up(self, part, part_up):
         H = self.parent
-        part, extern_nets = part_info
-        part_up, extern_nets_up = part_info_up
+        # part, extern_nets = part_info
+        # part_up, extern_nets_up = part_info_up
 
         for i_v, v in enumerate(H.modules):
             part_up[self.node_up_map[v]] = part[i_v]
 
-        if not extern_nets:
-            return
+        # if not extern_nets:
+        #     return
 
-        extern_nets_up.clear()
-        for net in extern_nets:
-            extern_nets_up.add(self.node_up_map[net])
+        # extern_nets_up.clear()
+        # for net in extern_nets:
+        #     extern_nets_up.add(self.node_up_map[net])
 
         # K = len(extern_modules)
         # extern_modules_up = list(set() for _ in K)

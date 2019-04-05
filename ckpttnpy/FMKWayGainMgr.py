@@ -17,14 +17,14 @@ class FMKWayGainMgr(FMGainMgr):
         FMGainMgr.__init__(self, GainCalc, H, K)
         self.RR = robin(K)
 
-    def init(self, part_info):
+    def init(self, part):
         """(re)initialization after creation
 
         Arguments:
             part {list} -- [description]
         """
-        part, _ = part_info
-        totalcost = FMGainMgr.init(self, part_info)
+        # part, _ = part_info
+        totalcost = FMGainMgr.init(self, part)
 
         for k in range(self.K):
             self.gainbucket[k].clear()
