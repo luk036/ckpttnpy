@@ -105,45 +105,49 @@ class dllink:
         Returns:
             dllink -- itself
         """
-        return dll_iterator(self)
+        # return dll_iterator(self)
+        cur = self.next
+        while cur != self:
+            yield cur
+            cur = cur.next
 
 
-class dll_iterator:
-    """List iterator
+# class dll_iterator:
+#     """List iterator
 
-    Traverse the list from the first item. Usually it is safe
-    to attach/detach list items during the iterator is active.
-    """
+#     Traverse the list from the first item. Usually it is safe
+#     to attach/detach list items during the iterator is active.
+#     """
 
-    def __init__(self, link):
-        """Initialization
+#     def __init__(self, link):
+#         """Initialization
 
-        Arguments:
-            link {dllink} -- [description]
-        """
-        self.link = link
-        self.cur = link.next
+#         Arguments:
+#             link {dllink} -- [description]
+#         """
+#         self.link = link
+#         self.cur = link.next
 
-    def next(self):
-        """Get the next item
+#     def next(self):
+#         """Get the next item
 
-        Raises:
-            StopIteration -- [description]
+#         Raises:
+#             StopIteration -- [description]
 
-        Returns:
-            dllink -- the next item
-        """
-        if self.cur != self.link:
-            res = self.cur
-            self.cur = self.cur.next
-            return res
-        else:
-            raise StopIteration
+#         Returns:
+#             dllink -- the next item
+#         """
+#         if self.cur != self.link:
+#             res = self.cur
+#             self.cur = self.cur.next
+#             return res
+#         else:
+#             raise StopIteration
 
-    def __next__(self):
-        """[summary]
+#     def __next__(self):
+#         """[summary]
 
-        Returns:
-            [type] -- [description]
-        """
-        return self.next()
+#         Returns:
+#             [type] -- [description]
+#         """
+#         return self.next()

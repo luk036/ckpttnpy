@@ -197,49 +197,54 @@ class bpqueue:
         Returns:
             bpq_iterator
         """
-        return bpq_iterator(self)
+        # return bpq_iterator(self)
+        curkey = self.max
+        while curkey > 0:
+            for item in self.bucket[curkey]:
+                yield item
+            curkey -= 1
 
 
-class bpq_iterator:
-    """bounded priority queue iterator
+# class bpq_iterator:
+#     """bounded priority queue iterator
 
-    Bounded Priority Queue Iterator. Traverse the queue in descending
-    order. Detaching queue items may invalidate the iterator because 
-    the iterator makes a copy of current key. 
-    """
+#     Bounded Priority Queue Iterator. Traverse the queue in descending
+#     order. Detaching queue items may invalidate the iterator because 
+#     the iterator makes a copy of current key. 
+#     """
 
-    def __init__(self, bpq):
-        """[summary]
+#     def __init__(self, bpq):
+#         """[summary]
 
-        Arguments:
-            bpq {[type]} -- [description]
-        """
-        self.bpq = bpq
-        self.curkey = bpq.max
-        self.curitem = iter(bpq.bucket[bpq.max])
+#         Arguments:
+#             bpq {[type]} -- [description]
+#         """
+#         self.bpq = bpq
+#         self.curkey = bpq.max
+#         self.curitem = iter(bpq.bucket[bpq.max])
 
-    def next(self):
-        """next
+#     def next(self):
+#         """next
 
-        Raises:
-            StopIteration -- [description]
+#         Raises:
+#             StopIteration -- [description]
 
-        Returns:
-            dllink -- [description]
-        """
-        while self.curkey > 0:
-            try:
-                res = next(self.curitem)
-                return res
-            except StopIteration:
-                self.curkey -= 1
-                self.curitem = iter(self.bpq.bucket[self.curkey])
-        raise StopIteration
+#         Returns:
+#             dllink -- [description]
+#         """
+#         while self.curkey > 0:
+#             try:
+#                 res = next(self.curitem)
+#                 return res
+#             except StopIteration:
+#                 self.curkey -= 1
+#                 self.curitem = iter(self.bpq.bucket[self.curkey])
+#         raise StopIteration
 
-    def __next__(self):
-        """[summary]
+#     def __next__(self):
+#         """[summary]
 
-        Returns:
-            [type] -- [description]
-        """
-        return self.next()
+#         Returns:
+#             [type] -- [description]
+#         """
+#         return self.next()
