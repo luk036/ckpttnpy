@@ -36,7 +36,7 @@ def test_MLBiPartMgr2():
     totalcost = run_MLBiPartMgr(H)
     # assert totalcost >= 55
     # assert totalcost <= 70
-    assert totalcost >= 44
+    assert totalcost >= 43
     assert totalcost <= 64
 
 
