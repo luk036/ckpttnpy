@@ -2,6 +2,7 @@ from .dllist import dllink
 
 sentinel = dllink(8965)
 
+
 class bpqueue:
     """bounded priority queue
 
@@ -209,8 +210,8 @@ class bpqueue:
 #     """bounded priority queue iterator
 
 #     Bounded Priority Queue Iterator. Traverse the queue in descending
-#     order. Detaching queue items may invalidate the iterator because 
-#     the iterator makes a copy of current key. 
+#     order. Detaching queue items may invalidate the iterator because
+#     the iterator makes a copy of current key.
 #     """
 
 #     def __init__(self, bpq):
