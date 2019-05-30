@@ -3,13 +3,6 @@
 # Snapshot in the form of "interface"???
 from .min_cover import create_contraction_subgraph
 from .FMPartMgr import FMPartMgr
-# from .FDPartMgr import FDPartMgr
-# from .FMBiGainMgr import FMBiGainMgr
-# from .FMBiGainCalc import FMBiGainCalc
-# from .FMBiConstrMgr import FMBiConstrMgr
-# from .FMKWayGainMgr import FMKWayGainMgr
-# from .FMKWayGainCalc import FMKWayGainCalc
-# from .FMKWayConstrMgr import FMKWayConstrMgr
 
 
 class MLPartMgr:

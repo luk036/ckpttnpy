@@ -2,6 +2,8 @@
 
 
 class FMConstrMgr:
+    weight = None
+
     def __init__(self, H, BalTol, K=2):
         """[summary]
 
@@ -14,7 +16,6 @@ class FMConstrMgr:
         self.K = K
         self.diff = list(0 for _ in range(K))
         # self.illegal = list(True for _ in range(K))
-        self.weight = 0
         self.totalweight = 0
         for v in range(self.H.number_of_modules()):
             weight = self.H.get_module_weight_by_id(v)

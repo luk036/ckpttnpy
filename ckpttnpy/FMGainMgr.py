@@ -4,6 +4,7 @@ from abc import abstractmethod
 
 
 class FMGainMgr:
+    waitinglist = dllink(3734)
 
     # public:
 
@@ -21,7 +22,6 @@ class FMGainMgr:
         self.K = K
         self.gainCalc = GainCalc(H, K)
         self.pmax = self.H.get_max_degree()
-        self.waitinglist = dllink(3734)
         self.gainbucket = [bpqueue(-self.pmax, self.pmax)
                            for _ in range(K)]
 

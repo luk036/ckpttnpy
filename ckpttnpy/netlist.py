@@ -6,6 +6,7 @@ class ThinGraph(nx.Graph):
 
     def single_edge_dict(self):
         return self.all_edge_dict
+
     edge_attr_dict_factory = single_edge_dict
     node_attr_dict_factory = single_edge_dict
 

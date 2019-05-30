@@ -105,7 +105,6 @@ class dllink:
         Returns:
             dllink -- itself
         """
-        # return dll_iterator(self)
         cur = self.next
         while cur != self:
             yield cur
