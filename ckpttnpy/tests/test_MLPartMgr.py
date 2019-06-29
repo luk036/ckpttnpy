@@ -10,6 +10,7 @@ from ckpttnpy.FMKWayGainMgr import FMKWayGainMgr
 from ckpttnpy.FMKWayConstrMgr import FMKWayConstrMgr
 from numpy.random import randint
 
+
 def run_MLBiPartMgr(H):
     partMgr = MLPartMgr(FMBiGainCalc, FMBiGainMgr,
                         FMBiConstrMgr, FMPartMgr, 0.4)

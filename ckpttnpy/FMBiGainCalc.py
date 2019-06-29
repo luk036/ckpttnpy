@@ -3,7 +3,7 @@ from .dllist import dllink
 
 class FMBiGainCalc:
 
-    totalcost = 0
+    totalcost = None
 
     # public:
 

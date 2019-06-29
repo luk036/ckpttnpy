@@ -2,6 +2,7 @@ from .dllist import dllink
 from .robin import robin
 from itertools import permutations
 
+
 class FMKWayGainCalc:
     totalcost = 0
     deltaGainV = list()

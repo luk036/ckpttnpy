@@ -13,9 +13,10 @@ class robin:
 
     def __init__(self, K):
         self.cycle = list(dllink(k) for k in range(K))
-        for k in range(K - 1):
+        K -= 1
+        for k in range(K):
             self.cycle[k].next = self.cycle[k+1]
-        self.cycle[K - 1].next = self.cycle[0]
+        self.cycle[K].next = self.cycle[0]
 
     def exclude(self, fromPart):
         """iterator
