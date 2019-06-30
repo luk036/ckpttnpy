@@ -38,7 +38,7 @@ def test_MLBiPartMgr2():
     # assert totalcost >= 55
     # assert totalcost <= 70
     assert totalcost >= 43
-    assert totalcost <= 64
+    assert totalcost <= 65
 
 
 def run_MLKWayPartMgr(H, K):
