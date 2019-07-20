@@ -8,42 +8,68 @@
  },
  "nodes": [
   {
+   "weight": 1,
+   "dir": "B",
    "id": "a0"
   },
   {
+   "weight": 1,
+   "dir": "B",
    "id": "a1"
   },
   {
+   "weight": 1,
+   "dir": "B",
    "id": "a2"
   },
   {
+   "weight": 1,
+   "dir": "B",
    "id": "a3"
   },
   {
+   "weight": 1,
+   "dir": "B",
    "id": "p1"
   },
   {
+   "weight": 1,
+   "dir": "B",
    "id": "p2"
   },
   {
+   "weight": 1,
+   "dir": "B",
    "id": "p3"
   },
   {
+   "weight": 1,
+   "dir": "B",
    "id": "n0"
   },
   {
+   "weight": 1,
+   "dir": "B",
    "id": "n1"
   },
   {
+   "weight": 1,
+   "dir": "B",
    "id": "n2"
   },
   {
+   "weight": 1,
+   "dir": "B",
    "id": "n3"
   },
   {
+   "weight": 1,
+   "dir": "B",
    "id": "n4"
   },
   {
+   "weight": 1,
+   "dir": "B",
    "id": "n5"
   }
  ],
