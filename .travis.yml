@@ -28,10 +28,10 @@ script:
     if [[ "$COVERAGE" == "true" ]]; then
       pre-commit install
       pre-commit run --all-files
-      python setup.py test --addopts --cov=./
+      python setup.py test --addopts --cov=src/
     fi
 after_success:
-  - if [[ "$COVERAGE" == "true" ]]; then codecov || echo "failed"; fi
+  - if [[ "$COVERAGE" == "true" ]]; then coveralls || echo "failed"; fi
 after_script:
   - travis-cleanup
 cache:
