@@ -60,7 +60,7 @@ class FMBiGainMgr(FMGainMgr):
         self.lock(toPart, i_v)
 
     # private:
-    def set_key(self, whichPart, i_v, key):
+    def __set_key(self, whichPart, i_v, key):
         """Set key
 
         Arguments:
@@ -91,4 +91,4 @@ class FMBiGainMgr(FMGainMgr):
             key (type):  description
         """
         fromPart, _, i_v = move_info_v
-        self.set_key(fromPart, i_v, -gain)
+        self.__set_key(fromPart, i_v, -gain)

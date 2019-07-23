@@ -110,13 +110,11 @@ class FMGainMgr:
                 continue  # does not provide any gain change when move
             move_info = [net, fromPart, toPart, v]
             if degree == 3:
-                self.update_move_3pin_net(part, move_info)
+                self.__update_move_3pin_net(part, move_info)
             elif degree == 2:
-                self.update_move_2pin_net(part, move_info)
+                self.__update_move_2pin_net(part, move_info)
             else:
-                self.update_move_general_net(part, move_info)
-
-    # private:
+                self.__update_move_general_net(part, move_info)
 
     @abstractmethod
     def modify_key(self, i_w, part_w, key):
@@ -128,7 +126,9 @@ class FMGainMgr:
             key {int/int[]}:  description
         """
 
-    def update_move_2pin_net(self, part, move_info):
+    # private:
+
+    def __update_move_2pin_net(self, part, move_info):
         """Update move for 2-pin net
 
         Arguments:
@@ -140,7 +140,7 @@ class FMGainMgr:
         # part, _ = part_info
         self.modify_key(i_w, part[i_w], deltaGainW)
 
-    def update_move_3pin_net(self, part, move_info):
+    def __update_move_3pin_net(self, part, move_info):
         """Update move for 3-pin net
 
         Arguments:
@@ -153,7 +153,7 @@ class FMGainMgr:
         for idx, i_w in enumerate(IdVec):
             self.modify_key(i_w, part[i_w], deltaGain[idx])
 
-    def update_move_general_net(self, part, move_info):
+    def __update_move_general_net(self, part, move_info):
         """Update move for general net
 
         Arguments:

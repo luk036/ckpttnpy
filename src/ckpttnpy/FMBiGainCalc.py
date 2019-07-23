@@ -31,10 +31,10 @@ class FMBiGainCalc:
             vlink.key = 0
         for net in self.H.nets:
             # for net in self.H.net_list:
-            self.init_gain(net, part)
+            self.__init_gain(net, part)
         return self.totalcost
 
-    def init_gain(self, net, part):
+    def __init_gain(self, net, part):
         """initialize gain
 
         Arguments:
@@ -46,13 +46,13 @@ class FMBiGainCalc:
             return  # does not provide any gain when move
         # part, _ = part_info
         if degree == 3:
-            self.init_gain_3pin_net(net, part)
+            self.__init_gain_3pin_net(net, part)
         elif degree == 2:
-            self.init_gain_2pin_net(net, part)
+            self.__init_gain_2pin_net(net, part)
         else:
-            self.init_gain_general_net(net, part)
+            self.__init_gain_general_net(net, part)
 
-    def modify_gain(self, i_w, weight):
+    def __modify_gain(self, i_w, weight):
         """Modify gain
 
         Arguments:
@@ -61,7 +61,7 @@ class FMBiGainCalc:
         """
         self.vertex_list[i_w].key += weight
 
-    def init_gain_2pin_net(self, net, part):
+    def __init_gain_2pin_net(self, net, part):
         """initialize gain for 2-pin net
 
         Arguments:
@@ -76,13 +76,13 @@ class FMBiGainCalc:
         weight = self.H.get_net_weight(net)
         if part[i_w] != part[i_v]:
             self.totalcost += weight
-            self.modify_gain(i_w, weight)
-            self.modify_gain(i_v, weight)
+            self.__modify_gain(i_w, weight)
+            self.__modify_gain(i_v, weight)
         else:
-            self.modify_gain(i_w, -weight)
-            self.modify_gain(i_v, -weight)
+            self.__modify_gain(i_w, -weight)
+            self.__modify_gain(i_v, -weight)
 
-    def init_gain_3pin_net(self, net, part):
+    def __init_gain_3pin_net(self, net, part):
         """initialize gain for 3-pin net
 
         Arguments:
@@ -100,16 +100,16 @@ class FMBiGainCalc:
         if part[i_u] == part[i_v]:
             if part[i_w] == part[i_v]:
                 for i_a in [i_u, i_v, i_w]:
-                    self.modify_gain(i_a, -weight)
+                    self.__modify_gain(i_a, -weight)
                 return
-            self.modify_gain(i_w, weight)
+            self.__modify_gain(i_w, weight)
         elif part[i_w] == part[i_v]:
-            self.modify_gain(i_u, weight)
+            self.__modify_gain(i_u, weight)
         else:  # part[i_u] == part[i_w]
-            self.modify_gain(i_v, weight)
+            self.__modify_gain(i_v, weight)
         self.totalcost += weight
 
-    def init_gain_general_net(self, net, part):
+    def __init_gain_general_net(self, net, part):
         """initialize gain for general net
 
         Arguments:
@@ -131,11 +131,11 @@ class FMBiGainCalc:
         for k in [0, 1]:
             if num[k] == 0:
                 for i_w in IdVec:
-                    self.modify_gain(i_w, -weight)
+                    self.__modify_gain(i_w, -weight)
             elif num[k] == 1:
                 for i_w in IdVec:
                     if part[i_w] == k:
-                        self.modify_gain(i_w, weight)
+                        self.__modify_gain(i_w, weight)
                         break
 
     def update_move_init(self):

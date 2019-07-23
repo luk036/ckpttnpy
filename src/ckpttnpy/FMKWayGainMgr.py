@@ -60,7 +60,7 @@ class FMKWayGainMgr(FMGainMgr):
         for k in range(self.K):
             self.lock(k, i_v)
 
-    def set_key(self, whichPart, i_v, key):
+    def __set_key(self, whichPart, i_v, key):
         """Set key
 
         Arguments:
@@ -85,7 +85,7 @@ class FMKWayGainMgr(FMGainMgr):
                 continue
             self.gainbucket[k].modify_key(self.gainCalc.vertex_list[k][i_v],
                                           self.gainCalc.deltaGainV[k])
-        self.set_key(fromPart, i_v, -gain)
+        self.__set_key(fromPart, i_v, -gain)
         # self.lock(toPart, i_v)
 
     # private:
