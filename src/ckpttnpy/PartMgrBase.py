@@ -27,7 +27,6 @@ class PartMgrBase:
         """
         self.totalcost = self.gainMgr.init(part)
         assert self.totalcost >= 0
-        # part, _ = part_info
         self.validator.init(part)
 
     def legalize(self, part):
@@ -39,7 +38,6 @@ class PartMgrBase:
         Returns:
             dtype:  description
         """
-        # part, _ = part_info
         self.init(part)
 
         # Zero-weighted modules does not contribute legalization
@@ -104,7 +102,6 @@ class PartMgrBase:
         deferredsnapshot = False
         snapshot = None
         besttotalgain = 0
-        # part, _ = part_info
 
         while not self.gainMgr.is_empty():
             # Take the gainmax with v from gainbucket

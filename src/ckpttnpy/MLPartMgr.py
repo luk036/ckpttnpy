@@ -41,7 +41,6 @@ class MLPartMgr:
         gainMgr = self.GainMgr(self.GainCalc, H, self.K)
         constrMgr = self.ConstrMgr(H, self.BalTol, self.K)
         partMgr = self.PartMgr(H, gainMgr, constrMgr)
-        # _, extern_nets = part_info
         legalcheck = partMgr.legalize(part)
         if legalcheck != 2:
             return legalcheck
@@ -49,8 +48,6 @@ class MLPartMgr:
             H2 = create_contraction_subgraph(H, set())
             if 5 * H2.number_of_modules() <= 3 * H.number_of_modules():
                 part2 = list(0 for _ in range(H2.number_of_modules()))
-                # extern_nets2 = set()
-                # part2_info = part2, extern_nets2
                 H2.projection_up(part, part2)
                 legalcheck = self.run_FMPartition(H2, part2, limitsize)
                 if legalcheck == 2:

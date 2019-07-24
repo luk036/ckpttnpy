@@ -44,7 +44,6 @@ class FMBiGainCalc:
         degree = self.H.G.degree[net]
         if degree < 2:  # unlikely, self-loop, etc.
             return  # does not provide any gain when move
-        # part, _ = part_info
         if degree == 3:
             self.__init_gain_3pin_net(net, part)
         elif degree == 2:
@@ -156,7 +155,6 @@ class FMBiGainCalc:
             dtype:  description
         """
         net, fromPart, _, v = move_info
-        # part, _ = part_info
         netCur = iter(self.H.G[net])
         u = next(netCur)
         w = u if u != v else next(netCur)
@@ -176,7 +174,6 @@ class FMBiGainCalc:
             dtype:  description
         """
         net, fromPart, _, v = move_info
-        # part, _ = part_info
         IdVec = []
         deltaGain = []
         for w in self.H.G[net]:
@@ -213,7 +210,6 @@ class FMBiGainCalc:
             dtype:  description
         """
         net, fromPart, toPart, v = move_info
-        # part, _ = part_info
         num = [0, 0]
         IdVec = []
         deltaGain = []

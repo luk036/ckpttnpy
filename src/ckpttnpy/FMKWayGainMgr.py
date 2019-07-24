@@ -23,7 +23,6 @@ class FMKWayGainMgr(FMGainMgr):
         Arguments:
             part {list}:  description
         """
-        # part, _ = part_info
         totalcost = FMGainMgr.init(self, part)
 
         for k in range(self.K):

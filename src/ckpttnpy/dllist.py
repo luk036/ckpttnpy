@@ -40,9 +40,6 @@ class dllink:
         """
         return self.next is None
 
-    # def __bool__(self):
-    #     return self.next != self
-
     def is_empty(self):
         """whether the list is empty
 

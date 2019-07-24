@@ -52,7 +52,6 @@ class FMKWayGainCalc:
         degree = self.H.G.degree[net]
         if degree < 2:  # unlikely, self-loop, etc.
             return  # does not provide any gain when move
-        # part, _ = part_info
         if degree > 3:
             self.__init_gain_general_net(net, part)
         elif degree == 3:
@@ -180,7 +179,6 @@ class FMKWayGainCalc:
             dtype:  description
         """
         net, fromPart, toPart, v = move_info
-        # part, _ = part_info
         netCur = iter(self.H.G[net])
         u = next(netCur)
         w = u if u != v else next(netCur)
@@ -188,7 +186,6 @@ class FMKWayGainCalc:
         part_w = part[i_w]
         weight = self.H.get_net_weight(net)
         deltaGainW = list(0 for _ in range(self.K))
-        # deltaGainV = list(0 for _ in range(self.K))
 
         for l in [fromPart, toPart]:
             if part_w == l:
@@ -211,7 +208,6 @@ class FMKWayGainCalc:
             dtype:  description
         """
         net, fromPart, toPart, v = move_info
-        # part, _ = part_info
 
         IdVec = []
         deltaGain = []
@@ -231,7 +227,6 @@ class FMKWayGainCalc:
         part_w = part[IdVec[0]]
         part_u = part[IdVec[1]]
 
-        # action = [extern_nets.add, extern_nets.remove]
         if part_w == part_u:
             for _ in [0, 1]:
                 if part_w != l:
@@ -261,7 +256,6 @@ class FMKWayGainCalc:
             l, u = u, l
 
         return IdVec, deltaGain
-        # return self.update_move_general_net(part, move_info)
 
     def update_move_general_net(self, part, move_info):
         """Update move for general net
@@ -274,7 +268,6 @@ class FMKWayGainCalc:
             dtype:  description
         """
         net, fromPart, toPart, v = move_info
-        # part, _ = part_info
         num = list(0 for _ in range(self.K))
         IdVec = []
         deltaGain = []

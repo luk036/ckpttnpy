@@ -166,8 +166,6 @@ class Netlist:
 
     def projection_down(self, part, part_down):
         H = self.parent
-        # part, extern_nets = part_info
-        # part_down, extern_nets_down = part_info_down
 
         for i_v, v in enumerate(self.modules):
             if v in self.cluster_down_map:
@@ -180,17 +178,8 @@ class Netlist:
                 i_v2 = H.module_map[v2]
                 part_down[i_v2] = part[i_v]
 
-        # if not extern_nets:
-        #     return
-
-        # extern_nets_down.clear()
-        # for net in extern_nets:
-        #     extern_nets_down.add(self.node_down_map[net])
-
     def projection_up(self, part, part_up):
         H = self.parent
-        # part, extern_nets = part_info
-        # part_up, extern_nets_up = part_info_up
 
         for i_v, v in enumerate(H.modules):
             part_up[self.node_up_map[v]] = part[i_v]
@@ -287,7 +276,6 @@ def create_drawf():
     G.graph['num_modules'] = 7
     G.graph['num_nets'] = 6
     G.graph['num_pads'] = 3
-    # H = Netlist(G, range(7), range(7, 13), range(7), range(-7, 6))
     H = Netlist(G, modules, nets, module_map, net_map)
     H.module_weight = module_weight
     H.num_pads = 3
@@ -315,7 +303,6 @@ def create_test_netlist():
     nets = ['a3', 'a4', 'a5']
     net_map = {net: i_net for i_net, net in enumerate(nets)}
 
-    # H = Netlist(G, range(3), range(3, 6), range(3), range(-3, 3))
     H = Netlist(G, modules, nets, module_map, net_map)
     H.module_weight = module_weight
     return H

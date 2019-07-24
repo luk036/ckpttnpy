@@ -16,8 +16,6 @@ class FMPartMgr(PartMgrBase):
         Returns:
             dtype:  description
         """
-        # extern_nets_ss, extern_modules_ss = snapshot
-        # part, _ = part_info
         return list(part)
 
     def restore_part_info(self, snapshot, part):
@@ -29,6 +27,5 @@ class FMPartMgr(PartMgrBase):
         Returns:
             dtype:  description
         """
-        # part, _ = part_info
         for i_v, k in enumerate(snapshot):
             part[i_v] = k

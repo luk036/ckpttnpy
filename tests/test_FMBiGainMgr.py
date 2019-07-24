@@ -6,7 +6,6 @@ from ckpttnpy.netlist import create_drawf, create_test_netlist
 def run_FMBiGainMgr(H, part):
     mgr = FMBiGainMgr(FMBiGainCalc, H)
     mgr.init(part)
-    # part, _ = part_info
     while not mgr.is_empty():
         # Take the gainmax with v from gainbucket
         move_info_v, gainmax = mgr.select(part)
@@ -22,12 +21,10 @@ def run_FMBiGainMgr(H, part):
 def test_FMBiGainMgr():
     H = create_test_netlist()
     part = [0, 1, 0]
-    # part_info = part, set()
     run_FMBiGainMgr(H, part)
 
 
 def test_FMBiGainMgr2():
     H = create_drawf()
     part = [0, 0, 0, 0, 1, 1, 1]
-    # part_info = part, set()
     run_FMBiGainMgr(H, part)

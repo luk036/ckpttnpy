@@ -33,7 +33,6 @@ class FMGainMgr:
             part {list}:  description
         """
         totalcost = self.gainCalc.init(part)
-        # self.totalcost = self.gainCalc.totalcost
         self.waitinglist.clear()
         return totalcost
 
@@ -100,7 +99,6 @@ class FMGainMgr:
             part {list}:  description
             move_info_v (type):  description
         """
-        # self.deltaGainV = list(0 for _ in range(self.K))
         self.gainCalc.update_move_init()
         fromPart, toPart, i_v = move_info_v
         v = self.H.modules[i_v]
@@ -137,7 +135,6 @@ class FMGainMgr:
         """
         i_w, deltaGainW = self.gainCalc.update_move_2pin_net(
             part, move_info)
-        # part, _ = part_info
         self.modify_key(i_w, part[i_w], deltaGainW)
 
     def __update_move_3pin_net(self, part, move_info):
@@ -149,7 +146,6 @@ class FMGainMgr:
         """
         IdVec, deltaGain = self.gainCalc.update_move_3pin_net(
             part, move_info)
-        # part, _ = part_info
         for idx, i_w in enumerate(IdVec):
             self.modify_key(i_w, part[i_w], deltaGain[idx])
 
@@ -162,6 +158,5 @@ class FMGainMgr:
         """
         IdVec, deltaGain = self.gainCalc.update_move_general_net(
             part, move_info)
-        # part, _ = part_info
         for idx, i_w in enumerate(IdVec):
             self.modify_key(i_w, part[i_w], deltaGain[idx])

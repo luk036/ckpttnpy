@@ -15,7 +15,6 @@ class FMConstrMgr:
         self.BalTol = BalTol
         self.K = K
         self.diff = list(0 for _ in range(K))
-        # self.illegal = list(True for _ in range(K))
         self.totalweight = 0
         for v in range(self.H.number_of_modules()):
             weight = self.H.get_module_weight_by_id(v)
@@ -33,13 +32,6 @@ class FMConstrMgr:
         for i_v in range(self.H.number_of_modules()):
             weight = self.H.get_module_weight_by_id(i_v)
             self.diff[part[i_v]] += weight
-
-        # for k in range(self.K):
-        #     self.illegal[k] = (self.diff[k] < self.lowerbound)
-
-    # def select_togo(self):
-    #     minb = min(self.diff)
-    #     return self.diff.index(minb)
 
     def check_legal(self, move_info_v):
         """[summary]
