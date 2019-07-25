@@ -10,13 +10,10 @@ def run_FMBiPartMgr(H):
     constrMgr = FMBiConstrMgr(H, 0.3)
     partMgr = FMPartMgr(H, gainMgr, constrMgr)
     part = list(0 for _ in H.modules)
-    # part_info = part, set()
-    # partMgr.init(part)
     partMgr.legalize(part)
     totalcostbefore = partMgr.totalcost
     partMgr.optimize(part)
     assert partMgr.totalcost <= totalcostbefore
-    # print(partMgr.snapshot)
 
 
 def test_FMBiPartMgr():

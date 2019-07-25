@@ -17,10 +17,8 @@ def run_MLBiPartMgr(H):
                         FMBiConstrMgr, FMPartMgr, 0.4)
     mincost = 1000
     for _ in range(10):
-        # part = list(0 for _ in H.modules)
         randseq = randint(2, size=H.number_of_modules())
         part = list(randseq)
-        # part_info = part, set()
         partMgr.run_FMPartition(H, part)
         if mincost > partMgr.totalcost:
             mincost = partMgr.totalcost
@@ -48,10 +46,8 @@ def run_MLKWayPartMgr(H, K):
                         FMKWayConstrMgr, FMPartMgr, 0.4, K)
     mincost = 1000
     for _ in range(10):
-        # part = list(0 for _ in H.modules)
         randseq = randint(K, size=H.number_of_modules())
         part = list(randseq)
-        # part_info = part, set()
         partMgr.run_FMPartition(H, part)
         if mincost > partMgr.totalcost:
             mincost = partMgr.totalcost

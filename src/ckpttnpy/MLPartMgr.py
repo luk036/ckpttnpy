@@ -73,7 +73,6 @@ class MLPartMgr:
     #     gainMgr = self.GainMgr(self.GainCalc, H, self.K)
     #     constrMgr = self.ConstrMgr(H, self.BalTol, self.K)
     #     partMgr = self.PartMgr(H, gainMgr, constrMgr)
-    #     # _, extern_nets = part_info
     #     legalcheck = partMgr.legalize(part)
     #     assert partMgr.totalcost > 0
     #     if legalcheck != 2:
@@ -83,7 +82,6 @@ class MLPartMgr:
     #     return legalcheck
 
     # def run_Partition_recur(self, H, part, limitsize=7):
-    #     _, extern_nets = part_info
     #     if H.number_of_modules() >= limitsize:  # OK
     #         H2 = create_contraction_subgraph(H)
     #         if 5 * H2.number_of_modules() <= 3 * H.number_of_modules():

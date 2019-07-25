@@ -16,8 +16,6 @@ def run_FMKWayPartMgr(H, gainMgr, K):
     constrMgr = FMKWayConstrMgr(H, 0.4, K)  # 0.2 ???
     partMgr = FMPartMgr(H, gainMgr, constrMgr)
     part = list(0 for _ in H.modules)
-    # part_info = part, set()
-    # partMgr.init(part)
     partMgr.legalize(part)  # ???
     totalcostbefore = partMgr.totalcost
     partMgr.init(part)
