@@ -17,10 +17,10 @@ class ThinGraph(nx.Graph):
 class Netlist:
     num_pads = 0
     cost_model = 0
-    net_weight = []
-    module_weight = []
+    net_weight = None
+    module_weight = None
     module_fixed = {}
-    module_name = []
+    # module_name = []
 
     parent = None
     node_up_map = {}
@@ -117,21 +117,21 @@ class Netlist:
         Returns:
             [size_t]:  description
         """
-        i_v = self.module_map[v]
-        return 1 if self.module_weight == [] \
-            else self.module_weight[i_v]
+        # i_v = self.module_map[v]
+        return 1 if self.module_weight is None \
+            else self.module_weight[v]
 
-    def get_module_weight_by_id(self, i_v):
-        """[summary]
+    # def get_module_weight_by_id(self, i_v):
+    #     """[summary]
 
-        Arguments:
-            v {size_t}:  description
+    #     Arguments:
+    #         v {size_t}:  description
 
-        Returns:
-            [size_t]:  description
-        """
-        return 1 if self.module_weight == [] \
-            else self.module_weight[i_v]
+    #     Returns:
+    #         [size_t]:  description
+    #     """
+    #     return 1 if self.module_weight is None \
+    #         else self.module_weight[i_v]
 
     def get_net_weight(self, net):
         """[summary]
@@ -242,7 +242,8 @@ def create_drawf():
     net_map = {net: i_net for i_net, net in enumerate(nets)}
     modules = ['a0', 'a1', 'a2', 'a3', 'p1', 'p2', 'p3']
     module_map = {v: i_v for i_v, v in enumerate(modules)}
-    module_weight = [1, 3, 4, 2, 0, 0, 0]
+    # module_weight = [1, 3, 4, 2, 0, 0, 0]
+    module_weight = {'a0': 1, 'a1': 3, 'a2': 4, 'a3': 2, 'p1': 0, 'p2': 0, 'p3': 0}
 
     G.add_edges_from([('n0', 'p1', {
         'dir': 'I'
@@ -285,8 +286,8 @@ def create_drawf():
 def create_test_netlist():
     G = ThinGraph()
     G.add_nodes_from(['a0', 'a1', 'a2', 'a3', 'a4', 'a5'])
-    module_weight = [533, 543, 532]
-
+    # module_weight = [533, 543, 532]
+    module_weight = {'a0': 533, 'a1': 543, 'a2': 532}
     G.add_edges_from([
         ('a3', 'a0'),
         ('a3', 'a1'),

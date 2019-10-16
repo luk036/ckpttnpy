@@ -42,7 +42,7 @@ class PartMgrBase:
 
         # Zero-weighted modules does not contribute legalization
         for i_v, v in enumerate(self.H.modules):
-            if self.H.get_module_weight_by_id(i_v) != 0:
+            if self.H.get_module_weight(v) != 0:
                 continue
             if v in self.H.module_fixed:  # already locked
                 continue

@@ -16,8 +16,8 @@ class FMConstrMgr:
         self.K = K
         self.diff = list(0 for _ in range(K))
         self.totalweight = 0
-        for v in range(self.H.number_of_modules()):
-            weight = self.H.get_module_weight_by_id(v)
+        for v in self.H.modules:
+            weight = self.H.get_module_weight(v)
             self.totalweight += weight
         totalweightK = self.totalweight * (2. / self.K)
         self.lowerbound = round(totalweightK * self.BalTol)
@@ -29,8 +29,8 @@ class FMConstrMgr:
             part (type):  description
         """
         self.diff = list(0 for _ in range(self.K))
-        for i_v in range(self.H.number_of_modules()):
-            weight = self.H.get_module_weight_by_id(i_v)
+        for i_v, v in enumerate(self.H.modules):
+            weight = self.H.get_module_weight(v)
             self.diff[part[i_v]] += weight
 
     def check_legal(self, move_info_v):
@@ -43,8 +43,8 @@ class FMConstrMgr:
         Returns:
             dtype:  description
         """
-        fromPart, toPart, v = move_info_v
-        self.weight = self.H.get_module_weight_by_id(v)
+        fromPart, toPart, i_v = move_info_v
+        self.weight = self.H.get_module_weight(self.H.modules[i_v])
         diffFrom = self.diff[fromPart] - self.weight
         if diffFrom < self.lowerbound:
             return 0  # not ok, don't move
@@ -63,8 +63,8 @@ class FMConstrMgr:
         Returns:
             dtype:  description
         """
-        fromPart, _, v = move_info_v
-        self.weight = self.H.get_module_weight_by_id(v)
+        fromPart, _, i_v = move_info_v
+        self.weight = self.H.get_module_weight(self.H.modules[i_v])
         diffFrom = self.diff[fromPart] - self.weight
         return diffFrom >= self.lowerbound
 

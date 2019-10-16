@@ -9,6 +9,7 @@ class dllink:
     information. Note that this class does not own the list node. They
     are supplied by the caller in order to better reuse the nodes.
     """
+    key = 0
 
     def __init__(self, idx=None):
         """initialization
@@ -18,11 +19,10 @@ class dllink:
         """
         self.next = self.prev = self
         self.idx = idx
-        self.key = 0
 
     def detach(self):
         """detach from a list """
-        assert self.next is not None
+        assert self.next
         n = self.next
         p = self.prev
         p.next = n
