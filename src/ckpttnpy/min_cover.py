@@ -22,9 +22,13 @@ def max_independent_net(H, weight, DontSelect):
     #     bpq.append(nets[i_net], -H.G.degree(net));
     # }
 
-    visited = list(False for _ in H.nets)
+    # net_map = {net: i_net for i_net, net in enumerate(H.nets)}
+
+    # visited = list(False for _ in H.nets)
+    visited = set()
     for net in DontSelect:
-        visited[H.net_map[net]] = True
+        # visited[net_map[net]] = True
+        visited.add(net)
 
     S = set()
     total_cost = 0
@@ -32,8 +36,9 @@ def max_independent_net(H, weight, DontSelect):
     # while (!bpq.is_empty()) {
     #     dllink<int>& item = bpq.popleft();
     #     auto i_net = std::distance(&nets[0], &item);
-    for i_net, net in enumerate(H.nets):
-        if visited[i_net]:
+    for net in H.nets:
+        # if visited[i_net]:
+        if net in visited:
             continue
         if H.G.degree(net) < 2:
             continue
@@ -43,8 +48,9 @@ def max_independent_net(H, weight, DontSelect):
         total_cost += H.get_net_weight(net)
         for v in H.G[net]:
             for net2 in H.G[v]:
-                i_net2 = H.net_map[net2]
-                visited[i_net2] = True
+                # i_net2 = net_map[net2]
+                # visited[i_net2] = True
+                visited.add(net2)
     return S, total_cost
 
 
@@ -164,8 +170,7 @@ def create_contraction_subgraph(H, DontSelect):
                 continue
             G.add_edge(node_up_map[v], node_up_map[net])
 
-    H2 = Netlist(G, range(numModules), range(numModules, numModules + numNets),
-                 range(numModules), range(-numModules, numNets))
+    H2 = Netlist(G, range(numModules), range(numModules, numModules + numNets))
 
     node_down_map = {v2: v1 for v1, v2 in node_up_map.items()}
     cluster_down_map = {node_up_map[v]: net for v, net in cluster_map.items()}

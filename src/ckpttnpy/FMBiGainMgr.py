@@ -26,29 +26,28 @@ class FMBiGainMgr(FMGainMgr):
         for k in range(self.K):
             self.gainbucket[k].clear()
 
-        for i_v in range(self.H.number_of_modules()):
-            vlink = self.gainCalc.vertex_list[i_v]
-            toPart = 1 - part[i_v]
+        for v in self.H.modules:
+            vlink = self.gainCalc.vertex_list[v]
+            toPart = 1 - part[v]
             self.gainbucket[toPart].append_direct(vlink)
 
         for v in self.H.module_fixed:
-            i_v = self.H.module_map[v]
-            self.lock_all(part[i_v], i_v)
+            self.lock_all(part[v], v)
 
         return totalcost
 
-    def lock(self, whichPart, i_v):
+    def lock(self, whichPart, v):
         """Lock
 
         Arguments:
             whichPart {uint8_t}:  description
             v {node_t}:  description
         """
-        vlink = self.gainCalc.vertex_list[i_v]
+        vlink = self.gainCalc.vertex_list[v]
         self.gainbucket[whichPart].detach(vlink)
         vlink.lock()
 
-    def lock_all(self, fromPart, i_v):
+    def lock_all(self, fromPart, v):
         """Lock
 
         Arguments:
@@ -56,10 +55,10 @@ class FMBiGainMgr(FMGainMgr):
             v {node_t}:  description
         """
         toPart = 1 - fromPart
-        self.lock(toPart, i_v)
+        self.lock(toPart, v)
 
     # private:
-    def __set_key(self, whichPart, i_v, key):
+    def __set_key(self, whichPart, v, key):
         """Set key
 
         Arguments:
@@ -68,9 +67,9 @@ class FMBiGainMgr(FMGainMgr):
             key {int}:  description
         """
         self.gainbucket[whichPart].set_key(
-            self.gainCalc.vertex_list[i_v], key)
+            self.gainCalc.vertex_list[v], key)
 
-    def modify_key(self, i_w, part_w, key):
+    def modify_key(self, w, part_w, key):
         """Update gain for the moving cell
 
         Arguments:
@@ -79,7 +78,7 @@ class FMBiGainMgr(FMGainMgr):
             gain (type):  description
         """
         self.gainbucket[1-part_w].modify_key(
-            self.gainCalc.vertex_list[i_w], key)
+            self.gainCalc.vertex_list[w], key)
 
     def update_move_v(self, move_info_v, gain):
         """[summary]
@@ -89,5 +88,5 @@ class FMBiGainMgr(FMGainMgr):
             w (type):  description
             key (type):  description
         """
-        fromPart, _, i_v = move_info_v
-        self.__set_key(fromPart, i_v, -gain)
+        fromPart, _, v = move_info_v
+        self.__set_key(fromPart, v, -gain)

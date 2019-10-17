@@ -12,6 +12,7 @@ def test_netlist():
     assert H.get_max_net_degree() == 3
     assert not H.has_fixed_modules
     # assert H.get_module_weight_by_id(0) == 533
+    assert isinstance(H.module_weight, dict)
 
 
 def test_drawf():

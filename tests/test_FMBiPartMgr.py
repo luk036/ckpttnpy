@@ -5,11 +5,10 @@ from ckpttnpy.FMPartMgr import FMPartMgr
 from ckpttnpy.netlist import create_drawf, create_p1, create_test_netlist
 
 
-def run_FMBiPartMgr(H):
+def run_FMBiPartMgr(H, part):
     gainMgr = FMBiGainMgr(FMBiGainCalc, H)
     constrMgr = FMBiConstrMgr(H, 0.3)
     partMgr = FMPartMgr(H, gainMgr, constrMgr)
-    part = list(0 for _ in H.modules)
     partMgr.legalize(part)
     totalcostbefore = partMgr.totalcost
     partMgr.optimize(part)
@@ -18,15 +17,18 @@ def run_FMBiPartMgr(H):
 
 def test_FMBiPartMgr():
     H = create_test_netlist()
-    run_FMBiPartMgr(H)
+    part = {v: 0 for v in H.modules}
+    run_FMBiPartMgr(H, part)
 
 
 def test_FMBiPartMgr2():
     H = create_drawf()
+    part = {v: 0 for v in H.modules}
     H.module_fixed = ['p1']
-    run_FMBiPartMgr(H)
+    run_FMBiPartMgr(H, part)
 
 
 def test_FMBiPartMgr3():
     H = create_p1()
-    run_FMBiPartMgr(H)
+    part = [0 for _ in H.modules]
+    run_FMBiPartMgr(H, part)

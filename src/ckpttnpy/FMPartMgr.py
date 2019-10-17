@@ -16,7 +16,7 @@ class FMPartMgr(PartMgrBase):
         Returns:
             dtype:  description
         """
-        return list(part)
+        return part.copy()
 
     def restore_part_info(self, snapshot, part):
         """[summary]
@@ -27,5 +27,11 @@ class FMPartMgr(PartMgrBase):
         Returns:
             dtype:  description
         """
-        for i_v, k in enumerate(snapshot):
-            part[i_v] = k
+        if isinstance(snapshot, list):
+            for v, k in enumerate(snapshot):
+                part[v] = k
+        elif isinstance(snapshot, dict):
+            for v, k in snapshot.items():
+                part[v] = k
+        else:
+            raise NotImplementedError()

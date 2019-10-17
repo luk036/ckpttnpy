@@ -9,7 +9,7 @@ from ckpttnpy.FMKWayGainMgr import FMKWayGainMgr
 # from ckpttnpy.min_cover import create_contraction_subgraph
 from ckpttnpy.FMPartMgr import FMPartMgr
 from ckpttnpy.MLPartMgr import MLPartMgr
-from ckpttnpy.netlist import create_drawf, create_p1
+from ckpttnpy.netlist import create_p1
 
 
 def run_MLBiPartMgr(H):
@@ -25,11 +25,11 @@ def run_MLBiPartMgr(H):
     return mincost
 
 
-def test_MLBiPartMgr():
-    H = create_drawf()
-    # totalcost =
-    run_MLBiPartMgr(H)
-    # assert totalcost == 2 # ???
+# def test_MLBiPartMgr():
+#     H = create_drawf()
+#     # totalcost =
+#     run_MLBiPartMgr(H)
+#     # assert totalcost == 2 # ???
 
 
 def test_MLBiPartMgr2():
@@ -54,11 +54,11 @@ def run_MLKWayPartMgr(H, K):
     return mincost
 
 
-def test_MLKWayPartMgr():
-    H = create_drawf()
-    # totalcost =
-    run_MLKWayPartMgr(H, 3)
-    # assert totalcost == 4 # ???
+# def test_MLKWayPartMgr():
+#     H = create_drawf()
+#     # totalcost =
+#     run_MLKWayPartMgr(H, 3)
+#     # assert totalcost == 4 # ???
 
 
 def test_MLKWayPartMgr2():
