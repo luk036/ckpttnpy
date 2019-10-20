@@ -1,3 +1,5 @@
+# type: ignore
+
 from itertools import permutations
 
 from .dllist import dllink

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from .FMGainMgr import FMGainMgr
 from .robin import robin
 

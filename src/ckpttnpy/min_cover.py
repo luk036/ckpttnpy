@@ -1,3 +1,5 @@
+# type: ignore
+
 import networkx as nx
 
 from .netlist import Netlist

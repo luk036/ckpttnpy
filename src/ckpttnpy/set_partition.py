@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # Set Partition
 # https://www.pythonanywhere.com/user/luk036/shares/e56a88368b6c4ac9aa0ff5fd1d41a967/
 #
@@ -32,37 +34,63 @@
 # http://webhome.cs.uvic.ca/~ruskey/Publications/SimpleGray/SimpleGray.html
 
 from functools import wraps
+from typing import Iterator, Tuple
 
 
 def cache(func):
     caches = {}
+
     @wraps(func)
     def wrap(*args):
         if args not in caches:
             caches[args] = func(*args)
         return caches[args]
+
     return wrap
 
 
 @cache
-def stirling2nd(n, k):
-    '''
-    Stirling number of second kind. Note that this function is for
-    testing purpose only and is slow because of reducdant calculation.
-    '''
+def stirling2nd(n: int, k: int) -> int:
+    """Stirling number of second kind.
+
+    Arguments:
+        n {int} -- [description]
+        k {int} -- [description]
+
+    Returns:
+        int -- [description]
+    """
     if (k >= n or k <= 1):
         return 1
-    return stirling2nd(n-1, k-1) + k * stirling2nd(n-1, k)
+    return stirling2nd(n - 1, k - 1) + k * stirling2nd(n - 1, k)
 
 
-def set_partition(n, k):
+def set_partition(n: int, k: int) -> Iterator[Tuple[int, int]]:
+    """[summary]
+
+    Arguments:
+        n {int} -- [description]
+        k {int} -- [description]
+
+    Returns:
+        Iterator[Tuple[int, int]] -- [description]
+    """
     if k % 2 == 0:
         yield from GEN0_even(n, k)
     else:
         yield from GEN0_odd(n, k)
 
 
-def Move(x, y):
+def Move(x: int, y: int) -> Iterator[Tuple[int, int]]:
+    """[summary]
+
+    Arguments:
+        x {int} -- [description]
+        y {int} -- [description]
+
+    Returns:
+        Iterator[Tuple[int, int]] -- [description]
+    """
     yield x, y
 
 
@@ -73,121 +101,130 @@ def Move(x, y):
 # 4. last(S(n,k,1)) = 012...(k-1)0^{n-k}
 # Note that first(S'(n,k,p)) = last(S(n,k,p))
 
-def GEN0_even(n, k):
-    ''' S(n,k,0) even k '''
+
+def GEN0_even(n: int, k: int) -> Iterator[Tuple[int, int]]:
+    """S(n,k,0) even k
+
+    Arguments:
+        n {int} -- [description]
+        k {int} -- [description]
+
+    Returns:
+        Iterator[Tuple[int, int]] -- [description]
+    """
     if k > 0 and k < n:
-        yield from GEN0_odd(n-1, k-1)
-        yield from Move(n-1, k-1)
-        yield from GEN1_even(n-1, k)
-        yield from Move(n, k-2)
-        yield from NEG1_even(n-1, k)
-        for i in range(k-3, 0, -2):
+        yield from GEN0_odd(n - 1, k - 1)
+        yield from Move(n - 1, k - 1)
+        yield from GEN1_even(n - 1, k)
+        yield from Move(n, k - 2)
+        yield from NEG1_even(n - 1, k)
+        for i in range(k - 3, 0, -2):
             yield from Move(n, i)
-            yield from GEN1_even(n-1, k)
-            yield from Move(n, i-1)
-            yield from NEG1_even(n-1, k)
+            yield from GEN1_even(n - 1, k)
+            yield from Move(n, i - 1)
+            yield from NEG1_even(n - 1, k)
 
 
 def NEG0_even(n, k):
     ''' S'(n,k,0) even k '''
     if k > 0 and k < n:
-        for i in range(1, k-2, 2):
-            yield from GEN1_even(n-1, k)
+        for i in range(1, k - 2, 2):
+            yield from GEN1_even(n - 1, k)
             yield from Move(n, i)
-            yield from NEG1_even(n-1, k)
-            yield from Move(n, i+1)
-        yield from GEN1_even(n-1, k)
-        yield from Move(n, k-1)
-        yield from NEG1_even(n-1, k)
-        yield from Move(n-1, 0)
-        yield from NEG0_odd(n-1, k-1)
+            yield from NEG1_even(n - 1, k)
+            yield from Move(n, i + 1)
+        yield from GEN1_even(n - 1, k)
+        yield from Move(n, k - 1)
+        yield from NEG1_even(n - 1, k)
+        yield from Move(n - 1, 0)
+        yield from NEG0_odd(n - 1, k - 1)
 
 
 def GEN1_even(n, k):
     ''' S(n,k,1) even k '''
     if k > 0 and k < n:
-        yield from GEN1_odd(n-1, k-1)
-        yield from Move(k, k-1)
-        yield from NEG1_even(n-1, k)
-        yield from Move(n, k-2)
-        yield from GEN1_even(n-1, k)
-        for i in range(k-3, 0, -2):
+        yield from GEN1_odd(n - 1, k - 1)
+        yield from Move(k, k - 1)
+        yield from NEG1_even(n - 1, k)
+        yield from Move(n, k - 2)
+        yield from GEN1_even(n - 1, k)
+        for i in range(k - 3, 0, -2):
             yield from Move(n, i)
-            yield from NEG1_even(n-1, k)
-            yield from Move(n, i-1)
-            yield from GEN1_even(n-1, k)
+            yield from NEG1_even(n - 1, k)
+            yield from Move(n, i - 1)
+            yield from GEN1_even(n - 1, k)
 
 
 def NEG1_even(n, k):
     ''' S'(n,k,1) even k '''
     if k > 0 and k < n:
-        for i in range(1, k-2, 2):
-            yield from NEG1_even(n-1, k)
+        for i in range(1, k - 2, 2):
+            yield from NEG1_even(n - 1, k)
             yield from Move(n, i)
-            yield from GEN1_even(n-1, k)
-            yield from Move(n, i+1)
-        yield from NEG1_even(n-1, k)
-        yield from Move(n, k-1)
-        yield from GEN1_even(n-1, k)
+            yield from GEN1_even(n - 1, k)
+            yield from Move(n, i + 1)
+        yield from NEG1_even(n - 1, k)
+        yield from Move(n, k - 1)
+        yield from GEN1_even(n - 1, k)
         yield from Move(k, 0)
-        yield from NEG1_odd(n-1, k-1)
+        yield from NEG1_odd(n - 1, k - 1)
 
 
 def GEN0_odd(n, k):
     ''' S(n,k,0) odd k '''
     if k > 1 and k < n:
-        yield from GEN1_even(n-1, k-1)
-        yield from Move(k, k-1)
-        yield from NEG1_odd(n-1, k)
-        for i in range(k-2, 0, -2):
+        yield from GEN1_even(n - 1, k - 1)
+        yield from Move(k, k - 1)
+        yield from NEG1_odd(n - 1, k)
+        for i in range(k - 2, 0, -2):
             yield from Move(n, i)
-            yield from GEN1_odd(n-1, k)
-            yield from Move(n, i-1)
-            yield from NEG1_odd(n-1, k)
+            yield from GEN1_odd(n - 1, k)
+            yield from Move(n, i - 1)
+            yield from NEG1_odd(n - 1, k)
 
 
 def NEG0_odd(n, k):
     ''' S'(n,k,0) odd k '''
     if k > 1 and k < n:
-        for i in range(1, k-1, 2):
-            yield from GEN1_odd(n-1, k)
+        for i in range(1, k - 1, 2):
+            yield from GEN1_odd(n - 1, k)
             yield from Move(n, i)
-            yield from NEG1_odd(n-1, k)
-            yield from Move(n, i+1)
-        yield from GEN1_odd(n-1, k)
+            yield from NEG1_odd(n - 1, k)
+            yield from Move(n, i + 1)
+        yield from GEN1_odd(n - 1, k)
         yield from Move(k, 0)
-        yield from NEG1_even(n-1, k-1)
+        yield from NEG1_even(n - 1, k - 1)
 
 
 def GEN1_odd(n, k):
     ''' S(n,k,1) odd k '''
     if k > 1 and k < n:
-        yield from GEN0_even(n-1, k-1)
-        yield from Move(n-1, k-1)
-        yield from GEN1_odd(n-1, k)
-        for i in range(k-2, 0, -2):
+        yield from GEN0_even(n - 1, k - 1)
+        yield from Move(n - 1, k - 1)
+        yield from GEN1_odd(n - 1, k)
+        for i in range(k - 2, 0, -2):
             yield from Move(n, i)
-            yield from NEG1_odd(n-1, k)
-            yield from Move(n, i-1)
-            yield from GEN1_odd(n-1, k)
+            yield from NEG1_odd(n - 1, k)
+            yield from Move(n, i - 1)
+            yield from GEN1_odd(n - 1, k)
 
 
 def NEG1_odd(n, k):
     ''' S'(n,k,1) odd k '''
     if k > 1 and k < n:
-        for i in range(1, k-1, 2):
-            yield from NEG1_odd(n-1, k)
+        for i in range(1, k - 1, 2):
+            yield from NEG1_odd(n - 1, k)
             yield from Move(n, i)
-            yield from GEN1_odd(n-1, k)
-            yield from Move(n, i+1)
-        yield from NEG1_odd(n-1, k)
-        yield from Move(n-1, 0)
-        yield from NEG0_even(n-1, k-1)
+            yield from GEN1_odd(n - 1, k)
+            yield from Move(n, i + 1)
+        yield from NEG1_odd(n - 1, k)
+        yield from Move(n - 1, 0)
+        yield from NEG0_even(n - 1, k - 1)
 
 
 if __name__ == "__main__":
     n, k = 5, 3
-    b = [0 for i in range(n-k+1)] + list(range(k))
+    b = [0 for i in range(n - k + 1)] + list(range(k))
     cnt = 1
     for x, y in set_partition(n, k):
         old = b[x]

@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+from typing import Any
+
+
 class dllink:
     """doubly linked node (that may also be a "head" a list)
 
@@ -9,7 +13,7 @@ class dllink:
     information. Note that this class does not own the list node. They
     are supplied by the caller in order to better reuse the nodes.
     """
-    key = 0
+    key: Any = 0
 
     def __init__(self, idx=None):
         """initialization

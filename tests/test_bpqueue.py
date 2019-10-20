@@ -3,6 +3,11 @@ from ckpttnpy.dllist import dllink
 
 
 def test_bpqueue():
+    try:
+        _ = bpqueue(-10.4, 10.4)
+    except TypeError:
+        print("ok")
+
     bpq1 = bpqueue(-10, 10)
     bpq2 = bpqueue(-10, 10)
 

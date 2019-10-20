@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from .dllist import dllink
 
 sentinel = dllink(8965)
@@ -24,7 +25,7 @@ class bpqueue:
     """
     max = 0
 
-    def __init__(self, a, b):
+    def __init__(self, a: int, b: int):
         """initialization
 
         Arguments:

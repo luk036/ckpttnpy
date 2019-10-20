@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from .PartMgrBase import PartMgrBase
 
 # **Special code for two-pin nets**

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from abc import abstractmethod
 
 from .bpqueue import bpqueue

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # Check if the move of v can satisfied, makebetter, or notsatisfied
 
 

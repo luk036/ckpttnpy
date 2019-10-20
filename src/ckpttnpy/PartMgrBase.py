@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # **Special code for two-pin nets**
 # Take a snapshot when a move make **negative** gain.
 # Snapshot in the form of "interface"???
