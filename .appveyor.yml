@@ -30,7 +30,7 @@ install:
 
   # Install the build and runtime dependencies of the project.
   - "%CMD_IN_ENV% pip install --upgrade pip --user"
-  - "pip install setuptools"
+  # - "pip install setuptools"
   - "pip install --timeout=60 -r requirements.txt"
   - "pip install ."
 

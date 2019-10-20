@@ -38,7 +38,7 @@ class bpqueue:
         self.bucket = list(dllink(4848) for _ in range(self.high + 1))
         self.bucket[0].append(sentinel)  # sentinel
 
-    def set_key(self, it, gain):
+    def set_key(self, it: dllink, gain: int):
         """Set the key value
 
         Arguments:
@@ -47,7 +47,7 @@ class bpqueue:
         """
         it.key = gain - self.offset
 
-    def get_max(self):
+    def get_max(self) -> int:
         """Get the max value
 
         Returns:
@@ -55,7 +55,7 @@ class bpqueue:
         """
         return self.max + self.offset
 
-    def is_empty(self):
+    def is_empty(self) -> bool:
         """whether empty
 
         Returns:
