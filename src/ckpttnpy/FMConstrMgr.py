@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+from typing import Any, Dict, List, Union
+
+Part = Union[Dict[Any, int], List[int]]
 
 # Check if the move of v can satisfied, makebetter, or notsatisfied
 
@@ -24,7 +27,7 @@ class FMConstrMgr:
         totalweightK = self.totalweight * (2. / self.K)
         self.lowerbound = round(totalweightK * self.BalTol)
 
-    def init(self, part):
+    def init(self, part: Part):
         """[summary]
 
         Arguments:

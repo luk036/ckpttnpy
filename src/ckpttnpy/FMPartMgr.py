@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 
+from typing import Any, Dict, List, Union
+
 from .PartMgrBase import PartMgrBase
+
+Part = Union[Dict[Any, int], List[int]]
 
 # **Special code for two-pin nets**
 # Take a snapshot when a move make **negative** gain.
@@ -9,7 +13,7 @@ from .PartMgrBase import PartMgrBase
 
 class FMPartMgr(PartMgrBase):
 
-    def take_snapshot(self, part):
+    def take_snapshot(self, part: Part):
         """[summary]
 
         Arguments:
@@ -20,7 +24,7 @@ class FMPartMgr(PartMgrBase):
         """
         return part.copy()
 
-    def restore_part_info(self, snapshot, part):
+    def restore_part_info(self, snapshot, part: Part):
         """[summary]
 
         Arguments:

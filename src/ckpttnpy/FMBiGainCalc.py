@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 
+from typing import Any, Dict, List, Union
+
 from .dllist import dllink
+
+Part = Union[Dict[Any, int], List[int]]
 
 
 class FMBiGainCalc:
@@ -28,11 +32,17 @@ class FMBiGainCalc:
         else:
             raise NotImplementedError
 
-    def init(self, part):
+    def init(self, part: Part) -> int:
         """(re)initialization after creation
 
         Arguments:
-            part {list}:  description
+            part {[type]} -- [description]
+
+        Raises:
+            NotImplementedError: [description]
+
+        Returns:
+            [type] -- [description]
         """
         self.totalcost = 0
         if isinstance(self.H.modules, range):
@@ -49,7 +59,7 @@ class FMBiGainCalc:
             self.__init_gain(net, part)
         return self.totalcost
 
-    def __init_gain(self, net, part):
+    def __init_gain(self, net, part: Part):
         """initialize gain
 
         Arguments:
@@ -75,7 +85,7 @@ class FMBiGainCalc:
         """
         self.vertex_list[w].key += weight
 
-    def __init_gain_2pin_net(self, net, part):
+    def __init_gain_2pin_net(self, net, part: Part):
         """initialize gain for 2-pin net
 
         Arguments:
@@ -94,7 +104,7 @@ class FMBiGainCalc:
             self.__modify_gain(w, -weight)
             self.__modify_gain(v, -weight)
 
-    def __init_gain_3pin_net(self, net, part):
+    def __init_gain_3pin_net(self, net, part: Part):
         """initialize gain for 3-pin net
 
         Arguments:
@@ -118,7 +128,7 @@ class FMBiGainCalc:
             self.__modify_gain(v, weight)
         self.totalcost += weight
 
-    def __init_gain_general_net(self, net, part):
+    def __init_gain_general_net(self, net, part: Part):
         """initialize gain for general net
 
         Arguments:

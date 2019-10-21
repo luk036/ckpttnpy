@@ -1,9 +1,13 @@
 # -*- coding: utf-8 -*-
 
-# **Special code for two-pin nets**
+
 # Take a snapshot when a move make **negative** gain.
 # Snapshot in the form of "interface"???
 from abc import abstractmethod
+# **Special code for two-pin nets**
+from typing import Any, Dict, List, Union
+
+Part = Union[Dict[Any, int], List[int]]
 
 
 class PartMgrBase:
@@ -21,7 +25,7 @@ class PartMgrBase:
         self.K = gainMgr.K
         self.totalcost = 0
 
-    def init(self, part):
+    def init(self, part: Part):
         """[summary]
 
         Arguments:
@@ -31,7 +35,7 @@ class PartMgrBase:
         assert self.totalcost >= 0
         self.validator.init(part)
 
-    def legalize(self, part):
+    def legalize(self, part: Part):
         """[summary]
 
         Arguments:
@@ -80,7 +84,7 @@ class PartMgrBase:
 
         return legalcheck
 
-    def optimize(self, part):
+    def optimize(self, part: Part):
         """[summary]
 
         Arguments:
@@ -94,7 +98,7 @@ class PartMgrBase:
             if self.totalcost == totalcostbefore:
                 break
 
-    def __optimize_1pass(self, part):
+    def __optimize_1pass(self, part: Part):
         """[summary]
 
         Arguments:
@@ -142,7 +146,7 @@ class PartMgrBase:
         self.totalcost -= totalgain
 
     @abstractmethod
-    def take_snapshot(self, part):
+    def take_snapshot(self, part: Part):
         """[summary]
 
         Arguments:
@@ -153,7 +157,7 @@ class PartMgrBase:
         """
 
     @abstractmethod
-    def restore_part_info(self, snapshot, part):
+    def restore_part_info(self, snapshot, part: Part):
         """[summary]
 
         Arguments:

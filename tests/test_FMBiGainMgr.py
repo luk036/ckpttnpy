@@ -1,9 +1,13 @@
+from typing import Any, Dict, List, Union
+
 from ckpttnpy.FMBiGainCalc import FMBiGainCalc
 from ckpttnpy.FMBiGainMgr import FMBiGainMgr
 from ckpttnpy.netlist import Netlist, create_drawf, create_test_netlist
 
+Part = Union[Dict[Any, int], List[int]]
 
-def run_FMBiGainMgr(H: Netlist, part):
+
+def run_FMBiGainMgr(H: Netlist, part: Part):
     mgr = FMBiGainMgr(FMBiGainCalc, H)
     mgr.init(part)
     while not mgr.is_empty():

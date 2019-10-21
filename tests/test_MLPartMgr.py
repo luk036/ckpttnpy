@@ -48,7 +48,7 @@ def test_MLBiPartMgr2():
     assert totalcost <= 65
 
 
-def run_MLKWayPartMgr(H: Netlist, K):
+def run_MLKWayPartMgr(H: Netlist, K: int):
     partMgr = MLPartMgr(FMKWayGainCalc, FMKWayGainMgr,
                         FMKWayConstrMgr, FMPartMgr, 0.4, K)
     mincost = 1000

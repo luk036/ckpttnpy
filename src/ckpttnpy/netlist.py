@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import json
-from typing import Dict, List, Optional, Set, Union
+from typing import Dict, List, Optional, Union
 
 import networkx as nx
 from networkx.readwrite import json_graph
@@ -38,13 +38,13 @@ class Netlist:
         self.num_nets = len(nets)
         self.net_weight: Optional[Union[Dict, List[int]]] = None
         self.module_weight: Optional[Union[Dict, List[int]]] = None
-        self.module_fixed: Set = set()
+        self.module_fixed: set = set()
 
         # for hierachical netlist and multilevel algorithm
         self.parent = self
-        self.node_up_map: Dict = {}
-        self.node_down_map: Dict = {}
-        self.cluster_down_map: Dict = {}
+        self.node_up_map: dict = {}
+        self.node_down_map: dict = {}
+        self.cluster_down_map: dict = {}
 
         # self.module_dict = {}
         # for v in enumerate(self.module_list):

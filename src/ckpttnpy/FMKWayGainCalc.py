@@ -1,9 +1,12 @@
 # type: ignore
 
 from itertools import permutations
+from typing import Any, Dict, List, Union
 
 from .dllist import dllink
 from .robin import robin
+
+Part = Union[Dict[Any, int], List[int]]
 
 
 class FMKWayGainCalc:
@@ -12,7 +15,7 @@ class FMKWayGainCalc:
 
     # public:
 
-    def __init__(self, H, K):
+    def __init__(self, H, K: int):
         """initialization
 
         Arguments:
@@ -38,7 +41,7 @@ class FMKWayGainCalc:
         else:
             raise NotImplementedError
 
-    def init(self, part):
+    def init(self, part: Part):
         """(re)initialization after creation
 
         Arguments:
@@ -61,7 +64,7 @@ class FMKWayGainCalc:
             self.__init_gain(net, part)
         return self.totalcost
 
-    def __init_gain(self, net, part):
+    def __init_gain(self, net, part: Part):
         """initialize gain
 
         Arguments:
@@ -88,7 +91,7 @@ class FMKWayGainCalc:
         for k in self.RR.exclude(pv):
             self.vertex_list[k][v].key += weight
 
-    def __init_gain_2pin_net(self, net, part):
+    def __init_gain_2pin_net(self, net, part: Part):
         """initialize gain for 2-pin net
 
         Arguments:
@@ -109,7 +112,7 @@ class FMKWayGainCalc:
             self.vertex_list[part_v][w].key += weight
             self.vertex_list[part_w][v].key += weight
 
-    def __init_gain_3pin_net(self, net, part):
+    def __init_gain_3pin_net(self, net, part: Part):
         """initialize gain for 3-pin net
 
         Arguments:
@@ -146,7 +149,7 @@ class FMKWayGainCalc:
             self.vertex_list[part[a]][e].key += weight
         self.totalcost += weight
 
-    def __init_gain_general_net(self, net, part):
+    def __init_gain_general_net(self, net, part: Part):
         """initialize gain for general net
 
         Arguments:

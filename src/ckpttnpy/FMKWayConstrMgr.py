@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
 
+from typing import Any, Dict, List, Union
+
 # Check if the move of v can satisfied, makebetter, or notsatisfied
 from .FMConstrMgr import FMConstrMgr
 
+Part = Union[Dict[Any, int], List[int]]
+
 
 class FMKWayConstrMgr(FMConstrMgr):
-    def __init__(self, H, BalTol, K):
+    def __init__(self, H, BalTol, K: int):
         """[summary]
 
         Arguments:
@@ -15,7 +19,7 @@ class FMKWayConstrMgr(FMConstrMgr):
         FMConstrMgr.__init__(self, H, BalTol, K)
         self.illegal = list(True for _ in range(K))
 
-    def init(self, part):
+    def init(self, part: Part):
         """[summary]
 
         Arguments:

@@ -1,4 +1,4 @@
-from typing import Dict, List, Set, Tuple
+from typing import List, Set, Tuple
 
 import networkx as nx
 
@@ -111,14 +111,14 @@ def max_independent_net(H: Netlist, mw, DontSelect: Set) -> Tuple[Set, int]:
 def create_contraction_subgraph(H: Netlist, DontSelect: Set) -> Netlist:
     S, _ = max_independent_net(H, H.module_weight, DontSelect)
 
-    module_up_map: Dict = {v: v for v in H.modules}
+    module_up_map: dict = {v: v for v in H.modules}
     # for v in H.modules:
     #     module_up_map[v] = v
 
-    C: Set = set()
+    C: set = set()
     nets: List = []
     clusters: List = []
-    cluster_map: Dict = {}
+    cluster_map: dict = {}
     for net in H.nets:
         if net in S:
             netCur = iter(H.G[net])

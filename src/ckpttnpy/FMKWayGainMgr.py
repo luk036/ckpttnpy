@@ -1,14 +1,18 @@
 # -*- coding: utf-8 -*-
 
+from typing import Any, Dict, List, Union
+
 from .FMGainMgr import FMGainMgr
 from .robin import robin
+
+Part = Union[Dict[Any, int], List[int]]
 
 
 class FMKWayGainMgr(FMGainMgr):
 
     # public:
 
-    def __init__(self, GainCalc, H, K):
+    def __init__(self, GainCalc, H, K: int):
         """Initialization
 
         Arguments:
@@ -19,7 +23,7 @@ class FMKWayGainMgr(FMGainMgr):
         FMGainMgr.__init__(self, GainCalc, H, K)
         self.RR = robin(K)
 
-    def init(self, part):
+    def init(self, part: Part):
         """(re)initialization after creation
 
         Arguments:

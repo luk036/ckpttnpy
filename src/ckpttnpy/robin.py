@@ -13,14 +13,14 @@ class robin:
         dtype:  description
     """
 
-    def __init__(self, K):
+    def __init__(self, K: int):
         self.cycle = list(dllink(k) for k in range(K))
         K -= 1
         for k in range(K):
             self.cycle[k].next = self.cycle[k+1]
         self.cycle[K].next = self.cycle[0]
 
-    def exclude(self, fromPart):
+    def exclude(self, fromPart: int):
         """iterator
 
         Returns:
@@ -30,7 +30,7 @@ class robin:
 
 
 class robin_iterator:
-    def __init__(self, robin, fromPart):
+    def __init__(self, robin, fromPart: int):
         """[summary]
 
         Arguments:

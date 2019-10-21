@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 
+from typing import Any, Dict, List, Union
+
 from .FMGainMgr import FMGainMgr
+
+Part = Union[Dict[Any, int], List[int]]
 
 
 class FMBiGainMgr(FMGainMgr):
@@ -17,7 +21,7 @@ class FMBiGainMgr(FMGainMgr):
     #     """
     #     FMGainMgr.__init__(self, GainCalc, H)
 
-    def init(self, part):
+    def init(self, part: Part):
         """(re)initialization after creation
 
         Arguments:
