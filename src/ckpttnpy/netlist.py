@@ -1,6 +1,7 @@
-# type: ignore
+# -*- coding: utf-8 -*-
 
 import json
+from typing import Dict, List, Optional, Set, Union
 
 import networkx as nx
 from networkx.readwrite import json_graph
@@ -19,34 +20,31 @@ class ThinGraph(nx.Graph):
 class Netlist:
     num_pads = 0
     cost_model = 0
-    net_weight = None
-    module_weight = None
-    module_fixed = {}
-    # module_name = []
 
-    parent = None
-    node_up_map = {}
-    node_down_map = {}
-    cluster_down_map = {}
-
-    def __init__(self, G, modules, nets):
+    def __init__(self, G: nx.Graph, modules: Union[range, List],
+                 nets: Union[range, List]):
         """[summary]
 
         Arguments:
-            G (type):  description
-            module_list (type):  description
-            net_list (type):  description
-
-        Keyword Arguments:
-            module_fixed {dict}:  description (default: {{}})
+            G {nx.Graph} -- [description]
+            modules {Union[range, List]} -- [description]
+            nets {Union[range, List]} -- [description]
         """
         self.G = G
         self.modules = modules
         self.nets = nets
-        # self.module_map = module_map
-        # self.net_map = net_map
+
         self.num_modules = len(modules)
         self.num_nets = len(nets)
+        self.net_weight: Optional[Union[Dict, List[int]]] = None
+        self.module_weight: Optional[Union[Dict, List[int]]] = None
+        self.module_fixed: Set = set()
+
+        # for hierachical netlist and multilevel algorithm
+        self.parent = self
+        self.node_up_map: Dict = {}
+        self.node_down_map: Dict = {}
+        self.cluster_down_map: Dict = {}
 
         # self.module_dict = {}
         # for v in enumerate(self.module_list):
@@ -57,12 +55,11 @@ class Netlist:
         #     self.net_dict[net] = i_net
 
         # self.module_fixed = module_fixed
-        self.has_fixed_modules = (self.module_fixed != {})
-
+        # self.has_fixed_modules = (self.module_fixed != [])
         self.max_degree = max(self.G.degree[cell] for cell in modules)
         self.max_net_degree = max(self.G.degree[net] for net in nets)
 
-    def number_of_modules(self):
+    def number_of_modules(self) -> int:
         """[summary]
 
         Returns:
@@ -70,7 +67,7 @@ class Netlist:
         """
         return self.num_modules
 
-    def number_of_nets(self):
+    def number_of_nets(self) -> int:
         """[summary]
 
         Returns:
@@ -78,7 +75,7 @@ class Netlist:
         """
         return self.num_nets
 
-    def number_of_nodes(self):
+    def number_of_nodes(self) -> int:
         """[summary]
 
         Returns:
@@ -86,7 +83,7 @@ class Netlist:
         """
         return self.G.number_of_nodes()
 
-    def number_of_pins(self):
+    def number_of_pins(self) -> int:
         """[summary]
 
         Returns:
@@ -94,7 +91,7 @@ class Netlist:
         """
         return self.G.number_of_edges()
 
-    def get_max_degree(self):
+    def get_max_degree(self) -> int:
         """[summary]
 
         Returns:
@@ -102,7 +99,7 @@ class Netlist:
         """
         return self.max_degree
 
-    def get_max_net_degree(self):
+    def get_max_net_degree(self) -> int:
         """[summary]
 
         Returns:
@@ -110,7 +107,7 @@ class Netlist:
         """
         return self.max_net_degree
 
-    def get_module_weight(self, v):
+    def get_module_weight(self, v) -> int:
         """[summary]
 
         Arguments:
@@ -134,7 +131,7 @@ class Netlist:
     #     return 1 if self.module_weight is None \
     #         else self.module_weight[v]
 
-    def get_net_weight(self, net):
+    def get_net_weight(self, net) -> int:
         """[summary]
 
         Arguments:
@@ -165,7 +162,8 @@ class Netlist:
     #     for i_v, v in enumerate(H.modules):
     #         part_up[self.node_up_map[v]] = part[v]
 
-    def projection_down(self, part, part_down):
+    def projection_down(self, part: Union[Dict, List[int]],
+                        part_down: Union[Dict, List[int]]):
         H = self.parent
 
         for v in self.modules:
@@ -177,7 +175,8 @@ class Netlist:
                 v2 = self.node_down_map[v]
                 part_down[v2] = part[v]
 
-    def projection_up(self, part, part_up):
+    def projection_up(self, part: Union[Dict, List[int]],
+                      part_up: Union[Dict, List[int]]):
         H = self.parent
 
         for v in H.modules:

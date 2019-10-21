@@ -1,62 +1,42 @@
-# type: ignore
+from typing import Dict, List, Set, Tuple
 
 import networkx as nx
 
 from .netlist import Netlist
 
 
-def max_independent_net(H, weight, DontSelect):
-    """Maximal Indepentent Net
+def max_independent_net(H: Netlist, mw, DontSelect: Set) -> Tuple[Set, int]:
+    """Maximum Independent NET (by greedy)
 
     Arguments:
-        H (type):  description
-        weight (type):  description
+        H {Netlist} -- [description]
+        mw {[type]} -- [description]
+        DontSelect {Set} -- [description]
 
     Returns:
-        dtype:  description
+        Tuple[Set, int] -- [description]
     """
-
-    # bpqueue bpq{-int(H.get_max_net_degree()), 0};
-    # auto nets = std::vector<dllink<int>>(H.nets.size());
-
-    # for (auto i_net = 0U; i_net < H.nets.size(); ++i_net) {
-    #     auto net = H.nets[i_net];
-    #     bpq.append(nets[i_net], -H.G.degree(net));
-    # }
-
-    # net_map = {net: i_net for i_net, net in enumerate(H.nets)}
-
-    # visited = list(False for _ in H.nets)
     visited = set()
     for net in DontSelect:
-        # visited[net_map[net]] = True
         visited.add(net)
 
     S = set()
     total_cost = 0
 
-    # while (!bpq.is_empty()) {
-    #     dllink<int>& item = bpq.popleft();
-    #     auto i_net = std::distance(&nets[0], &item);
     for net in H.nets:
-        # if visited[i_net]:
         if net in visited:
             continue
         if H.G.degree(net) < 2:
             continue
-        # if net in DontSelect:
-        #     continue
         S.add(net)
         total_cost += H.get_net_weight(net)
         for v in H.G[net]:
             for net2 in H.G[v]:
-                # i_net2 = net_map[net2]
-                # visited[i_net2] = True
                 visited.add(net2)
     return S, total_cost
 
 
-# def min_net_cover_pd(H, weight):
+# def min_net_cover_pd(H: Netlist, weight):
 #     """Minimum Net Cover using Primal-Dual algorithm
 
 #     @todo: sort cell weight to cover big cells first
@@ -128,17 +108,17 @@ def max_independent_net(H, weight, DontSelect):
 #     return S, total_primal_cost
 
 
-def create_contraction_subgraph(H, DontSelect):
+def create_contraction_subgraph(H: Netlist, DontSelect: Set) -> Netlist:
     S, _ = max_independent_net(H, H.module_weight, DontSelect)
 
-    module_up_map = {v: v for v in H.modules}
+    module_up_map: Dict = {v: v for v in H.modules}
     # for v in H.modules:
     #     module_up_map[v] = v
 
-    C = set()
-    nets = []
-    clusters = []
-    cluster_map = {}
+    C: Set = set()
+    nets: List = []
+    clusters: List = []
+    cluster_map: Dict = {}
     for net in H.nets:
         if net in S:
             netCur = iter(H.G[net])
@@ -151,7 +131,7 @@ def create_contraction_subgraph(H, DontSelect):
         else:
             nets.append(net)
 
-    modules = [v for v in H.modules if v not in C]
+    modules: List = [v for v in H.modules if v not in C]
     modules += clusters
     numModules = len(modules)
     numNets = len(nets)

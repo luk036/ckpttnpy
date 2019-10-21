@@ -125,8 +125,16 @@ def GEN0_even(n: int, k: int) -> Iterator[Tuple[int, int]]:
             yield from NEG1_even(n - 1, k)
 
 
-def NEG0_even(n, k):
-    ''' S'(n,k,0) even k '''
+def NEG0_even(n: int, k: int) -> Iterator[Tuple[int, int]]:
+    """S'(n,k,0) even k
+
+    Arguments:
+        n {int} -- [description]
+        k {int} -- [description]
+
+    Returns:
+        Iterator[Tuple[int, int]] -- [description]
+    """
     if k > 0 and k < n:
         for i in range(1, k - 2, 2):
             yield from GEN1_even(n - 1, k)
@@ -140,8 +148,16 @@ def NEG0_even(n, k):
         yield from NEG0_odd(n - 1, k - 1)
 
 
-def GEN1_even(n, k):
-    ''' S(n,k,1) even k '''
+def GEN1_even(n: int, k: int) -> Iterator[Tuple[int, int]]:
+    """S(n,k,1) even k
+
+    Arguments:
+        n {int} -- [description]
+        k {int} -- [description]
+
+    Returns:
+        Iterator[Tuple[int, int]] -- [description]
+    """
     if k > 0 and k < n:
         yield from GEN1_odd(n - 1, k - 1)
         yield from Move(k, k - 1)
@@ -155,8 +171,16 @@ def GEN1_even(n, k):
             yield from GEN1_even(n - 1, k)
 
 
-def NEG1_even(n, k):
-    ''' S'(n,k,1) even k '''
+def NEG1_even(n: int, k: int) -> Iterator[Tuple[int, int]]:
+    """S'(n,k,1) even k
+
+    Arguments:
+        n {int} -- [description]
+        k {int} -- [description]
+
+    Returns:
+        Iterator[Tuple[int, int]] -- [description]
+    """
     if k > 0 and k < n:
         for i in range(1, k - 2, 2):
             yield from NEG1_even(n - 1, k)
@@ -170,8 +194,16 @@ def NEG1_even(n, k):
         yield from NEG1_odd(n - 1, k - 1)
 
 
-def GEN0_odd(n, k):
-    ''' S(n,k,0) odd k '''
+def GEN0_odd(n: int, k: int) -> Iterator[Tuple[int, int]]:
+    """S(n,k,0) odd k
+
+    Arguments:
+        n {int} -- [description]
+        k {int} -- [description]
+
+    Returns:
+        Iterator[Tuple[int, int]] -- [description]
+    """
     if k > 1 and k < n:
         yield from GEN1_even(n - 1, k - 1)
         yield from Move(k, k - 1)
@@ -183,8 +215,16 @@ def GEN0_odd(n, k):
             yield from NEG1_odd(n - 1, k)
 
 
-def NEG0_odd(n, k):
-    ''' S'(n,k,0) odd k '''
+def NEG0_odd(n: int, k: int) -> Iterator[Tuple[int, int]]:
+    """S'(n,k,0) odd k
+
+    Arguments:
+        n {int} -- [description]
+        k {int} -- [description]
+
+    Returns:
+        Iterator[Tuple[int, int]] -- [description]
+    """
     if k > 1 and k < n:
         for i in range(1, k - 1, 2):
             yield from GEN1_odd(n - 1, k)
@@ -196,8 +236,16 @@ def NEG0_odd(n, k):
         yield from NEG1_even(n - 1, k - 1)
 
 
-def GEN1_odd(n, k):
-    ''' S(n,k,1) odd k '''
+def GEN1_odd(n: int, k: int) -> Iterator[Tuple[int, int]]:
+    """S(n,k,1) odd k
+
+    Arguments:
+        n {int} -- [description]
+        k {int} -- [description]
+
+    Returns:
+        Iterator[Tuple[int, int]] -- [description]
+    """
     if k > 1 and k < n:
         yield from GEN0_even(n - 1, k - 1)
         yield from Move(n - 1, k - 1)
@@ -209,8 +257,16 @@ def GEN1_odd(n, k):
             yield from GEN1_odd(n - 1, k)
 
 
-def NEG1_odd(n, k):
-    ''' S'(n,k,1) odd k '''
+def NEG1_odd(n: int, k: int) -> Iterator[Tuple[int, int]]:
+    """S'(n,k,1) odd k
+
+    Arguments:
+        n {int} -- [description]
+        k {int} -- [description]
+
+    Returns:
+        Iterator[Tuple[int, int]] -- [description]
+    """
     if k > 1 and k < n:
         for i in range(1, k - 1, 2):
             yield from NEG1_odd(n - 1, k)

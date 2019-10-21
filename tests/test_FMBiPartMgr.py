@@ -2,10 +2,10 @@ from ckpttnpy.FMBiConstrMgr import FMBiConstrMgr
 from ckpttnpy.FMBiGainCalc import FMBiGainCalc
 from ckpttnpy.FMBiGainMgr import FMBiGainMgr
 from ckpttnpy.FMPartMgr import FMPartMgr
-from ckpttnpy.netlist import create_drawf, create_p1, create_test_netlist
+from ckpttnpy.netlist import Netlist, create_drawf, create_p1, create_test_netlist
 
 
-def run_FMBiPartMgr(H, part):
+def run_FMBiPartMgr(H: Netlist, part):
     gainMgr = FMBiGainMgr(FMBiGainCalc, H)
     constrMgr = FMBiConstrMgr(H, 0.3)
     partMgr = FMPartMgr(H, gainMgr, constrMgr)
@@ -24,7 +24,7 @@ def test_FMBiPartMgr():
 def test_FMBiPartMgr2():
     H = create_drawf()
     part = {v: 0 for v in H.modules}
-    H.module_fixed = ['p1']
+    H.module_fixed.add('p1')
     run_FMBiPartMgr(H, part)
 
 

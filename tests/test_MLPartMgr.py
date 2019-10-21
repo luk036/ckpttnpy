@@ -9,27 +9,34 @@ from ckpttnpy.FMKWayGainMgr import FMKWayGainMgr
 # from ckpttnpy.min_cover import create_contraction_subgraph
 from ckpttnpy.FMPartMgr import FMPartMgr
 from ckpttnpy.MLPartMgr import MLPartMgr
-from ckpttnpy.netlist import create_p1
+from ckpttnpy.netlist import Netlist, create_drawf, create_p1
 
 
-def run_MLBiPartMgr(H):
+def run_MLBiPartMgr(H: Netlist):
     partMgr = MLPartMgr(FMBiGainCalc, FMBiGainMgr,
                         FMBiConstrMgr, FMPartMgr, 0.4)
     mincost = 1000
     for _ in range(10):
         randseq = randint(2, size=H.number_of_modules())
-        part = list(randseq)
+
+        if isinstance(H.modules, range):
+            part = list(randseq)
+        elif isinstance(H.modules, list):
+            part = {v: k for v, k in zip(H.modules, randseq)}
+        else:
+            raise NotImplementedError
+
         partMgr.run_FMPartition(H, part)
         if mincost > partMgr.totalcost:
             mincost = partMgr.totalcost
     return mincost
 
 
-# def test_MLBiPartMgr():
-#     H = create_drawf()
-#     # totalcost =
-#     run_MLBiPartMgr(H)
-#     # assert totalcost == 2 # ???
+def test_MLBiPartMgr():
+    H = create_drawf()
+    # totalcost =
+    run_MLBiPartMgr(H)
+    # assert totalcost == 2 # ???
 
 
 def test_MLBiPartMgr2():
@@ -41,7 +48,7 @@ def test_MLBiPartMgr2():
     assert totalcost <= 65
 
 
-def run_MLKWayPartMgr(H, K):
+def run_MLKWayPartMgr(H: Netlist, K):
     partMgr = MLPartMgr(FMKWayGainCalc, FMKWayGainMgr,
                         FMKWayConstrMgr, FMPartMgr, 0.4, K)
     mincost = 1000

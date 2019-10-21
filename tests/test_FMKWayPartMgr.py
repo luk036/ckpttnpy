@@ -2,10 +2,10 @@ from ckpttnpy.FMKWayConstrMgr import FMKWayConstrMgr
 from ckpttnpy.FMKWayGainCalc import FMKWayGainCalc
 from ckpttnpy.FMKWayGainMgr import FMKWayGainMgr
 from ckpttnpy.FMPartMgr import FMPartMgr
-from ckpttnpy.netlist import create_drawf, create_p1
+from ckpttnpy.netlist import Netlist, create_drawf, create_p1
 
 
-def run_FMKWayPartMgr(H, gainMgr, K, part):
+def run_FMKWayPartMgr(H: Netlist, gainMgr, K, part):
     """[summary]
 
     Arguments:
@@ -27,7 +27,7 @@ def run_FMKWayPartMgr(H, gainMgr, K, part):
 def test_FMKWayPartMgr():
     H = create_drawf()
     gainMgr = FMKWayGainMgr(FMKWayGainCalc, H, 3)
-    H.module_fixed = ['p1']
+    H.module_fixed.add('p1')
     part = {v: 0 for v in H.modules}
     run_FMKWayPartMgr(H, gainMgr, 3, part)
 

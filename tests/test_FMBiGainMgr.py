@@ -1,9 +1,9 @@
 from ckpttnpy.FMBiGainCalc import FMBiGainCalc
 from ckpttnpy.FMBiGainMgr import FMBiGainMgr
-from ckpttnpy.netlist import create_drawf, create_test_netlist
+from ckpttnpy.netlist import Netlist, create_drawf, create_test_netlist
 
 
-def run_FMBiGainMgr(H, part):
+def run_FMBiGainMgr(H: Netlist, part):
     mgr = FMBiGainMgr(FMBiGainCalc, H)
     mgr.init(part)
     while not mgr.is_empty():
