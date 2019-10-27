@@ -1,4 +1,4 @@
-from numpy.random import randint
+from random import randint
 
 from ckpttnpy.FMBiConstrMgr import FMBiConstrMgr
 from ckpttnpy.FMBiGainCalc import FMBiGainCalc
@@ -17,10 +17,10 @@ def run_MLBiPartMgr(H: Netlist):
                         FMBiConstrMgr, FMPartMgr, 0.4)
     mincost = 1000
     for _ in range(10):
-        randseq = randint(2, size=H.number_of_modules())
+        randseq = [randint(0, 1) for _ in range(H.number_of_modules())]
 
         if isinstance(H.modules, range):
-            part = list(randseq)
+            part = randseq
         elif isinstance(H.modules, list):
             part = {v: k for v, k in zip(H.modules, randseq)}
         else:
@@ -53,7 +53,7 @@ def run_MLKWayPartMgr(H: Netlist, K: int):
                         FMKWayConstrMgr, FMPartMgr, 0.4, K)
     mincost = 1000
     for _ in range(10):
-        randseq = randint(K, size=H.number_of_modules())
+        randseq = [randint(0, K-1) for _ in range(H.number_of_modules())]
         part = list(randseq)
         partMgr.run_FMPartition(H, part)
         if mincost > partMgr.totalcost:
