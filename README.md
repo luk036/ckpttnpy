@@ -1,4 +1,5 @@
-# ckpttnpy
+ckpttnpy
+========
 
 Circuit Partitioning Python Code
 
@@ -9,3 +10,14 @@ Circuit Partitioning Python Code
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/1c8b47586d12409e95c7c143b1fec7e8)](https://app.codacy.com/app/luk036/ckpttnpy?utm_source=github.com&utm_medium=referral&utm_content=luk036/ckpttnpy&utm_campaign=Badge_Grade_Dashboard)
 [![CodeFactor](https://www.codefactor.io/repository/github/luk036/ckpttnpy/badge)](https://www.codefactor.io/repository/github/luk036/ckpttnpy)
 [![Maintainability](https://api.codeclimate.com/v1/badges/2551a7289b83520b6cac/maintainability)](https://codeclimate.com/github/luk036/ckpttnpy/maintainability)
+
+See also
+--------
+
+[ckpttncpp](https://github.com/luk036/ckpttncpp)
+
+Note
+----
+
+This project has been set up using PyScaffold 3.2.1. For details and usage
+information on PyScaffold see <https://pyscaffold.org/>.
