@@ -57,7 +57,7 @@ class robin_iterator:
         """
         self.cur = self.cur.next
         if self.cur != self.stop:
-            return self.cur.idx
+            return self.cur.index
         else:
             raise StopIteration
 

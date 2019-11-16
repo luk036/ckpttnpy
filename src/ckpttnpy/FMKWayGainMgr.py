@@ -16,9 +16,9 @@ class FMKWayGainMgr(FMGainMgr):
         """Initialization
 
         Arguments:
-            H {Netlist}:  description
+            H (Netlist):  description
             GainCalc (type):  description
-            K {uint8_t}:  number of partitions
+            K (uint8_t):  number of partitions
         """
         FMGainMgr.__init__(self, GainCalc, H, K)
         self.RR = robin(K)
@@ -27,7 +27,7 @@ class FMKWayGainMgr(FMGainMgr):
         """(re)initialization after creation
 
         Arguments:
-            part {list}:  description
+            part (list):  description
         """
         totalcost = FMGainMgr.init(self, part)
 
@@ -52,9 +52,9 @@ class FMKWayGainMgr(FMGainMgr):
         """Set key
 
         Arguments:
-            whichPart {uint8_t}:  description
-            v {node_t}:  description
-            key {int}:  description
+            whichPart (uint8_t):  description
+            v (node_t):  description
+            key (int):  description
         """
         vlink = self.gainCalc.vertex_list[whichPart][v]
         self.gainbucket[whichPart].detach(vlink)
@@ -68,9 +68,9 @@ class FMKWayGainMgr(FMGainMgr):
         """Set key
 
         Arguments:
-            whichPart {uint8_t}:  description
-            v {node_t}:  description
-            key {int}:  description
+            whichPart (uint8_t):  description
+            v (node_t):  description
+            key (int):  description
         """
         self.gainbucket[whichPart].set_key(
             self.gainCalc.vertex_list[whichPart][v], key)

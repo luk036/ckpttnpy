@@ -9,12 +9,12 @@ def max_independent_net(H: Netlist, mw, DontSelect: Set) -> Tuple[Set, int]:
     """Maximum Independent NET (by greedy)
 
     Arguments:
-        H {Netlist} -- [description]
-        mw {[type]} -- [description]
-        DontSelect {Set} -- [description]
+        H (Netlist): [description]
+        mw ([type]): [description]
+        DontSelect (Set): [description]
 
     Returns:
-        Tuple[Set, int] -- [description]
+        Tuple[Set, int]: [description]
     """
     visited = set()
     for net in DontSelect:

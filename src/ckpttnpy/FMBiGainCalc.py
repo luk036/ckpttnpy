@@ -17,10 +17,10 @@ class FMBiGainCalc:
         """Initialization
 
         Arguments:
-            H {Netlist}:  description
+            H (Netlist):  description
 
         Keyword Arguments:
-            K {uint8_t}:  number of partitions (default: {2})
+            K (uint8_t):  number of partitions (default: {2})
         """
         self.H = H
         if isinstance(self.H.modules, range):
@@ -36,13 +36,13 @@ class FMBiGainCalc:
         """(re)initialization after creation
 
         Arguments:
-            part {[type]} -- [description]
+            part ([type]): [description]
 
         Raises:
             NotImplementedError: [description]
 
         Returns:
-            [type] -- [description]
+            [type]: [description]
         """
         self.totalcost = 0
         if isinstance(self.H.modules, range):
@@ -63,8 +63,8 @@ class FMBiGainCalc:
         """initialize gain
 
         Arguments:
-            net {node_t}:  description
-            part {list}:  description
+            net (node_t):  description
+            part (list):  description
         """
         degree = self.H.G.degree[net]
         if degree < 2:  # unlikely, self-loop, etc.
@@ -80,8 +80,8 @@ class FMBiGainCalc:
         """Modify gain
 
         Arguments:
-            v {node_t}:  description
-            weight {int}:  description
+            v (node_t):  description
+            weight (int):  description
         """
         self.vertex_list[w].key += weight
 
@@ -89,8 +89,8 @@ class FMBiGainCalc:
         """initialize gain for 2-pin net
 
         Arguments:
-            net {node_t}:  description
-            part {list}:  description
+            net (node_t):  description
+            part (list):  description
         """
         netCur = iter(self.H.G[net])
         w = next(netCur)
@@ -108,8 +108,8 @@ class FMBiGainCalc:
         """initialize gain for 3-pin net
 
         Arguments:
-            net {node_t}:  description
-            part {list}:  description
+            net (node_t):  description
+            part (list):  description
         """
         netCur = iter(self.H.G[net])
         w = next(netCur)
@@ -132,8 +132,8 @@ class FMBiGainCalc:
         """initialize gain for general net
 
         Arguments:
-            net {node_t}:  description
-            part {list}:  description
+            net (node_t):  description
+            part (list):  description
         """
         num = [0, 0]
         IdVec = []
@@ -167,8 +167,8 @@ class FMBiGainCalc:
         """Update move for 2-pin net
 
         Arguments:
-            part {list}:  description
-            move_info {MoveInfoV}:  description
+            part (list):  description
+            move_info (MoveInfoV):  description
 
         Returns:
             dtype:  description
@@ -185,8 +185,8 @@ class FMBiGainCalc:
         """Update move for 3-pin net
 
         Arguments:
-            part {list}:  description
-            move_info {MoveInfoV}:  description
+            part (list):  description
+            move_info (MoveInfoV):  description
 
         Returns:
             dtype:  description
@@ -220,8 +220,8 @@ class FMBiGainCalc:
         """Update move for general net
 
         Arguments:
-            part {list}:  description
-            move_info {MoveInfoV}:  description
+            part (list):  description
+            move_info (MoveInfoV):  description
 
         Returns:
             dtype:  description
@@ -242,14 +242,14 @@ class FMBiGainCalc:
 
         for l in [fromPart, toPart]:
             if num[l] == 0:
-                for idx in range(degree):
-                    deltaGain[idx] -= weight
+                for index in range(degree):
+                    deltaGain[index] -= weight
                 return IdVec, deltaGain
             elif num[l] == 1:
-                for idx in range(degree):
-                    part_w = part[IdVec[idx]]
+                for index in range(degree):
+                    part_w = part[IdVec[index]]
                     if part_w == l:
-                        deltaGain[idx] += weight
+                        deltaGain[index] += weight
                         break
             weight = -weight
 

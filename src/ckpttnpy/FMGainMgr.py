@@ -15,11 +15,11 @@ class FMGainMgr:
         """initialiation
 
         Arguments:
-            H {Netlist}:  description
+            H (Netlist):  description
             GainCalc (type):  description
 
         Keyword Arguments:
-            K {int}:  number of partitions (default: {2})
+            K (int):  number of partitions (default: {2})
         """
         self.H = H
         self.K = K
@@ -32,7 +32,7 @@ class FMGainMgr:
         """(re)initialization after creation
 
         Arguments:
-            part {list}:  description
+            part (list):  description
         """
         totalcost = self.gainCalc.init(part)
         self.waitinglist.clear()
@@ -42,7 +42,7 @@ class FMGainMgr:
         """[summary]
 
         Arguments:
-            toPart {uint8_t}:  description
+            toPart (uint8_t):  description
 
         Returns:
             bool:  description
@@ -64,7 +64,7 @@ class FMGainMgr:
         """Select best candidate
 
         Arguments:
-            part {list}:  description
+            part (list):  description
 
         Returns:
             move_info_v:  description
@@ -74,7 +74,7 @@ class FMGainMgr:
         toPart = gainmax.index(maxk)
         vlink = self.gainbucket[toPart].popleft()
         self.waitinglist.append(vlink)
-        v = vlink.idx
+        v = vlink.index
         fromPart = part[v]
         move_info_v = fromPart, toPart, v
         return move_info_v, gainmax[toPart]
@@ -83,7 +83,7 @@ class FMGainMgr:
         """Select best candidaate togo
 
         Arguments:
-            toPart {uint8_t}:  description
+            toPart (uint8_t):  description
 
         Returns:
             node_t:  description
@@ -91,14 +91,14 @@ class FMGainMgr:
         gainmax = self.gainbucket[toPart].get_max()
         vlink = self.gainbucket[toPart].popleft()
         self.waitinglist.append(vlink)
-        v = vlink.idx
+        v = vlink.index
         return v, gainmax
 
     def update_move(self, part, move_info_v):
         """[summary]
 
         Arguments:
-            part {list}:  description
+            part (list):  description
             move_info_v (type):  description
         """
         self.gainCalc.update_move_init()
@@ -121,9 +121,9 @@ class FMGainMgr:
         """Abstract method
 
         Arguments:
-            part {uint8_t}:  description
-            w {node_t}:  description
-            key {int/int[]}:  description
+            part (uint8_t):  description
+            w (node_t):  description
+            key (int/int[]):  description
         """
 
     # private:
@@ -132,7 +132,7 @@ class FMGainMgr:
         """Update move for 2-pin net
 
         Arguments:
-            part {list}:  Partition sol'n
+            part (list):  Partition sol'n
             move_info (type):  description
         """
         w, deltaGainW = self.gainCalc.update_move_2pin_net(
@@ -143,22 +143,22 @@ class FMGainMgr:
         """Update move for 3-pin net
 
         Arguments:
-            part {list}:  Partition sol'n
+            part (list):  Partition sol'n
             move_info (type):  description
         """
         IdVec, deltaGain = self.gainCalc.update_move_3pin_net(
             part, move_info)
-        for idx, w in enumerate(IdVec):
-            self.modify_key(w, part[w], deltaGain[idx])
+        for index, w in enumerate(IdVec):
+            self.modify_key(w, part[w], deltaGain[index])
 
     def __update_move_general_net(self, part, move_info):
         """Update move for general net
 
         Arguments:
-            part {list}:  Partition sol'n
+            part (list):  Partition sol'n
             move_info (type):  description
         """
         IdVec, deltaGain = self.gainCalc.update_move_general_net(
             part, move_info)
-        for idx, w in enumerate(IdVec):
-            self.modify_key(w, part[w], deltaGain[idx])
+        for index, w in enumerate(IdVec):
+            self.modify_key(w, part[w], deltaGain[index])

@@ -15,9 +15,9 @@ class FMBiGainMgr(FMGainMgr):
     #     """Initialization
 
     #     Arguments:
-    #         H {Netlist}:  description
+    #         H (Netlist):  description
     #         GainCalc (type):  description
-    #         K {uint8_t}:  number of partitions
+    #         K (uint8_t):  number of partitions
     #     """
     #     FMGainMgr.__init__(self, GainCalc, H)
 
@@ -25,7 +25,7 @@ class FMBiGainMgr(FMGainMgr):
         """(re)initialization after creation
 
         Arguments:
-            part {list}:  description
+            part (list):  description
         """
         totalcost = FMGainMgr.init(self, part)
 
@@ -46,8 +46,8 @@ class FMBiGainMgr(FMGainMgr):
         """Lock
 
         Arguments:
-            whichPart {uint8_t}:  description
-            v {node_t}:  description
+            whichPart (uint8_t):  description
+            v (node_t):  description
         """
         vlink = self.gainCalc.vertex_list[v]
         self.gainbucket[whichPart].detach(vlink)
@@ -57,8 +57,8 @@ class FMBiGainMgr(FMGainMgr):
         """Lock
 
         Arguments:
-            whichPart {uint8_t}:  description
-            v {node_t}:  description
+            whichPart (uint8_t):  description
+            v (node_t):  description
         """
         toPart = 1 - fromPart
         self.lock(toPart, v)
@@ -68,9 +68,9 @@ class FMBiGainMgr(FMGainMgr):
         """Set key
 
         Arguments:
-            whichPart {uint8_t}:  description
-            v {node_t}:  description
-            key {int}:  description
+            whichPart (uint8_t):  description
+            v (node_t):  description
+            key (int):  description
         """
         self.gainbucket[whichPart].set_key(
             self.gainCalc.vertex_list[v], key)

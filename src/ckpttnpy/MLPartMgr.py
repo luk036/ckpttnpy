@@ -17,7 +17,7 @@ class MLPartMgr:
             BalTol (type):  description
 
         Keyword Arguments:
-            K {int}:  description (default: {2})
+            K (int):  description (default: {2})
         """
         self.GainCalc = GainCalc
         self.GainMgr = GainMgr
@@ -35,7 +35,7 @@ class MLPartMgr:
             part (type):  description
 
         Keyword Arguments:
-            limitsize {int}:  description (default: {7})
+            limitsize (int):  description (default: {7})
 
         Returns:
             dtype:  description
@@ -67,7 +67,7 @@ class MLPartMgr:
     #         part (type):  description
 
     #     Keyword Arguments:
-    #         limitsize {int}:  description (default: {7})
+    #         limitsize (int):  description (default: {7})
 
     #     Returns:
     #         dtype:  description

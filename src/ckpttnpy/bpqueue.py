@@ -29,8 +29,8 @@ class bpqueue:
         """initialization
 
         Arguments:
-            a {int}:  lower bound
-            b {int}:  upper bound
+            a (int):  lower bound
+            b (int):  upper bound
         """
         assert a <= b
         self.offset = a - 1
@@ -42,8 +42,8 @@ class bpqueue:
         """Set the key value
 
         Arguments:
-            it {dllink}:  the item
-            gain {int}:  the key of it
+            it (dllink):  the item
+            gain (int):  the key of it
         """
         it.key = gain - self.offset
 
@@ -73,8 +73,8 @@ class bpqueue:
         """append item with internal key
 
         Arguments:
-            it {dllink}:  the item
-            k {int}:  the key
+            it (dllink):  the item
+            k (int):  the key
         """
         assert it.key > self.offset
         self.append(it, it.key)
@@ -83,8 +83,8 @@ class bpqueue:
         """append item with external key
 
         Arguments:
-            it {dllink}:  description
-            k {int}:  key
+            it (dllink):  description
+            k (int):  key
         """
         assert k > self.offset
         it.key = k - self.offset
@@ -96,7 +96,7 @@ class bpqueue:
         """append from list
 
         Arguments:
-            C {list}:  description
+            C (list):  description
         """
         for it in nodes:
             it.key -= self.offset
@@ -121,8 +121,8 @@ class bpqueue:
         """decrease key by delta
 
         Arguments:
-            it {dllink}:  the item
-            delta {int}:  the change of the key
+            it (dllink):  the item
+            delta (int):  the change of the key
 
         Note that the order of items with same key will
         not be preserved.
@@ -144,8 +144,8 @@ class bpqueue:
         """increase key by delta
 
         Arguments:
-            it {dllink}:  the item
-            delta {int}:  the change of the key
+            it (dllink):  the item
+            delta (int):  the change of the key
 
         Note that the order of items with same key will
         not be preserved.
@@ -165,8 +165,8 @@ class bpqueue:
         """modify key by delta
 
         Arguments:
-            it {dllink}:  the item
-            delta {int}:  the change of the key
+            it (dllink):  the item
+            delta (int):  the change of the key
 
         Note that the order of items with same key will
         not be preserved.

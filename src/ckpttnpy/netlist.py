@@ -26,9 +26,9 @@ class Netlist:
         """[summary]
 
         Arguments:
-            G {nx.Graph} -- [description]
-            modules {Union[range, List]} -- [description]
-            nets {Union[range, List]} -- [description]
+            G (nx.Graph): [description]
+            modules (Union[range, List]): [description]
+            nets (Union[range, List]): [description]
         """
         self.G = G
         self.modules = modules
@@ -111,7 +111,7 @@ class Netlist:
         """[summary]
 
         Arguments:
-            v {size_t}:  description
+            v (size_t):  description
 
         Returns:
             [size_t]:  description
@@ -123,7 +123,7 @@ class Netlist:
     #     """[summary]
 
     #     Arguments:
-    #         v {size_t}:  description
+    #         v (size_t):  description
 
     #     Returns:
     #         [size_t]:  description
@@ -135,7 +135,7 @@ class Netlist:
         """[summary]
 
         Arguments:
-            i_net {size_t}:  description
+            i_net (size_t):  description
 
         Returns:
             size_t:  description

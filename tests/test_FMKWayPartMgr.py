@@ -13,9 +13,9 @@ def run_FMKWayPartMgr(H: Netlist, gainMgr, K, part: Part):
     """[summary]
 
     Arguments:
-        H {Netlist}:  description
-        gainMgr {gainMgr}:  description
-        K {int}:  number of partitions
+        H (Netlist):  description
+        gainMgr (gainMgr):  description
+        K (int):  number of partitions
     """
     constrMgr = FMKWayConstrMgr(H, 0.4, K)  # 0.2 ???
     partMgr = FMPartMgr(H, gainMgr, constrMgr)

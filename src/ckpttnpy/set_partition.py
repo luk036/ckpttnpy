@@ -54,11 +54,11 @@ def stirling2nd(n: int, k: int) -> int:
     """Stirling number of second kind.
 
     Arguments:
-        n {int} -- [description]
-        k {int} -- [description]
+        n (int): [description]
+        k (int): [description]
 
     Returns:
-        int -- [description]
+        int: [description]
     """
     if (k >= n or k <= 1):
         return 1
@@ -69,11 +69,11 @@ def set_partition(n: int, k: int) -> Iterator[Tuple[int, int]]:
     """[summary]
 
     Arguments:
-        n {int} -- [description]
-        k {int} -- [description]
+        n (int): [description]
+        k (int): [description]
 
     Returns:
-        Iterator[Tuple[int, int]] -- [description]
+        Iterator[Tuple[int, int]]: [description]
     """
     if k % 2 == 0:
         yield from GEN0_even(n, k)
@@ -85,11 +85,11 @@ def Move(x: int, y: int) -> Iterator[Tuple[int, int]]:
     """[summary]
 
     Arguments:
-        x {int} -- [description]
-        y {int} -- [description]
+        x (int): [description]
+        y (int): [description]
 
     Returns:
-        Iterator[Tuple[int, int]] -- [description]
+        Iterator[Tuple[int, int]]: [description]
     """
     yield x, y
 
@@ -106,11 +106,11 @@ def GEN0_even(n: int, k: int) -> Iterator[Tuple[int, int]]:
     """S(n,k,0) even k
 
     Arguments:
-        n {int} -- [description]
-        k {int} -- [description]
+        n (int): [description]
+        k (int): [description]
 
     Returns:
-        Iterator[Tuple[int, int]] -- [description]
+        Iterator[Tuple[int, int]]: [description]
     """
     if k > 0 and k < n:
         yield from GEN0_odd(n - 1, k - 1)
@@ -129,11 +129,11 @@ def NEG0_even(n: int, k: int) -> Iterator[Tuple[int, int]]:
     """S'(n,k,0) even k
 
     Arguments:
-        n {int} -- [description]
-        k {int} -- [description]
+        n (int): [description]
+        k (int): [description]
 
     Returns:
-        Iterator[Tuple[int, int]] -- [description]
+        Iterator[Tuple[int, int]]: [description]
     """
     if k > 0 and k < n:
         for i in range(1, k - 2, 2):
@@ -152,11 +152,11 @@ def GEN1_even(n: int, k: int) -> Iterator[Tuple[int, int]]:
     """S(n,k,1) even k
 
     Arguments:
-        n {int} -- [description]
-        k {int} -- [description]
+        n (int): [description]
+        k (int): [description]
 
     Returns:
-        Iterator[Tuple[int, int]] -- [description]
+        Iterator[Tuple[int, int]]: [description]
     """
     if k > 0 and k < n:
         yield from GEN1_odd(n - 1, k - 1)
@@ -175,11 +175,11 @@ def NEG1_even(n: int, k: int) -> Iterator[Tuple[int, int]]:
     """S'(n,k,1) even k
 
     Arguments:
-        n {int} -- [description]
-        k {int} -- [description]
+        n (int): [description]
+        k (int): [description]
 
     Returns:
-        Iterator[Tuple[int, int]] -- [description]
+        Iterator[Tuple[int, int]]: [description]
     """
     if k > 0 and k < n:
         for i in range(1, k - 2, 2):
@@ -198,11 +198,11 @@ def GEN0_odd(n: int, k: int) -> Iterator[Tuple[int, int]]:
     """S(n,k,0) odd k
 
     Arguments:
-        n {int} -- [description]
-        k {int} -- [description]
+        n (int): [description]
+        k (int): [description]
 
     Returns:
-        Iterator[Tuple[int, int]] -- [description]
+        Iterator[Tuple[int, int]]: [description]
     """
     if k > 1 and k < n:
         yield from GEN1_even(n - 1, k - 1)
@@ -219,11 +219,11 @@ def NEG0_odd(n: int, k: int) -> Iterator[Tuple[int, int]]:
     """S'(n,k,0) odd k
 
     Arguments:
-        n {int} -- [description]
-        k {int} -- [description]
+        n (int): [description]
+        k (int): [description]
 
     Returns:
-        Iterator[Tuple[int, int]] -- [description]
+        Iterator[Tuple[int, int]]: [description]
     """
     if k > 1 and k < n:
         for i in range(1, k - 1, 2):
@@ -240,11 +240,11 @@ def GEN1_odd(n: int, k: int) -> Iterator[Tuple[int, int]]:
     """S(n,k,1) odd k
 
     Arguments:
-        n {int} -- [description]
-        k {int} -- [description]
+        n (int): [description]
+        k (int): [description]
 
     Returns:
-        Iterator[Tuple[int, int]] -- [description]
+        Iterator[Tuple[int, int]]: [description]
     """
     if k > 1 and k < n:
         yield from GEN0_even(n - 1, k - 1)
@@ -261,11 +261,11 @@ def NEG1_odd(n: int, k: int) -> Iterator[Tuple[int, int]]:
     """S'(n,k,1) odd k
 
     Arguments:
-        n {int} -- [description]
-        k {int} -- [description]
+        n (int): [description]
+        k (int): [description]
 
     Returns:
-        Iterator[Tuple[int, int]] -- [description]
+        Iterator[Tuple[int, int]]: [description]
     """
     if k > 1 and k < n:
         for i in range(1, k - 1, 2):

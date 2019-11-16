@@ -19,8 +19,8 @@ class FMKWayGainCalc:
         """initialization
 
         Arguments:
-            H {Netlist}:  description
-            K {uint8_t}:  number of partitions
+            H (Netlist):  description
+            K (uint8_t):  number of partitions
         """
         self.H = H
         self.K = K
@@ -45,7 +45,7 @@ class FMKWayGainCalc:
         """(re)initialization after creation
 
         Arguments:
-            part {list}:  description
+            part (list):  description
         """
         self.totalcost = 0
 
@@ -68,8 +68,8 @@ class FMKWayGainCalc:
         """initialize gain
 
         Arguments:
-            net {node_t}:  description
-            part {list}:  description
+            net (node_t):  description
+            part (list):  description
         """
         degree = self.H.G.degree[net]
         if degree < 2:  # unlikely, self-loop, etc.
@@ -85,8 +85,8 @@ class FMKWayGainCalc:
         """Modify gain
 
         Arguments:
-            v {node_t}:  description
-            weight {int}:  description
+            v (node_t):  description
+            weight (int):  description
         """
         for k in self.RR.exclude(pv):
             self.vertex_list[k][v].key += weight
@@ -95,8 +95,8 @@ class FMKWayGainCalc:
         """initialize gain for 2-pin net
 
         Arguments:
-            net {node_t}:  description
-            part {list}:  description
+            net (node_t):  description
+            part (list):  description
         """
         netCur = iter(self.H.G[net])
         w = next(netCur)
@@ -116,8 +116,8 @@ class FMKWayGainCalc:
         """initialize gain for 3-pin net
 
         Arguments:
-            net {node_t}:  description
-            part {list}:  description
+            net (node_t):  description
+            part (list):  description
         """
         netCur = iter(self.H.G[net])
         w = next(netCur)
@@ -153,8 +153,8 @@ class FMKWayGainCalc:
         """initialize gain for general net
 
         Arguments:
-            net {node_t}:  description
-            part {list}:  description
+            net (node_t):  description
+            part (list):  description
         """
         num = list(0 for _ in range(self.K))
         IdVec = []
@@ -188,8 +188,8 @@ class FMKWayGainCalc:
         """Update move for 2-pin net
 
         Arguments:
-            part {list}:  description
-            move_info {MoveInfoV}:  description
+            part (list):  description
+            move_info (MoveInfoV):  description
 
         Returns:
             dtype:  description
@@ -216,8 +216,8 @@ class FMKWayGainCalc:
         """Update move for 3-pin net
 
         Arguments:
-            part {list}:  description
-            move_info {MoveInfoV}:  description
+            part (list):  description
+            move_info (MoveInfoV):  description
 
         Returns:
             dtype:  description
@@ -275,8 +275,8 @@ class FMKWayGainCalc:
         """Update move for general net
 
         Arguments:
-            part {list}:  description
-            move_info {MoveInfoV}:  description
+            part (list):  description
+            move_info (MoveInfoV):  description
 
         Returns:
             dtype:  description
@@ -299,17 +299,17 @@ class FMKWayGainCalc:
         l, u = fromPart, toPart
         for _ in [0, 1]:
             if num[l] == 0:
-                for idx in range(degree):
-                    deltaGain[idx][l] -= weight
+                for index in range(degree):
+                    deltaGain[index][l] -= weight
                 if num[u] > 0:
                     for k in range(self.K):
                         self.deltaGainV[k] -= weight
             elif num[l] == 1:
-                for idx in range(degree):
-                    part_w = part[IdVec[idx]]
+                for index in range(degree):
+                    part_w = part[IdVec[index]]
                     if part_w == l:
                         for k in range(self.K):
-                            deltaGain[idx][k] += weight
+                            deltaGain[index][k] += weight
                         break
             weight = -weight
             l, u = u, l

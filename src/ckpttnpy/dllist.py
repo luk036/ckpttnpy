@@ -15,14 +15,14 @@ class dllink:
     """
     key: Any = 0
 
-    def __init__(self, idx=None):
+    def __init__(self, index=None):
         """initialization
 
         Keyword Arguments:
-            idx (type):  description (default: {None})
+            index (type):  description (default: {None})
         """
         self.next = self.prev = self
-        self.idx = idx
+        self.index = index
 
     def detach(self):
         """detach from a list """
@@ -60,7 +60,7 @@ class dllink:
         """append the node to the front
 
         Arguments:
-            node {dllink}:  description
+            node (dllink):  description
         """
         node.next = self.next
         self.next.prev = node
@@ -71,7 +71,7 @@ class dllink:
         """append the node to the back
 
         Arguments:
-            node {dllink}:  description
+            node (dllink):  description
         """
         node.prev = self.prev
         self.prev.next = node
@@ -123,7 +123,7 @@ class dllink:
 #         """Initialization
 
 #         Arguments:
-#             link {dllink}:  description
+#             link (dllink):  description
 #         """
 #         self.link = link
 #         self.cur = link.next
