@@ -7,7 +7,8 @@ Part = Union[Dict[Any, int], List[int]]
 
 
 class FMConstrMgr:
-    weight = None
+    __slots__ = ('weight', 'H', 'BalTol', 'K',
+                 'diff', 'totalweight', 'lowerbound')
 
     def __init__(self, H, BalTol, K=2):
         """[summary]

@@ -23,7 +23,8 @@ class bpqueue:
 
     All the member functions assume that the keys are within the bound.
     """
-    max = 0
+
+    __slots__ = ('max', 'offset', 'high', 'bucket')
 
     def __init__(self, a: int, b: int):
         """initialization
@@ -32,6 +33,8 @@ class bpqueue:
             a (int):  lower bound
             b (int):  upper bound
         """
+        self.max = 0
+
         assert a <= b
         self.offset = a - 1
         self.high = b - self.offset

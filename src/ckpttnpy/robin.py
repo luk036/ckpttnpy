@@ -13,6 +13,8 @@ class robin:
         dtype:  description
     """
 
+    __slots__ = ('cycle')
+
     def __init__(self, K: int):
         self.cycle = list(dllink(k) for k in range(K))
         K -= 1
@@ -30,6 +32,8 @@ class robin:
 
 
 class robin_iterator:
+    __slots__ = ('cur', 'stop')
+
     def __init__(self, robin, fromPart: int):
         """[summary]
 

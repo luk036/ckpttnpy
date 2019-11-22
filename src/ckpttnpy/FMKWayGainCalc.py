@@ -10,8 +10,8 @@ Part = Union[Dict[Any, int], List[int]]
 
 
 class FMKWayGainCalc:
-    totalcost = 0
-    deltaGainV = list()
+
+    __slots__ = ('totalcost', 'H', 'vertex_list', 'K', 'RR', 'deltaGainV')
 
     # public:
 
@@ -22,6 +22,9 @@ class FMKWayGainCalc:
             H (Netlist):  description
             K (uint8_t):  number of partitions
         """
+        self.totalcost = 0
+        self.deltaGainV = list()
+
         self.H = H
         self.K = K
         self.RR = robin(K)

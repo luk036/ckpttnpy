@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from typing import Any
 
 
 class dllink:
@@ -13,7 +12,7 @@ class dllink:
     information. Note that this class does not own the list node. They
     are supplied by the caller in order to better reuse the nodes.
     """
-    key: Any = 0
+    __slots__ = ('key', 'next', 'prev', 'index')
 
     def __init__(self, index=None):
         """initialization
@@ -21,6 +20,7 @@ class dllink:
         Keyword Arguments:
             index (type):  description (default: {None})
         """
+        self.key = 0
         self.next = self.prev = self
         self.index = index
 
