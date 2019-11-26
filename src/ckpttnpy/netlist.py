@@ -4,6 +4,8 @@ import json
 from typing import Dict, List, Optional, Union
 
 import networkx as nx
+import numpy as np
+from networkx.algorithms import bipartite
 from networkx.readwrite import json_graph
 
 
@@ -311,4 +313,78 @@ def create_test_netlist():
 
     H = Netlist(G, modules, nets)
     H.module_weight = module_weight
+    return H
+
+
+def vdc(n, base=2):
+    """[summary]
+
+    Arguments:
+        n ([type]): [description]
+
+    Keyword Arguments:
+        base (int): [description] (default: {2})
+
+    Returns:
+        [type]: [description]
+    """
+    vdc, denom = 0., 1.
+    while n:
+        denom *= base
+        n, remainder = divmod(n, base)
+        vdc += remainder / denom
+    return vdc
+
+
+def vdcorput(n, base=2):
+    """[summary]
+
+    Arguments:
+        n (int): number of vectors
+
+    Keyword Arguments:
+        base (int): [description] (default: {2})
+
+    Returns:
+        [type]: [description]
+    """
+    return [vdc(i, base) for i in range(n)]
+
+
+def formGraph(N, M, pos, eta, seed=None):
+    """Form N by N grid of nodes, connect nodes within eta.
+        mu and eta are relative to 1/(N-1)
+
+    Arguments:
+        t (float): the best-so-far optimal value
+        pos ([type]): [description]
+        eta ([type]): [description]
+
+    Keyword Arguments:
+        seed ([type]): [description] (default: {None})
+
+    Returns:
+        [type]: [description]
+    """
+    if seed:
+        np.random.seed(seed)
+
+    # connect nodes with edges
+    G = bipartite.random_graph(N, M, eta)
+    # G = nx.DiGraph(G)
+    return G
+
+
+def create_random_graph(N=30, M=26):
+    T = N + M
+    xbase = 2
+    ybase = 3
+    x = [i for i in vdcorput(T, xbase)]
+    y = [i for i in vdcorput(T, ybase)]
+    pos = zip(x, y)
+    G = formGraph(N, M, pos, 0.2, seed=5)
+
+    G.graph['num_modules'] = N
+    G.graph['num_nets'] = M
+    H = Netlist(G, range(N), range(N, N + M))
     return H

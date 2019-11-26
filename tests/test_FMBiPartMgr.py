@@ -4,7 +4,13 @@ from ckpttnpy.FMBiConstrMgr import FMBiConstrMgr
 from ckpttnpy.FMBiGainCalc import FMBiGainCalc
 from ckpttnpy.FMBiGainMgr import FMBiGainMgr
 from ckpttnpy.FMPartMgr import FMPartMgr
-from ckpttnpy.netlist import Netlist, create_drawf, create_p1, create_test_netlist
+from ckpttnpy.netlist import (
+    Netlist,
+    create_drawf,
+    create_p1,
+    create_random_graph,
+    create_test_netlist
+)
 
 Part = Union[Dict[Any, int], List[int]]
 
@@ -15,6 +21,8 @@ def run_FMBiPartMgr(H: Netlist, part: Part):
     partMgr = FMPartMgr(H, gainMgr, constrMgr)
     partMgr.legalize(part)
     totalcostbefore = partMgr.totalcost
+    partMgr.init(part)
+    assert partMgr.totalcost == totalcostbefore
     partMgr.optimize(part)
     assert partMgr.totalcost <= totalcostbefore
 
@@ -34,5 +42,11 @@ def test_FMBiPartMgr2():
 
 def test_FMBiPartMgr3():
     H = create_p1()
+    part = [0 for _ in H.modules]
+    run_FMBiPartMgr(H, part)
+
+
+def test_FMBiPartMgr4():
+    H = create_random_graph()
     part = [0 for _ in H.modules]
     run_FMBiPartMgr(H, part)
