@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import json
+import random
 from typing import Dict, List, Optional, Union
 
 import networkx as nx
-import numpy as np
 from networkx.algorithms import bipartite
 from networkx.readwrite import json_graph
 
@@ -367,7 +367,7 @@ def formGraph(N, M, pos, eta, seed=None):
         [type]: [description]
     """
     if seed:
-        np.random.seed(seed)
+        random.seed(seed)
 
     # connect nodes with edges
     G = bipartite.random_graph(N, M, eta)
