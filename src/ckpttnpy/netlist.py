@@ -375,14 +375,14 @@ def formGraph(N, M, pos, eta, seed=None):
     return G
 
 
-def create_random_graph(N=30, M=26):
+def create_random_graph(N=30, M=26, eta=0.1):
     T = N + M
     xbase = 2
     ybase = 3
     x = [i for i in vdcorput(T, xbase)]
     y = [i for i in vdcorput(T, ybase)]
     pos = zip(x, y)
-    G = formGraph(N, M, pos, 0.2, seed=5)
+    G = formGraph(N, M, pos, eta, seed=5)
 
     G.graph['num_modules'] = N
     G.graph['num_nets'] = M

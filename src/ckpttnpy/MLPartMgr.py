@@ -1,6 +1,16 @@
 # type: ignore
 
+
+# from ckpttnpy.min_cover import create_contraction_subgraph
+from ckpttnpy.FMPartMgr import FMPartMgr
+
 # **Special code for two-pin nets**
+from .FMBiConstrMgr import FMBiConstrMgr
+from .FMBiGainCalc import FMBiGainCalc
+from .FMBiGainMgr import FMBiGainMgr
+from .FMKWayConstrMgr import FMKWayConstrMgr
+from .FMKWayGainCalc import FMKWayGainCalc
+from .FMKWayGainMgr import FMKWayGainMgr
 # Take a snapshot when a move make **negative** gain.
 # Snapshot in the form of "interface"???
 from .min_cover import create_contraction_subgraph
@@ -58,6 +68,18 @@ class MLPartMgr:
         assert partMgr.totalcost >= 0
         self.totalcost = partMgr.totalcost
         return legalcheck
+
+
+class MLBiPartMgr(MLPartMgr):
+    def __init__(self, BalTol):
+        MLPartMgr.__init__(self, FMBiGainCalc, FMBiGainMgr, FMBiConstrMgr,
+                           FMPartMgr, BalTol)
+
+
+class MLKWayPartMgr(MLPartMgr):
+    def __init__(self, BalTol, K):
+        MLPartMgr.__init__(self, FMKWayGainCalc, FMKWayGainMgr,
+                           FMKWayConstrMgr, FMPartMgr, BalTol, K)
 
     # def run_Partition(self, H, part, limitsize=7):
     #     """[summary]
