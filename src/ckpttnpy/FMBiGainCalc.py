@@ -173,7 +173,7 @@ class FMBiGainCalc:
         Returns:
             dtype:  description
         """
-        net, fromPart, _, v = move_info
+        net, v, fromPart, _ = move_info
         netCur = iter(self.H.G[net])
         u = next(netCur)
         w = u if u != v else next(netCur)
@@ -191,7 +191,7 @@ class FMBiGainCalc:
         Returns:
             dtype:  description
         """
-        net, fromPart, _, v = move_info
+        net, v, fromPart, _ = move_info
         IdVec = []
         deltaGain = []
         for w in self.H.G[net]:
@@ -226,7 +226,7 @@ class FMBiGainCalc:
         Returns:
             dtype:  description
         """
-        net, fromPart, toPart, v = move_info
+        net, v, fromPart, toPart = move_info
         num = [0, 0]
         IdVec = []
         deltaGain = []

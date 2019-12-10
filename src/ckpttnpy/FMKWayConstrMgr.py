@@ -47,7 +47,7 @@ class FMKWayConstrMgr(FMConstrMgr):
         if status != 2:
             return status
 
-        fromPart, toPart, _ = move_info_v
+        _, fromPart, toPart = move_info_v
         self.illegal[fromPart] = self.illegal[toPart] = False
         if any(self.illegal):
             return 1  # get better, but still illegal

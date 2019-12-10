@@ -64,7 +64,7 @@ class PartMgrBase:
             v, gainmax = self.gainMgr.select_togo(toPart)
             fromPart = part[v]
             assert fromPart != toPart
-            move_info_v = [fromPart, toPart, v]
+            move_info_v = v, fromPart, toPart
             # Check if the move of v can notsatisfied, makebetter, or satisfied
             legalcheck = self.validator.check_legal(move_info_v)
             if legalcheck == 0:  # notsatisfied
@@ -130,7 +130,7 @@ class PartMgrBase:
 
             # Update v and its neigbours (even they are in waitinglist)
             # Put neigbours to bucket
-            _, toPart, v = move_info_v
+            v, _, toPart = move_info_v
             self.gainMgr.lock(toPart, v)
             self.gainMgr.update_move(part, move_info_v)
             self.gainMgr.update_move_v(move_info_v, gainmax)

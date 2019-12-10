@@ -76,7 +76,7 @@ class FMGainMgr:
         self.waitinglist.append(vlink)
         v = vlink.index
         fromPart = part[v]
-        move_info_v = fromPart, toPart, v
+        move_info_v = v, fromPart, toPart
         return move_info_v, gainmax[toPart]
 
     def select_togo(self, toPart):
@@ -102,13 +102,13 @@ class FMGainMgr:
             move_info_v (type):  description
         """
         self.gainCalc.update_move_init()
-        fromPart, toPart, v = move_info_v
+        v, fromPart, toPart = move_info_v
         # v = v
         for net in self.H.G[v]:
             degree = self.H.G.degree[net]
             if degree < 2:  # unlikely, self-loop, etc.
                 continue  # does not provide any gain change when move
-            move_info = [net, fromPart, toPart, v]
+            move_info = [net, v, fromPart, toPart]
             if degree == 3:
                 self.__update_move_3pin_net(part, move_info)
             elif degree == 2:

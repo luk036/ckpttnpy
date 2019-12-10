@@ -94,5 +94,5 @@ class FMBiGainMgr(FMGainMgr):
             w (type):  description
             key (type):  description
         """
-        fromPart, _, v = move_info_v
+        v, fromPart, _ = move_info_v
         self.__set_key(fromPart, v, -gain)

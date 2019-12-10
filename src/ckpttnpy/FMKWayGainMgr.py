@@ -83,7 +83,7 @@ class FMKWayGainMgr(FMGainMgr):
             move_info_v (type):  description
             gain (type):  description
         """
-        fromPart, toPart, v = move_info_v
+        v, fromPart, toPart = move_info_v
         for k in range(self.K):
             if fromPart == k or toPart == k:
                 continue

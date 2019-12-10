@@ -197,7 +197,7 @@ class FMKWayGainCalc:
         Returns:
             dtype:  description
         """
-        net, fromPart, toPart, v = move_info
+        net, v, fromPart, toPart = move_info
         netCur = iter(self.H.G[net])
         u = next(netCur)
         w = u if u != v else next(netCur)
@@ -225,7 +225,7 @@ class FMKWayGainCalc:
         Returns:
             dtype:  description
         """
-        net, fromPart, toPart, v = move_info
+        net, v, fromPart, toPart = move_info
 
         IdVec = []
         deltaGain = []
@@ -284,7 +284,7 @@ class FMKWayGainCalc:
         Returns:
             dtype:  description
         """
-        net, fromPart, toPart, v = move_info
+        net, v, fromPart, toPart = move_info
         num = list(0 for _ in range(self.K))
         IdVec = []
         deltaGain = []

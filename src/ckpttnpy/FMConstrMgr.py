@@ -49,7 +49,7 @@ class FMConstrMgr:
         Returns:
             dtype:  description
         """
-        fromPart, toPart, v = move_info_v
+        v, fromPart, toPart = move_info_v
         self.weight = self.H.get_module_weight(v)
         diffFrom = self.diff[fromPart] - self.weight
         if diffFrom < self.lowerbound:
@@ -69,7 +69,7 @@ class FMConstrMgr:
         Returns:
             dtype:  description
         """
-        fromPart, _, v = move_info_v
+        v, fromPart, _ = move_info_v
         self.weight = self.H.get_module_weight(v)
         diffFrom = self.diff[fromPart] - self.weight
         return diffFrom >= self.lowerbound
@@ -81,6 +81,6 @@ class FMConstrMgr:
             fromPart (type):  description
             v (type):  description
         """
-        fromPart, toPart, _ = move_info_v
+        _, fromPart, toPart = move_info_v
         self.diff[toPart] += self.weight
         self.diff[fromPart] -= self.weight
