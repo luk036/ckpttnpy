@@ -200,8 +200,8 @@ class Netlist:
         #         extern_modules_up[k].add(v2)
 
 
-def create_p1():
-    with open('testcases/p1.json', 'r') as fr:
+def read_json(filename):
+    with open(filename, 'r') as fr:
         data = json.load(fr)
     G = json_graph.node_link_graph(data)
     num_modules = G.graph['num_modules']

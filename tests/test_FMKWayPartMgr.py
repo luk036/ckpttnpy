@@ -4,7 +4,7 @@ from ckpttnpy.FMKWayConstrMgr import FMKWayConstrMgr
 from ckpttnpy.FMKWayGainCalc import FMKWayGainCalc
 from ckpttnpy.FMKWayGainMgr import FMKWayGainMgr
 from ckpttnpy.FMPartMgr import FMPartMgr
-from ckpttnpy.netlist import Netlist, create_drawf, create_p1
+from ckpttnpy.netlist import Netlist, create_drawf, read_json
 
 Part = Union[Dict[Any, int], List[int]]
 
@@ -37,7 +37,7 @@ def test_FMKWayPartMgr():
 
 
 def test_FMKWayPartMgr2():
-    H = create_p1()
+    H = read_json('testcases/p1.json')
     gainMgr = FMKWayGainMgr(FMKWayGainCalc, H, 3)
     part = [0 for _ in H.modules]
     run_FMKWayPartMgr(H, gainMgr, 3, part)

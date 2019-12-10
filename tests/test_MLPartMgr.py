@@ -1,7 +1,7 @@
 from random import randint
 
 from ckpttnpy.MLPartMgr import MLBiPartMgr, MLKWayPartMgr
-from ckpttnpy.netlist import Netlist, create_drawf, create_p1, create_random_graph
+from ckpttnpy.netlist import Netlist, create_drawf, create_random_graph, read_json
 
 
 def run_MLBiPartMgr(H: Netlist):
@@ -31,7 +31,7 @@ def test_MLBiPartMgr():
 
 
 def test_MLBiPartMgr2():
-    H = create_p1()
+    H = read_json('testcases/p1.json')
     totalcost = run_MLBiPartMgr(H)
     # assert totalcost >= 55
     # assert totalcost <= 70
@@ -68,7 +68,7 @@ def run_MLKWayPartMgr(H: Netlist, K: int):
 
 
 def test_MLKWayPartMgr2():
-    H = create_p1()
+    H = read_json('testcases/p1.json')
     totalcost = run_MLKWayPartMgr(H, 3)
     # assert totalcost >= 109
     # assert totalcost <= 152

@@ -7,9 +7,9 @@ from ckpttnpy.FMPartMgr import FMPartMgr
 from ckpttnpy.netlist import (
     Netlist,
     create_drawf,
-    create_p1,
     create_random_graph,
-    create_test_netlist
+    create_test_netlist,
+    read_json
 )
 
 Part = Union[Dict[Any, int], List[int]]
@@ -41,7 +41,7 @@ def test_FMBiPartMgr2():
 
 
 def test_FMBiPartMgr3():
-    H = create_p1()
+    H = read_json('testcases/p1.json')
     part = [0 for _ in H.modules]
     run_FMBiPartMgr(H, part)
 

@@ -1,8 +1,8 @@
 #! /usr/bin/env python
 from random import randint
 
-from ckpttnpy.MLPartMgr import MLBiPartMgr
-from ckpttnpy.netlist import Netlist, create_random_graph
+from ckpttnpy.MLPartMgr import MLKWayPartMgr
+from ckpttnpy.netlist import Netlist, read_json
 import matplotlib.pyplot as plt
 import networkx as nx
 import argparse
@@ -18,13 +18,12 @@ __license__ = "mit"
 _logger = logging.getLogger(__name__)
 
 
-def run_MLBiPartMgr(H: Netlist):
-    partMgr = MLBiPartMgr(0.4)
+def run_MLKWayPartMgr(H: Netlist, BalTol: float):
+    partMgr = MLKWayPartMgr(BalTol, 3)
     mincost = 100000000000
     minpart = []
     for _ in range(10):
-        randseq = [randint(0, 1) for _ in range(H.number_of_modules())]
-
+        randseq = [randint(0, 2) for _ in range(H.number_of_modules())]
         if isinstance(H.modules, range):
             part = randseq
         elif isinstance(H.modules, list):
@@ -42,19 +41,20 @@ def run_MLBiPartMgr(H: Netlist):
 def plot(H: Netlist, part):
     N = H.number_of_modules()
     M = H.number_of_nets()
-    part0 = [i for i in H.modules if part[i] == 0]
-    part1 = [i for i in H.modules if part[i] == 1]
     pos = nx.spring_layout(H.G)
     nx.draw_networkx_nodes(H.G,
-                           nodelist=part0,
-                           node_color='g',
-                           node_size=50,
+                           nodelist=range(N, N + M),
+                           node_color='k',
+                           node_size=10,
                            pos=pos)
-    nx.draw_networkx_nodes(H.G,
-                           nodelist=part1,
-                           node_color='r',
-                           node_size=50,
-                           pos=pos)
+    color = ['g', 'r', 'b']
+    for k in range(3):
+        partk = [i for i in H.modules if part[i] == k]
+        nx.draw_networkx_nodes(H.G,
+                               nodelist=partk,
+                               node_color=color[k],
+                               node_size=50,
+                               pos=pos)
     nx.draw_networkx_nodes(H.G,
                            nodelist=range(N, N + M),
                            node_color='k',
@@ -74,20 +74,16 @@ def parse_args(args):
       :obj:`argparse.Namespace`: command line parameters namespace
     """
     parser = argparse.ArgumentParser(
-        description="Multilevel Circuit Partition demonstration")
+        description="Multilevel Circuit 3-Way Partitioning")
     parser.add_argument("--version",
                         action="version",
                         version="ckpttnpy {ver}".format(ver=__version__))
-    parser.add_argument(dest="N",
-                        help="number of modules",
-                        type=int,
-                        metavar="INT")
-    parser.add_argument(dest="M",
-                        help="number of nets",
-                        type=int,
-                        metavar="INT")
-    parser.add_argument(dest="eta",
-                        help="ratio of nets and pins",
+    parser.add_argument(dest="filename",
+                        help="file in json format",
+                        type=str,
+                        metavar="STR")
+    parser.add_argument(dest="BalTol",
+                        help="ratio of balancing",
                         type=float,
                         metavar="FLOAT")
     parser.add_argument("-v",
@@ -135,14 +131,15 @@ def main(args):
     _logger.debug("Starting crazy calculations...")
     # print("The {}-th Fibonacci number is {}".format(args.n, fib(args.n)))
 
-    if args.eta >= 1:
-        _logger.error("eta value {} is too big".format(args.eta))
+    if args.BalTol >= 0.5:
+        _logger.error("Balance ratio {} is too big".format(args.BalTol))
         return
-    if args.eta > 0.3:
-        _logger.warning("eta value {} may be too big".format(args.eta))
+    if args.BalTol <= 0.3:
+        _logger.warning("Balance ratio {} may be too small".format(
+            args.BalTol))
 
-    H = create_random_graph(args.N, args.M, args.eta)
-    totalcost, part = run_MLBiPartMgr(H)
+    H = read_json(args.filename)
+    totalcost, part = run_MLKWayPartMgr(H, args.BalTol)
     print("total cost = {}".format(totalcost))
 
     if args.plot:
