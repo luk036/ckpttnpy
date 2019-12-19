@@ -7,6 +7,8 @@ from abc import abstractmethod
 # **Special code for two-pin nets**
 from typing import Any, Dict, List, Union
 
+from .FMConstrMgr import LegalCheck
+
 Part = Union[Dict[Any, int], List[int]]
 
 
@@ -54,8 +56,8 @@ class PartMgrBase:
                 continue
             self.gainMgr.lock_all(part[v], v)
 
-        legalcheck = 0
-        while True:
+        legalcheck = LegalCheck.notsatisfied
+        while legalcheck != LegalCheck.allsatisfied:  # satisfied:
             # Take the gainmax with v from gainbucket
             # gainmax = self.gainMgr.gainbucket.get_max()
             toPart = self.validator.select_togo()
@@ -67,7 +69,7 @@ class PartMgrBase:
             move_info_v = v, fromPart, toPart
             # Check if the move of v can notsatisfied, makebetter, or satisfied
             legalcheck = self.validator.check_legal(move_info_v)
-            if legalcheck == 0:  # notsatisfied
+            if legalcheck == LegalCheck.notsatisfied:  # notsatisfied
                 continue
 
             # Update v and its neigbours (even they are in waitinglist)
@@ -78,10 +80,6 @@ class PartMgrBase:
             part[v] = toPart
             self.totalcost -= gainmax
             assert self.totalcost >= 0
-
-            if legalcheck == 2:  # satisfied
-                break
-
         return legalcheck
 
     def optimize(self, part: Part):

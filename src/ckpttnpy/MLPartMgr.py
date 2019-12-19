@@ -8,6 +8,7 @@ from ckpttnpy.FMPartMgr import FMPartMgr
 from .FMBiConstrMgr import FMBiConstrMgr
 from .FMBiGainCalc import FMBiGainCalc
 from .FMBiGainMgr import FMBiGainMgr
+from .FMConstrMgr import LegalCheck
 from .FMKWayConstrMgr import FMKWayConstrMgr
 from .FMKWayGainCalc import FMKWayGainCalc
 from .FMKWayGainMgr import FMKWayGainMgr
@@ -54,7 +55,7 @@ class MLPartMgr:
         constrMgr = self.ConstrMgr(H, self.BalTol, self.K)
         partMgr = self.PartMgr(H, gainMgr, constrMgr)
         legalcheck = partMgr.legalize(part)
-        if legalcheck != 2:
+        if legalcheck != LegalCheck.allsatisfied:
             return legalcheck
         if H.number_of_modules() >= limitsize:  # OK
             H2 = create_contraction_subgraph(H, set())
@@ -62,7 +63,7 @@ class MLPartMgr:
                 part2 = list(0 for _ in range(H2.number_of_modules()))
                 H2.projection_up(part, part2)
                 legalcheck = self.run_FMPartition(H2, part2, limitsize)
-                if legalcheck == 2:
+                if legalcheck == LegalCheck.allsatisfied:
                     H2.projection_down(part2, part)
         partMgr.optimize(part)
         assert partMgr.totalcost >= 0
@@ -80,45 +81,3 @@ class MLKWayPartMgr(MLPartMgr):
     def __init__(self, BalTol, K):
         MLPartMgr.__init__(self, FMKWayGainCalc, FMKWayGainMgr,
                            FMKWayConstrMgr, FMPartMgr, BalTol, K)
-
-    # def run_Partition(self, H, part, limitsize=7):
-    #     """[summary]
-
-    #     Arguments:
-    #         H (type):  description
-    #         part (type):  description
-
-    #     Keyword Arguments:
-    #         limitsize (int):  description (default: {7})
-
-    #     Returns:
-    #         dtype:  description
-    #     """
-    #     gainMgr = self.GainMgr(self.GainCalc, H, self.K)
-    #     constrMgr = self.ConstrMgr(H, self.BalTol, self.K)
-    #     partMgr = self.PartMgr(H, gainMgr, constrMgr)
-    #     legalcheck = partMgr.legalize(part)
-    #     assert partMgr.totalcost > 0
-    #     if legalcheck != 2:
-    #         self.totalcost = partMgr.totalcost
-    #         return legalcheck
-    #     self.run_Partition_recur(H, part, limitsize)
-    #     return legalcheck
-
-    # def run_Partition_recur(self, H, part, limitsize=7):
-    #     if H.number_of_modules() >= limitsize:  # OK
-    #         H2 = create_contraction_subgraph(H)
-    #         if 5 * H2.number_of_modules() <= 3 * H.number_of_modules():
-    #             part2 = list(0 for _ in range(H2.number_of_modules()))
-    #             extern_nets2 = set()
-    #             part2_info = part2, extern_nets2
-    #             H2.projection_up(part, part2)
-    #             self.run_Partition_recur(H2, part2, limitsize)
-    #             H2.projection_down(part2, part)
-
-    #     gainMgr = self.GainMgr(self.GainCalc, H, self.K)
-    #     constrMgr = self.ConstrMgr(H, self.BalTol, self.K)
-    #     partMgr = self.PartMgr(H, gainMgr, constrMgr)
-    #     partMgr.optimize(part)
-    #     self.totalcost = partMgr.totalcost
-    #     assert partMgr.totalcost > 0
