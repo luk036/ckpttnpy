@@ -93,12 +93,12 @@ class PartMgrBase:
         while True:
             self.init(part)
             totalcostbefore = self.totalcost
-            self.__optimize_1pass(part)
+            self._optimize_1pass(part)
             assert self.totalcost <= totalcostbefore
             if self.totalcost == totalcostbefore:
                 break
 
-    def __optimize_1pass(self, part: Part):
+    def _optimize_1pass(self, part: Part):
         """[summary]
 
         Arguments:

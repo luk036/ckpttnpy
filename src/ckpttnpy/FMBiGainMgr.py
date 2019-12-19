@@ -63,18 +63,6 @@ class FMBiGainMgr(FMGainMgr):
         toPart = 1 - fromPart
         self.lock(toPart, v)
 
-    # private:
-    def __set_key(self, whichPart, v, key):
-        """Set key
-
-        Arguments:
-            whichPart (uint8_t):  description
-            v (node_t):  description
-            key (int):  description
-        """
-        self.gainbucket[whichPart].set_key(
-            self.gainCalc.vertex_list[v], key)
-
     def modify_key(self, w, part_w, key):
         """Update gain for the moving cell
 
@@ -95,4 +83,17 @@ class FMBiGainMgr(FMGainMgr):
             key (type):  description
         """
         v, fromPart, _ = move_info_v
-        self.__set_key(fromPart, v, -gain)
+        self._set_key(fromPart, v, -gain)
+
+    # private:
+
+    def _set_key(self, whichPart, v, key):
+        """Set key
+
+        Arguments:
+            whichPart (uint8_t):  description
+            v (node_t):  description
+            key (int):  description
+        """
+        self.gainbucket[whichPart].set_key(
+            self.gainCalc.vertex_list[v], key)

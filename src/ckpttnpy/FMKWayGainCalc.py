@@ -64,10 +64,10 @@ class FMKWayGainCalc:
             raise NotImplementedError
 
         for net in self.H.nets:
-            self.__init_gain(net, part)
+            self._init_gain(net, part)
         return self.totalcost
 
-    def __init_gain(self, net, part: Part):
+    def _init_gain(self, net, part: Part):
         """initialize gain
 
         Arguments:
@@ -78,13 +78,13 @@ class FMKWayGainCalc:
         if degree < 2:  # unlikely, self-loop, etc.
             return  # does not provide any gain when move
         if degree > 3:
-            self.__init_gain_general_net(net, part)
+            self._init_gain_general_net(net, part)
         elif degree == 3:
-            self.__init_gain_3pin_net(net, part)
+            self._init_gain_3pin_net(net, part)
         else:  # degree == 2
-            self.__init_gain_2pin_net(net, part)
+            self._init_gain_2pin_net(net, part)
 
-    def __modify_gain(self, v, pv, weight):
+    def _modify_gain(self, v, pv, weight):
         """Modify gain
 
         Arguments:
@@ -94,7 +94,7 @@ class FMKWayGainCalc:
         for k in self.RR.exclude(pv):
             self.vertex_list[k][v].key += weight
 
-    def __init_gain_2pin_net(self, net, part: Part):
+    def _init_gain_2pin_net(self, net, part: Part):
         """initialize gain for 2-pin net
 
         Arguments:
@@ -109,13 +109,13 @@ class FMKWayGainCalc:
         weight = self.H.get_net_weight(net)
         if part_v == part_w:
             for a in [w, v]:
-                self.__modify_gain(a, part_v, -weight)
+                self._modify_gain(a, part_v, -weight)
         else:
             self.totalcost += weight
             self.vertex_list[part_v][w].key += weight
             self.vertex_list[part_w][v].key += weight
 
-    def __init_gain_3pin_net(self, net, part: Part):
+    def _init_gain_3pin_net(self, net, part: Part):
         """initialize gain for 3-pin net
 
         Arguments:
@@ -133,7 +133,7 @@ class FMKWayGainCalc:
         if part_u == part_v:
             if part_w == part_v:
                 for a in [u, v, w]:
-                    self.__modify_gain(a, part_v, -weight)
+                    self._modify_gain(a, part_v, -weight)
                 return
             a, b, c = w, u, v
         elif part_w == part_v:
@@ -148,11 +148,11 @@ class FMKWayGainCalc:
 
         self.vertex_list[part[b]][a].key += weight
         for e in [b, c]:
-            self.__modify_gain(e, part[e], -weight)
+            self._modify_gain(e, part[e], -weight)
             self.vertex_list[part[a]][e].key += weight
         self.totalcost += weight
 
-    def __init_gain_general_net(self, net, part: Part):
+    def _init_gain_general_net(self, net, part: Part):
         """initialize gain for general net
 
         Arguments:
@@ -179,7 +179,7 @@ class FMKWayGainCalc:
             elif num[k] == 1:
                 for w in IdVec:
                     if part[w] == k:
-                        self.__modify_gain(w, part[w], weight)
+                        self._modify_gain(w, part[w], weight)
                         break
 
     def update_move_init(self):
