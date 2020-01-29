@@ -13,6 +13,18 @@ Circuit Partitioning Python Code
 [![CodeFactor](https://www.codefactor.io/repository/github/luk036/ckpttnpy/badge)](https://www.codefactor.io/repository/github/luk036/ckpttnpy)
 [![Maintainability](https://api.codeclimate.com/v1/badges/2551a7289b83520b6cac/maintainability)](https://codeclimate.com/github/luk036/ckpttnpy/maintainability)
 
+Installation and Run
+--------------------
+
+To setup develop environment:
+
+    pip3 install -r ./requirements.txt &&
+    python3 setup.py develop
+
+To run unit tests:
+
+    python3 setup.py test
+
 See also
 --------
 
