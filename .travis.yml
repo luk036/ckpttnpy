@@ -23,7 +23,7 @@ before_script:
   - git config --global user.name "Wai-Shing Luk"
 script:
   - python setup.py develop
-  - tox
+  # - tox
   - |
     if [[ "$COVERAGE" == "true" ]]; then
       pre-commit install
