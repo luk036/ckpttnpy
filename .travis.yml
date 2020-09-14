@@ -7,7 +7,7 @@ language: python
 virtualenv:
   system_site_packages: false
 matrix:
-  fast_finish: true
+  fast_finish: false
   include:
     - python: 3.7
       env: DISTRIB="ubuntu" TOX_PYTHON_VERSION="py37" COVERAGE="true"
