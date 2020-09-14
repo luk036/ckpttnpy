@@ -4,7 +4,7 @@ ckpttnpy
 Circuit Partitioning Python Code
 
 [![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/luk036/ckpttnpy)
-[![Build Status](https://travis-ci.org/luk036/ckpttnpy.svg?branch=master)](https://travis-ci.org/luk036/ckpttnpy)
+![Python application](https://github.com/luk036/ckpttnpy/workflows/Python%20application/badge.svg)
 [![Build status](https://ci.appveyor.com/api/projects/status/7h47qjklmnarn3to?svg=true)](https://ci.appveyor.com/project/luk036/ckpttnpy)
 [![Documentation Status](https://readthedocs.org/projects/ckpttnpy/badge/?version=latest)](https://ckpttnpy.readthedocs.io/en/latest/?badge=latest)
 [![Coverage Status](https://coveralls.io/repos/github/luk036/ckpttnpy/badge.svg?branch=master)](https://coveralls.io/github/luk036/ckpttnpy?branch=master)
