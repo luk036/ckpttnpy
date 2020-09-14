@@ -3,7 +3,7 @@
 # THIS SCRIPT IS SUPPOSED TO BE AN EXAMPLE. MODIFY IT ACCORDING TO YOUR NEEDS!
 
 os: linux
-dist: focal
+dist: bionic
 language: python
 virtualenv:
   system_site_packages: false
@@ -47,4 +47,4 @@ notifications:
   email: false
   slack:
     rooms:
-      - loksu:jErzuILLSNn9qGYkkILvBwje#ckpttnpy
+      - "loksu:jErzuILLSNn9qGYkkILvBwje#ckpttnpy"
