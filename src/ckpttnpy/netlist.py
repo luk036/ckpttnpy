@@ -19,6 +19,16 @@ class ThinGraph(nx.Graph):
     node_attr_dict_factory = single_edge_dict
 
 
+class SimpleGraph(nx.Graph):
+    all_edge_dict = {"weight": 1}
+
+    def single_edge_dict(self):
+        return self.all_edge_dict
+
+    edge_attr_dict_factory = single_edge_dict
+    node_attr_dict_factory = single_edge_dict
+
+
 class Netlist:
     num_pads = 0
     cost_model = 0
