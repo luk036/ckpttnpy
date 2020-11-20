@@ -58,7 +58,7 @@ class FMKWayGainMgr(FMGainMgr):
         """
         vlink = self.gainCalc.vertex_list[whichPart][v]
         self.gainbucket[whichPart].detach(vlink)
-        vlink.lock()
+        vlink.next = None  # lock
 
     def lock_all(self, fromPart, v):
         for k in range(self.K):

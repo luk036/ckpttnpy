@@ -7,7 +7,7 @@ def test_dllink():
     d = dllink()
     e = dllink()
     f = dllink()
-    assert L1.is_empty()
+    assert L1.next == L1  # is_empty()
 
     L1.appendleft(e)
     assert not L1.is_empty()

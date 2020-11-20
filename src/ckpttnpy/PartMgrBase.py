@@ -61,7 +61,7 @@ class PartMgrBase:
             # Take the gainmax with v from gainbucket
             # gainmax = self.gainMgr.gainbucket.get_max()
             toPart = self.validator.select_togo()
-            if self.gainMgr.is_empty_togo(toPart):
+            if self.gainMgr.gainbucket[toPart]._max == 0:  # is_empty_togo()
                 break
             v, gainmax = self.gainMgr.select_togo(toPart)
             fromPart = part[v]

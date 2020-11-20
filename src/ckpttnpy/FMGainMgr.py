@@ -47,7 +47,7 @@ class FMGainMgr:
         Returns:
             bool:  description
         """
-        return self.gainbucket[toPart].is_empty()
+        return self.gainbucket[toPart]._max == 0  # is_empty()
 
     def is_empty(self):
         """Any more candidate?
@@ -56,7 +56,7 @@ class FMGainMgr:
             bool:  description
         """
         for k in range(self.K):
-            if not self.gainbucket[k].is_empty():
+            if self.gainbucket[k]._max != 0:  # not is_empty()
                 return False
         return True
 
