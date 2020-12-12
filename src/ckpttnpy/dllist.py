@@ -12,17 +12,17 @@ class dllink:
     information. Note that this class does not own the list node. They
     are supplied by the caller in order to better reuse the nodes.
     """
-    __slots__ = ('key', 'next', 'prev', 'index')
+    __slots__ = ('next', 'prev', 'key', 'data')
 
-    def __init__(self, index=None):
+    def __init__(self, data=None):
         """initialization
 
         Keyword Arguments:
             index (type):  description (default: {None})
         """
-        self.key = 0
         self.next = self.prev = self
-        self.index = index
+        self.key = 0
+        self.data = data
 
     def detach(self):
         """detach from a list """
@@ -126,7 +126,6 @@ class dll_iterator:
     Traverse the list from the first item. Usually it is safe
     to attach/detach list items during the iterator is active.
     """
-
     def __init__(self, link):
         """Initialization
 

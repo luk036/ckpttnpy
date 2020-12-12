@@ -74,7 +74,7 @@ class FMGainMgr:
         toPart = gainmax.index(maxk)
         vlink = self.gainbucket[toPart].popleft()
         self.waitinglist.append(vlink)
-        v = vlink.index
+        v = vlink.data
         fromPart = part[v]
         move_info_v = v, fromPart, toPart
         return move_info_v, gainmax[toPart]
@@ -91,7 +91,7 @@ class FMGainMgr:
         gainmax = self.gainbucket[toPart].get_max()
         vlink = self.gainbucket[toPart].popleft()
         self.waitinglist.append(vlink)
-        v = vlink.index
+        v = vlink.data
         return v, gainmax
 
     def update_move(self, part, move_info_v):

@@ -221,7 +221,6 @@ class bpq_iterator:
     order. Detaching queue items may invalidate the iterator because
     the iterator makes a copy of current key.
     """
-
     def __init__(self, bpq):
         """[summary]
 

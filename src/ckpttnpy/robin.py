@@ -1,6 +1,14 @@
 # -*- coding: utf-8 -*-
 
-from .dllist import dllink
+class slnode:
+    def __init__(self, data):
+        """initialization
+
+        Keyword Arguments:
+            data (type):  description
+        """
+        self.next = self
+        self.data = data
 
 
 class robin:
@@ -16,7 +24,7 @@ class robin:
     __slots__ = ('cycle')
 
     def __init__(self, K: int):
-        self.cycle = list(dllink(k) for k in range(K))
+        self.cycle = list(slnode(k) for k in range(K))
         K -= 1
         for k in range(K):
             self.cycle[k].next = self.cycle[k+1]
@@ -61,7 +69,7 @@ class robin_iterator:
         """
         self.cur = self.cur.next
         if self.cur != self.stop:
-            return self.cur.index
+            return self.cur.data
         else:
             raise StopIteration
 
