@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from .dllist import dllink
 
-sentinel = dllink(8965)
+sentinel = dllink([0, 8965])
 
 
 class bpqueue:
@@ -38,7 +38,7 @@ class bpqueue:
         assert a <= b
         self._offset = a - 1
         self._high = b - self._offset
-        self._bucket = list(dllink(4848) for _ in range(self._high + 1))
+        self._bucket = list(dllink([0, 4848]) for _ in range(self._high + 1))
         self._bucket[0].append(sentinel)  # sentinel
 
     def set_key(self, it: dllink, gain: int):
@@ -48,7 +48,7 @@ class bpqueue:
             it (dllink):  the item
             gain (int):  the key of it
         """
-        it.key = gain - self._offset
+        it.data[0] = gain - self._offset
 
     def get_max(self) -> int:
         """Get the max value
@@ -79,8 +79,8 @@ class bpqueue:
             it (dllink):  the item
             k (int):  the key
         """
-        assert it.key > self._offset
-        self.append(it, it.key)
+        assert it.data[0] > self._offset
+        self.append(it, it.data[0])
 
     def append(self, it, k):
         """append item with external key
@@ -90,10 +90,10 @@ class bpqueue:
             k (int):  key
         """
         assert k > self._offset
-        it.key = k - self._offset
-        if self._max < it.key:
-            self._max = it.key
-        self._bucket[it.key].append(it)
+        it.data[0] = k - self._offset
+        if self._max < it.data[0]:
+            self._max = it.data[0]
+        self._bucket[it.data[0]].append(it)
 
     def appendfrom(self, nodes):
         """append from list
@@ -102,9 +102,9 @@ class bpqueue:
             C (list):  description
         """
         for it in nodes:
-            it.key -= self._offset
-            assert it.key > 0
-            self._bucket[it.key].append(it)
+            it.data[0] -= self._offset
+            assert it.data[0] > 0
+            self._bucket[it.data[0]].append(it)
         self._max = self._high
         while self._bucket[self._max].is_empty():
             self._max -= 1
@@ -131,14 +131,14 @@ class bpqueue:
         not be preserved.
         For FM algorithm, this is a prefered behavior.
         """
-        # self._bucket[it.key].detach(it)
+        # self._bucket[it.data[0]].detach(it)
         it.detach()
-        it.key += delta
-        assert it.key > 0
-        assert it.key <= self._high
-        self._bucket[it.key].append(it)  # FIFO
-        if self._max < it.key:
-            self._max = it.key
+        it.data[0] += delta
+        assert it.data[0] > 0
+        assert it.data[0] <= self._high
+        self._bucket[it.data[0]].append(it)  # FIFO
+        if self._max < it.data[0]:
+            self._max = it.data[0]
             return
         while self._bucket[self._max].is_empty():
             self._max -= 1
@@ -154,15 +154,15 @@ class bpqueue:
         not be preserved.
         For FM algorithm, this is a prefered behavior.
         """
-        # self._bucket[it.key].detach(it)
+        # self._bucket[it.data[0]].detach(it)
         it.detach()
-        it.key += delta
-        assert it.key > 0
-        assert it.key <= self._high
-        self._bucket[it.key].appendleft(it)  # LIFO
-        # self._bucket[it.key].append(it)  # LIFO
-        if self._max < it.key:
-            self._max = it.key
+        it.data[0] += delta
+        assert it.data[0] > 0
+        assert it.data[0] <= self._high
+        self._bucket[it.data[0]].appendleft(it)  # LIFO
+        # self._bucket[it.data[0]].append(it)  # LIFO
+        if self._max < it.data[0]:
+            self._max = it.data[0]
 
     def modify_key(self, it, delta):
         """modify key by delta
@@ -188,7 +188,7 @@ class bpqueue:
         Arguments:
             it (type):  the item
         """
-        # self._bucket[it.key].detach(it)
+        # self._bucket[it.data[0]].detach(it)
         it.detach()
         while self._bucket[self._max].is_empty():
             self._max -= 1

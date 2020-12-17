@@ -12,7 +12,7 @@ class dllink:
     information. Note that this class does not own the list node. They
     are supplied by the caller in order to better reuse the nodes.
     """
-    __slots__ = ('next', 'prev', 'key', 'data')
+    __slots__ = ('next', 'prev', 'data')
 
     def __init__(self, data=None):
         """initialization
@@ -21,7 +21,7 @@ class dllink:
             index (type):  description (default: {None})
         """
         self.next = self.prev = self
-        self.key = 0
+        # self.key = 0
         self.data = data
 
     def detach(self):

@@ -9,7 +9,7 @@ Part = Union[Dict[Any, int], List[int]]
 
 class FMBiGainCalc:
 
-    __slots__ = ('totalcost', 'H', 'vertex_list')
+    __slots__ = ('totalcost', 'H', 'vertex_list', 'IdVec', 'deltaGainW')
 
     # public:
 
@@ -25,10 +25,10 @@ class FMBiGainCalc:
         self.H = H
         if isinstance(self.H.modules, range):
             self.vertex_list = [
-                dllink(i) for i in self.H.modules
+                dllink([0, i]) for i in self.H.modules
             ]
         elif isinstance(self.H.modules, list):
-            self.vertex_list = {v: dllink(v) for v in self.H.modules}
+            self.vertex_list = {v: dllink([0, v]) for v in self.H.modules}
         else:
             raise NotImplementedError
 
@@ -47,10 +47,10 @@ class FMBiGainCalc:
         self.totalcost = 0
         if isinstance(self.H.modules, range):
             for vlink in self.vertex_list:
-                vlink.key = 0
+                vlink.data[0] = 0
         elif isinstance(self.H.modules, list):
             for vlink in self.vertex_list.values():
-                vlink.key = 0
+                vlink.data[0] = 0
         else:
             raise NotImplementedError
 
@@ -85,7 +85,7 @@ class FMBiGainCalc:
             v (node_t):  description
             weight (int):  description
         """
-        self.vertex_list[w].key += weight
+        self.vertex_list[w].data[0] += weight
 
     def _init_gain_2pin_net(self, net, part: Part):
         """initialize gain for 2-pin net
@@ -138,10 +138,8 @@ class FMBiGainCalc:
             part (list):  description
         """
         num = [0, 0]
-        IdVec = []
         for w in self.H.G[net]:
             num[part[w]] += 1
-            IdVec.append(w)
 
         weight = self.H.get_net_weight(net)
 
@@ -150,10 +148,10 @@ class FMBiGainCalc:
 
         for k in [0, 1]:
             if num[k] == 0:
-                for w in IdVec:
+                for w in self.H.G[net]:
                     self._modify_gain(w, -weight)
             elif num[k] == 1:
-                for w in IdVec:
+                for w in self.H.G[net]:
                     if part[w] == k:
                         self._modify_gain(w, weight)
                         break
@@ -181,7 +179,15 @@ class FMBiGainCalc:
         w = u if u != v else next(netCur)
         weight = self.H.get_net_weight(net)
         delta = 2 if part[w] == fromPart else -2
-        return w, delta * weight
+        self.deltaGainW = delta * weight
+        return w
+
+    def init_IdVec(self, v, net):
+        self.IdVec = []
+        for w in self.H.G[net]:
+            if w == v:
+                continue
+            self.IdVec.append(w)
 
     def update_move_3pin_net(self, part, move_info):
         """Update move for 3-pin net
@@ -194,29 +200,29 @@ class FMBiGainCalc:
             dtype:  description
         """
         net, v, fromPart, _ = move_info
-        IdVec = []
         deltaGain = []
-        for w in self.H.G[net]:
-            if w == v:
-                continue
-            IdVec.append(w)
+        # IdVec = []
+        # for w in self.H.G[net]:
+        #     if w == v:
+        #         continue
+        #     IdVec.append(w)
 
         deltaGain = [0, 0]
         weight = self.H.get_net_weight(net)
 
-        part_w = part[IdVec[0]]
+        part_w = part[self.IdVec[0]]
 
         if part_w != fromPart:
             weight = -weight
 
-        if part_w == part[IdVec[1]]:
+        if part_w == part[self.IdVec[1]]:
             deltaGain[0] += weight
             deltaGain[1] += weight
         else:
             deltaGain[0] += weight
             deltaGain[1] -= weight
 
-        return IdVec, deltaGain
+        return deltaGain
 
     def update_move_general_net(self, part, move_info):
         """Update move for general net
@@ -229,30 +235,31 @@ class FMBiGainCalc:
             dtype:  description
         """
         net, v, fromPart, toPart = move_info
+        # deltaGain = []
+        # IdVec = []
+        # for w in self.H.G[net]:
+        #     if w == v:
+        #         continue
+        #     num[part[w]] += 1
+        #     IdVec.append(w)
         num = [0, 0]
-        IdVec = []
-        deltaGain = []
-        for w in self.H.G[net]:
-            if w == v:
-                continue
+        for w in self.IdVec:
             num[part[w]] += 1
-            IdVec.append(w)
-
-        degree = len(IdVec)
+        degree = len(self.IdVec)
         deltaGain = list(0 for _ in range(degree))
         weight = self.H.get_net_weight(net)
 
-        for l in [fromPart, toPart]:
-            if num[l] == 0:
+        for lPart in [fromPart, toPart]:
+            if num[lPart] == 0:
                 for index in range(degree):
                     deltaGain[index] -= weight
-                return IdVec, deltaGain
-            elif num[l] == 1:
+                return deltaGain
+            elif num[lPart] == 1:
                 for index in range(degree):
-                    part_w = part[IdVec[index]]
-                    if part_w == l:
+                    part_w = part[self.IdVec[index]]
+                    if part_w == lPart:
                         deltaGain[index] += weight
                         break
             weight = -weight
 
-        return IdVec, deltaGain
+        return deltaGain

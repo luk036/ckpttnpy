@@ -13,11 +13,11 @@ def test_bpqueue():
 
     assert bpq1._max == 0  # is_empty()
 
-    d = dllink(0)
-    e = dllink(1)
-    f = dllink(2)
+    d = dllink([0, 0])
+    e = dllink([0, 1])
+    f = dllink([0, 2])
 
-    assert d.key == 0
+    assert d.data[0] == 0
 
     bpq1.append(e, 3)
     bpq1.append(f, -10)
@@ -33,10 +33,10 @@ def test_bpqueue():
     assert bpq1._max == 0  # is_empty()
     assert bpq2.get_max() == 6
 
-    nodelist = list(dllink(i) for i in range(10))
+    nodelist = list(dllink([0, i]) for i in range(10))
 
     for i, it in enumerate(nodelist):
-        it.key = 2*i - 10
+        it.data[0] = 2*i - 10
     bpq1.appendfrom(nodelist)
 
     count = 0

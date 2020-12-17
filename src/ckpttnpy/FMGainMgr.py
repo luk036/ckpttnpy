@@ -7,7 +7,7 @@ from .dllist import dllink
 
 
 class FMGainMgr:
-    waitinglist = dllink(3734)
+    waitinglist = dllink([0, 3734])
 
     # public:
 
@@ -55,10 +55,11 @@ class FMGainMgr:
         Returns:
             bool:  description
         """
-        for k in range(self.K):
-            if self.gainbucket[k]._max != 0:  # not is_empty()
-                return False
-        return True
+        return not any(self.gainbucket[k]._max != 0 for k in range(self.K))
+        # for k in range(self.K):
+        #     if self.gainbucket[k]._max != 0:  # not is_empty()
+        #         return False
+        # return True
 
     def select(self, part):
         """Select best candidate
@@ -74,7 +75,7 @@ class FMGainMgr:
         toPart = gainmax.index(maxk)
         vlink = self.gainbucket[toPart].popleft()
         self.waitinglist.append(vlink)
-        v = vlink.data
+        v = vlink.data[1]
         fromPart = part[v]
         move_info_v = v, fromPart, toPart
         return move_info_v, gainmax[toPart]
@@ -91,7 +92,7 @@ class FMGainMgr:
         gainmax = self.gainbucket[toPart].get_max()
         vlink = self.gainbucket[toPart].popleft()
         self.waitinglist.append(vlink)
-        v = vlink.data
+        v = vlink.data[1]
         return v, gainmax
 
     def update_move(self, part, move_info_v):
@@ -109,12 +110,14 @@ class FMGainMgr:
             if degree < 2:  # unlikely, self-loop, etc.
                 continue  # does not provide any gain change when move
             move_info = [net, v, fromPart, toPart]
-            if degree == 3:
-                self._update_move_3pin_net(part, move_info)
-            elif degree == 2:
+            if degree == 2:
                 self._update_move_2pin_net(part, move_info)
             else:
-                self._update_move_general_net(part, move_info)
+                self.gainCalc.init_IdVec(v, net)
+                if degree == 3:
+                    self._update_move_3pin_net(part, move_info)
+                else:
+                    self._update_move_general_net(part, move_info)
 
     @abstractmethod
     def modify_key(self, w, part_w, key):
@@ -135,9 +138,9 @@ class FMGainMgr:
             part (list):  Partition sol'n
             move_info (type):  description
         """
-        w, deltaGainW = self.gainCalc.update_move_2pin_net(
+        w = self.gainCalc.update_move_2pin_net(
             part, move_info)
-        self.modify_key(w, part[w], deltaGainW)
+        self.modify_key(w, part[w], self.gainCalc.deltaGainW)
 
     def _update_move_3pin_net(self, part, move_info):
         """Update move for 3-pin net
@@ -146,9 +149,9 @@ class FMGainMgr:
             part (list):  Partition sol'n
             move_info (type):  description
         """
-        IdVec, deltaGain = self.gainCalc.update_move_3pin_net(
+        deltaGain = self.gainCalc.update_move_3pin_net(
             part, move_info)
-        for index, w in enumerate(IdVec):
+        for index, w in enumerate(self.gainCalc.IdVec):
             self.modify_key(w, part[w], deltaGain[index])
 
     def _update_move_general_net(self, part, move_info):
@@ -158,7 +161,7 @@ class FMGainMgr:
             part (list):  Partition sol'n
             move_info (type):  description
         """
-        IdVec, deltaGain = self.gainCalc.update_move_general_net(
+        deltaGain = self.gainCalc.update_move_general_net(
             part, move_info)
-        for index, w in enumerate(IdVec):
+        for index, w in enumerate(self.gainCalc.IdVec):
             self.modify_key(w, part[w], deltaGain[index])

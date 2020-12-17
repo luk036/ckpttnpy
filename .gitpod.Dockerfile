@@ -6,14 +6,15 @@ USER root
 RUN apt-get update \
  && apt-get install -y \
   apt-utils \
-  sudo \
   aria2 \
   git \
   less \
   lcov \
   neofetch \
+  neovim \
   asciinema \
   tmux \
+  w3m \
   wget
 
 RUN pip3 install --upgrade pip \
