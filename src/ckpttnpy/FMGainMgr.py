@@ -55,11 +55,7 @@ class FMGainMgr:
         Returns:
             bool:  description
         """
-        return not any(self.gainbucket[k]._max != 0 for k in range(self.K))
-        # for k in range(self.K):
-        #     if self.gainbucket[k]._max != 0:  # not is_empty()
-        #         return False
-        # return True
+        return all(bckt._max == 0 for bckt in self.gainbucket)
 
     def select(self, part):
         """Select best candidate
@@ -151,8 +147,8 @@ class FMGainMgr:
         """
         deltaGain = self.gainCalc.update_move_3pin_net(
             part, move_info)
-        for index, w in enumerate(self.gainCalc.IdVec):
-            self.modify_key(w, part[w], deltaGain[index])
+        for dGw, w in zip(deltaGain, self.gainCalc.IdVec):
+            self.modify_key(w, part[w], dGw)
 
     def _update_move_general_net(self, part, move_info):
         """Update move for general net
@@ -163,5 +159,5 @@ class FMGainMgr:
         """
         deltaGain = self.gainCalc.update_move_general_net(
             part, move_info)
-        for index, w in enumerate(self.gainCalc.IdVec):
-            self.modify_key(w, part[w], deltaGain[index])
+        for dGw, w in zip(deltaGain, self.gainCalc.IdVec):
+            self.modify_key(w, part[w], dGw)

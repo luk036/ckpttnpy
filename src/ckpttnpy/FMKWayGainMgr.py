@@ -31,8 +31,8 @@ class FMKWayGainMgr(FMGainMgr):
         """
         totalcost = FMGainMgr.init(self, part)
 
-        for k in range(self.K):
-            self.gainbucket[k].clear()
+        for bckt in self.gainbucket:
+            bckt.clear()
 
         for v in self.H.modules:
             pv = part[v]
@@ -60,9 +60,11 @@ class FMKWayGainMgr(FMGainMgr):
         self.gainbucket[whichPart].detach(vlink)
         vlink.next = None  # lock
 
-    def lock_all(self, fromPart, v):
-        for k in range(self.K):
-            self.lock(k, v)
+    def lock_all(self, _, v):
+        for vlist, bckt in zip(self.gainCalc.vertex_list, self.gainbucket):
+            vlink = vlist[v]
+            bckt.detach(vlink)
+            vlink.next = None  # lock
 
     def update_move_v(self, move_info_v, gain):
         """Update gain for the moving cell

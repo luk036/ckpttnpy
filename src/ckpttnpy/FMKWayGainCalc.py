@@ -23,7 +23,6 @@ class FMKWayGainCalc:
             H (Netlist):  description
             K (uint8_t):  number of partitions
         """
-        self.totalcost = 0
         self.deltaGainV = list()
 
         self.H = H
@@ -55,12 +54,12 @@ class FMKWayGainCalc:
         self.totalcost = 0
 
         if isinstance(self.H.modules, range):
-            for k in range(self.K):
-                for vlink in self.vertex_list[k]:
+            for vlist in self.vertex_list:
+                for vlink in vlist:
                     vlink.data[0] = 0
         elif isinstance(self.H.modules, list):
-            for k in range(self.K):
-                for vlink in self.vertex_list[k].values():
+            for vlist in self.vertex_list:
+                for vlink in vlist.values():
                     vlink.data[0] = 0
         else:
             raise NotImplementedError
@@ -167,16 +166,16 @@ class FMKWayGainCalc:
 
         weight = self.H.get_net_weight(net)
 
-        for k in range(self.K):
-            if num[k] > 0:
+        for c in num:
+            if c > 0:
                 self.totalcost += weight
         self.totalcost -= weight
 
-        for k in range(self.K):
-            if num[k] == 0:
+        for k, c in enumerate(num):
+            if c == 0:
                 for w in self.H.G[net]:
                     self.vertex_list[k][w].data[0] -= weight
-            elif num[k] == 1:
+            elif c == 1:
                 for w in self.H.G[net]:
                     if part[w] == k:
                         self._modify_gain(w, part[w], weight)

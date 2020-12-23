@@ -26,8 +26,7 @@ class FMKWayConstrMgr(FMConstrMgr):
             part (type):  description
         """
         FMConstrMgr.init(self, part)
-        for k in range(self.K):
-            self.illegal[k] = (self.diff[k] < self.lowerbound)
+        self.illegal = [d < self.lowerbound for d in self.diff]
 
     def select_togo(self):
         minb = min(self.diff)

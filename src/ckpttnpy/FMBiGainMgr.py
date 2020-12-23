@@ -29,8 +29,8 @@ class FMBiGainMgr(FMGainMgr):
         """
         totalcost = FMGainMgr.init(self, part)
 
-        for k in range(self.K):
-            self.gainbucket[k].clear()
+        for bckt in self.gainbucket:
+            bckt.clear()
 
         for v in self.H.modules:
             vlink = self.gainCalc.vertex_list[v]
@@ -60,8 +60,7 @@ class FMBiGainMgr(FMGainMgr):
             whichPart (uint8_t):  description
             v (node_t):  description
         """
-        toPart = 1 - fromPart
-        self.lock(toPart, v)
+        self.lock(1 - fromPart, v)
 
     def modify_key(self, w, part_w, key):
         """Update gain for the moving cell
