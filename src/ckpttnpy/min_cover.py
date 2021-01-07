@@ -2,6 +2,7 @@ from typing import List, Set, Tuple
 
 import networkx as nx
 
+from .HierNetlist import HierNetlist
 from .netlist import Netlist
 
 
@@ -157,7 +158,7 @@ def min_maximal_matching_pd(H: Netlist, matchset, weight, dep):
 #     return S, total_primal_cost
 
 
-def create_contraction_subgraph(H: Netlist, DontSelect: Set) -> Netlist:
+def create_contraction_subgraph(H: Netlist, DontSelect: Set) -> HierNetlist:
     S, _ = max_independent_net(H, H.module_weight, DontSelect)
 
     module_up_map: dict = {v: v for v in H.modules}
@@ -201,7 +202,8 @@ def create_contraction_subgraph(H: Netlist, DontSelect: Set) -> Netlist:
                 continue
             G.add_edge(node_up_map[v], node_up_map[net])
 
-    H2 = Netlist(G, range(numModules), range(numModules, numModules + numNets))
+    H2 = HierNetlist(G, range(numModules),
+                     range(numModules, numModules + numNets))
 
     node_down_map = {v2: v1 for v1, v2 in node_up_map.items()}
     cluster_down_map = {node_up_map[v]: net for v, net in cluster_map.items()}

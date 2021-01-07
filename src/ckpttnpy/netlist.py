@@ -52,12 +52,6 @@ class Netlist:
         self.module_weight: Optional[Union[Dict, List[int]]] = None
         self.module_fixed: set = set()
 
-        # for hierachical netlist and multilevel algorithm
-        self.parent = self
-        self.node_up_map: dict = {}
-        self.node_down_map: dict = {}
-        self.cluster_down_map: dict = {}
-
         # self.module_dict = {}
         # for v in enumerate(self.module_list):
         #     self.module_dict[v] = v
@@ -155,59 +149,6 @@ class Netlist:
         # return 1 if self.net_weight == [] \
         #          else self.net_weight[self.net_map[net]]
         return 1
-
-    # def project_down(self, part, part_down):
-    #     H = self.parent
-    #     for i_v, v in enumerate(self.modules):
-    #         if v in self.cluster_down_map:
-    #             net = self.cluster_down_map[v]
-    #             for v2 in H.G[net]:
-    #                 i_v2 = H.module_map[v2]
-    #                 part_down[v2] = part[v]
-    #         else:
-    #             v2 = self.node_down_map[v]
-    #             i_v2 = H.module_map[v2]
-    #             part_down[v2] = part[v]
-
-    # def project_up(self, part, part_up):
-    #     H = self.parent
-    #     for i_v, v in enumerate(H.modules):
-    #         part_up[self.node_up_map[v]] = part[v]
-
-    def projection_down(self, part: Union[Dict, List[int]],
-                        part_down: Union[Dict, List[int]]):
-        H = self.parent
-
-        for v in self.modules:
-            if v in self.cluster_down_map:
-                net = self.cluster_down_map[v]
-                for v2 in H.G[net]:
-                    part_down[v2] = part[v]
-            else:
-                v2 = self.node_down_map[v]
-                part_down[v2] = part[v]
-
-    def projection_up(self, part: Union[Dict, List[int]],
-                      part_up: Union[Dict, List[int]]):
-        H = self.parent
-
-        for v in H.modules:
-            part_up[self.node_up_map[v]] = part[v]
-
-        # if not extern_nets:
-        #     return
-
-        # extern_nets_up.clear()
-        # for net in extern_nets:
-        #     extern_nets_up.add(self.node_up_map[net])
-
-        # K = len(extern_modules)
-        # extern_modules_up = list(set() for _ in K)
-
-        # for k in range(K):
-        #     for v in extern_modules[k]:
-        #         v2 = self.node_up_map[v]
-        #         extern_modules_up[k].add(v2)
 
 
 def read_json(filename):
