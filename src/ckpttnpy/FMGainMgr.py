@@ -66,15 +66,17 @@ class FMGainMgr:
         Returns:
             move_info_v:  description
         """
-        gainmax = list(self.gainbucket[k].get_max() for k in range(self.K))
-        maxk = max(gainmax)
-        toPart = gainmax.index(maxk)
+        # gainmax = list(self.gainbucket[k].get_max() for k in range(self.K))
+        # maxk = max(gainmax)
+        # toPart = gainmax.index(maxk)
+        toPart = max(range(self.K), key=lambda k: self.gainbucket[k].get_max())
+        maxk = self.gainbucket[toPart].get_max()
         vlink = self.gainbucket[toPart].popleft()
         self.waitinglist.append(vlink)
         v = vlink.data[1]
         fromPart = part[v]
         move_info_v = v, fromPart, toPart
-        return move_info_v, gainmax[toPart]
+        return move_info_v, maxk
 
     def select_togo(self, toPart):
         """Select best candidaate togo

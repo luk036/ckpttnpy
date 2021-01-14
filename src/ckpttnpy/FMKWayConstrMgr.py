@@ -29,8 +29,9 @@ class FMKWayConstrMgr(FMConstrMgr):
         self.illegal = [d < self.lowerbound for d in self.diff]
 
     def select_togo(self):
-        minb = min(self.diff)
-        return self.diff.index(minb)
+        # minb = min(self.diff)
+        # return self.diff.index(minb)
+        return min(range(self.K), key=lambda k: self.diff[k])
 
     def check_legal(self, move_info_v):
         """[summary]
