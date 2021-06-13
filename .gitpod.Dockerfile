@@ -12,6 +12,12 @@ RUN apt-get update \
   lcov \
   neofetch \
   neovim \
+  ripgrep \
+  fd-find \
+  bat \
+  ncdu \
+  ranger \
+  byobu \
   asciinema \
   tmux \
   w3m \
@@ -28,7 +34,9 @@ RUN pip3 install --upgrade pip \
 	pytest \
 	pytest-cov \
 	pytest-benchmark \
-	matplotlib
+	matplotlib \
+  jupyter \
+  mypy
 
 USER gitpod
 

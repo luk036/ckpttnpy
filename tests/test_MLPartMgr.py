@@ -1,7 +1,7 @@
 from random import randint
 
 from ckpttnpy.MLPartMgr import MLBiPartMgr, MLKWayPartMgr
-from ckpttnpy.netlist import Netlist, create_drawf, create_random_graph, read_json
+from ckpttnpy.netlist import Netlist, create_drawf, read_json
 
 
 def run_MLBiPartMgr(H: Netlist):
@@ -39,13 +39,13 @@ def test_MLBiPartMgr2():
     assert totalcost <= 65
 
 
-def test_MLBiPartMgr3():
-    H = create_random_graph()
-    totalcost = run_MLBiPartMgr(H)
-    # assert totalcost >= 55
-    # assert totalcost <= 70
-    assert totalcost >= 5
-    assert totalcost <= 5
+# def test_MLBiPartMgr3():
+#     H = create_random_graph()
+#     totalcost = run_MLBiPartMgr(H)
+#     # assert totalcost >= 55
+#     # assert totalcost <= 70
+#     assert totalcost >= 5
+#     assert totalcost <= 5
 
 
 def run_MLKWayPartMgr(H: Netlist, K: int):
@@ -76,13 +76,13 @@ def test_MLKWayPartMgr2():
     assert totalcost <= 119
 
 
-def test_MLKWayPartMgr3():
-    H = create_random_graph()
-    totalcost = run_MLKWayPartMgr(H, 3)
-    # assert totalcost >= 109
-    # assert totalcost <= 152
-    assert totalcost >= 9
-    assert totalcost <= 9
+# def test_MLKWayPartMgr3():
+#     H = create_random_graph()
+#     totalcost = run_MLKWayPartMgr(H, 3)
+#     # assert totalcost >= 109
+#     # assert totalcost <= 152
+#     assert totalcost >= 9
+#     assert totalcost <= 9
 
 
 # if __name__ == "__main__":
