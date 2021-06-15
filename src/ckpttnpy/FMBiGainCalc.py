@@ -25,10 +25,10 @@ class FMBiGainCalc:
         self.H = H
         if isinstance(self.H.modules, range):
             self.vertex_list = [
-                dllink([0, i]) for i in self.H.modules
+                dllink([0, i]) for i in self.H
             ]
         elif isinstance(self.H.modules, list):
-            self.vertex_list = {v: dllink([0, v]) for v in self.H.modules}
+            self.vertex_list = {v: dllink([0, v]) for v in self.H}
         else:
             raise NotImplementedError
 

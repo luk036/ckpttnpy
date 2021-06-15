@@ -32,14 +32,14 @@ def test_FMKWayPartMgr():
     H = create_drawf()
     gainMgr = FMKWayGainMgr(FMKWayGainCalc, H, 3)
     H.module_fixed = {'p1'}
-    part = {v: 0 for v in H.modules}
+    part = {v: 0 for v in H}
     run_FMKWayPartMgr(H, gainMgr, 3, part)
 
 
 def test_FMKWayPartMgr2():
     H = read_json('testcases/p1.json')
     gainMgr = FMKWayGainMgr(FMKWayGainCalc, H, 3)
-    part = [0 for _ in H.modules]
+    part = [0 for _ in H]
     run_FMKWayPartMgr(H, gainMgr, 3, part)
 
 

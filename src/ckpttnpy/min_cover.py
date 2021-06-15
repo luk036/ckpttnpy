@@ -1,40 +1,39 @@
-from typing import List, Set, Tuple
+from typing import List, Set
 
 import networkx as nx
 
 from .HierNetlist import HierNetlist
 from .netlist import Netlist
 
+# def max_independent_net(H: Netlist, mw, DontSelect: Set) -> Tuple[Set, int]:
+#     """Maximum Independent NET (by greedy)
 
-def max_independent_net(H: Netlist, mw, DontSelect: Set) -> Tuple[Set, int]:
-    """Maximum Independent NET (by greedy)
+#     Arguments:
+#         H (Netlist): [description]
+#         mw ([type]): [description]
+#         DontSelect (Set): [description]
 
-    Arguments:
-        H (Netlist): [description]
-        mw ([type]): [description]
-        DontSelect (Set): [description]
+#     Returns:
+#         Tuple[Set, int]: [description]
+#     """
+#     visited = set()
+#     for net in DontSelect:
+#         visited.add(net)
 
-    Returns:
-        Tuple[Set, int]: [description]
-    """
-    visited = set()
-    for net in DontSelect:
-        visited.add(net)
+#     S = set()
+#     total_cost = 0
 
-    S = set()
-    total_cost = 0
-
-    for net in H.nets:
-        if net in visited:
-            continue
-        if H.G.degree(net) < 2:
-            continue
-        S.add(net)
-        total_cost += H.get_net_weight(net)
-        for v in H.G[net]:
-            for net2 in H.G[v]:
-                visited.add(net2)
-    return S, total_cost
+#     for net in H.nets:
+#         if net in visited:
+#             continue
+#         if H.G.degree(net) < 2:
+#             continue
+#         S.add(net)
+#         total_cost += H.get_net_weight(net)
+#         for v in H.G[net]:
+#             for net2 in H.G[v]:
+#                 visited.add(net2)
+#     return S, total_cost
 
 
 def min_maximal_matching(H, weight, matchset, dep):
@@ -111,7 +110,7 @@ def min_maximal_matching(H, weight, matchset, dep):
 #     total_dual_cost = 0
 #     # offset = H.number_of_modules()
 
-#     for v in H.modules:
+#     for v in H:
 #         if v in covered:
 #             continue
 #         min_gap = 10000000
@@ -159,42 +158,56 @@ def min_maximal_matching(H, weight, matchset, dep):
 
 
 def create_contraction_subgraph(H: Netlist, DontSelect: Set) -> HierNetlist:
-    # S, _ = max_independent_net(H, H.module_weight, DontSelect)
-    weight = dict()
-    for net in H.nets:
-        weight[net] = sum(H.get_module_weight(v) for v in H.G[net])
+    """[summary]
 
+    Args:
+        H (Netlist): [description]
+        DontSelect (Set): [description]
+
+    Returns:
+        HierNetlist: [description]
+    """
+    # S, _ = max_independent_net(H, H.module_weight, DontSelect)
+    # weight = dict()
+    # for net in H.nets:
+    #     weight[net] = sum(H.get_module_weight(v) for v in H.G[net])
+    weight = {
+        net: sum(H.get_module_weight(v) for v in H.G[net])
+        for net in H.nets
+    }
     S = set()
     _ = min_maximal_matching(H, weight, S, DontSelect)
 
-    module_up_map: dict = {v: v for v in H.modules}
-    # for v in H.modules:
+    module_up_map: dict = {v: v for v in H}
+    # for v in H:
     #     module_up_map[v] = v
 
-    C: set = set()
-    nets: List = []
-    clusters: List = []
-    cluster_map: dict = {}
+    C = set()
+    nets = list()
+    clusters = list()
+    cluster_map = dict()
     for net in H.nets:
         if net in S:
             netCur = iter(H.G[net])
             master = next(netCur)
             clusters.append(master)
-            for v in H.G[net]:
-                module_up_map[v] = master
-                C.add(v)
+            module_up_map.update({v: master for v in H.G[net]})
+            C.update(v for v in H.G[net])
+            # for v in H.G[net]:
+            #     module_up_map[v] = master
+            #     C.add(v)
             cluster_map[master] = net
         else:
             nets.append(net)
 
-    modules: List = [v for v in H.modules if v not in C]
+    modules: List = [v for v in H if v not in C]
     modules += clusters
     numModules = len(modules)
     numNets = len(nets)
 
     module_map = {v: i_v for i_v, v in enumerate(modules)}
     net_map = {net: i_net for i_net, net in enumerate(nets)}
-    node_up_map = {v: module_map[module_up_map[v]] for v in H.modules}
+    node_up_map = {v: module_map[module_up_map[v]] for v in H}
     net_up_map = {net: net_map[net] + numModules for net in nets}
     # for net in nets:
     #     node_up_map[net] = net_map[net] + numModules
@@ -202,11 +215,12 @@ def create_contraction_subgraph(H: Netlist, DontSelect: Set) -> HierNetlist:
 
     G = nx.Graph()
     G.add_nodes_from(n for n in range(numModules + numNets))
-    for v in H.modules:
+    for v in H:
         for net in H.G[v]:
             if net in S:
                 continue
             G.add_edge(node_up_map[v], node_up_map[net])
+            # automatically merge the same cell-net
 
     H2 = HierNetlist(G, range(numModules),
                      range(numModules, numModules + numNets))

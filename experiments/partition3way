@@ -49,7 +49,7 @@ def plot(H: Netlist, part):
                            pos=pos)
     color = ['g', 'r', 'b']
     for k in range(3):
-        partk = [i for i in H.modules if part[i] == k]
+        partk = [i for i in H if part[i] == k]
         nx.draw_networkx_nodes(H.G,
                                nodelist=partk,
                                node_color=color[k],

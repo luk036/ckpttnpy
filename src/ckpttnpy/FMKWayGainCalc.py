@@ -34,13 +34,13 @@ class FMKWayGainCalc:
         if isinstance(self.H.modules, range):
             for _ in range(K):
                 self.vertex_list += [
-                    list(dllink([0, i]) for i in self.H.modules)
+                    list(dllink([0, i]) for i in self.H)
                 ]
         elif isinstance(self.H.modules, list):
             for _ in range(K):
                 self.vertex_list += [{
                     v: dllink([0, v])
-                    for v in self.H.modules
+                    for v in self.H
                 }]
         else:
             raise NotImplementedError

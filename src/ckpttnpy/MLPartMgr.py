@@ -59,7 +59,7 @@ class MLPartMgr:
             return legalcheck
         if H.number_of_modules() >= limitsize:  # OK
             H2 = create_contraction_subgraph(H, set())
-            if 5 * H2.number_of_modules() <= 3 * H.number_of_modules():
+            if H2.number_of_modules() <= H.number_of_modules():
                 part2 = list(0 for _ in range(H2.number_of_modules()))
                 H2.projection_up(part, part2)
                 legalcheck = self.run_FMPartition(H2, part2, limitsize)

@@ -49,7 +49,7 @@ class PartMgrBase:
         self.init(part)
 
         # Zero-weighted modules does not contribute legalization
-        for v in self.H.modules:
+        for v in self.H:
             if self.H.get_module_weight(v) != 0:
                 continue
             if v in self.H.module_fixed:  # already locked

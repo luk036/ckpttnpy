@@ -32,7 +32,7 @@ class FMBiGainMgr(FMGainMgr):
         for bckt in self.gainbucket:
             bckt.clear()
 
-        for v in self.H.modules:
+        for v in self.H:
             vlink = self.gainCalc.vertex_list[v]
             toPart = 1 - part[v]
             self.gainbucket[toPart].append_direct(vlink)

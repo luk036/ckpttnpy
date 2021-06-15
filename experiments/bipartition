@@ -41,8 +41,8 @@ def run_MLBiPartMgr(H: Netlist, BalTol: float):
 def plot(H: Netlist, part):
     N = H.number_of_modules()
     M = H.number_of_nets()
-    part0 = [i for i in H.modules if part[i] == 0]
-    part1 = [i for i in H.modules if part[i] == 1]
+    part0 = [i for i in H if part[i] == 0]
+    part1 = [i for i in H if part[i] == 1]
     pos = nx.spring_layout(H.G)
     nx.draw_networkx_nodes(H.G,
                            nodelist=part0,

@@ -1,5 +1,9 @@
 
-from ckpttnpy.netlist import create_drawf, create_test_netlist
+import json
+
+from networkx.readwrite import json_graph
+
+from ckpttnpy.netlist import create_drawf, create_test_netlist, read_json
 
 
 def test_netlist():
@@ -27,12 +31,10 @@ def test_drawf():
 
 
 def test_json():
-    from networkx.readwrite import json_graph
-    import json
-    H = create_drawf()
-    data = json_graph.node_link_data(H.G)
-    with open('testcases/drawf.json', 'w') as fw:
-        json.dump(data, fw, indent=1)
+    # H = create_drawf()
+    # data = json_graph.node_link_data(H.G)
+    # with open('testcases/drawf.json', 'w') as fw:
+    #     json.dump(data, fw, indent=1)
     with open('testcases/drawf.json', 'r') as fr:
         data2 = json.load(fr)
     G = json_graph.node_link_graph(data2)
@@ -43,8 +45,6 @@ def test_json():
 
 
 def test_json2():
-    from networkx.readwrite import json_graph
-    import json
     with open('testcases/p1.json', 'r') as fr:
         data = json.load(fr)
     G = json_graph.node_link_graph(data)
@@ -52,3 +52,20 @@ def test_json2():
     assert G.graph['num_modules'] == 833
     assert G.graph['num_nets'] == 902
     assert G.graph['num_pads'] == 81
+
+
+def test_readjson():
+    H = read_json('testcases/p1.json')
+    count_2 = 0
+    count_3 = 0
+    count_rest = 0
+    for net in H.nets:
+        deg = H.G.degree(net)
+        if deg == 2:
+            count_2 += 1
+        elif deg == 3:
+            count_3 += 1
+        else:
+            count_rest += 1
+    print(count_2, count_3, count_rest)
+    assert count_2 == 494

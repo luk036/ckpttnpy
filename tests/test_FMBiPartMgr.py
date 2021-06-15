@@ -29,24 +29,24 @@ def run_FMBiPartMgr(H: Netlist, part: Part):
 
 def test_FMBiPartMgr():
     H = create_test_netlist()
-    part = {v: 0 for v in H.modules}
+    part = {v: 0 for v in H}
     run_FMBiPartMgr(H, part)
 
 
 def test_FMBiPartMgr2():
     H = create_drawf()
-    part = {v: 0 for v in H.modules}
+    part = {v: 0 for v in H}
     H.module_fixed = {'p1'}
     run_FMBiPartMgr(H, part)
 
 
 def test_FMBiPartMgr3():
     H = read_json('testcases/p1.json')
-    part = [0 for _ in H.modules]
+    part = [0 for _ in H]
     run_FMBiPartMgr(H, part)
 
 
 def test_FMBiPartMgr4():
     H = create_random_graph()
-    part = [0 for _ in H.modules]
+    part = [0 for _ in H]
     run_FMBiPartMgr(H, part)

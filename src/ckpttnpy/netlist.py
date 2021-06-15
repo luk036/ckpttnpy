@@ -150,6 +150,14 @@ class Netlist:
         #          else self.net_weight[self.net_map[net]]
         return 1
 
+    def __iter__(self):
+        """Iterate over the modules. Use: 'for v in H'.
+
+        Returns:
+            iterator: An iterator over all modules in the Netlist.
+        """
+        return iter(self.modules)
+
 
 def read_json(filename):
     with open(filename, 'r') as fr:

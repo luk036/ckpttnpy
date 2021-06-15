@@ -32,7 +32,7 @@ class FMConstrMgr:
         self.K = K
         self.diff = list(0 for _ in range(K))
         self.totalweight = 0
-        for v in self.H.modules:
+        for v in self.H:
             weight = self.H.get_module_weight(v)
             self.totalweight += weight
         totalweightK = self.totalweight * (2. / self.K)
@@ -45,7 +45,7 @@ class FMConstrMgr:
             part (type):  description
         """
         self.diff = list(0 for _ in range(self.K))
-        for v in self.H.modules:
+        for v in self.H:
             weight = self.H.get_module_weight(v)
             self.diff[part[v]] += weight
 

@@ -1,12 +1,11 @@
-from ckpttnpy.min_cover import create_contraction_subgraph, max_independent_net
+from ckpttnpy.min_cover import create_contraction_subgraph
 from ckpttnpy.netlist import create_drawf
 
-
-def test_max_independent_net():
-    # random_graph(G,5,20)
-    H = create_drawf()
-    _, cost1 = max_independent_net(H, H.module_weight, set())
-    assert cost1 == 3
+# def test_max_independent_net():
+#     # random_graph(G,5,20)
+#     H = create_drawf()
+#     _, cost1 = max_independent_net(H, H.module_weight, set())
+#     assert cost1 == 3
 
 
 def test_create_contraction_subgraph():

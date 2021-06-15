@@ -24,13 +24,13 @@ def run_FMBiGainMgr(H: Netlist, part: Part):
 
 def test_FMBiGainMgr():
     H = create_test_netlist()
-    part = {v: 0 for v in H.modules}
+    part = {v: 0 for v in H}
     part['a1'] = 1
     run_FMBiGainMgr(H, part)
 
 
 def test_FMBiGainMgr2():
     H = create_drawf()
-    part = {v: 0 for v in H.modules}
+    part = {v: 0 for v in H}
     part['a1'] = 1
     run_FMBiGainMgr(H, part)

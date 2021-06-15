@@ -38,5 +38,5 @@ class HierNetlist(Netlist):
     def projection_up(self, part: Union[Dict, List[int]],
                       part_up: Union[Dict, List[int]]):
         H = self.parent
-        for v in H.modules:
+        for v in H:
             part_up[self.node_up_map[v]] = part[v]

@@ -34,7 +34,7 @@ class FMKWayGainMgr(FMGainMgr):
         for bckt in self.gainbucket:
             bckt.clear()
 
-        for v in self.H.modules:
+        for v in self.H:
             pv = part[v]
             for k in self.RR.exclude(pv):
                 vlink = self.gainCalc.vertex_list[k][v]
