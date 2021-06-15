@@ -17,7 +17,7 @@ def run_FMKWayPartMgr(H: Netlist, gainMgr, K, part: Part):
         gainMgr (gainMgr):  description
         K (int):  number of partitions
     """
-    constrMgr = FMKWayConstrMgr(H, 0.4, K)  # 0.2 ???
+    constrMgr = FMKWayConstrMgr(H, 0.4, H.module_weight, K)  # 0.2 ???
     partMgr = FMPartMgr(H, gainMgr, constrMgr)
     partMgr.legalize(part)  # ???
     totalcostbefore = partMgr.totalcost

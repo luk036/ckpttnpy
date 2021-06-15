@@ -157,7 +157,8 @@ def min_maximal_matching(H, weight, matchset, dep):
 #     return S, total_primal_cost
 
 
-def create_contraction_subgraph(H: Netlist, DontSelect: Set) -> HierNetlist:
+def create_contraction_subgraph(H: Netlist, module_weight,
+                                DontSelect: Set) -> HierNetlist:
     """[summary]
 
     Args:
@@ -167,12 +168,15 @@ def create_contraction_subgraph(H: Netlist, DontSelect: Set) -> HierNetlist:
     Returns:
         HierNetlist: [description]
     """
+    def get_module_weight(v):
+        return 1 if module_weight is None else module_weight[v]
+
     # S, _ = max_independent_net(H, H.module_weight, DontSelect)
     # weight = dict()
     # for net in H.nets:
     #     weight[net] = sum(H.get_module_weight(v) for v in H.G[net])
     weight = {
-        net: sum(H.get_module_weight(v) for v in H.G[net])
+        net: sum(get_module_weight(v) for v in H.G[net])
         for net in H.nets
     }
     S = set()
@@ -247,4 +251,4 @@ def create_contraction_subgraph(H: Netlist, DontSelect: Set) -> HierNetlist:
     H2.cluster_down_map = cluster_down_map
     H2.module_weight = module_weight
     H2.parent = H
-    return H2
+    return H2, module_weight

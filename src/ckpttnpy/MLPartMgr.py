@@ -1,6 +1,5 @@
 # type: ignore
 
-
 # from ckpttnpy.min_cover import create_contraction_subgraph
 from ckpttnpy.FMPartMgr import FMPartMgr
 
@@ -38,7 +37,7 @@ class MLPartMgr:
         self.K = K
         self.totalcost = 0
 
-    def run_FMPartition(self, H, part, limitsize=7):
+    def run_FMPartition(self, H, module_weight, part, limitsize=7):
         """[summary]
 
         Arguments:
@@ -52,17 +51,19 @@ class MLPartMgr:
             dtype:  description
         """
         gainMgr = self.GainMgr(self.GainCalc, H, self.K)
-        constrMgr = self.ConstrMgr(H, self.BalTol, self.K)
+        constrMgr = self.ConstrMgr(H, self.BalTol, module_weight, self.K)
         partMgr = self.PartMgr(H, gainMgr, constrMgr)
         legalcheck = partMgr.legalize(part)
         if legalcheck != LegalCheck.allsatisfied:
             return legalcheck
         if H.number_of_modules() >= limitsize:  # OK
-            H2 = create_contraction_subgraph(H, set())
+            H2, module_weight2 = create_contraction_subgraph(
+                H, module_weight, set())
             if H2.number_of_modules() <= H.number_of_modules():
                 part2 = list(0 for _ in range(H2.number_of_modules()))
                 H2.projection_up(part, part2)
-                legalcheck = self.run_FMPartition(H2, part2, limitsize)
+                legalcheck = self.run_FMPartition(H2, module_weight2, part2,
+                                                  limitsize)
                 if legalcheck == LegalCheck.allsatisfied:
                     H2.projection_down(part2, part)
         partMgr.optimize(part)

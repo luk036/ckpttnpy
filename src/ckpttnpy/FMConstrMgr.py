@@ -17,10 +17,22 @@ class LegalCheck(Enum):
 
 
 class FMConstrMgr:
-    __slots__ = ('weight', 'H', 'BalTol', 'K',
+    __slots__ = ('weight', 'H', 'BalTol', 'module_weight', 'K',
                  'diff', 'totalweight', 'lowerbound')
 
-    def __init__(self, H, BalTol, K=2):
+    def get_module_weight(self, v):
+        """[summary]
+
+        Arguments:
+            v (size_t):  description
+
+        Returns:
+            [size_t]:  description
+        """
+        return 1 if self.module_weight is None \
+            else self.module_weight[v]
+
+    def __init__(self, H, BalTol, module_weight, K=2):
         """[summary]
 
         Arguments:
@@ -29,12 +41,10 @@ class FMConstrMgr:
         """
         self.H = H
         self.BalTol = BalTol
+        self.module_weight = module_weight
         self.K = K
         self.diff = list(0 for _ in range(K))
-        self.totalweight = 0
-        for v in self.H:
-            weight = self.H.get_module_weight(v)
-            self.totalweight += weight
+        self.totalweight = sum(self.get_module_weight(v) for v in self.H)
         totalweightK = self.totalweight * (2. / self.K)
         self.lowerbound = round(totalweightK * self.BalTol)
 
@@ -46,8 +56,7 @@ class FMConstrMgr:
         """
         self.diff = list(0 for _ in range(self.K))
         for v in self.H:
-            weight = self.H.get_module_weight(v)
-            self.diff[part[v]] += weight
+            self.diff[part[v]] += self.get_module_weight(v)
 
     def check_legal(self, move_info_v):
         """[summary]
@@ -60,7 +69,7 @@ class FMConstrMgr:
             dtype:  description
         """
         v, fromPart, toPart = move_info_v
-        self.weight = self.H.get_module_weight(v)
+        self.weight = self.get_module_weight(v)
         diffFrom = self.diff[fromPart] - self.weight
         if diffFrom < self.lowerbound:
             return LegalCheck.notsatisfied  # not ok, don't move
@@ -80,7 +89,7 @@ class FMConstrMgr:
             dtype:  description
         """
         v, fromPart, _ = move_info_v
-        self.weight = self.H.get_module_weight(v)
+        self.weight = self.get_module_weight(v)
         diffFrom = self.diff[fromPart] - self.weight
         return diffFrom >= self.lowerbound
 

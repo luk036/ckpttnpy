@@ -32,7 +32,7 @@ def run_MLBiPartMgr(H: Netlist):
         else:
             raise NotImplementedError
 
-        partMgr.run_FMPartition(H, part)
+        partMgr.run_FMPartition(H, H.module_weight, part)
         if mincost > partMgr.totalcost:
             mincost = partMgr.totalcost
             minpart = part.copy()

@@ -17,7 +17,7 @@ def run_MLBiPartMgr(H: Netlist):
         else:
             raise NotImplementedError
 
-        partMgr.run_FMPartition(H, part)
+        partMgr.run_FMPartition(H, H.module_weight, part)
         if mincost > partMgr.totalcost:
             mincost = partMgr.totalcost
     return mincost
@@ -54,7 +54,7 @@ def run_MLKWayPartMgr(H: Netlist, K: int):
     for _ in range(10):
         randseq = [randint(0, K-1) for _ in range(H.number_of_modules())]
         part = list(randseq)
-        partMgr.run_FMPartition(H, part)
+        partMgr.run_FMPartition(H, H.module_weight, part)
         if mincost > partMgr.totalcost:
             mincost = partMgr.totalcost
     return mincost

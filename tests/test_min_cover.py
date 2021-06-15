@@ -10,8 +10,8 @@ from ckpttnpy.netlist import create_drawf
 
 def test_create_contraction_subgraph():
     H = create_drawf()
-    H2 = create_contraction_subgraph(H, set())
-    _ = create_contraction_subgraph(H2, set())
+    H2, module_weight2 = create_contraction_subgraph(H, H.module_weight, set())
+    create_contraction_subgraph(H2, module_weight2, set())
     assert H2.number_of_modules() < 7
     assert H2.number_of_nets() == 3
     assert H2.number_of_pins() < 13
