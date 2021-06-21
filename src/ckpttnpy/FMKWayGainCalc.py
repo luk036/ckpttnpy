@@ -32,16 +32,11 @@ class FMKWayGainCalc:
         self.vertex_list = []
 
         if isinstance(self.H.modules, range):
-            for _ in range(K):
-                self.vertex_list += [
-                    list(dllink([0, i]) for i in self.H)
-                ]
+            self.vertex_list = [[dllink([0, i]) for i in self.H]
+                                for _ in range(K)]
         elif isinstance(self.H.modules, list):
-            for _ in range(K):
-                self.vertex_list += [{
-                    v: dllink([0, v])
-                    for v in self.H
-                }]
+            self.vertex_list = [{v: dllink([0, v])
+                                 for v in self.H} for _ in range(K)]
         else:
             raise NotImplementedError
 
@@ -215,11 +210,12 @@ class FMKWayGainCalc:
         return w
 
     def init_IdVec(self, v, net):
-        self.IdVec = []
-        for w in self.H.G[net]:
-            if w == v:
-                continue
-            self.IdVec.append(w)
+        self.IdVec = [w for w in self.H.G[net] if w != v]
+        # self.IdVec = []
+        # for w in self.H.G[net]:
+        #     if w == v:
+        #         continue
+        #     self.IdVec.append(w)
 
     def update_move_3pin_net(self, part, move_info):
         """Update move for 3-pin net

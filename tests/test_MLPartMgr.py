@@ -73,7 +73,7 @@ def test_MLKWayPartMgr2():
     # assert totalcost >= 109
     # assert totalcost <= 152
     assert totalcost >= 77
-    assert totalcost <= 147
+    assert totalcost <= 153
 
 
 # def test_MLKWayPartMgr3():

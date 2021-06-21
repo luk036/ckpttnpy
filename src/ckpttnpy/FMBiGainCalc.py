@@ -183,11 +183,9 @@ class FMBiGainCalc:
         return w
 
     def init_IdVec(self, v, net):
-        self.IdVec = []
-        for w in self.H.G[net]:
-            if w == v:
-                continue
-            self.IdVec.append(w)
+        self.IdVec = [w for w in self.H.G[net] if w != v]
+        # for w in filter(lambda w: w != v, self.H.G[net]):
+        #     self.IdVec.append(w)
 
     def update_move_3pin_net(self, part, move_info):
         """Update move for 3-pin net

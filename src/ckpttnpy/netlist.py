@@ -169,6 +169,7 @@ def read_json(filename):
     H = Netlist(G, range(num_modules),
                 range(num_modules, num_modules + num_nets))
     H.num_pads = num_pads
+    H.module_weight = list(1 for _ in range(num_modules))
     return H
 
 

@@ -168,15 +168,12 @@ def create_contraction_subgraph(H: Netlist, module_weight,
     Returns:
         HierNetlist: [description]
     """
-    def get_module_weight(v):
-        return 1 if module_weight is None else module_weight[v]
-
     # S, _ = max_independent_net(H, H.module_weight, DontSelect)
     # weight = dict()
     # for net in H.nets:
     #     weight[net] = sum(H.get_module_weight(v) for v in H.G[net])
     weight = {
-        net: sum(get_module_weight(v) for v in H.G[net])
+        net: sum(module_weight[v] for v in H.G[net])
         for net in H.nets
     }
     S = set()
@@ -210,33 +207,31 @@ def create_contraction_subgraph(H: Netlist, module_weight,
     numNets = len(nets)
 
     module_map = {v: i_v for i_v, v in enumerate(modules)}
-    net_map = {net: i_net for i_net, net in enumerate(nets)}
-    node_up_map = {v: module_map[module_up_map[v]] for v in H}
-    net_up_map = {net: net_map[net] + numModules for net in nets}
+    # net_map = {net: i_net for i_net, net in enumerate(nets)}
+    node_up_dict = {v: module_map[module_up_map[v]] for v in H}
+    net_up_map = {net: i_net + numModules for i_net, net in enumerate(nets)}
     # for net in nets:
     #     node_up_map[net] = net_map[net] + numModules
-    node_up_map.update(net_up_map)
+    # node_up_dict.update(net_up_map)
 
     G = nx.Graph()
     G.add_nodes_from(n for n in range(numModules + numNets))
     for v in H:
-        for net in H.G[v]:
-            if net in S:
-                continue
-            G.add_edge(node_up_map[v], node_up_map[net])
+        for net in filter(lambda net: net not in S, H.G[v]):
+            G.add_edge(node_up_dict[v], net_up_map[net])
             # automatically merge the same cell-net
 
     H2 = HierNetlist(G, range(numModules),
                      range(numModules, numModules + numNets))
 
     # node_down_map = {v2: v1 for v1, v2 in node_up_map.items()}
-    node_down_map = [0 for _ in range(len(node_up_map))]
-    for v1, v2 in node_up_map.items():
+    node_down_map = [0 for _ in range(numModules)]
+    for v1, v2 in node_up_dict.items():
         node_down_map[v2] = v1
 
-    cluster_down_map = {node_up_map[v]: net for v, net in cluster_map.items()}
+    cluster_down_map = {node_up_dict[v]: net for v, net in cluster_map.items()}
 
-    module_weight2 = []
+    module_weight2 = list(0 for _ in range(numModules))
     for i_v in range(numModules):
         if i_v in cluster_down_map:
             net = cluster_down_map[i_v]
@@ -245,10 +240,20 @@ def create_contraction_subgraph(H: Netlist, module_weight,
             #     cluster_weight += H.get_module_weight(v2)
             # cluster_weight = sum(H.get_module_weight(v) for v in H.G[net])
             cluster_weight = weight[net]
-            module_weight2.append(cluster_weight)
+            module_weight2[i_v] = cluster_weight
         else:
             v2 = node_down_map[i_v]
-            module_weight2.append(get_module_weight(v2))
+            module_weight2[i_v] = module_weight[v2]
+
+    if isinstance(H.modules, range):
+        node_up_map = [0 for _ in H.modules]
+    elif isinstance(H.modules, list):
+        node_up_map = {}
+    else:
+        raise NotImplementedError
+
+    for v in H.modules:
+        node_up_map[v] = node_up_dict[v]
 
     H2.node_up_map = node_up_map
     H2.node_down_map = node_down_map

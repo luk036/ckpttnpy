@@ -25,10 +25,10 @@ class robin:
 
     def __init__(self, K: int):
         self.cycle = list(slnode(k) for k in range(K))
-        K -= 1
-        for k in range(K):
-            self.cycle[k].next = self.cycle[k+1]
-        self.cycle[K].next = self.cycle[0]
+        sl2 = self.cycle[-1]
+        for sl1 in self.cycle:
+            sl2.next = sl1
+            sl2 = sl1
 
     def exclude(self, fromPart: int):
         """iterator

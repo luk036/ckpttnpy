@@ -19,7 +19,7 @@ class HierNetlist(Netlist):
         """
         Netlist.__init__(self, G, modules, nets)
         self.parent = None
-        self.node_up_map: dict = {}
+        self.node_up_map: Union[Dict, List] = {}
         self.node_down_map: Union[Dict, List] = {}
         self.cluster_down_map: dict = {}
 
