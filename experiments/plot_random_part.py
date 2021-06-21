@@ -8,7 +8,7 @@ import networkx as nx
 
 from ckpttnpy import __version__
 from ckpttnpy.MLPartMgr import MLBiPartMgr
-from ckpttnpy.netlist import Netlist, create_random_graph
+from ckpttnpy.netlist import Netlist, create_random_hgraph
 
 __author__ = "Wai-Shing Luk"
 __copyright__ = "Wai-Shing Luk"
@@ -140,7 +140,7 @@ def main(args):
     if args.eta > 0.3:
         _logger.warning("eta value {} may be too big".format(args.eta))
 
-    H = create_random_graph(args.N, args.M, args.eta)
+    H = create_random_hgraph(args.N, args.M, args.eta)
     totalcost, part = run_MLBiPartMgr(H)
     print("total cost = {}".format(totalcost))
 

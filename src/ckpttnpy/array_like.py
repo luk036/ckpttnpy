@@ -1,4 +1,23 @@
-class shift_list(list):
+from itertools import repeat
+
+
+class repeat_array:
+    """list with arbitrary range"""
+    def __init__(self, value, size):
+        self.value = value
+        self.size = size
+
+    def __getitem__(self, key):
+        return self.value
+
+    def __len__(self):
+        return self.size
+
+    def __iter__(self):
+        return repeat(self.value, self.size)
+
+
+class shift_array(list):
     """list with arbitrary range"""
     def __new__(cls, *args, **kwargs):
         return list.__new__(cls, *args, **kwargs)
@@ -18,8 +37,7 @@ class shift_list(list):
 
 
 if __name__ == '__main__':
-    a = shift_list([i*i for i in range(10)])
-    a.set_start(4)
+    a = repeat_array(1, 10)
     print(a[4])
     for i in a:
         print(i)

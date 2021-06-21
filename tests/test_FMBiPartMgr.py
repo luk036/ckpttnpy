@@ -7,7 +7,7 @@ from ckpttnpy.FMPartMgr import FMPartMgr
 from ckpttnpy.netlist import (
     Netlist,
     create_drawf,
-    create_random_graph,
+    create_random_hgraph,
     create_test_netlist,
     read_json
 )
@@ -47,6 +47,6 @@ def test_FMBiPartMgr3():
 
 
 def test_FMBiPartMgr4():
-    H = create_random_graph()
+    H = create_random_hgraph()
     part = [0 for _ in H]
     run_FMBiPartMgr(H, part)

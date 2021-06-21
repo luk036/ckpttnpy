@@ -2,6 +2,7 @@ from typing import List, Set
 
 import networkx as nx
 
+from .array_like import repeat_array
 from .HierNetlist import HierNetlist
 from .netlist import Netlist
 
@@ -194,14 +195,15 @@ def create_contraction_subgraph(H: Netlist, module_weight,
             clusters.append(master)
             module_up_map.update({v: master for v in H.G[net]})
             C.update(v for v in H.G[net])
-            # for v in H.G[net]:
-            #     module_up_map[v] = master
-            #     C.add(v)
             cluster_map[master] = net
         else:
             nets.append(net)
 
     modules: List = [v for v in H if v not in C]
+
+    # no more C
+    C.clear()
+
     modules += clusters
     numModules = len(modules)
     numNets = len(nets)
@@ -259,5 +261,8 @@ def create_contraction_subgraph(H: Netlist, module_weight,
     H2.node_down_map = node_down_map
     H2.cluster_down_map = cluster_down_map
     H2.module_weight = module_weight2
+    H2.net_weight = repeat_array(1, numNets)
+    # H2.net_weight = shift_array(1 for _ in range(numNets))
+    # H2.net_weight.set_start(numModules)
     H2.parent = H
     return H2, module_weight2

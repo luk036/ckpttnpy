@@ -8,6 +8,8 @@ import networkx as nx
 from networkx.algorithms import bipartite
 from networkx.readwrite import json_graph
 
+from .array_like import repeat_array
+
 
 class ThinGraph(nx.Graph):
     all_edge_dict = {"weight": 1}
@@ -122,8 +124,7 @@ class Netlist:
         Returns:
             [size_t]:  description
         """
-        return 1 if self.module_weight is None \
-            else self.module_weight[v]
+        return self.module_weight[v]
 
     # def get_module_weight_by_id(self, v):
     #     """[summary]
@@ -146,9 +147,7 @@ class Netlist:
         Returns:
             size_t:  description
         """
-        # return 1 if self.net_weight == [] \
-        #          else self.net_weight[self.net_map[net]]
-        return 1
+        return self.net_weight[net]
 
     def __iter__(self):
         """Iterate over the modules. Use: 'for v in H'.
@@ -169,7 +168,10 @@ def read_json(filename):
     H = Netlist(G, range(num_modules),
                 range(num_modules, num_modules + num_nets))
     H.num_pads = num_pads
-    H.module_weight = list(1 for _ in range(num_modules))
+    H.module_weight = repeat_array(1, num_modules)
+    H.net_weight = repeat_array(1, num_nets)
+    # H.net_weight = shift_array(1 for _ in range(num_nets))
+    # H.net_weight.set_start(num_modules)
     return H
 
 
@@ -246,6 +248,7 @@ def create_drawf():
     G.graph['num_pads'] = 3
     H = Netlist(G, modules, nets)
     H.module_weight = module_weight
+    H.net_weight = repeat_array(1, len(nets))
     H.num_pads = 3
     return H
 
@@ -269,10 +272,12 @@ def create_test_netlist():
     modules = ['a0', 'a1', 'a2']
     # module_map = {v: i_v for i_v, v in enumerate(modules)}
     nets = ['a3', 'a4', 'a5']
-    # net_map = {net: i_net for i_net, net in enumerate(nets)}
+    # net_weight = {net: 1 for net in nets}
+    net_weight = repeat_array(1, len(nets))
 
     H = Netlist(G, modules, nets)
     H.module_weight = module_weight
+    H.net_weight = net_weight
     return H
 
 
@@ -335,7 +340,7 @@ def formGraph(N, M, pos, eta, seed=None):
     return G
 
 
-def create_random_graph(N=30, M=26, eta=0.1):
+def create_random_hgraph(N=30, M=26, eta=0.1):
     T = N + M
     xbase = 2
     ybase = 3
@@ -347,4 +352,8 @@ def create_random_graph(N=30, M=26, eta=0.1):
     G.graph['num_modules'] = N
     G.graph['num_nets'] = M
     H = Netlist(G, range(N), range(N, N + M))
+    H.module_weight = repeat_array(1, N)
+    H.net_weight = repeat_array(1, M)
+    # H.net_weight = shift_array(1 for _ in range(M))
+    # H.net_weight.set_start(N)
     return H

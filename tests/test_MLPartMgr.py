@@ -40,7 +40,7 @@ def test_MLBiPartMgr2():
 
 
 # def test_MLBiPartMgr3():
-#     H = create_random_graph()
+#     H = create_random_hgraph()
 #     totalcost = run_MLBiPartMgr(H)
 #     # assert totalcost >= 55
 #     # assert totalcost <= 70
@@ -77,7 +77,7 @@ def test_MLKWayPartMgr2():
 
 
 # def test_MLKWayPartMgr3():
-#     H = create_random_graph()
+#     H = create_random_hgraph()
 #     totalcost = run_MLKWayPartMgr(H, 3)
 #     # assert totalcost >= 109
 #     # assert totalcost <= 152
