@@ -6,7 +6,7 @@ from ckpttnpy.netlist import Netlist, create_drawf, read_json
 
 def run_MLBiPartMgr(H: Netlist):
     partMgr = MLBiPartMgr(0.4)
-    mincost = 1000
+    mincost = 10000000
     for _ in range(10):
         randseq = [randint(0, 1) for _ in range(H.number_of_modules())]
 
@@ -50,7 +50,7 @@ def test_MLBiPartMgr2():
 
 def run_MLKWayPartMgr(H: Netlist, K: int):
     partMgr = MLKWayPartMgr(0.4, K)
-    mincost = 1000
+    mincost = 10000000
     for _ in range(10):
         randseq = [randint(0, K-1) for _ in range(H.number_of_modules())]
         part = list(randseq)

@@ -229,10 +229,14 @@ def create_contraction_subgraph(H: Netlist, module_weight,
     H2 = HierNetlist(G, range(numModules),
                      range(numModules, numModules + numNets))
 
-    node_down_map = {v2: v1 for v1, v2 in node_up_map.items()}
+    # node_down_map = {v2: v1 for v1, v2 in node_up_map.items()}
+    node_down_map = [0 for _ in range(len(node_up_map))]
+    for v1, v2 in node_up_map.items():
+        node_down_map[v2] = v1
+
     cluster_down_map = {node_up_map[v]: net for v, net in cluster_map.items()}
 
-    module_weight = []
+    module_weight2 = []
     for i_v in range(numModules):
         if i_v in cluster_down_map:
             net = cluster_down_map[i_v]
@@ -241,14 +245,14 @@ def create_contraction_subgraph(H: Netlist, module_weight,
             #     cluster_weight += H.get_module_weight(v2)
             # cluster_weight = sum(H.get_module_weight(v) for v in H.G[net])
             cluster_weight = weight[net]
-            module_weight.append(cluster_weight)
+            module_weight2.append(cluster_weight)
         else:
             v2 = node_down_map[i_v]
-            module_weight.append(H.get_module_weight(v2))
+            module_weight2.append(get_module_weight(v2))
 
     H2.node_up_map = node_up_map
     H2.node_down_map = node_down_map
     H2.cluster_down_map = cluster_down_map
-    H2.module_weight = module_weight
+    H2.module_weight = module_weight2
     H2.parent = H
-    return H2, module_weight
+    return H2, module_weight2
