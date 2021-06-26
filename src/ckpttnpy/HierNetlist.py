@@ -8,8 +8,7 @@ from .netlist import Netlist
 
 
 class HierNetlist(Netlist):
-    def __init__(self, G: nx.Graph, modules: Union[range, List],
-                 nets: Union[range, List]):
+    def __init__(self, G: nx.Graph, modules, nets):
         """[summary]
 
         Arguments:
@@ -22,9 +21,22 @@ class HierNetlist(Netlist):
         self.node_up_map: Union[Dict, List] = {}
         self.node_down_map: Union[Dict, List] = {}
         self.cluster_down_map: dict = {}
+        self.net_weight: dict = {}
+
+    def get_degree(self, v):
+        return sum(self.net_weight.get(net, 1) for net in self.G[v])
+
+    def get_max_degree(self):
+        return max(self.get_degree(v) for v in self.modules)
 
     def projection_down(self, part: Union[Dict, List[int]],
                         part_down: Union[Dict, List[int]]):
+        """[summary]
+
+        Args:
+            part (Union[Dict, List[int]]): [description]
+            part_down (Union[Dict, List[int]]): [description]
+        """
         H = self.parent
         for v in self.modules:
             if v in self.cluster_down_map:
@@ -37,6 +49,23 @@ class HierNetlist(Netlist):
 
     def projection_up(self, part: Union[Dict, List[int]],
                       part_up: Union[Dict, List[int]]):
+        """[summary]
+
+        Args:
+            part (Union[Dict, List[int]]): [description]
+            part_up (Union[Dict, List[int]]): [description]
+        """
         H = self.parent
         for v in H:
             part_up[self.node_up_map[v]] = part[v]
+
+    def get_net_weight(self, net) -> int:
+        """[summary]
+
+        Arguments:
+            i_net (size_t):  description
+
+        Returns:
+            size_t:  description
+        """
+        return self.net_weight.get(net, 1)

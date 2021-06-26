@@ -2,7 +2,6 @@ from typing import List, Set
 
 import networkx as nx
 
-from .array_like import repeat_array
 from .HierNetlist import HierNetlist
 from .netlist import Netlist
 
@@ -173,10 +172,8 @@ def create_contraction_subgraph(H: Netlist, module_weight,
     # weight = dict()
     # for net in H.nets:
     #     weight[net] = sum(H.get_module_weight(v) for v in H.G[net])
-    weight = {
-        net: sum(module_weight[v] for v in H.G[net])
-        for net in H.nets
-    }
+    weight = {net: sum(module_weight[v] for v in H.G[net])
+              for net in H.nets}  # can be done in parallel
     S = set()
     _ = min_maximal_matching(H, weight, S, DontSelect)
 
@@ -187,15 +184,16 @@ def create_contraction_subgraph(H: Netlist, module_weight,
     C = set()
     nets = list()
     clusters = list()
-    cluster_map = dict()
+    # cluster_map = dict()
     for net in H.nets:
         if net in S:
-            netCur = iter(H.G[net])
-            master = next(netCur)
-            clusters.append(master)
-            module_up_map.update({v: master for v in H.G[net]})
+            # netCur = iter(H.G[net])
+            # master = next(netCur)
+            # clusters.append(master)
+            clusters.append(net)
+            module_up_map.update({v: net for v in H.G[net]})
             C.update(v for v in H.G[net])
-            cluster_map[master] = net
+            # cluster_map[master] = net
         else:
             nets.append(net)
 
@@ -223,15 +221,42 @@ def create_contraction_subgraph(H: Netlist, module_weight,
             G.add_edge(node_up_dict[v], net_up_map[net])
             # automatically merge the same cell-net
 
-    H2 = HierNetlist(G, range(numModules),
-                     range(numModules, numModules + numNets))
+    # Purging duplicate nets
+    net_weight = dict()
+    # for net in nets:
+    #     wt = H.get_net_weight(net)
+    #     if wt > 1:
+    #         net_weight[net_up_map[net]] = wt
+
+    removelist = set()
+    # for net in clusters:
+    #     cluster = module_map[net]
+    #     for net1 in G[cluster]:
+    #         if G.degree(net1) > 5:  # only check low-fan-out nets
+    #             continue
+    #         for net2 in G[cluster]:
+    #             if G.degree(net1) != G.degree(net2):
+    #                 continue
+    #             S1 = set(v for v in G[net1])
+    #             S2 = set(v for v in G[net2])
+    #             if S1 == S2:
+    #                 removelist.add(net2)
+    #                 net_weight[net1] = net_weight.get(
+    #                     net1, 1) + net_weight.get(net2, 1)
+    # G.remove_nodes_from(removelist)
+    original_net = range(numModules, numModules + numNets)
+    updated_nets = [net for net in original_net if net not in removelist]
+
+    H2 = HierNetlist(G, range(numModules), updated_nets)
 
     # node_down_map = {v2: v1 for v1, v2 in node_up_map.items()}
     node_down_map = [0 for _ in range(numModules)]
     for v1, v2 in node_up_dict.items():
         node_down_map[v2] = v1
 
-    cluster_down_map = {node_up_dict[v]: net for v, net in cluster_map.items()}
+    # cluster_down_map = {node_up_dict[v]: net
+    #     for v, net in cluster_map.items()}
+    cluster_down_map = {node_up_dict[v]: netk for netk in S for v in H.G[netk]}
 
     module_weight2 = list(0 for _ in range(numModules))
     for i_v in range(numModules):
@@ -261,7 +286,7 @@ def create_contraction_subgraph(H: Netlist, module_weight,
     H2.node_down_map = node_down_map
     H2.cluster_down_map = cluster_down_map
     H2.module_weight = module_weight2
-    H2.net_weight = repeat_array(1, numNets)
+    H2.net_weight = net_weight
     # H2.net_weight = shift_array(1 for _ in range(numNets))
     # H2.net_weight.set_start(numModules)
     H2.parent = H

@@ -50,7 +50,7 @@ class Netlist:
 
         self.num_modules = len(modules)
         self.num_nets = len(nets)
-        self.net_weight: Optional[Union[Dict, List[int]]] = None
+        # self.net_weight: Optional[Union[Dict, List[int]]] = None
         self.module_weight: Optional[Union[Dict, List[int]]] = None
         self.module_fixed: set = set()
 
@@ -65,7 +65,7 @@ class Netlist:
         # self.module_fixed = module_fixed
         # self.has_fixed_modules = (self.module_fixed != [])
         self.max_degree = max(self.G.degree[cell] for cell in modules)
-        self.max_net_degree = max(self.G.degree[net] for net in nets)
+        # self.max_net_degree = max(self.G.degree[net] for net in nets)
 
     def number_of_modules(self) -> int:
         """[summary]
@@ -105,15 +105,7 @@ class Netlist:
         Returns:
             dtype:  description
         """
-        return self.max_degree
-
-    def get_max_net_degree(self) -> int:
-        """[summary]
-
-        Returns:
-            dtype:  description
-        """
-        return self.max_net_degree
+        return max(self.G.degree[cell] for cell in self.modules)
 
     def get_module_weight(self, v) -> int:
         """[summary]
@@ -138,7 +130,7 @@ class Netlist:
     #     return 1 if self.module_weight is None \
     #         else self.module_weight[v]
 
-    def get_net_weight(self, net) -> int:
+    def get_net_weight(self, _) -> int:
         """[summary]
 
         Arguments:
@@ -147,7 +139,7 @@ class Netlist:
         Returns:
             size_t:  description
         """
-        return self.net_weight[net]
+        return 1
 
     def __iter__(self):
         """Iterate over the modules. Use: 'for v in H'.

@@ -201,7 +201,7 @@ class FMKWayGainCalc:
 
         for lPart in [fromPart, toPart]:
             if part_w == lPart:
-                for k in range(self.K):
+                for k in range(self.K):  # cannot use zip here
                     self.deltaGainW[k] += weight
                     self.deltaGainV[k] += weight
             self.deltaGainW[lPart] -= weight
