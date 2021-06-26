@@ -4,7 +4,9 @@ import networkx as nx
 
 from .HierNetlist import HierNetlist
 from .netlist import Netlist
+
 # from .minhash import MinHash
+
 
 def min_maximal_matching(H, weight, matchset, dep):
     """Perform minimum weighted maximal matching using primal-dual

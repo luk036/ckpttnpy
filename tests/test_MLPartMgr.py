@@ -6,6 +6,7 @@ from ckpttnpy.netlist import Netlist, create_drawf, read_json
 
 def run_MLBiPartMgr(H: Netlist):
     partMgr = MLBiPartMgr(0.4)
+    partMgr.limitsize = 2000
     mincost = 10000000
     for _ in range(10):
         randseq = [randint(0, 1) for _ in range(H.number_of_modules())]
@@ -17,7 +18,7 @@ def run_MLBiPartMgr(H: Netlist):
         else:
             raise NotImplementedError
 
-        partMgr.run_FMPartition(H, H.module_weight, part, 5000)
+        partMgr.run_FMPartition(H, H.module_weight, part)
         if mincost > partMgr.totalcost:
             mincost = partMgr.totalcost
     return mincost
@@ -25,16 +26,12 @@ def run_MLBiPartMgr(H: Netlist):
 
 def test_MLBiPartMgr():
     H = create_drawf()
-    # totalcost =
     run_MLBiPartMgr(H)
-    # assert totalcost == 2 # ???
 
 
 def test_MLBiPartMgr2():
     H = read_json('testcases/p1.json')
     totalcost = run_MLBiPartMgr(H)
-    # assert totalcost >= 55
-    # assert totalcost <= 70
     assert totalcost >= 43
     assert totalcost <= 51
 
@@ -49,40 +46,32 @@ def test_MLBiPartMgr2():
 
 
 def run_MLKWayPartMgr(H: Netlist, K: int):
+    """[summary]
+
+    Args:
+        H (Netlist): [description]
+        K (int): [description]
+
+    Returns:
+        [type]: [description]
+    """
     partMgr = MLKWayPartMgr(0.4, K)
+    partMgr.limitsize = 2000
     mincost = 10000000
     for _ in range(5):
         randseq = [randint(0, K-1) for _ in range(H.number_of_modules())]
         part = list(randseq)
-        partMgr.run_FMPartition(H, H.module_weight, part, 5000)
+        partMgr.run_FMPartition(H, H.module_weight, part)
         if mincost > partMgr.totalcost:
             mincost = partMgr.totalcost
     return mincost
 
 
-# def test_MLKWayPartMgr():
-#     H = create_drawf()
-#     # totalcost =
-#     run_MLKWayPartMgr(H, 3)
-#     # assert totalcost == 4 # ???
-
-
-def test_MLKWayPartMgr2():
+def test_MLKWayPartMgr():
     H = read_json('testcases/p1.json')
     totalcost = run_MLKWayPartMgr(H, 3)
-    # assert totalcost >= 109
-    # assert totalcost <= 152
     assert totalcost >= 77
-    assert totalcost <= 175
-
-
-# def test_MLKWayPartMgr3():
-#     H = create_random_hgraph()
-#     totalcost = run_MLKWayPartMgr(H, 3)
-#     # assert totalcost >= 109
-#     # assert totalcost <= 152
-#     assert totalcost >= 9
-#     assert totalcost <= 9
+    assert totalcost <= 150
 
 
 # if __name__ == "__main__":

@@ -36,8 +36,17 @@ class MLPartMgr:
         self.BalTol = BalTol
         self.K = K
         self.totalcost = 0
+        self._limitsize = 7
 
-    def run_FMPartition(self, H, module_weight, part, limitsize=7):
+    @property
+    def limitsize(self):
+        return self._limitsize
+
+    @limitsize.setter
+    def limitsize(self, limit):
+        self._limitsize = limit
+
+    def run_FMPartition(self, H, module_weight, part):
         """[summary]
 
         Arguments:
@@ -54,7 +63,8 @@ class MLPartMgr:
             gainMgr = self.GainMgr(self.GainCalc, H, self.K)
             constrMgr = self.ConstrMgr(H, self.BalTol, module_weight, self.K)
             partMgr = self.PartMgr(H, gainMgr, constrMgr)
-            return partMgr.legalize(part)
+            legalcheck = partMgr.legalize(part)
+            return legalcheck, partMgr.totalcost
 
         def optimize_fn():
             gainMgr = self.GainMgr(self.GainCalc, H, self.K)
@@ -63,19 +73,20 @@ class MLPartMgr:
             partMgr.optimize(part)
             return partMgr.totalcost
 
-        legalcheck = legalcheck_fn();
+        legalcheck, totalcost = legalcheck_fn()
         if legalcheck != LegalCheck.allsatisfied:
+            self.totalcost = totalcost
             return legalcheck
 
-        if H.number_of_modules() >= limitsize:  # OK
+        if H.number_of_modules() >= self._limitsize:  # OK
             H2, module_weight2 = create_contraction_subgraph(
                 H, module_weight, set())
             if H2.number_of_modules() <= H.number_of_modules():
                 part2 = list(0 for _ in range(H2.number_of_modules()))
                 H2.projection_up(part, part2)
-                legalcheck = self.run_FMPartition(H2, module_weight2, part2,
-                                                  limitsize)
-                if legalcheck == LegalCheck.allsatisfied:
+                legalcheck_recur = self.run_FMPartition(
+                    H2, module_weight2, part2)
+                if legalcheck_recur == LegalCheck.allsatisfied:
                     H2.projection_down(part2, part)
 
         self.totalcost = optimize_fn()
@@ -85,11 +96,22 @@ class MLPartMgr:
 
 class MLBiPartMgr(MLPartMgr):
     def __init__(self, BalTol):
+        """[summary]
+
+        Args:
+            BalTol ([type]): [description]
+        """
         MLPartMgr.__init__(self, FMBiGainCalc, FMBiGainMgr, FMBiConstrMgr,
                            FMPartMgr, BalTol)
 
 
 class MLKWayPartMgr(MLPartMgr):
     def __init__(self, BalTol, K):
+        """[summary]
+
+        Args:
+            BalTol ([type]): [description]
+            K ([type]): [description]
+        """
         MLPartMgr.__init__(self, FMKWayGainCalc, FMKWayGainMgr,
                            FMKWayConstrMgr, FMPartMgr, BalTol, K)
