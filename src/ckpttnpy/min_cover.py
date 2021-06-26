@@ -4,37 +4,7 @@ import networkx as nx
 
 from .HierNetlist import HierNetlist
 from .netlist import Netlist
-
-# def max_independent_net(H: Netlist, mw, DontSelect: Set) -> Tuple[Set, int]:
-#     """Maximum Independent NET (by greedy)
-
-#     Arguments:
-#         H (Netlist): [description]
-#         mw ([type]): [description]
-#         DontSelect (Set): [description]
-
-#     Returns:
-#         Tuple[Set, int]: [description]
-#     """
-#     visited = set()
-#     for net in DontSelect:
-#         visited.add(net)
-
-#     S = set()
-#     total_cost = 0
-
-#     for net in H.nets:
-#         if net in visited:
-#             continue
-#         if H.G.degree(net) < 2:
-#             continue
-#         S.add(net)
-#         total_cost += H.get_net_weight(net)
-#         for v in H.G[net]:
-#             for net2 in H.G[v]:
-#                 visited.add(net2)
-#     return S, total_cost
-
+# from .minhash import MinHash
 
 def min_maximal_matching(H, weight, matchset, dep):
     """Perform minimum weighted maximal matching using primal-dual
@@ -83,78 +53,6 @@ def min_maximal_matching(H, weight, matchset, dep):
 
     assert total_dual_cost <= total_primal_cost
     return total_primal_cost
-
-
-# def min_net_cover_pd(H: Netlist, weight):
-#     """Minimum Net Cover using Primal-Dual algorithm
-
-#     @todo: sort cell weight to cover big cells first
-
-#     Arguments:
-#         H (type):  description
-#         weight (type):  description
-
-#     Returns:
-#         dtype:  description
-#     """
-#     covered = set()
-#     # S = set()
-#     L = list()
-#     if H.net_weight == {}:
-#         gap = list(1 for _ in H.nets)
-#     else:
-#         gap = list(w for w in H.net_weight)
-#     # gap = weight.copy()
-
-#     total_primal_cost = 0
-#     total_dual_cost = 0
-#     # offset = H.number_of_modules()
-
-#     for v in H:
-#         if v in covered:
-#             continue
-#         min_gap = 10000000
-#         s = 0
-#         for net in H.G[v]:
-#             i_net = H.net_map[net]
-#             if min_gap > gap[i_net]:
-#                 s = net
-#                 min_gap = gap[i_net]
-#         # is_net_cover[i_s] = True
-#         # S.append(i_s)
-#         L.append(s)
-#         for net in H.G[v]:
-#             i_net = H.net_map[net]
-#             gap[i_net] -= min_gap
-#         assert gap[H.net_map[s]] == 0
-#         for v2 in H.G[s]:
-#             covered.add(v2)
-#         total_primal_cost += H.get_net_weight(s)
-#         total_dual_cost += min_gap
-
-#     assert total_primal_cost >= total_dual_cost
-
-#     # S2 = S.copy()
-#     S = set(v for v in L)
-#     for net in L:
-#         found = False
-#         for v in H.G[net]:
-#             covered = False
-#             for net2 in H.G[v]:
-#                 if net2 == net:
-#                     continue
-#                 if net2 in S:
-#                     covered = True
-#                     break
-#             if not covered:
-#                 found = True
-#                 break
-#         if found:
-#             continue
-#         total_primal_cost -= H.get_net_weight(net)
-#         S.remove(net)
-
-#     return S, total_primal_cost
 
 
 def create_contraction_subgraph(H: Netlist, module_weight,
@@ -223,27 +121,38 @@ def create_contraction_subgraph(H: Netlist, module_weight,
 
     # Purging duplicate nets
     net_weight = dict()
-    # for net in nets:
-    #     wt = H.get_net_weight(net)
-    #     if wt > 1:
-    #         net_weight[net_up_map[net]] = wt
+    for net in nets:
+        wt = H.get_net_weight(net)
+        if wt > 1:
+            net_weight[net_up_map[net]] = wt
 
     removelist = set()
-    # for net in clusters:
-    #     cluster = module_map[net]
-    #     for net1 in G[cluster]:
-    #         if G.degree(net1) > 5:  # only check low-fan-out nets
-    #             continue
-    #         for net2 in G[cluster]:
-    #             if G.degree(net1) != G.degree(net2):
-    #                 continue
-    #             S1 = set(v for v in G[net1])
-    #             S2 = set(v for v in G[net2])
-    #             if S1 == S2:
-    #                 removelist.add(net2)
-    #                 net_weight[net1] = net_weight.get(
-    #                     net1, 1) + net_weight.get(net2, 1)
-    # G.remove_nodes_from(removelist)
+    for net in clusters:
+        cluster = module_map[net]
+        for net1 in G[cluster]:
+            for net2 in G[cluster]:
+                if G.degree(net1) != G.degree(net2):
+                    continue
+                same = False
+                if G.degree(net1) <= 3:  # only check for low-fan-out nets
+                    S1 = set(v for v in G[net1])
+                    S2 = set(v for v in G[net2])
+                    if S1 == S2:
+                        same = True
+                # else:
+                #     m1 = MinHash(100)
+                #     m2 = MinHash(100)
+                #     for v1 in G[net1]:
+                #         m1.add(v1)
+                #     for v2 in G[net2]:
+                #         m2.add(v2)
+                #     if m1.jaccard(m2) > 0.99:
+                #         same = True
+                if same:
+                    removelist.add(net2)
+                    net_weight[net1] = net_weight.get(
+                        net1, 1) + net_weight.get(net2, 1)
+    G.remove_nodes_from(removelist)
     original_net = range(numModules, numModules + numNets)
     updated_nets = [net for net in original_net if net not in removelist]
 

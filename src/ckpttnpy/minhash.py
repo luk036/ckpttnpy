@@ -25,7 +25,7 @@ class MinHash(object):
 
     def jaccard(self, other):
 
-        if np.any(self.masks != other._masks):
+        if np.any(self._masks != other._masks):
             raise Exception('Can only calculate similarity '
                             'between MinHashes with the same hash '
                             'functions.')

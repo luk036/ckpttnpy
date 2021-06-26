@@ -50,12 +50,23 @@ class MLPartMgr:
         Returns:
             dtype:  description
         """
-        gainMgr = self.GainMgr(self.GainCalc, H, self.K)
-        constrMgr = self.ConstrMgr(H, self.BalTol, module_weight, self.K)
-        partMgr = self.PartMgr(H, gainMgr, constrMgr)
-        legalcheck = partMgr.legalize(part)
+        def legalcheck_fn():
+            gainMgr = self.GainMgr(self.GainCalc, H, self.K)
+            constrMgr = self.ConstrMgr(H, self.BalTol, module_weight, self.K)
+            partMgr = self.PartMgr(H, gainMgr, constrMgr)
+            return partMgr.legalize(part)
+
+        def optimize_fn():
+            gainMgr = self.GainMgr(self.GainCalc, H, self.K)
+            constrMgr = self.ConstrMgr(H, self.BalTol, module_weight, self.K)
+            partMgr = self.PartMgr(H, gainMgr, constrMgr)
+            partMgr.optimize(part)
+            return partMgr.totalcost
+
+        legalcheck = legalcheck_fn();
         if legalcheck != LegalCheck.allsatisfied:
             return legalcheck
+
         if H.number_of_modules() >= limitsize:  # OK
             H2, module_weight2 = create_contraction_subgraph(
                 H, module_weight, set())
@@ -66,9 +77,9 @@ class MLPartMgr:
                                                   limitsize)
                 if legalcheck == LegalCheck.allsatisfied:
                     H2.projection_down(part2, part)
-        partMgr.optimize(part)
-        assert partMgr.totalcost >= 0
-        self.totalcost = partMgr.totalcost
+
+        self.totalcost = optimize_fn()
+        assert self.totalcost >= 0
         return legalcheck
 
 

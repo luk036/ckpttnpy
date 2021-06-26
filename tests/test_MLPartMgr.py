@@ -17,7 +17,7 @@ def run_MLBiPartMgr(H: Netlist):
         else:
             raise NotImplementedError
 
-        partMgr.run_FMPartition(H, H.module_weight, part)
+        partMgr.run_FMPartition(H, H.module_weight, part, 5000)
         if mincost > partMgr.totalcost:
             mincost = partMgr.totalcost
     return mincost
@@ -36,7 +36,7 @@ def test_MLBiPartMgr2():
     # assert totalcost >= 55
     # assert totalcost <= 70
     assert totalcost >= 43
-    assert totalcost <= 65
+    assert totalcost <= 51
 
 
 # def test_MLBiPartMgr3():
@@ -51,10 +51,10 @@ def test_MLBiPartMgr2():
 def run_MLKWayPartMgr(H: Netlist, K: int):
     partMgr = MLKWayPartMgr(0.4, K)
     mincost = 10000000
-    for _ in range(3):
+    for _ in range(5):
         randseq = [randint(0, K-1) for _ in range(H.number_of_modules())]
         part = list(randseq)
-        partMgr.run_FMPartition(H, H.module_weight, part)
+        partMgr.run_FMPartition(H, H.module_weight, part, 5000)
         if mincost > partMgr.totalcost:
             mincost = partMgr.totalcost
     return mincost
@@ -73,7 +73,7 @@ def test_MLKWayPartMgr2():
     # assert totalcost >= 109
     # assert totalcost <= 152
     assert totalcost >= 77
-    assert totalcost <= 178
+    assert totalcost <= 175
 
 
 # def test_MLKWayPartMgr3():
