@@ -23,7 +23,7 @@ def run_MLKWayPartMgr(H: Netlist, BalTol: float):
     mincost = 100000000000
     minpart = []
     for _ in range(10):
-        randseq = [randint(0, 2) for _ in range(H.number_of_modules())]
+        randseq = [randint(0, 2) for _ in H]
         if isinstance(H.modules, range):
             part = randseq
         elif isinstance(H.modules, list):
@@ -39,11 +39,9 @@ def run_MLKWayPartMgr(H: Netlist, BalTol: float):
 
 
 def plot(H: Netlist, part):
-    N = H.number_of_modules()
-    M = H.number_of_nets()
     pos = nx.spring_layout(H.G)
     nx.draw_networkx_nodes(H.G,
-                           nodelist=range(N, N + M),
+                           nodelist=H.nets,
                            node_color='k',
                            node_size=10,
                            pos=pos)
@@ -56,7 +54,7 @@ def plot(H: Netlist, part):
                                node_size=50,
                                pos=pos)
     nx.draw_networkx_nodes(H.G,
-                           nodelist=range(N, N + M),
+                           nodelist=H.nets,
                            node_color='k',
                            node_size=20,
                            pos=pos)

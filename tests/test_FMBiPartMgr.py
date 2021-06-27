@@ -25,28 +25,31 @@ def run_FMBiPartMgr(H: Netlist, part: Part):
     assert partMgr.totalcost == totalcostbefore
     partMgr.optimize(part)
     assert partMgr.totalcost <= totalcostbefore
+    totalcostbefore = partMgr.totalcost
+    partMgr.init(part)
+    assert partMgr.totalcost == totalcostbefore
 
 
 def test_FMBiPartMgr():
-    H = create_test_netlist()
-    part = {v: 0 for v in H}
-    run_FMBiPartMgr(H, part)
-
-
-def test_FMBiPartMgr2():
     H = create_drawf()
     part = {v: 0 for v in H}
     H.module_fixed = {'p1'}
     run_FMBiPartMgr(H, part)
 
 
+def test_FMBiPartMgr2():
+    H = create_test_netlist()
+    part = {v: 0 for v in H}
+    run_FMBiPartMgr(H, part)
+
+
 def test_FMBiPartMgr3():
-    H = read_json('testcases/p1.json')
+    H = create_random_hgraph()
     part = [0 for _ in H]
     run_FMBiPartMgr(H, part)
 
 
 def test_FMBiPartMgr4():
-    H = create_random_hgraph()
+    H = read_json('testcases/p1.json')
     part = [0 for _ in H]
     run_FMBiPartMgr(H, part)

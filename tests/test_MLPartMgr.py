@@ -7,21 +7,17 @@ from ckpttnpy.netlist import Netlist, create_drawf, read_json
 def run_MLBiPartMgr(H: Netlist):
     partMgr = MLBiPartMgr(0.4)
     partMgr.limitsize = 2000
-    mincost = 10000000
-    for _ in range(10):
-        randseq = [randint(0, 1) for _ in range(H.number_of_modules())]
+    randseq = [randint(0, 1) for _ in H]
 
-        if isinstance(H.modules, range):
-            part = randseq
-        elif isinstance(H.modules, list):
-            part = {v: k for v, k in zip(H.modules, randseq)}
-        else:
-            raise NotImplementedError
+    if isinstance(H.modules, range):
+        part = randseq
+    elif isinstance(H.modules, list):
+        part = {v: k for v, k in zip(H.modules, randseq)}
+    else:
+        raise NotImplementedError
 
-        partMgr.run_FMPartition(H, H.module_weight, part)
-        if mincost > partMgr.totalcost:
-            mincost = partMgr.totalcost
-    return mincost
+    partMgr.run_FMPartition(H, H.module_weight, part)
+    return partMgr.totalcost
 
 
 def test_MLBiPartMgr():
@@ -33,16 +29,7 @@ def test_MLBiPartMgr2():
     H = read_json('testcases/p1.json')
     totalcost = run_MLBiPartMgr(H)
     assert totalcost >= 43
-    assert totalcost <= 51
-
-
-# def test_MLBiPartMgr3():
-#     H = create_random_hgraph()
-#     totalcost = run_MLBiPartMgr(H)
-#     # assert totalcost >= 55
-#     # assert totalcost <= 70
-#     assert totalcost >= 5
-#     assert totalcost <= 5
+    assert totalcost <= 105
 
 
 def run_MLKWayPartMgr(H: Netlist, K: int):
@@ -57,21 +44,24 @@ def run_MLKWayPartMgr(H: Netlist, K: int):
     """
     partMgr = MLKWayPartMgr(0.4, K)
     partMgr.limitsize = 2000
-    mincost = 10000000
-    for _ in range(5):
-        randseq = [randint(0, K-1) for _ in range(H.number_of_modules())]
-        part = list(randseq)
-        partMgr.run_FMPartition(H, H.module_weight, part)
-        if mincost > partMgr.totalcost:
-            mincost = partMgr.totalcost
-    return mincost
+    randseq = [randint(0, K - 1) for _ in H]
+
+    if isinstance(H.modules, range):
+        part = randseq
+    elif isinstance(H.modules, list):
+        part = {v: k for v, k in zip(H.modules, randseq)}
+    else:
+        raise NotImplementedError
+
+    partMgr.run_FMPartition(H, H.module_weight, part)
+    return partMgr.totalcost
 
 
 def test_MLKWayPartMgr():
     H = read_json('testcases/p1.json')
     totalcost = run_MLKWayPartMgr(H, 3)
     assert totalcost >= 77
-    assert totalcost <= 150
+    assert totalcost <= 197
 
 
 # if __name__ == "__main__":
