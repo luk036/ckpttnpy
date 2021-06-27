@@ -6,7 +6,7 @@ from ckpttnpy.netlist import Netlist, create_drawf, read_json
 
 def run_MLBiPartMgr(H: Netlist):
     partMgr = MLBiPartMgr(0.4)
-    partMgr.limitsize = 2000
+    # partMgr.limitsize = 2000
     randseq = [randint(0, 1) for _ in H]
 
     if isinstance(H.modules, range):
@@ -43,7 +43,7 @@ def run_MLKWayPartMgr(H: Netlist, K: int):
         [type]: [description]
     """
     partMgr = MLKWayPartMgr(0.4, K)
-    partMgr.limitsize = 2000
+    # partMgr.limitsize = 2000
     randseq = [randint(0, K - 1) for _ in H]
 
     if isinstance(H.modules, range):

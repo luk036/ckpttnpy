@@ -132,7 +132,12 @@ def create_contraction_subgraph(H: Netlist, module_weight,
     for net in clusters:
         cluster = module_map[net]
         for net1 in G[cluster]:
+            if G.degree(net1) == 1:  # self loop
+                removelist.add(net1)
+                continue
             for net2 in G[cluster]:
+                if net2 == net1:
+                    continue
                 if G.degree(net1) != G.degree(net2):
                     continue
                 same = False
