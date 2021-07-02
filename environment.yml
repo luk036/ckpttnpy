@@ -1,4 +1,4 @@
-name: ecgencpp
+name: ckpttnpy
 channels:
   - conda-forge
 dependencies:
