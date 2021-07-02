@@ -21,7 +21,7 @@ class bpqueue:
     i.e. (b - a + 2). The extra dummy array element (which is called
     sentinel) is used to reduce the boundary checking during updating.
 
-    All the member functions assume that the keys are within the bound.
+    All member functions assume that the keys are within the bound.
     """
 
     __slots__ = ('_max', '_offset', '_high', '_bucket')
@@ -33,9 +33,8 @@ class bpqueue:
             a (int):  lower bound
             b (int):  upper bound
         """
-        self._max = 0
-
         assert a <= b
+        self._max = 0
         self._offset = a - 1
         self._high = b - self._offset
         self._bucket = list(dllink([0, 4848]) for _ in range(self._high + 1))
