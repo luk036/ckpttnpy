@@ -1,4 +1,4 @@
-ckpttnpy
+ckpttnpy (develop branch)
 ========
 
 Circuit Partitioning Python Code
