@@ -69,9 +69,10 @@ class FMBiGainCalc:
             part (list):  description
         """
         degree = self.H.G.degree[net]
+        if degree < 2:  # unlikely, self-loop, etc.
+            return  # does not provide any gain when move
+
         match degree:
-            case 0 | 1:  # unlikely, self-loop, etc.
-                return  # does not provide any gain when move
             case 2:
                 self._init_gain_2pin_net(net, part)
             case 3:
@@ -79,8 +80,6 @@ class FMBiGainCalc:
             case _:
                 self._init_gain_general_net(net, part)
 
-        # if degree < 2:  # unlikely, self-loop, etc.
-        #     return  # does not provide any gain when move
         # if degree == 3:
         #     self._init_gain_3pin_net(net, part)
         # elif degree == 2:
