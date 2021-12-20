@@ -4,6 +4,7 @@
 # Take a snapshot when a move make **negative** gain.
 # Snapshot in the form of "interface"???
 from abc import abstractmethod
+
 # **Special code for two-pin nets**
 from typing import Any, Dict, List, Union
 

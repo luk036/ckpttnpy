@@ -1,5 +1,4 @@
-ckpttnpy
-========
+# ckpttnpy
 
 Circuit Partitioning Python Code
 
@@ -12,8 +11,7 @@ Circuit Partitioning Python Code
 [![CodeFactor](https://www.codefactor.io/repository/github/luk036/ckpttnpy/badge)](https://www.codefactor.io/repository/github/luk036/ckpttnpy)
 [![Maintainability](https://api.codeclimate.com/v1/badges/2551a7289b83520b6cac/maintainability)](https://codeclimate.com/github/luk036/ckpttnpy/maintainability)
 
-Installation and Run
---------------------
+## Installation and Run
 
 To setup develop environment:
 
@@ -24,13 +22,11 @@ To run unit tests:
 
     python3 setup.py test
 
-See also
---------
+## See also
 
 [ckpttncpp](https://github.com/luk036/ckpttncpp)
 
-Note
-----
+## Note
 
 This project has been set up using PyScaffold 3.2.1. For details and usage
 information on PyScaffold see <https://pyscaffold.org/>.

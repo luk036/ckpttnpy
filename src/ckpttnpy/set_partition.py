@@ -60,7 +60,7 @@ def stirling2nd(n: int, k: int) -> int:
     Returns:
         int: [description]
     """
-    if (k >= n or k <= 1):
+    if k >= n or k <= 1:
         return 1
     return stirling2nd(n - 1, k - 1) + k * stirling2nd(n - 1, k)
 

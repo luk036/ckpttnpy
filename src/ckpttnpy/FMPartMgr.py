@@ -12,7 +12,6 @@ Part = Union[Dict[Any, int], List[int]]
 
 
 class FMPartMgr(PartMgrBase):
-
     def take_snapshot(self, part: Part):
         """[summary]
 

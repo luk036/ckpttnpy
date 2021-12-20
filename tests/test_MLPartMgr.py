@@ -26,7 +26,7 @@ def test_MLBiPartMgr():
 
 
 def test_MLBiPartMgr2():
-    H = read_json('testcases/p1.json')
+    H = read_json("testcases/p1.json")
     totalcost = run_MLBiPartMgr(H)
     assert totalcost >= 43
     assert totalcost <= 105
@@ -58,7 +58,7 @@ def run_MLKWayPartMgr(H: Netlist, K: int):
 
 
 def test_MLKWayPartMgr():
-    H = read_json('testcases/p1.json')
+    H = read_json("testcases/p1.json")
     totalcost = run_MLKWayPartMgr(H, 3)
     assert totalcost >= 77
     assert totalcost <= 197

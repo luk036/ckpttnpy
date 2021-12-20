@@ -11,8 +11,16 @@ Part = Union[Dict[Any, int], List[int]]
 
 class FMKWayGainCalc:
 
-    __slots__ = ('totalcost', 'H', 'vertex_list', 'K', 'RR', 'deltaGainV',
-                 'IdVec', 'deltaGainW')
+    __slots__ = (
+        "totalcost",
+        "H",
+        "vertex_list",
+        "K",
+        "RR",
+        "deltaGainV",
+        "IdVec",
+        "deltaGainW",
+    )
 
     # public:
 
@@ -32,11 +40,9 @@ class FMKWayGainCalc:
         self.vertex_list = []
 
         if isinstance(self.H.modules, range):
-            self.vertex_list = [[dllink([0, i]) for i in self.H]
-                                for _ in range(K)]
+            self.vertex_list = [[dllink([0, i]) for i in self.H] for _ in range(K)]
         elif isinstance(self.H.modules, list):
-            self.vertex_list = [{v: dllink([0, v])
-                                 for v in self.H} for _ in range(K)]
+            self.vertex_list = [{v: dllink([0, v]) for v in self.H} for _ in range(K)]
         else:
             raise NotImplementedError
 
@@ -177,8 +183,7 @@ class FMKWayGainCalc:
                         break
 
     def update_move_init(self):
-        """update move init
-        """
+        """update move init"""
         self.deltaGainV = list(0 for _ in range(self.K))
 
     def update_move_2pin_net(self, part, move_info):

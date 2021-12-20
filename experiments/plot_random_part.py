@@ -42,21 +42,9 @@ def plot(H: Netlist, part):
     part0 = [i for i in H if part[i] == 0]
     part1 = [i for i in H if part[i] == 1]
     pos = nx.spring_layout(H.G)
-    nx.draw_networkx_nodes(H.G,
-                           nodelist=part0,
-                           node_color='g',
-                           node_size=50,
-                           pos=pos)
-    nx.draw_networkx_nodes(H.G,
-                           nodelist=part1,
-                           node_color='r',
-                           node_size=50,
-                           pos=pos)
-    nx.draw_networkx_nodes(H.G,
-                           nodelist=H.nets,
-                           node_color='k',
-                           node_size=20,
-                           pos=pos)
+    nx.draw_networkx_nodes(H.G, nodelist=part0, node_color="g", node_size=50, pos=pos)
+    nx.draw_networkx_nodes(H.G, nodelist=part1, node_color="r", node_size=50, pos=pos)
+    nx.draw_networkx_nodes(H.G, nodelist=H.nets, node_color="k", node_size=20, pos=pos)
     nx.draw_networkx_edges(H.G, pos=pos, width=1)
     plt.show()
 
@@ -71,40 +59,40 @@ def parse_args(args):
       :obj:`argparse.Namespace`: command line parameters namespace
     """
     parser = argparse.ArgumentParser(
-        description="Multilevel Circuit Partition demonstration")
-    parser.add_argument("--version",
-                        action="version",
-                        version="ckpttnpy {ver}".format(ver=__version__))
-    parser.add_argument(dest="N",
-                        help="number of modules",
-                        type=int,
-                        metavar="INT")
-    parser.add_argument(dest="M",
-                        help="number of nets",
-                        type=int,
-                        metavar="INT")
-    parser.add_argument(dest="eta",
-                        help="ratio of nets and pins",
-                        type=float,
-                        metavar="FLOAT")
-    parser.add_argument("-v",
-                        "--verbose",
-                        dest="loglevel",
-                        help="set loglevel to INFO",
-                        action="store_const",
-                        const=logging.INFO)
-    parser.add_argument("-vv",
-                        "--very-verbose",
-                        dest="loglevel",
-                        help="set loglevel to DEBUG",
-                        action="store_const",
-                        const=logging.DEBUG)
-    parser.add_argument("-p",
-                        "--plot",
-                        dest="plot",
-                        help="plot the result graphically",
-                        action="store_const",
-                        const=True)
+        description="Multilevel Circuit Partition demonstration"
+    )
+    parser.add_argument(
+        "--version", action="version", version="ckpttnpy {ver}".format(ver=__version__)
+    )
+    parser.add_argument(dest="N", help="number of modules", type=int, metavar="INT")
+    parser.add_argument(dest="M", help="number of nets", type=int, metavar="INT")
+    parser.add_argument(
+        dest="eta", help="ratio of nets and pins", type=float, metavar="FLOAT"
+    )
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        dest="loglevel",
+        help="set loglevel to INFO",
+        action="store_const",
+        const=logging.INFO,
+    )
+    parser.add_argument(
+        "-vv",
+        "--very-verbose",
+        dest="loglevel",
+        help="set loglevel to DEBUG",
+        action="store_const",
+        const=logging.DEBUG,
+    )
+    parser.add_argument(
+        "-p",
+        "--plot",
+        dest="plot",
+        help="plot the result graphically",
+        action="store_const",
+        const=True,
+    )
     return parser.parse_args(args)
 
 
@@ -115,10 +103,9 @@ def setup_logging(loglevel):
       loglevel (int): minimum loglevel for emitting messages
     """
     logformat = "[%(asctime)s] %(levelname)s:%(name)s:%(message)s"
-    logging.basicConfig(level=loglevel,
-                        stream=sys.stdout,
-                        format=logformat,
-                        datefmt="%Y-%m-%d %H:%M:%S")
+    logging.basicConfig(
+        level=loglevel, stream=sys.stdout, format=logformat, datefmt="%Y-%m-%d %H:%M:%S"
+    )
 
 
 def main(args):
@@ -148,8 +135,7 @@ def main(args):
 
 
 def run():
-    """Entry point for console_scripts
-    """
+    """Entry point for console_scripts"""
     main(sys.argv[1:])
 
 

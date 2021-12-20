@@ -3,6 +3,7 @@ from itertools import repeat
 
 class repeat_array:
     """list with arbitrary range"""
+
     def __init__(self, value, size):
         """[summary]
 
@@ -43,6 +44,7 @@ class repeat_array:
 
 class shift_array(list):
     """list with arbitrary range"""
+
     def __new__(cls, *args, **kwargs):
         """[summary]
 
@@ -84,7 +86,7 @@ class shift_array(list):
         list.__setitem__(self, key - self.start, newValue)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     arr = repeat_array(1, 10)
     print(arr[4])
     for i in arr:

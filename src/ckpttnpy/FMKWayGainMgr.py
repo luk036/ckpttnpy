@@ -78,8 +78,9 @@ class FMKWayGainMgr(FMGainMgr):
         for k in self.RR.exclude(fromPart):
             if k == toPart:
                 continue
-            self.gainbucket[k].modify_key(self.gainCalc.vertex_list[k][v],
-                                          self.gainCalc.deltaGainV[k])
+            self.gainbucket[k].modify_key(
+                self.gainCalc.vertex_list[k][v], self.gainCalc.deltaGainV[k]
+            )
         self._set_key(fromPart, v, -gain)
         # self.lock(toPart, v)
 
@@ -92,8 +93,7 @@ class FMKWayGainMgr(FMGainMgr):
             key (type):  description
         """
         for k in self.RR.exclude(part_w):
-            self.gainbucket[k].modify_key(
-                self.gainCalc.vertex_list[k][w], key[k])
+            self.gainbucket[k].modify_key(self.gainCalc.vertex_list[k][w], key[k])
 
     # private:
 
@@ -105,5 +105,4 @@ class FMKWayGainMgr(FMGainMgr):
             v (node_t):  description
             key (int):  description
         """
-        self.gainbucket[whichPart].set_key(
-            self.gainCalc.vertex_list[whichPart][v], key)
+        self.gainbucket[whichPart].set_key(self.gainCalc.vertex_list[whichPart][v], key)

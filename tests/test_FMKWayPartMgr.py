@@ -9,7 +9,7 @@ from ckpttnpy.netlist import (
     create_drawf,
     create_random_hgraph,
     create_test_netlist,
-    read_json
+    read_json,
 )
 
 Part = Union[Dict[Any, int], List[int]]
@@ -40,7 +40,7 @@ def run_FMKWayPartMgr(H: Netlist, gainMgr, K, part: Part):
 def test_FMKWayPartMgr():
     H = create_drawf()
     gainMgr = FMKWayGainMgr(FMKWayGainCalc, H, 3)
-    H.module_fixed = {'p1'}
+    H.module_fixed = {"p1"}
     part = {v: 0 for v in H}
     run_FMKWayPartMgr(H, gainMgr, 3, part)
 
@@ -60,10 +60,11 @@ def test_FMKWayPartMgr3():
 
 
 def test_FMKWayPartMgr4():
-    H = read_json('testcases/p1.json')
+    H = read_json("testcases/p1.json")
     gainMgr = FMKWayGainMgr(FMKWayGainCalc, H, 3)
     part = [0 for _ in H]
     run_FMKWayPartMgr(H, gainMgr, 3, part)
+
 
 # if __name__ == "__main__":
 #     test_FMKWayPartMgr2()

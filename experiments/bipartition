@@ -1,15 +1,15 @@
 #! /usr/bin/env python3
-from random import randint
-
-from ckpttnpy.MLPartMgr import MLBiPartMgr
-from ckpttnpy.netlist import Netlist, read_json
-import matplotlib.pyplot as plt
-import networkx as nx
 import argparse
 import logging
 import sys
+from random import randint
+
+import matplotlib.pyplot as plt
+import networkx as nx
 
 from ckpttnpy import __version__
+from ckpttnpy.MLPartMgr import MLBiPartMgr
+from ckpttnpy.netlist import Netlist, read_json
 
 __author__ = "Wai-Shing Luk"
 __copyright__ = "Wai-Shing Luk"
@@ -42,21 +42,9 @@ def plot(H: Netlist, part):
     part0 = [i for i in H if part[i] == 0]
     part1 = [i for i in H if part[i] == 1]
     pos = nx.spring_layout(H.G)
-    nx.draw_networkx_nodes(H.G,
-                           nodelist=part0,
-                           node_color='g',
-                           node_size=50,
-                           pos=pos)
-    nx.draw_networkx_nodes(H.G,
-                           nodelist=part1,
-                           node_color='r',
-                           node_size=50,
-                           pos=pos)
-    nx.draw_networkx_nodes(H.G,
-                           nodelist=H.nets,
-                           node_color='k',
-                           node_size=20,
-                           pos=pos)
+    nx.draw_networkx_nodes(H.G, nodelist=part0, node_color="g", node_size=50, pos=pos)
+    nx.draw_networkx_nodes(H.G, nodelist=part1, node_color="r", node_size=50, pos=pos)
+    nx.draw_networkx_nodes(H.G, nodelist=H.nets, node_color="k", node_size=20, pos=pos)
     nx.draw_networkx_edges(H.G, pos=pos, width=1)
     plt.show()
 
@@ -70,37 +58,40 @@ def parse_args(args):
     Returns:
       :obj:`argparse.Namespace`: command line parameters namespace
     """
-    parser = argparse.ArgumentParser(
-        description="Multilevel Circuit Bi-Partitioning")
-    parser.add_argument("--version",
-                        action="version",
-                        version="ckpttnpy {ver}".format(ver=__version__))
-    parser.add_argument(dest="filename",
-                        help="file in json format",
-                        type=str,
-                        metavar="STR")
-    parser.add_argument(dest="BalTol",
-                        help="ratio of balancing",
-                        type=float,
-                        metavar="FLOAT")
-    parser.add_argument("-v",
-                        "--verbose",
-                        dest="loglevel",
-                        help="set loglevel to INFO",
-                        action="store_const",
-                        const=logging.INFO)
-    parser.add_argument("-vv",
-                        "--very-verbose",
-                        dest="loglevel",
-                        help="set loglevel to DEBUG",
-                        action="store_const",
-                        const=logging.DEBUG)
-    parser.add_argument("-p",
-                        "--plot",
-                        dest="plot",
-                        help="plot the result graphically",
-                        action="store_const",
-                        const=True)
+    parser = argparse.ArgumentParser(description="Multilevel Circuit Bi-Partitioning")
+    parser.add_argument(
+        "--version", action="version", version="ckpttnpy {ver}".format(ver=__version__)
+    )
+    parser.add_argument(
+        dest="filename", help="file in json format", type=str, metavar="STR"
+    )
+    parser.add_argument(
+        dest="BalTol", help="ratio of balancing", type=float, metavar="FLOAT"
+    )
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        dest="loglevel",
+        help="set loglevel to INFO",
+        action="store_const",
+        const=logging.INFO,
+    )
+    parser.add_argument(
+        "-vv",
+        "--very-verbose",
+        dest="loglevel",
+        help="set loglevel to DEBUG",
+        action="store_const",
+        const=logging.DEBUG,
+    )
+    parser.add_argument(
+        "-p",
+        "--plot",
+        dest="plot",
+        help="plot the result graphically",
+        action="store_const",
+        const=True,
+    )
     return parser.parse_args(args)
 
 
@@ -111,10 +102,9 @@ def setup_logging(loglevel):
       loglevel (int): minimum loglevel for emitting messages
     """
     logformat = "[%(asctime)s] %(levelname)s:%(name)s:%(message)s"
-    logging.basicConfig(level=loglevel,
-                        stream=sys.stdout,
-                        format=logformat,
-                        datefmt="%Y-%m-%d %H:%M:%S")
+    logging.basicConfig(
+        level=loglevel, stream=sys.stdout, format=logformat, datefmt="%Y-%m-%d %H:%M:%S"
+    )
 
 
 def main(args):
@@ -132,8 +122,7 @@ def main(args):
         _logger.error("Balance ratio {} is too big".format(args.BalTol))
         return
     if args.BalTol <= 0.3:
-        _logger.warning("Balance ratio {} may be too small".format(
-            args.BalTol))
+        _logger.warning("Balance ratio {} may be too small".format(args.BalTol))
 
     H = read_json(args.filename)
     totalcost, part = run_MLBiPartMgr(H, args.BalTol)
@@ -145,8 +134,7 @@ def main(args):
 
 
 def run():
-    """Entry point for console_scripts
-    """
+    """Entry point for console_scripts"""
     main(sys.argv[1:])
 
 

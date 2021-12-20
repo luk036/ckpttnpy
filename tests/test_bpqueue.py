@@ -36,7 +36,7 @@ def test_bpqueue():
     nodelist = list(dllink([0, i]) for i in range(10))
 
     for i, it in enumerate(nodelist):
-        it.data[0] = 2*i - 10
+        it.data[0] = 2 * i - 10
     bpq1.appendfrom(nodelist)
 
     count = 0

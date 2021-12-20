@@ -35,8 +35,9 @@ class Netlist:
     num_pads = 0
     cost_model = 0
 
-    def __init__(self, G: nx.Graph, modules: Union[range, List],
-                 nets: Union[range, List]):
+    def __init__(
+        self, G: nx.Graph, modules: Union[range, List], nets: Union[range, List]
+    ):
         """[summary]
 
         Arguments:
@@ -151,14 +152,13 @@ class Netlist:
 
 
 def read_json(filename):
-    with open(filename, 'r') as fr:
+    with open(filename, "r") as fr:
         data = json.load(fr)
     G = json_graph.node_link_graph(data)
-    num_modules = G.graph['num_modules']
-    num_nets = G.graph['num_nets']
-    num_pads = G.graph['num_pads']
-    H = Netlist(G, range(num_modules),
-                range(num_modules, num_modules + num_nets))
+    num_modules = G.graph["num_modules"]
+    num_nets = G.graph["num_nets"]
+    num_pads = G.graph["num_pads"]
+    H = Netlist(G, range(num_modules), range(num_modules, num_modules + num_nets))
     H.num_pads = num_pads
     H.module_weight = repeat_array(1, num_modules)
     H.net_weight = repeat_array(1, num_nets)
@@ -169,75 +169,58 @@ def read_json(filename):
 
 def create_drawf():
     G = ThinGraph()
-    G.add_nodes_from([
-        'a0',
-        'a1',
-        'a2',
-        'a3',
-        'p1',
-        'p2',
-        'p3',
-        'n0',
-        'n1',
-        'n2',
-        'n3',
-        'n4',
-        'n5',
-    ])
+    G.add_nodes_from(
+        [
+            "a0",
+            "a1",
+            "a2",
+            "a3",
+            "p1",
+            "p2",
+            "p3",
+            "n0",
+            "n1",
+            "n2",
+            "n3",
+            "n4",
+            "n5",
+        ]
+    )
     nets = [
-        'n0',
-        'n1',
-        'n2',
-        'n3',
-        'n4',
-        'n5',
+        "n0",
+        "n1",
+        "n2",
+        "n3",
+        "n4",
+        "n5",
     ]
     # net_map = {net: i_net for i_net, net in enumerate(nets)}
-    modules = ['a0', 'a1', 'a2', 'a3', 'p1', 'p2', 'p3']
+    modules = ["a0", "a1", "a2", "a3", "p1", "p2", "p3"]
     # module_map = {v: i_v for i_v, v in enumerate(modules)}
     # module_weight = [1, 3, 4, 2, 0, 0, 0]
-    module_weight = {
-        'a0': 1,
-        'a1': 3,
-        'a2': 4,
-        'a3': 2,
-        'p1': 0,
-        'p2': 0,
-        'p3': 0
-    }
+    module_weight = {"a0": 1, "a1": 3, "a2": 4, "a3": 2, "p1": 0, "p2": 0, "p3": 0}
 
-    G.add_edges_from([('n0', 'p1', {
-        'dir': 'I'
-    }), ('n0', 'a0', {
-        'dir': 'I'
-    }), ('n0', 'a1', {
-        'dir': 'O'
-    }), ('n1', 'a0', {
-        'dir': 'I'
-    }), ('n1', 'a2', {
-        'dir': 'I'
-    }), ('n1', 'a3', {
-        'dir': 'O'
-    }), ('n2', 'a1', {
-        'dir': 'I'
-    }), ('n2', 'a2', {
-        'dir': 'I'
-    }), ('n2', 'a3', {
-        'dir': 'O'
-    }), ('n3', 'a2', {
-        'dir': 'I'
-    }), ('n3', 'p2', {
-        'dir': 'O'
-    }), ('n4', 'a3', {
-        'dir': 'I'
-    }), ('n4', 'p3', {
-        'dir': 'O'
-    }), ('n5', 'p2', {
-        'dir': 'B'
-    })])
-    G.graph['num_modules'] = 7
-    G.graph['num_nets'] = 6
-    G.graph['num_pads'] = 3
+    G.add_edges_from(
+        [
+            ("n0", "p1", {"dir": "I"}),
+            ("n0", "a0", {"dir": "I"}),
+            ("n0", "a1", {"dir": "O"}),
+            ("n1", "a0", {"dir": "I"}),
+            ("n1", "a2", {"dir": "I"}),
+            ("n1", "a3", {"dir": "O"}),
+            ("n2", "a1", {"dir": "I"}),
+            ("n2", "a2", {"dir": "I"}),
+            ("n2", "a3", {"dir": "O"}),
+            ("n3", "a2", {"dir": "I"}),
+            ("n3", "p2", {"dir": "O"}),
+            ("n4", "a3", {"dir": "I"}),
+            ("n4", "p3", {"dir": "O"}),
+            ("n5", "p2", {"dir": "B"}),
+        ]
+    )
+    G.graph["num_modules"] = 7
+    G.graph["num_nets"] = 6
+    G.graph["num_pads"] = 3
     H = Netlist(G, modules, nets)
     H.module_weight = module_weight
     H.net_weight = repeat_array(1, len(nets))
@@ -247,23 +230,25 @@ def create_drawf():
 
 def create_test_netlist():
     G = ThinGraph()
-    G.add_nodes_from(['a0', 'a1', 'a2', 'a3', 'a4', 'a5'])
+    G.add_nodes_from(["a0", "a1", "a2", "a3", "a4", "a5"])
     # module_weight = [533, 543, 532]
-    module_weight = {'a0': 533, 'a1': 543, 'a2': 532}
-    G.add_edges_from([
-        ('a3', 'a0'),
-        ('a3', 'a1'),
-        ('a4', 'a0'),
-        ('a4', 'a1'),
-        ('a4', 'a2'),
-        ('a5', 'a0')  # self-loop
-    ])
+    module_weight = {"a0": 533, "a1": 543, "a2": 532}
+    G.add_edges_from(
+        [
+            ("a3", "a0"),
+            ("a3", "a1"),
+            ("a4", "a0"),
+            ("a4", "a1"),
+            ("a4", "a2"),
+            ("a5", "a0"),  # self-loop
+        ]
+    )
 
-    G.graph['num_modules'] = 3
-    G.graph['num_nets'] = 3
-    modules = ['a0', 'a1', 'a2']
+    G.graph["num_modules"] = 3
+    G.graph["num_nets"] = 3
+    modules = ["a0", "a1", "a2"]
     # module_map = {v: i_v for i_v, v in enumerate(modules)}
-    nets = ['a3', 'a4', 'a5']
+    nets = ["a3", "a4", "a5"]
     # net_weight = {net: 1 for net in nets}
     net_weight = repeat_array(1, len(nets))
 
@@ -285,7 +270,7 @@ def vdc(n, base=2):
     Returns:
         [type]: [description]
     """
-    vdc, denom = 0., 1.
+    vdc, denom = 0.0, 1.0
     while n:
         denom *= base
         n, remainder = divmod(n, base)
@@ -341,8 +326,8 @@ def create_random_hgraph(N=30, M=26, eta=0.1):
     pos = zip(x, y)
     G = formGraph(N, M, pos, eta, seed=5)
 
-    G.graph['num_modules'] = N
-    G.graph['num_nets'] = M
+    G.graph["num_modules"] = N
+    G.graph["num_nets"] = M
     H = Netlist(G, range(N), range(N, N + M))
     H.module_weight = repeat_array(1, N)
     H.net_weight = repeat_array(1, M)

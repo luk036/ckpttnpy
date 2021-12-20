@@ -9,7 +9,7 @@ from ckpttnpy.netlist import (
     create_drawf,
     create_random_hgraph,
     create_test_netlist,
-    read_json
+    read_json,
 )
 
 Part = Union[Dict[Any, int], List[int]]
@@ -33,7 +33,7 @@ def run_FMBiPartMgr(H: Netlist, part: Part):
 def test_FMBiPartMgr():
     H = create_drawf()
     part = {v: 0 for v in H}
-    H.module_fixed = {'p1'}
+    H.module_fixed = {"p1"}
     run_FMBiPartMgr(H, part)
 
 
@@ -50,6 +50,6 @@ def test_FMBiPartMgr3():
 
 
 def test_FMBiPartMgr4():
-    H = read_json('testcases/p1.json')
+    H = read_json("testcases/p1.json")
     part = [0 for _ in H]
     run_FMBiPartMgr(H, part)

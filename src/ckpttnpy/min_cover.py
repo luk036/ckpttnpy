@@ -15,6 +15,7 @@ def min_maximal_matching(H, weight, matchset, dep):
     Returns:
         [type]: [description]
     """
+
     def cover(net):
         for v in H.G[net]:
             dep.add(v)
@@ -57,8 +58,9 @@ def min_maximal_matching(H, weight, matchset, dep):
     return total_primal_cost
 
 
-def create_contraction_subgraph(H: Netlist, module_weight,
-                                DontSelect: Set) -> HierNetlist:
+def create_contraction_subgraph(
+    H: Netlist, module_weight, DontSelect: Set
+) -> HierNetlist:
     """[summary]
 
     Args:
@@ -72,8 +74,9 @@ def create_contraction_subgraph(H: Netlist, module_weight,
     # weight = dict()
     # for net in H.nets:
     #     weight[net] = sum(H.get_module_weight(v) for v in H.G[net])
-    weight = {net: sum(module_weight[v] for v in H.G[net])
-              for net in H.nets}  # can be done in parallel
+    weight = {
+        net: sum(module_weight[v] for v in H.G[net]) for net in H.nets
+    }  # can be done in parallel
     S = set()
     _ = min_maximal_matching(H, weight, S, DontSelect)
 
@@ -157,8 +160,7 @@ def create_contraction_subgraph(H: Netlist, module_weight,
                 #         same = True
                 if same:
                     removelist.add(net2)
-                    net_weight[net1] = net_weight.get(
-                        net1, 1) + net_weight.get(net2, 1)
+                    net_weight[net1] = net_weight.get(net1, 1) + net_weight.get(net2, 1)
     G.remove_nodes_from(removelist)
     original_net = range(numModules, numModules + numNets)
     updated_nets = [net for net in original_net if net not in removelist]

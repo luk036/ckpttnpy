@@ -11,14 +11,23 @@ class LegalCheck(Enum):
     Arguments:
         Enum {[type]} -- [description]
     """
+
     notsatisfied = 0
     getbetter = 1
     allsatisfied = 2
 
 
 class FMConstrMgr:
-    __slots__ = ('weight', 'H', 'BalTol', 'module_weight', 'K',
-                 'diff', 'totalweight', 'lowerbound')
+    __slots__ = (
+        "weight",
+        "H",
+        "BalTol",
+        "module_weight",
+        "K",
+        "diff",
+        "totalweight",
+        "lowerbound",
+    )
 
     def get_module_weight(self, v):
         """[summary]
@@ -29,8 +38,7 @@ class FMConstrMgr:
         Returns:
             [size_t]:  description
         """
-        return 1 if self.module_weight is None \
-            else self.module_weight[v]
+        return 1 if self.module_weight is None else self.module_weight[v]
 
     def __init__(self, H, BalTol, module_weight, K=2):
         """[summary]
@@ -45,7 +53,7 @@ class FMConstrMgr:
         self.K = K
         self.diff = list(0 for _ in range(K))
         self.totalweight = sum(self.get_module_weight(v) for v in self.H)
-        totalweightK = self.totalweight * (2. / self.K)
+        totalweightK = self.totalweight * (2.0 / self.K)
         self.lowerbound = round(totalweightK * self.BalTol)
 
     def init(self, part: Part):

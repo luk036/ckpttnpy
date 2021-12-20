@@ -11,6 +11,7 @@ from .FMConstrMgr import LegalCheck
 from .FMKWayConstrMgr import FMKWayConstrMgr
 from .FMKWayGainCalc import FMKWayGainCalc
 from .FMKWayGainMgr import FMKWayGainMgr
+
 # Take a snapshot when a move make **negative** gain.
 # Snapshot in the form of "interface"???
 from .min_cover import create_contraction_subgraph
@@ -59,6 +60,7 @@ class MLPartMgr:
         Returns:
             dtype:  description
         """
+
         def legalcheck_fn():
             gainMgr = self.GainMgr(self.GainCalc, H, self.K)
             constrMgr = self.ConstrMgr(H, self.BalTol, module_weight, self.K)
@@ -79,13 +81,11 @@ class MLPartMgr:
             return legalcheck
 
         if H.number_of_modules() >= self._limitsize:  # OK
-            H2, module_weight2 = create_contraction_subgraph(
-                H, module_weight, set())
+            H2, module_weight2 = create_contraction_subgraph(H, module_weight, set())
             if H2.number_of_modules() <= H.number_of_modules():
                 part2 = list(0 for _ in range(H2.number_of_modules()))
                 H2.projection_up(part, part2)
-                legalcheck_recur = self.run_FMPartition(
-                    H2, module_weight2, part2)
+                legalcheck_recur = self.run_FMPartition(H2, module_weight2, part2)
                 if legalcheck_recur == LegalCheck.allsatisfied:
                     H2.projection_down(part2, part)
 
@@ -101,8 +101,9 @@ class MLBiPartMgr(MLPartMgr):
         Args:
             BalTol ([type]): [description]
         """
-        MLPartMgr.__init__(self, FMBiGainCalc, FMBiGainMgr, FMBiConstrMgr,
-                           FMPartMgr, BalTol)
+        MLPartMgr.__init__(
+            self, FMBiGainCalc, FMBiGainMgr, FMBiConstrMgr, FMPartMgr, BalTol
+        )
 
 
 class MLKWayPartMgr(MLPartMgr):
@@ -113,5 +114,6 @@ class MLKWayPartMgr(MLPartMgr):
             BalTol ([type]): [description]
             K ([type]): [description]
         """
-        MLPartMgr.__init__(self, FMKWayGainCalc, FMKWayGainMgr,
-                           FMKWayConstrMgr, FMPartMgr, BalTol, K)
+        MLPartMgr.__init__(
+            self, FMKWayGainCalc, FMKWayGainMgr, FMKWayConstrMgr, FMPartMgr, BalTol, K
+        )

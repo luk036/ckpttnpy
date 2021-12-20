@@ -70,8 +70,7 @@ class FMBiGainMgr(FMGainMgr):
             move_info_v (type):  description
             gain (type):  description
         """
-        self.gainbucket[1-part_w].modify_key(
-            self.gainCalc.vertex_list[w], key)
+        self.gainbucket[1 - part_w].modify_key(self.gainCalc.vertex_list[w], key)
 
     def update_move_v(self, move_info_v, gain):
         """[summary]
@@ -94,5 +93,4 @@ class FMBiGainMgr(FMGainMgr):
             v (node_t):  description
             key (int):  description
         """
-        self.gainbucket[whichPart].set_key(
-            self.gainCalc.vertex_list[v], key)
+        self.gainbucket[whichPart].set_key(self.gainCalc.vertex_list[v], key)

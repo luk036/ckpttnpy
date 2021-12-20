@@ -29,8 +29,9 @@ class HierNetlist(Netlist):
     def get_max_degree(self):
         return max(self.get_degree(v) for v in self.modules)
 
-    def projection_down(self, part: Union[Dict, List[int]],
-                        part_down: Union[Dict, List[int]]):
+    def projection_down(
+        self, part: Union[Dict, List[int]], part_down: Union[Dict, List[int]]
+    ):
         """[summary]
 
         Args:
@@ -47,8 +48,9 @@ class HierNetlist(Netlist):
                 v2 = self.node_down_map[v]
                 part_down[v2] = part[v]
 
-    def projection_up(self, part: Union[Dict, List[int]],
-                      part_up: Union[Dict, List[int]]):
+    def projection_up(
+        self, part: Union[Dict, List[int]], part_up: Union[Dict, List[int]]
+    ):
         """[summary]
 
         Args:

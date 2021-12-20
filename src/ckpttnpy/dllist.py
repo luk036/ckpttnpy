@@ -12,7 +12,8 @@ class dllink:
     information. Note that this class does not own the list node. They
     are supplied by the caller in order to better reuse the nodes.
     """
-    __slots__ = ('next', 'prev', 'data')
+
+    __slots__ = ("next", "prev", "data")
 
     def __init__(self, data=None):
         """initialization
@@ -25,7 +26,7 @@ class dllink:
         self.data = data
 
     def detach(self):
-        """detach from a list """
+        """detach from a list"""
         assert self.next
         n = self.next
         p = self.prev
@@ -33,7 +34,7 @@ class dllink:
         n.prev = p
 
     def lock(self):
-        """lock the node (and don't append it to any list) """
+        """lock the node (and don't append it to any list)"""
         self.next = None
 
     def is_locked(self):
@@ -126,6 +127,7 @@ class dll_iterator:
     Traverse the list from the first item. Usually it is safe
     to attach/detach list items during the iterator is active.
     """
+
     def __init__(self, link):
         """Initialization
 

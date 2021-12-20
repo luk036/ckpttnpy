@@ -25,8 +25,7 @@ class FMGainMgr:
         self.K = K
         self.gainCalc = GainCalc(H, K)
         self.pmax = self.H.get_max_degree()
-        self.gainbucket = [bpqueue(-self.pmax, self.pmax)
-                           for _ in range(K)]
+        self.gainbucket = [bpqueue(-self.pmax, self.pmax) for _ in range(K)]
 
     def init(self, part):
         """(re)initialization after creation
@@ -136,8 +135,7 @@ class FMGainMgr:
             part (list):  Partition sol'n
             move_info (type):  description
         """
-        w = self.gainCalc.update_move_2pin_net(
-            part, move_info)
+        w = self.gainCalc.update_move_2pin_net(part, move_info)
         self.modify_key(w, part[w], self.gainCalc.deltaGainW)
 
     def _update_move_3pin_net(self, part, move_info):
@@ -147,8 +145,7 @@ class FMGainMgr:
             part (list):  Partition sol'n
             move_info (type):  description
         """
-        deltaGain = self.gainCalc.update_move_3pin_net(
-            part, move_info)
+        deltaGain = self.gainCalc.update_move_3pin_net(part, move_info)
         for dGw, w in zip(deltaGain, self.gainCalc.IdVec):
             self.modify_key(w, part[w], dGw)
 
@@ -159,7 +156,6 @@ class FMGainMgr:
             part (list):  Partition sol'n
             move_info (type):  description
         """
-        deltaGain = self.gainCalc.update_move_general_net(
-            part, move_info)
+        deltaGain = self.gainCalc.update_move_general_net(part, move_info)
         for dGw, w in zip(deltaGain, self.gainCalc.IdVec):
             self.modify_key(w, part[w], dGw)

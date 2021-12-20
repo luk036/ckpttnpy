@@ -24,7 +24,7 @@ class bpqueue:
     All member functions assume that the keys are within the bound.
     """
 
-    __slots__ = ('_max', '_offset', '_high', '_bucket')
+    __slots__ = ("_max", "_offset", "_high", "_bucket")
 
     def __init__(self, a: int, b: int):
         """initialization
@@ -66,7 +66,7 @@ class bpqueue:
         return self._max == 0
 
     def clear(self):
-        """reset the PQ """
+        """reset the PQ"""
         while self._max > 0:
             self._bucket[self._max].clear()
             self._max -= 1
@@ -220,6 +220,7 @@ class bpq_iterator:
     order. Detaching queue items may invalidate the iterator because
     the iterator makes a copy of current key.
     """
+
     def __init__(self, bpq):
         """[summary]
 

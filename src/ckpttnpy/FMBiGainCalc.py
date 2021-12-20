@@ -9,7 +9,7 @@ Part = Union[Dict[Any, int], List[int]]
 
 class FMBiGainCalc:
 
-    __slots__ = ('totalcost', 'H', 'vertex_list', 'IdVec', 'deltaGainW')
+    __slots__ = ("totalcost", "H", "vertex_list", "IdVec", "deltaGainW")
 
     # public:
 
@@ -24,9 +24,7 @@ class FMBiGainCalc:
         """
         self.H = H
         if isinstance(self.H.modules, range):
-            self.vertex_list = [
-                dllink([0, i]) for i in self.H
-            ]
+            self.vertex_list = [dllink([0, i]) for i in self.H]
         elif isinstance(self.H.modules, list):
             self.vertex_list = {v: dllink([0, v]) for v in self.H}
         else:
@@ -159,7 +157,7 @@ class FMBiGainCalc:
     def update_move_init(self):
         """update move init
 
-           nothing to do in 2-way partitioning
+        nothing to do in 2-way partitioning
         """
         pass
 

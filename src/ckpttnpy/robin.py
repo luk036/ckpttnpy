@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 class slnode:
     def __init__(self, data):
         """initialization
@@ -21,7 +22,7 @@ class robin:
         dtype:  description
     """
 
-    __slots__ = ('cycle')
+    __slots__ = "cycle"
 
     def __init__(self, K: int):
         self.cycle = list(slnode(k) for k in range(K))
@@ -40,7 +41,7 @@ class robin:
 
 
 class robin_iterator:
-    __slots__ = ('cur', 'stop')
+    __slots__ = ("cur", "stop")
 
     def __init__(self, robin, fromPart: int):
         """[summary]
