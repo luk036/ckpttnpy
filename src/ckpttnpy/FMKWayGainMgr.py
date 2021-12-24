@@ -75,9 +75,7 @@ class FMKWayGainMgr(FMGainMgr):
             gain (type):  description
         """
         v, fromPart, toPart = move_info_v
-        for k in self.RR.exclude(fromPart):
-            if k == toPart:
-                continue
+        for k in filter(lambda k: k != toPart, self.RR.exclude(fromPart)):
             self.gainbucket[k].modify_key(
                 self.gainCalc.vertex_list[k][v], self.gainCalc.deltaGainV[k]
             )

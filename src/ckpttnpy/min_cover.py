@@ -26,18 +26,13 @@ def min_maximal_matching(H, weight, matchset, dep):
     gap = weight.copy()
     total_primal_cost = 0
     total_dual_cost = 0
-    for net in H.nets:
-        if any_of_dep(net):
-            continue
-        if net in matchset:  # pre-define matching
-            # cover(net)
-            continue
+    for net in filter(
+        lambda net: any_of_dep(net) is False and (net in matchset) is False, H.nets
+    ):
         min_val = gap[net]
         min_net = net
         for v in H.G[net]:
-            for net2 in H.G[v]:
-                if any_of_dep(net2):
-                    continue
+            for net2 in filter(lambda net2: any_of_dep(net2) is False, H.G[v]):
                 if min_val > gap[net2]:
                     min_val = gap[net2]
                     min_net = net2
@@ -138,11 +133,10 @@ def create_contraction_subgraph(
             if G.degree(net1) == 1:  # self loop
                 removelist.add(net1)
                 continue
-            for net2 in G[cluster]:
-                if net2 == net1:
-                    continue
-                if G.degree(net1) != G.degree(net2):
-                    continue
+            for net2 in filter(
+                lambda net2: net2 != net1 and G.degree(net2) == G.degree(net1),
+                G[cluster],
+            ):
                 same = False
                 if G.degree(net1) <= 3:  # only check for low-fan-out nets
                     S1 = set(v for v in G[net1])
