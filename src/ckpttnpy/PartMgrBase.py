@@ -61,13 +61,13 @@ class PartMgrBase:
         while legalcheck != LegalCheck.AllSatisfied:  # satisfied:
             # Take the gainmax with v from gainbucket
             # gainmax = self.gain_mgr.gainbucket.get_max()
-            toPart = self.validator.select_togo()
-            if self.gain_mgr.gainbucket[toPart]._max == 0:  # is_empty_togo()
+            to_part = self.validator.select_togo()
+            if self.gain_mgr.gainbucket[to_part]._max == 0:  # is_empty_togo()
                 break
-            v, gainmax = self.gain_mgr.select_togo(toPart)
-            fromPart = part[v]
-            assert fromPart != toPart
-            move_info_v = v, fromPart, toPart
+            v, gainmax = self.gain_mgr.select_togo(to_part)
+            from_part = part[v]
+            assert from_part != to_part
+            move_info_v = v, from_part, to_part
             # Check if the move of v can NotSatisfied, makebetter, or satisfied
             legalcheck = self.validator.check_legal(move_info_v)
             if legalcheck == LegalCheck.NotSatisfied:  # NotSatisfied
@@ -78,7 +78,7 @@ class PartMgrBase:
             self.gain_mgr.update_move(part, move_info_v)
             self.gain_mgr.update_move_v(move_info_v, gainmax)
             self.validator.update_move(move_info_v)
-            part[v] = toPart
+            part[v] = to_part
             self.totalcost -= gainmax
             assert self.totalcost >= 0
         return legalcheck
@@ -129,13 +129,13 @@ class PartMgrBase:
 
             # Update v and its neigbours (even they are in waitinglist)
             # Put neigbours to bucket
-            v, _, toPart = move_info_v
-            self.gain_mgr.lock(toPart, v)
+            v, _, to_part = move_info_v
+            self.gain_mgr.lock(to_part, v)
             self.gain_mgr.update_move(part, move_info_v)
             self.gain_mgr.update_move_v(move_info_v, gainmax)
             self.validator.update_move(move_info_v)
             totalgain += gainmax
-            part[v] = toPart
+            part[v] = to_part
 
         if deferredsnapshot:
             # restore previous best solution

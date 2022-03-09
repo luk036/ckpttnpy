@@ -17,8 +17,8 @@ def run_FMBiGainMgr(hgr: Netlist, part: Part):
             continue
         mgr.update_move(part, move_info_v)
         mgr.update_move_v(move_info_v, gainmax)
-        v, _, toPart = move_info_v
-        part[v] = toPart
+        v, _, to_part = move_info_v
+        part[v] = to_part
         # assert v >= 0
 
 

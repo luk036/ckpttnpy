@@ -85,13 +85,15 @@ class MLPartMgr:
             return legalcheck
 
         if hgr.number_of_modules() >= self._limitsize:  # OK
-            H2, module_weight2 = create_contraction_subgraph(hgr, module_weight, set())
-            if H2.number_of_modules() <= hgr.number_of_modules():
-                part2 = list(0 for _ in range(H2.number_of_modules()))
-                H2.projection_up(part, part2)
-                legalcheck_recur = self.run_FMPartition(H2, module_weight2, part2)
+            hgr2, module_weight2 = create_contraction_subgraph(
+                hgr, module_weight, set()
+            )
+            if hgr2.number_of_modules() <= hgr.number_of_modules():
+                part2 = list(0 for _ in range(hgr2.number_of_modules()))
+                hgr2.projection_up(part, part2)
+                legalcheck_recur = self.run_FMPartition(hgr2, module_weight2, part2)
                 if legalcheck_recur == LegalCheck.AllSatisfied:
-                    H2.projection_down(part2, part)
+                    hgr2.projection_down(part2, part)
 
         self.totalcost = optimize_fn()
         assert self.totalcost >= 0

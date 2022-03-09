@@ -38,16 +38,16 @@ class FMGainMgr:
         self.waitinglist.clear()
         return totalcost
 
-    def is_empty_togo(self, toPart):
+    def is_empty_togo(self, to_part):
         """[summary]
 
         Arguments:
-            toPart (uint8_t):  description
+            to_part (uint8_t):  description
 
         Returns:
             bool:  description
         """
-        return self.gainbucket[toPart]._max == 0  # is_empty()
+        return self.gainbucket[to_part]._max == 0  # is_empty()
 
     def is_empty(self):
         """Any more candidate?
@@ -68,27 +68,27 @@ class FMGainMgr:
         """
         # gainmax = list(self.gainbucket[k].get_max() for k in range(self.num_parts))
         # maxk = max(gainmax)
-        # toPart = gainmax.index(maxk)
-        toPart = max(range(self.num_parts), key=lambda k: self.gainbucket[k].get_max())
-        maxk = self.gainbucket[toPart].get_max()
-        vlink = self.gainbucket[toPart].popleft()
+        # to_part = gainmax.index(maxk)
+        to_part = max(range(self.num_parts), key=lambda k: self.gainbucket[k].get_max())
+        maxk = self.gainbucket[to_part].get_max()
+        vlink = self.gainbucket[to_part].popleft()
         self.waitinglist.append(vlink)
         v = vlink.data[1]
-        fromPart = part[v]
-        move_info_v = v, fromPart, toPart
+        from_part = part[v]
+        move_info_v = v, from_part, to_part
         return move_info_v, maxk
 
-    def select_togo(self, toPart):
+    def select_togo(self, to_part):
         """Select best candidaate togo
 
         Arguments:
-            toPart (uint8_t):  description
+            to_part (uint8_t):  description
 
         Returns:
             node_t:  description
         """
-        gainmax = self.gainbucket[toPart].get_max()
-        vlink = self.gainbucket[toPart].popleft()
+        gainmax = self.gainbucket[to_part].get_max()
+        vlink = self.gainbucket[to_part].popleft()
         self.waitinglist.append(vlink)
         v = vlink.data[1]
         return v, gainmax
@@ -101,13 +101,13 @@ class FMGainMgr:
             move_info_v (type):  description
         """
         self.gain_calc.update_move_init()
-        v, fromPart, toPart = move_info_v
+        v, from_part, to_part = move_info_v
         # v = v
         for net in self.hgr.gr[v]:
             degree = self.hgr.gr.degree[net]
             if degree < 2:  # unlikely, self-loop, etc.
                 continue  # does not provide any gain change when move
-            move_info = [net, v, fromPart, toPart]
+            move_info = [net, v, from_part, to_part]
             if degree == 2:
                 self._update_move_2pin_net(part, move_info)
             else:
@@ -138,7 +138,7 @@ class FMGainMgr:
         """
         w = self.gain_calc.update_move_2pin_net(
             part, move_info)
-        self.modify_key(w, part[w], self.gain_calc.deltaGainW)
+        self.modify_key(w, part[w], self.gain_calc.delta_gain_w)
 
     def _update_move_3pin_net(self, part, move_info):
         """Update move for 3-pin net
@@ -147,9 +147,9 @@ class FMGainMgr:
             part (list):  Partition sol'n
             move_info (type):  description
         """
-        deltaGain = self.gain_calc.update_move_3pin_net(
+        delta_gain = self.gain_calc.update_move_3pin_net(
             part, move_info)
-        for dGw, w in zip(deltaGain, self.gain_calc.IdVec):
+        for dGw, w in zip(delta_gain, self.gain_calc.idx_vec):
             self.modify_key(w, part[w], dGw)
 
     def _update_move_general_net(self, part, move_info):
@@ -159,7 +159,7 @@ class FMGainMgr:
             part (list):  Partition sol'n
             move_info (type):  description
         """
-        deltaGain = self.gain_calc.update_move_general_net(
+        delta_gain = self.gain_calc.update_move_general_net(
             part, move_info)
-        for dGw, w in zip(deltaGain, self.gain_calc.IdVec):
+        for dGw, w in zip(delta_gain, self.gain_calc.idx_vec):
             self.modify_key(w, part[w], dGw)

@@ -3,7 +3,7 @@
 from typing import Any, Dict, List, Union
 
 from .FMGainMgr import FMGainMgr
-from .robin import robin
+from .robin import Robin
 
 Part = Union[Dict[Any, int], List[int]]
 
@@ -21,7 +21,7 @@ class FMKWayGainMgr(FMGainMgr):
             num_parts (uint8_t):  number of partitions
         """
         FMGainMgr.__init__(self, GainCalc, hgr, num_parts)
-        self.RR = robin(num_parts)
+        self.rr = Robin(num_parts)
 
     def init(self, part: Part):
         """(re)initialization after creation
@@ -36,7 +36,7 @@ class FMKWayGainMgr(FMGainMgr):
 
         for v in self.hgr:
             pv = part[v]
-            for k in self.RR.exclude(pv):
+            for k in self.rr.exclude(pv):
                 vlink = self.gain_calc.vertex_list[k][v]
                 self.gainbucket[k].append(vlink, vlink.data[0])
             vlink = self.gain_calc.vertex_list[pv][v]
@@ -74,13 +74,13 @@ class FMKWayGainMgr(FMGainMgr):
             move_info_v (type):  description
             gain (type):  description
         """
-        v, fromPart, toPart = move_info_v
-        for k in filter(lambda k: k != toPart, self.RR.exclude(fromPart)):
+        v, from_part, to_part = move_info_v
+        for k in filter(lambda k: k != to_part, self.rr.exclude(from_part)):
             self.gainbucket[k].modify_key(
-                self.gain_calc.vertex_list[k][v], self.gain_calc.deltaGainV[k]
+                self.gain_calc.vertex_list[k][v], self.gain_calc.delta_gain_v[k]
             )
-        self._set_key(fromPart, v, -gain)
-        # self.lock(toPart, v)
+        self._set_key(from_part, v, -gain)
+        # self.lock(to_part, v)
 
     def modify_key(self, w, part_w, key):
         """[summary]
@@ -90,7 +90,7 @@ class FMKWayGainMgr(FMGainMgr):
             w (type):  description
             key (type):  description
         """
-        for k in self.RR.exclude(part_w):
+        for k in self.rr.exclude(part_w):
             self.gainbucket[k].modify_key(self.gain_calc.vertex_list[k][w], key[k])
 
     # private:

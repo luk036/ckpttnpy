@@ -10,13 +10,13 @@ from ckpttnpy.netlist import create_drawf
 
 def test_create_contraction_subgraph():
     hgr = create_drawf()
-    H2, module_weight2 = create_contraction_subgraph(hgr, hgr.module_weight, set())
-    create_contraction_subgraph(H2, module_weight2, set())
-    assert H2.number_of_modules() < 7
-    assert H2.number_of_nets() == 1
-    assert H2.number_of_pins() < 13
-    assert H2.get_max_degree() <= 3
-    # assert H2.get_max_net_degree() <= 3
+    hgr2, module_weight2 = create_contraction_subgraph(hgr, hgr.module_weight, set())
+    create_contraction_subgraph(hgr2, module_weight2, set())
+    assert hgr2.number_of_modules() < 7
+    assert hgr2.number_of_nets() == 1
+    assert hgr2.number_of_pins() < 13
+    assert hgr2.get_max_degree() <= 3
+    # assert hgr2.get_max_net_degree() <= 3
     # assert not hgr.has_fixed_modules
     assert hgr.get_module_weight("a1") == 3
 

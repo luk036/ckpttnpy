@@ -70,18 +70,18 @@ class FMConstrMgr:
         """[summary]
 
         Arguments:
-            fromPart (type):  description
+            from_part (type):  description
             v (type):  description
 
         Returns:
             dtype:  description
         """
-        v, fromPart, toPart = move_info_v
+        v, from_part, to_part = move_info_v
         self.weight = self.get_module_weight(v)
-        diffFrom = self.diff[fromPart] - self.weight
+        diffFrom = self.diff[from_part] - self.weight
         if diffFrom < self.lowerbound:
             return LegalCheck.NotSatisfied  # not ok, don't move
-        diffTo = self.diff[toPart] + self.weight
+        diffTo = self.diff[to_part] + self.weight
         if diffTo < self.lowerbound:
             return LegalCheck.GetBetter  # get better, but still illegal
         return LegalCheck.AllSatisfied  # all satisfied
@@ -90,24 +90,24 @@ class FMConstrMgr:
         """[summary]
 
         Arguments:
-            fromPart (type):  description
+            from_part (type):  description
             v (type):  description
 
         Returns:
             dtype:  description
         """
-        v, fromPart, _ = move_info_v
+        v, from_part, _ = move_info_v
         self.weight = self.get_module_weight(v)
-        diffFrom = self.diff[fromPart] - self.weight
+        diffFrom = self.diff[from_part] - self.weight
         return diffFrom >= self.lowerbound
 
     def update_move(self, move_info_v):
         """[summary]
 
         Arguments:
-            fromPart (type):  description
+            from_part (type):  description
             v (type):  description
         """
-        _, fromPart, toPart = move_info_v
-        self.diff[toPart] += self.weight
-        self.diff[fromPart] -= self.weight
+        _, from_part, to_part = move_info_v
+        self.diff[to_part] += self.weight
+        self.diff[from_part] -= self.weight

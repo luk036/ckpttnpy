@@ -4,7 +4,7 @@ from itertools import permutations
 from typing import Any, Dict, List, Union
 
 from .dllist import Dllink
-from .robin import robin
+from .robin import Robin
 
 Part = Union[Dict[Any, int], List[int]]
 
@@ -16,10 +16,10 @@ class FMKWayGainCalc:
         "hgr",
         "vertex_list",
         "num_parts",
-        "RR",
-        "deltaGainV",
-        "IdVec",
-        "deltaGainW",
+        "rr",
+        "delta_gain_v",
+        "idx_vec",
+        "delta_gain_w",
     )
 
     # public:
@@ -31,11 +31,11 @@ class FMKWayGainCalc:
             hgr (Netlist):  description
             num_parts (uint8_t):  number of partitions
         """
-        self.deltaGainV = list()
+        self.delta_gain_v = list()
 
         self.hgr = hgr
         self.num_parts = num_parts
-        self.RR = robin(num_parts)
+        self.rr = Robin(num_parts)
 
         self.vertex_list = []
 
@@ -97,7 +97,7 @@ class FMKWayGainCalc:
             v (node_t):  description
             weight (int):  description
         """
-        for k in self.RR.exclude(pv):
+        for k in self.rr.exclude(pv):
             self.vertex_list[k][v].data[0] += weight
 
     def _init_gain_2pin_net(self, net, part: Part):
@@ -188,7 +188,7 @@ class FMKWayGainCalc:
 
     def update_move_init(self):
         """update move init"""
-        self.deltaGainV = list(0 for _ in range(self.num_parts))
+        self.delta_gain_v = list(0 for _ in range(self.num_parts))
 
     def update_move_2pin_net(self, part, move_info):
         """Update move for 2-pin net
@@ -200,31 +200,31 @@ class FMKWayGainCalc:
         Returns:
             dtype:  description
         """
-        net, v, fromPart, toPart = move_info
+        net, v, from_part, to_part = move_info
         net_cur = iter(self.hgr.gr[net])
         u = next(net_cur)
         w = u if u != v else next(net_cur)
         part_w = part[w]
         weight = self.hgr.get_net_weight(net)
-        self.deltaGainW = list(0 for _ in range(self.num_parts))
+        self.delta_gain_w = list(0 for _ in range(self.num_parts))
 
-        for lPart in [fromPart, toPart]:
-            if part_w == lPart:
+        for l_part in [from_part, to_part]:
+            if part_w == l_part:
                 for k in range(self.num_parts):  # cannot use zip here
-                    self.deltaGainW[k] += weight
-                    self.deltaGainV[k] += weight
-            self.deltaGainW[lPart] -= weight
+                    self.delta_gain_w[k] += weight
+                    self.delta_gain_v[k] += weight
+            self.delta_gain_w[l_part] -= weight
             weight = -weight
 
         return w
 
     def init_IdVec(self, v, net):
-        self.IdVec = [w for w in self.hgr.gr[net] if w != v]
-        # self.IdVec = []
+        self.idx_vec = [w for w in self.hgr.gr[net] if w != v]
+        # self.idx_vec = []
         # for w in self.hgr.gr[net]:
         #     if w == v:
         #         continue
-        #     self.IdVec.append(w)
+        #     self.idx_vec.append(w)
 
     def update_move_3pin_net(self, part, move_info):
         """Update move for 3-pin net
@@ -236,48 +236,48 @@ class FMKWayGainCalc:
         Returns:
             dtype:  description
         """
-        net, v, fromPart, toPart = move_info
+        net, v, from_part, to_part = move_info
 
-        deltaGain = []
-        degree = len(self.IdVec)
-        deltaGain = list(list(0 for _ in range(self.num_parts)) for _ in range(degree))
+        delta_gain = []
+        degree = len(self.idx_vec)
+        delta_gain = list(list(0 for _ in range(self.num_parts)) for _ in range(degree))
 
         weight = self.hgr.get_net_weight(net)
 
-        l, u = fromPart, toPart
+        l, u = from_part, to_part
 
-        part_w = part[self.IdVec[0]]
-        part_u = part[self.IdVec[1]]
+        part_w = part[self.idx_vec[0]]
+        part_u = part[self.idx_vec[1]]
 
         if part_w == part_u:
             for _ in [0, 1]:
                 if part_w != l:
-                    deltaGain[0][l] -= weight
-                    deltaGain[1][l] -= weight
+                    delta_gain[0][l] -= weight
+                    delta_gain[1][l] -= weight
                     if part_w == u:
                         for k in range(self.num_parts):
-                            self.deltaGainV[k] -= weight
+                            self.delta_gain_v[k] -= weight
                 weight = -weight
                 l, u = u, l
-            return deltaGain
+            return delta_gain
 
         for _ in [0, 1]:
             if part_w == l:
                 for k in range(self.num_parts):
-                    deltaGain[0][k] += weight
+                    delta_gain[0][k] += weight
             elif part_u == l:
                 for k in range(self.num_parts):
-                    deltaGain[1][k] += weight
+                    delta_gain[1][k] += weight
             else:
-                deltaGain[0][l] -= weight
-                deltaGain[1][l] -= weight
+                delta_gain[0][l] -= weight
+                delta_gain[1][l] -= weight
                 if part_w == u or part_u == u:
                     for k in range(self.num_parts):
-                        self.deltaGainV[k] -= weight
+                        self.delta_gain_v[k] -= weight
             weight = -weight
             l, u = u, l
 
-        return deltaGain
+        return delta_gain
 
     def update_move_general_net(self, part, move_info):
         """Update move for general net
@@ -289,39 +289,39 @@ class FMKWayGainCalc:
         Returns:
             dtype:  description
         """
-        net, v, fromPart, toPart = move_info
+        net, v, from_part, to_part = move_info
         num = list(0 for _ in range(self.num_parts))
-        # deltaGain = []
-        # IdVec = []
+        # delta_gain = []
+        # idx_vec = []
         # for w in self.hgr.gr[net]:
         #     if w == v:
         #         continue
         #     num[part[w]] += 1
-        #     IdVec.append(w)
-        for w in self.IdVec:
+        #     idx_vec.append(w)
+        for w in self.idx_vec:
             num[part[w]] += 1
 
-        degree = len(self.IdVec)
-        deltaGain = list(list(0 for _ in range(self.num_parts)) for _ in range(degree))
+        degree = len(self.idx_vec)
+        delta_gain = list(list(0 for _ in range(self.num_parts)) for _ in range(degree))
 
         weight = self.hgr.get_net_weight(net)
 
-        l, u = fromPart, toPart
+        l, u = from_part, to_part
         for _ in [0, 1]:
             if num[l] == 0:
                 for index in range(degree):
-                    deltaGain[index][l] -= weight
+                    delta_gain[index][l] -= weight
                 if num[u] > 0:
                     for k in range(self.num_parts):
-                        self.deltaGainV[k] -= weight
+                        self.delta_gain_v[k] -= weight
             elif num[l] == 1:
                 for index in range(degree):
-                    part_w = part[self.IdVec[index]]
+                    part_w = part[self.idx_vec[index]]
                     if part_w == l:
                         for k in range(self.num_parts):
-                            deltaGain[index][k] += weight
+                            delta_gain[index][k] += weight
                         break
             weight = -weight
             l, u = u, l
 
-        return deltaGain
+        return delta_gain

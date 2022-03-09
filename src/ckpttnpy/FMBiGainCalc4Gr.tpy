@@ -9,7 +9,7 @@ Part = Union[Dict[Any, int], List[int]]
 
 class FMBiGainCalc4Gr:
 
-    __slots__ = ('totalcost', 'hgr', 'vertex_list', 'IdVec', 'deltaGainW')
+    __slots__ = ('totalcost', 'hgr', 'vertex_list', 'idx_vec', 'delta_gain_w')
 
     # public:
 
@@ -103,10 +103,10 @@ class FMBiGainCalc4Gr:
         Returns:
             dtype:  description
         """
-        e, v, fromPart, _ = move_info
+        e, v, from_part, _ = move_info
         u, u2 = e
         w = u if u != v else u2
         weight = self.hgr.get_net_weight(e)
-        delta = 2 if part[w] == fromPart else -2
-        self.deltaGainW = delta * weight
+        delta = 2 if part[w] == from_part else -2
+        self.delta_gain_w = delta * weight
         return w

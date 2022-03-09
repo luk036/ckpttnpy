@@ -9,7 +9,7 @@ Part = Union[Dict[Any, int], List[int]]
 
 class FMBiGainCalc:
 
-    __slots__ = ("totalcost", "hgr", "vertex_list", "IdVec", "deltaGainW")
+    __slots__ = ("totalcost", "hgr", "vertex_list", "idx_vec", "delta_gain_w")
 
     # public:
 
@@ -171,19 +171,19 @@ class FMBiGainCalc:
         Returns:
             dtype:  description
         """
-        net, v, fromPart, _ = move_info
+        net, v, from_part, _ = move_info
         net_cur = iter(self.hgr.gr[net])
         u = next(net_cur)
         w = u if u != v else next(net_cur)
         weight = self.hgr.get_net_weight(net)
-        delta = 2 if part[w] == fromPart else -2
-        self.deltaGainW = delta * weight
+        delta = 2 if part[w] == from_part else -2
+        self.delta_gain_w = delta * weight
         return w
 
     def init_IdVec(self, v, net):
-        self.IdVec = [w for w in self.hgr.gr[net] if w != v]
+        self.idx_vec = [w for w in self.hgr.gr[net] if w != v]
         # for w in filter(lambda w: w != v, self.hgr.gr[net]):
-        #     self.IdVec.append(w)
+        #     self.idx_vec.append(w)
 
     def update_move_3pin_net(self, part, move_info):
         """Update move for 3-pin net
@@ -195,30 +195,30 @@ class FMBiGainCalc:
         Returns:
             dtype:  description
         """
-        net, v, fromPart, _ = move_info
-        deltaGain = []
-        # IdVec = []
+        net, v, from_part, _ = move_info
+        delta_gain = []
+        # idx_vec = []
         # for w in self.hgr.gr[net]:
         #     if w == v:
         #         continue
-        #     IdVec.append(w)
+        #     idx_vec.append(w)
 
-        deltaGain = [0, 0]
+        delta_gain = [0, 0]
         weight = self.hgr.get_net_weight(net)
 
-        part_w = part[self.IdVec[0]]
+        part_w = part[self.idx_vec[0]]
 
-        if part_w != fromPart:
+        if part_w != from_part:
             weight = -weight
 
-        if part_w == part[self.IdVec[1]]:
-            deltaGain[0] += weight
-            deltaGain[1] += weight
+        if part_w == part[self.idx_vec[1]]:
+            delta_gain[0] += weight
+            delta_gain[1] += weight
         else:
-            deltaGain[0] += weight
-            deltaGain[1] -= weight
+            delta_gain[0] += weight
+            delta_gain[1] -= weight
 
-        return deltaGain
+        return delta_gain
 
     def update_move_general_net(self, part, move_info):
         """Update move for general net
@@ -230,32 +230,32 @@ class FMBiGainCalc:
         Returns:
             dtype:  description
         """
-        net, v, fromPart, toPart = move_info
-        # deltaGain = []
-        # IdVec = []
+        net, v, from_part, to_part = move_info
+        # delta_gain = []
+        # idx_vec = []
         # for w in self.hgr.gr[net]:
         #     if w == v:
         #         continue
         #     num[part[w]] += 1
-        #     IdVec.append(w)
+        #     idx_vec.append(w)
         num = [0, 0]
-        for w in self.IdVec:
+        for w in self.idx_vec:
             num[part[w]] += 1
-        degree = len(self.IdVec)
-        deltaGain = list(0 for _ in range(degree))
+        degree = len(self.idx_vec)
+        delta_gain = list(0 for _ in range(degree))
         weight = self.hgr.get_net_weight(net)
 
-        for lPart in [fromPart, toPart]:
-            if num[lPart] == 0:
+        for l_part in [from_part, to_part]:
+            if num[l_part] == 0:
                 for index in range(degree):
-                    deltaGain[index] -= weight
-                return deltaGain
-            elif num[lPart] == 1:
+                    delta_gain[index] -= weight
+                return delta_gain
+            elif num[l_part] == 1:
                 for index in range(degree):
-                    part_w = part[self.IdVec[index]]
-                    if part_w == lPart:
-                        deltaGain[index] += weight
+                    part_w = part[self.idx_vec[index]]
+                    if part_w == l_part:
+                        delta_gain[index] += weight
                         break
             weight = -weight
 
-        return deltaGain
+        return delta_gain

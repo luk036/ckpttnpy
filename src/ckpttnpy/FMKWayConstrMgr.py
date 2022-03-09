@@ -37,7 +37,7 @@ class FMKWayConstrMgr(FMConstrMgr):
         """[summary]
 
         Arguments:
-            fromPart (type):  description
+            from_part (type):  description
             v (type):  description
 
         Returns:
@@ -47,8 +47,8 @@ class FMKWayConstrMgr(FMConstrMgr):
         if status != LegalCheck.AllSatisfied:
             return status
 
-        _, fromPart, toPart = move_info_v
-        self.illegal[fromPart] = self.illegal[toPart] = False
+        _, from_part, to_part = move_info_v
+        self.illegal[from_part] = self.illegal[to_part] = False
         if any(self.illegal):
             return LegalCheck.GetBetter  # get better, but still illegal
         return LegalCheck.AllSatisfied  # all satisfied

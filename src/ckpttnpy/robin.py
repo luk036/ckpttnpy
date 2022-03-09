@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-class slnode:
+class SlNode:
     def __init__(self, data):
         """initialization
 
@@ -12,7 +12,7 @@ class slnode:
         self.data = data
 
 
-class robin:
+class Robin:
     """Round Robin
 
     Raises:
@@ -25,31 +25,31 @@ class robin:
     __slots__ = "cycle"
 
     def __init__(self, num_parts: int):
-        self.cycle = list(slnode(k) for k in range(num_parts))
+        self.cycle = list(SlNode(k) for k in range(num_parts))
         sl2 = self.cycle[-1]
         for sl1 in self.cycle:
             sl2.next = sl1
             sl2 = sl1
 
-    def exclude(self, fromPart: int):
+    def exclude(self, from_part: int):
         """iterator
 
         Returns:
             robin_iterator
         """
-        return robin_iterator(self, fromPart)
+        return robin_iterator(self, from_part)
 
 
 class robin_iterator:
     __slots__ = ("cur", "stop")
 
-    def __init__(self, robin, fromPart: int):
+    def __init__(self, Robin, from_part: int):
         """[summary]
 
         Arguments:
-            robin (type):  description
+            Robin (type):  description
         """
-        self.cur = self.stop = robin.cycle[fromPart]
+        self.cur = self.stop = Robin.cycle[from_part]
 
     def __iter__(self):
         """iterable
@@ -84,6 +84,6 @@ class robin_iterator:
 
 
 if __name__ == "__main__":
-    R = robin(5)
-    for k in R.exclude(3):
+    r = Robin(5)
+    for k in r.exclude(3):
         print(k)
