@@ -2,7 +2,7 @@
 
 from typing import Any, Dict, List, Union
 
-from .dllist import dllink
+from .dllist import Dllink
 
 Part = Union[Dict[Any, int], List[int]]
 
@@ -23,7 +23,7 @@ class FMBiGainCalc4Gr:
             K (uint8_t):  number of partitions (default: {2})
         """
         self.H = H
-        self.vertex_list = {v: dllink([0, v]) for v in self.H}
+        self.vertex_list = {v: Dllink([0, v]) for v in self.H}
 
     def init(self, part: Part) -> int:
         """(re)initialization after creation

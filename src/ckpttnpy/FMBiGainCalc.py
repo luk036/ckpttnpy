@@ -2,7 +2,7 @@
 
 from typing import Any, Dict, List, Union
 
-from .dllist import dllink
+from .dllist import Dllink
 
 Part = Union[Dict[Any, int], List[int]]
 
@@ -24,9 +24,9 @@ class FMBiGainCalc:
         """
         self.H = H
         if isinstance(self.H.modules, range):
-            self.vertex_list = [dllink([0, i]) for i in self.H]
+            self.vertex_list = [Dllink([0, i]) for i in self.H]
         elif isinstance(self.H.modules, list):
-            self.vertex_list = {v: dllink([0, v]) for v in self.H}
+            self.vertex_list = {v: Dllink([0, v]) for v in self.H}
         else:
             raise NotImplementedError
 

@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-from .dllist import Dllist, dllink
+from .dllist import Dllink, Dllist
 
-sentinel = dllink([0, 8965])
+sentinel = Dllink([0, 8965])
 
 
-class bpqueue:
+class BPQueue:
     """bounded priority queue
 
     Bounded Priority Queue with integer keys in [a..b].
@@ -40,11 +40,11 @@ class bpqueue:
         self._bucket = list(Dllist([0, 4848]) for _ in range(self._high + 1))
         self._bucket[0].append(sentinel)  # sentinel
 
-    def set_key(self, it: dllink, gain: int):
+    def set_key(self, it: Dllink, gain: int):
         """Set the key value
 
         Arguments:
-            it (dllink):  the item
+            it (Dllink):  the item
             gain (int):  the key of it
         """
         it.data[0] = gain - self._offset
@@ -75,7 +75,7 @@ class bpqueue:
         """append item with internal key
 
         Arguments:
-            it (dllink):  the item
+            it (Dllink):  the item
             k (int):  the key
         """
         assert it.data[0] > self._offset
@@ -85,7 +85,7 @@ class bpqueue:
         """append item with external key
 
         Arguments:
-            it (dllink):  description
+            it (Dllink):  description
             k (int):  key
         """
         assert k > self._offset
@@ -112,7 +112,7 @@ class bpqueue:
         """pop node with the highest key
 
         Returns:
-            dllink:  description
+            Dllink:  description
         """
         res = self._bucket[self._max].popleft()
         while self._bucket[self._max].is_empty():
@@ -123,7 +123,7 @@ class bpqueue:
         """decrease key by delta
 
         Arguments:
-            it (dllink):  the item
+            it (Dllink):  the item
             delta (int):  the change of the key
 
         Note that the order of items with same key will
@@ -146,7 +146,7 @@ class bpqueue:
         """increase key by delta
 
         Arguments:
-            it (dllink):  the item
+            it (Dllink):  the item
             delta (int):  the change of the key
 
         Note that the order of items with same key will
@@ -167,7 +167,7 @@ class bpqueue:
         """modify key by delta
 
         Arguments:
-            it (dllink):  the item
+            it (Dllink):  the item
             delta (int):  the change of the key
 
         Note that the order of items with same key will
@@ -182,7 +182,7 @@ class bpqueue:
             self.decrease_key(it, delta)
 
     def detach(self, it):
-        """detach the item from bpqueue
+        """detach the item from BPQueue
 
         Arguments:
             it (type):  the item
@@ -238,7 +238,7 @@ class bpq_iterator:
             StopIteration:  description
 
         Returns:
-            dllink:  description
+            Dllink:  description
         """
         while self.curkey > 0:
             try:

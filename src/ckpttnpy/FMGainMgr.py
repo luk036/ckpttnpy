@@ -2,7 +2,7 @@
 
 from abc import abstractmethod
 
-from .bpqueue import bpqueue
+from .bpqueue import BPQueue
 from .dllist import Dllist
 
 
@@ -25,7 +25,7 @@ class FMGainMgr:
         self.K = K
         self.gainCalc = GainCalc(H, K)
         self.pmax = self.H.get_max_degree()
-        self.gainbucket = [bpqueue(-self.pmax, self.pmax) for _ in range(K)]
+        self.gainbucket = [BPQueue(-self.pmax, self.pmax) for _ in range(K)]
 
     def init(self, part):
         """(re)initialization after creation

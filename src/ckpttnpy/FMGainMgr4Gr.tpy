@@ -2,12 +2,12 @@
 
 from abc import abstractmethod
 
-from .bpqueue import bpqueue
-from .dllist import dllink
+from .bpqueue import BPQueue
+from .dllist import Dllink
 
 
 class FMGainMgr:
-    waitinglist = dllink([0, 3734])
+    waitinglist = Dllink([0, 3734])
 
     # public:
 
@@ -25,7 +25,7 @@ class FMGainMgr:
         self.K = K
         self.gainCalc = GainCalc(H, K)
         self.pmax = self.H.get_max_degree()
-        self.gainbucket = [bpqueue(-self.pmax, self.pmax)
+        self.gainbucket = [BPQueue(-self.pmax, self.pmax)
                            for _ in range(K)]
 
     def init(self, part):

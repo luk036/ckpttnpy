@@ -3,7 +3,7 @@
 from itertools import permutations
 from typing import Any, Dict, List, Union
 
-from .dllist import dllink
+from .dllist import Dllink
 from .robin import robin
 
 Part = Union[Dict[Any, int], List[int]]
@@ -40,9 +40,9 @@ class FMKWayGainCalc:
         self.vertex_list = []
 
         if isinstance(self.H.modules, range):
-            self.vertex_list = [[dllink([0, i]) for i in self.H] for _ in range(K)]
+            self.vertex_list = [[Dllink([0, i]) for i in self.H] for _ in range(K)]
         elif isinstance(self.H.modules, list):
-            self.vertex_list = [{v: dllink([0, v]) for v in self.H} for _ in range(K)]
+            self.vertex_list = [{v: Dllink([0, v]) for v in self.H} for _ in range(K)]
         else:
             raise NotImplementedError
 

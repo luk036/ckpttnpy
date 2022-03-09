@@ -1,4 +1,4 @@
-class dllink:
+class Dllink:
     """doubly linked node (that may also be a "head" a list)
 
     A Doubly-linked List class. This class simply contains a link of
@@ -46,7 +46,7 @@ class dllink:
         """append the node to the front
 
         Arguments:
-            node (dllink):  description
+            node (Dllink):  description
         """
         node.next = self.next
         self.next.prev = node
@@ -57,7 +57,7 @@ class dllink:
         """append the node to the back
 
         Arguments:
-            node (dllink):  description
+            node (Dllink):  description
         """
         node.prev = self.prev
         self.prev.next = node
@@ -68,7 +68,7 @@ class dllink:
         """pop a node from the front
 
         Returns:
-            dllink:  description
+            Dllink:  description
         """
         res = self.next
         self.next = res.next
@@ -79,7 +79,7 @@ class dllink:
         """pop a node from the back
 
         Returns:
-            dllink:  description
+            Dllink:  description
         """
         res = self.prev
         self.prev = res.prev
@@ -90,7 +90,7 @@ class dllink:
     #     """iterable
 
     #     Returns:
-    #         dllink:  itself
+    #         Dllink:  itself
     #     """
     #     cur = self.next
     #     while cur != self:
@@ -121,7 +121,7 @@ class Dllist:
         Keyword Arguments:
             index (type):  description (default: {None})
         """
-        self.head = dllink(data)
+        self.head = Dllink(data)
 
     def is_empty(self):
         """whether the list is empty
@@ -139,7 +139,7 @@ class Dllist:
         """append the node to the front
 
         Arguments:
-            node (dllink):  description
+            node (Dllink):  description
         """
         self.head.appendleft(node)
 
@@ -147,7 +147,7 @@ class Dllist:
         """append the node to the back
 
         Arguments:
-            node (dllink):  description
+            node (Dllink):  description
         """
         self.head.append(node)
 
@@ -155,7 +155,7 @@ class Dllist:
         """pop a node from the front
 
         Returns:
-            dllink:  description
+            Dllink:  description
         """
         return self.head.popleft()
 
@@ -163,7 +163,7 @@ class Dllist:
         """pop a node from the back
 
         Returns:
-            dllink:  description
+            Dllink:  description
         """
         return self.head.pop()
 
@@ -171,7 +171,7 @@ class Dllist:
     #     """iterable
 
     #     Returns:
-    #         dllink:  itself
+    #         Dllink:  itself
     #     """
     #     cur = self.next
     #     while cur != self:
@@ -182,7 +182,7 @@ class Dllist:
         """iterable
 
         Returns:
-            dllink:  itself
+            Dllink:  itself
         """
         return DllIterator(self.head)
 
@@ -198,7 +198,7 @@ class DllIterator:
         """Initialization
 
         Arguments:
-            link (dllink):  description
+            link (Dllink):  description
         """
         self.link = link
         self.cur = link.next
@@ -210,7 +210,7 @@ class DllIterator:
             StopIteration:  description
 
         Returns:
-            dllink:  the next item
+            Dllink:  the next item
         """
         if self.cur != self.link:
             res = self.cur

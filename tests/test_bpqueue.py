@@ -1,21 +1,21 @@
-from ckpttnpy.bpqueue import bpqueue
-from ckpttnpy.dllist import dllink
+from ckpttnpy.bpqueue import BPQueue
+from ckpttnpy.dllist import Dllink
 
 
 def test_bpqueue():
     try:
-        _ = bpqueue(-10.4, 10.4)
+        _ = BPQueue(-10.4, 10.4)
     except TypeError:
         print("ok")
 
-    bpq1 = bpqueue(-10, 10)
-    bpq2 = bpqueue(-10, 10)
+    bpq1 = BPQueue(-10, 10)
+    bpq2 = BPQueue(-10, 10)
 
     assert bpq1._max == 0  # is_empty()
 
-    d = dllink([0, 0])
-    e = dllink([0, 1])
-    f = dllink([0, 2])
+    d = Dllink([0, 0])
+    e = Dllink([0, 1])
+    f = Dllink([0, 2])
 
     assert d.data[0] == 0
 
@@ -33,7 +33,7 @@ def test_bpqueue():
     assert bpq1._max == 0  # is_empty()
     assert bpq2.get_max() == 6
 
-    nodelist = list(dllink([0, i]) for i in range(10))
+    nodelist = list(Dllink([0, i]) for i in range(10))
 
     for i, it in enumerate(nodelist):
         it.data[0] = 2 * i - 10
