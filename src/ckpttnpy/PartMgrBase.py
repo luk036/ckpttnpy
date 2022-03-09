@@ -14,18 +14,18 @@ Part = Union[Dict[Any, int], List[int]]
 
 
 class PartMgrBase:
-    def __init__(self, hgr, gainMgr, constrMgr):
+    def __init__(self, hgr, gain_mgr, constrMgr):
         """[summary]
 
         Arguments:
             hgr (type):  description
-            gainMgr (type):  description
+            gain_mgr (type):  description
             constrMgr (type):  description
         """
         self.hgr = hgr
-        self.gainMgr = gainMgr
+        self.gain_mgr = gain_mgr
         self.validator = constrMgr
-        self.num_parts = gainMgr.num_parts
+        self.num_parts = gain_mgr.num_parts
         self.totalcost = 0
 
     def init(self, part: Part):
@@ -34,7 +34,7 @@ class PartMgrBase:
         Arguments:
             part (type):  description
         """
-        self.totalcost = self.gainMgr.init(part)
+        self.totalcost = self.gain_mgr.init(part)
         assert self.totalcost >= 0
         self.validator.init(part)
 
@@ -55,28 +55,28 @@ class PartMgrBase:
             and self.hgr.module_fixed is False,
             self.hgr,
         ):
-            self.gainMgr.lock_all(part[v], v)
+            self.gain_mgr.lock_all(part[v], v)
 
-        legalcheck = LegalCheck.notsatisfied
-        while legalcheck != LegalCheck.allsatisfied:  # satisfied:
+        legalcheck = LegalCheck.NotSatisfied
+        while legalcheck != LegalCheck.AllSatisfied:  # satisfied:
             # Take the gainmax with v from gainbucket
-            # gainmax = self.gainMgr.gainbucket.get_max()
+            # gainmax = self.gain_mgr.gainbucket.get_max()
             toPart = self.validator.select_togo()
-            if self.gainMgr.gainbucket[toPart]._max == 0:  # is_empty_togo()
+            if self.gain_mgr.gainbucket[toPart]._max == 0:  # is_empty_togo()
                 break
-            v, gainmax = self.gainMgr.select_togo(toPart)
+            v, gainmax = self.gain_mgr.select_togo(toPart)
             fromPart = part[v]
             assert fromPart != toPart
             move_info_v = v, fromPart, toPart
-            # Check if the move of v can notsatisfied, makebetter, or satisfied
+            # Check if the move of v can NotSatisfied, makebetter, or satisfied
             legalcheck = self.validator.check_legal(move_info_v)
-            if legalcheck == LegalCheck.notsatisfied:  # notsatisfied
+            if legalcheck == LegalCheck.NotSatisfied:  # NotSatisfied
                 continue
 
             # Update v and its neigbours (even they are in waitinglist)
             # Put neigbours to bucket
-            self.gainMgr.update_move(part, move_info_v)
-            self.gainMgr.update_move_v(move_info_v, gainmax)
+            self.gain_mgr.update_move(part, move_info_v)
+            self.gain_mgr.update_move_v(move_info_v, gainmax)
             self.validator.update_move(move_info_v)
             part[v] = toPart
             self.totalcost -= gainmax
@@ -108,10 +108,10 @@ class PartMgrBase:
         snapshot = None
         besttotalgain = 0
 
-        while not self.gainMgr.is_empty():
+        while not self.gain_mgr.is_empty():
             # Take the gainmax with v from gainbucket
-            move_info_v, gainmax = self.gainMgr.select(part)
-            # Check if the move of v can satisfied or notsatisfied
+            move_info_v, gainmax = self.gain_mgr.select(part)
+            # Check if the move of v can satisfied or NotSatisfied
             satisfiedOK = self.validator.check_constraints(move_info_v)
             if not satisfiedOK:
                 continue
@@ -130,9 +130,9 @@ class PartMgrBase:
             # Update v and its neigbours (even they are in waitinglist)
             # Put neigbours to bucket
             v, _, toPart = move_info_v
-            self.gainMgr.lock(toPart, v)
-            self.gainMgr.update_move(part, move_info_v)
-            self.gainMgr.update_move_v(move_info_v, gainmax)
+            self.gain_mgr.lock(toPart, v)
+            self.gain_mgr.update_move(part, move_info_v)
+            self.gain_mgr.update_move_v(move_info_v, gainmax)
             self.validator.update_move(move_info_v)
             totalgain += gainmax
             part[v] = toPart

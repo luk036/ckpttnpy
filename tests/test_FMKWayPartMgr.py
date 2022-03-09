@@ -15,55 +15,55 @@ from ckpttnpy.netlist import (
 Part = Union[Dict[Any, int], List[int]]
 
 
-def run_FMKWayPartMgr(hgr: Netlist, gainMgr, num_parts, part: Part):
+def run_FMKWayPartMgr(hgr: Netlist, gain_mgr, num_parts, part: Part):
     """[summary]
 
     Arguments:
         hgr (Netlist):  description
-        gainMgr (gainMgr):  description
+        gain_mgr (gain_mgr):  description
         num_parts (int):  number of partitions
     """
     constrMgr = FMKWayConstrMgr(hgr, 0.4, hgr.module_weight, num_parts)  # 0.2 ???
-    partMgr = FMPartMgr(hgr, gainMgr, constrMgr)
-    partMgr.legalize(part)  # ???
-    totalcostbefore = partMgr.totalcost
-    partMgr.init(part)
-    assert partMgr.totalcost == totalcostbefore
-    partMgr.optimize(part)
-    assert partMgr.totalcost <= totalcostbefore
-    totalcostbefore = partMgr.totalcost
-    partMgr.init(part)
-    assert partMgr.totalcost == totalcostbefore
-    # print(partMgr.snapshot)
+    part_mgr = FMPartMgr(hgr, gain_mgr, constrMgr)
+    part_mgr.legalize(part)  # ???
+    totalcostbefore = part_mgr.totalcost
+    part_mgr.init(part)
+    assert part_mgr.totalcost == totalcostbefore
+    part_mgr.optimize(part)
+    assert part_mgr.totalcost <= totalcostbefore
+    totalcostbefore = part_mgr.totalcost
+    part_mgr.init(part)
+    assert part_mgr.totalcost == totalcostbefore
+    # print(part_mgr.snapshot)
 
 
 def test_FMKWayPartMgr():
     hgr = create_drawf()
-    gainMgr = FMKWayGainMgr(FMKWayGainCalc, hgr, 3)
+    gain_mgr = FMKWayGainMgr(FMKWayGainCalc, hgr, 3)
     hgr.module_fixed = {"p1"}
     part = {v: 0 for v in hgr}
-    run_FMKWayPartMgr(hgr, gainMgr, 3, part)
+    run_FMKWayPartMgr(hgr, gain_mgr, 3, part)
 
 
 def test_FMKWayPartMgr2():
     hgr = create_test_netlist()
-    gainMgr = FMKWayGainMgr(FMKWayGainCalc, hgr, 3)
+    gain_mgr = FMKWayGainMgr(FMKWayGainCalc, hgr, 3)
     part = {v: 0 for v in hgr}
-    run_FMKWayPartMgr(hgr, gainMgr, 3, part)
+    run_FMKWayPartMgr(hgr, gain_mgr, 3, part)
 
 
 def test_FMKWayPartMgr3():
     hgr = create_random_hgraph()
-    gainMgr = FMKWayGainMgr(FMKWayGainCalc, hgr, 3)
+    gain_mgr = FMKWayGainMgr(FMKWayGainCalc, hgr, 3)
     part = [0 for _ in hgr]
-    run_FMKWayPartMgr(hgr, gainMgr, 3, part)
+    run_FMKWayPartMgr(hgr, gain_mgr, 3, part)
 
 
 def test_FMKWayPartMgr4():
     hgr = read_json("testcases/p1.json")
-    gainMgr = FMKWayGainMgr(FMKWayGainCalc, hgr, 3)
+    gain_mgr = FMKWayGainMgr(FMKWayGainCalc, hgr, 3)
     part = [0 for _ in hgr]
-    run_FMKWayPartMgr(hgr, gainMgr, 3, part)
+    run_FMKWayPartMgr(hgr, gain_mgr, 3, part)
 
 
 # if __name__ == "__main__":

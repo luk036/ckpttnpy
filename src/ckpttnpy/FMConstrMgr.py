@@ -6,15 +6,15 @@ Part = Union[Dict[Any, int], List[int]]
 
 
 class LegalCheck(Enum):
-    """Check if the move of v can satisfied, getbetter, or notsatisfied
+    """Check if the move of v can satisfied, GetBetter, or NotSatisfied
 
     Arguments:
         Enum {[type]} -- [description]
     """
 
-    notsatisfied = 0
-    getbetter = 1
-    allsatisfied = 2
+    NotSatisfied = 0
+    GetBetter = 1
+    AllSatisfied = 2
 
 
 class FMConstrMgr:
@@ -80,11 +80,11 @@ class FMConstrMgr:
         self.weight = self.get_module_weight(v)
         diffFrom = self.diff[fromPart] - self.weight
         if diffFrom < self.lowerbound:
-            return LegalCheck.notsatisfied  # not ok, don't move
+            return LegalCheck.NotSatisfied  # not ok, don't move
         diffTo = self.diff[toPart] + self.weight
         if diffTo < self.lowerbound:
-            return LegalCheck.getbetter  # get better, but still illegal
-        return LegalCheck.allsatisfied  # all satisfied
+            return LegalCheck.GetBetter  # get better, but still illegal
+        return LegalCheck.AllSatisfied  # all satisfied
 
     def check_constraints(self, move_info_v):
         """[summary]

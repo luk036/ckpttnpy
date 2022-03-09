@@ -16,18 +16,18 @@ Part = Union[Dict[Any, int], List[int]]
 
 
 def run_FMBiPartMgr(hgr: Netlist, part: Part):
-    gainMgr = FMBiGainMgr(FMBiGainCalc, hgr)
+    gain_mgr = FMBiGainMgr(FMBiGainCalc, hgr)
     constrMgr = FMBiConstrMgr(hgr, 0.3, hgr.module_weight)
-    partMgr = FMPartMgr(hgr, gainMgr, constrMgr)
-    partMgr.legalize(part)
-    totalcostbefore = partMgr.totalcost
-    partMgr.init(part)
-    assert partMgr.totalcost == totalcostbefore
-    partMgr.optimize(part)
-    assert partMgr.totalcost <= totalcostbefore
-    totalcostbefore = partMgr.totalcost
-    partMgr.init(part)
-    assert partMgr.totalcost == totalcostbefore
+    part_mgr = FMPartMgr(hgr, gain_mgr, constrMgr)
+    part_mgr.legalize(part)
+    totalcostbefore = part_mgr.totalcost
+    part_mgr.init(part)
+    assert part_mgr.totalcost == totalcostbefore
+    part_mgr.optimize(part)
+    assert part_mgr.totalcost <= totalcostbefore
+    totalcostbefore = part_mgr.totalcost
+    part_mgr.init(part)
+    assert part_mgr.totalcost == totalcostbefore
 
 
 def test_FMBiPartMgr():

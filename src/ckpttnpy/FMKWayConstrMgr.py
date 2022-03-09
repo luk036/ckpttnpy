@@ -2,7 +2,7 @@
 
 from typing import Any, Dict, List, Union
 
-# Check if the move of v can satisfied, makebetter, or notsatisfied
+# Check if the move of v can satisfied, makebetter, or NotSatisfied
 from .FMConstrMgr import FMConstrMgr, LegalCheck
 
 Part = Union[Dict[Any, int], List[int]]
@@ -44,11 +44,11 @@ class FMKWayConstrMgr(FMConstrMgr):
             dtype:  description
         """
         status = FMConstrMgr.check_legal(self, move_info_v)
-        if status != LegalCheck.allsatisfied:
+        if status != LegalCheck.AllSatisfied:
             return status
 
         _, fromPart, toPart = move_info_v
         self.illegal[fromPart] = self.illegal[toPart] = False
         if any(self.illegal):
-            return LegalCheck.getbetter  # get better, but still illegal
-        return LegalCheck.allsatisfied  # all satisfied
+            return LegalCheck.GetBetter  # get better, but still illegal
+        return LegalCheck.AllSatisfied  # all satisfied

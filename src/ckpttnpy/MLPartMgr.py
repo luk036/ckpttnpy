@@ -62,21 +62,21 @@ class MLPartMgr:
         """
 
         def legalcheck_fn():
-            gainMgr = self.GainMgr(self.GainCalc, hgr, self.num_parts)
+            gain_mgr = self.GainMgr(self.GainCalc, hgr, self.num_parts)
             constrMgr = self.ConstrMgr(hgr, self.bal_tol, module_weight, self.num_parts)
-            partMgr = self.PartMgr(hgr, gainMgr, constrMgr)
-            legalcheck = partMgr.legalize(part)
-            return legalcheck, partMgr.totalcost
+            part_mgr = self.PartMgr(hgr, gain_mgr, constrMgr)
+            legalcheck = part_mgr.legalize(part)
+            return legalcheck, part_mgr.totalcost
 
         def optimize_fn():
-            gainMgr = self.GainMgr(self.GainCalc, hgr, self.num_parts)
+            gain_mgr = self.GainMgr(self.GainCalc, hgr, self.num_parts)
             constrMgr = self.ConstrMgr(hgr, self.bal_tol, module_weight, self.num_parts)
-            partMgr = self.PartMgr(hgr, gainMgr, constrMgr)
-            partMgr.optimize(part)
-            return partMgr.totalcost
+            part_mgr = self.PartMgr(hgr, gain_mgr, constrMgr)
+            part_mgr.optimize(part)
+            return part_mgr.totalcost
 
         legalcheck, totalcost = legalcheck_fn()
-        if legalcheck != LegalCheck.allsatisfied:
+        if legalcheck != LegalCheck.AllSatisfied:
             self.totalcost = totalcost
             return legalcheck
 
@@ -86,7 +86,7 @@ class MLPartMgr:
                 part2 = list(0 for _ in range(H2.number_of_modules()))
                 H2.projection_up(part, part2)
                 legalcheck_recur = self.run_FMPartition(H2, module_weight2, part2)
-                if legalcheck_recur == LegalCheck.allsatisfied:
+                if legalcheck_recur == LegalCheck.AllSatisfied:
                     H2.projection_down(part2, part)
 
         self.totalcost = optimize_fn()

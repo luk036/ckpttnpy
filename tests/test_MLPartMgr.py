@@ -5,8 +5,8 @@ from ckpttnpy.netlist import Netlist, create_drawf, read_json
 
 
 def run_MLBiPartMgr(hgr: Netlist):
-    partMgr = MLBiPartMgr(0.4)
-    # partMgr.limitsize = 2000
+    part_mgr = MLBiPartMgr(0.4)
+    # part_mgr.limitsize = 2000
     randseq = [randint(0, 1) for _ in hgr]
 
     if isinstance(hgr.modules, range):
@@ -16,8 +16,8 @@ def run_MLBiPartMgr(hgr: Netlist):
     else:
         raise NotImplementedError
 
-    partMgr.run_FMPartition(hgr, hgr.module_weight, part)
-    return partMgr.totalcost
+    part_mgr.run_FMPartition(hgr, hgr.module_weight, part)
+    return part_mgr.totalcost
 
 
 def test_MLBiPartMgr():
@@ -42,8 +42,8 @@ def run_MLKWayPartMgr(hgr: Netlist, num_parts: int):
     Returns:
         [type]: [description]
     """
-    partMgr = MLKWayPartMgr(0.4, num_parts)
-    # partMgr.limitsize = 2000
+    part_mgr = MLKWayPartMgr(0.4, num_parts)
+    # part_mgr.limitsize = 2000
     randseq = [randint(0, num_parts - 1) for _ in hgr]
 
     if isinstance(hgr.modules, range):
@@ -53,8 +53,8 @@ def run_MLKWayPartMgr(hgr: Netlist, num_parts: int):
     else:
         raise NotImplementedError
 
-    partMgr.run_FMPartition(hgr, hgr.module_weight, part)
-    return partMgr.totalcost
+    part_mgr.run_FMPartition(hgr, hgr.module_weight, part)
+    return part_mgr.totalcost
 
 
 def test_MLKWayPartMgr():

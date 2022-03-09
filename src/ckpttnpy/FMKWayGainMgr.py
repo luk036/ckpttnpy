@@ -37,9 +37,9 @@ class FMKWayGainMgr(FMGainMgr):
         for v in self.hgr:
             pv = part[v]
             for k in self.RR.exclude(pv):
-                vlink = self.gainCalc.vertex_list[k][v]
+                vlink = self.gain_calc.vertex_list[k][v]
                 self.gainbucket[k].append(vlink, vlink.data[0])
-            vlink = self.gainCalc.vertex_list[pv][v]
+            vlink = self.gain_calc.vertex_list[pv][v]
             self.gainbucket[pv].set_key(vlink, 0)
             self.waitinglist.append(vlink)
 
@@ -56,12 +56,12 @@ class FMKWayGainMgr(FMGainMgr):
             v (node_t):  description
             key (int):  description
         """
-        vlink = self.gainCalc.vertex_list[whichPart][v]
+        vlink = self.gain_calc.vertex_list[whichPart][v]
         self.gainbucket[whichPart].detach(vlink)
         vlink.next = None  # lock
 
     def lock_all(self, _, v):
-        for vlist, bckt in zip(self.gainCalc.vertex_list, self.gainbucket):
+        for vlist, bckt in zip(self.gain_calc.vertex_list, self.gainbucket):
             vlink = vlist[v]
             bckt.detach(vlink)
             vlink.next = None  # lock
@@ -77,7 +77,7 @@ class FMKWayGainMgr(FMGainMgr):
         v, fromPart, toPart = move_info_v
         for k in filter(lambda k: k != toPart, self.RR.exclude(fromPart)):
             self.gainbucket[k].modify_key(
-                self.gainCalc.vertex_list[k][v], self.gainCalc.deltaGainV[k]
+                self.gain_calc.vertex_list[k][v], self.gain_calc.deltaGainV[k]
             )
         self._set_key(fromPart, v, -gain)
         # self.lock(toPart, v)
@@ -91,7 +91,7 @@ class FMKWayGainMgr(FMGainMgr):
             key (type):  description
         """
         for k in self.RR.exclude(part_w):
-            self.gainbucket[k].modify_key(self.gainCalc.vertex_list[k][w], key[k])
+            self.gainbucket[k].modify_key(self.gain_calc.vertex_list[k][w], key[k])
 
     # private:
 
@@ -103,4 +103,6 @@ class FMKWayGainMgr(FMGainMgr):
             v (node_t):  description
             key (int):  description
         """
-        self.gainbucket[whichPart].set_key(self.gainCalc.vertex_list[whichPart][v], key)
+        self.gainbucket[whichPart].set_key(
+            self.gain_calc.vertex_list[whichPart][v], key
+        )

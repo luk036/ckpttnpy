@@ -18,7 +18,7 @@ _logger = logging.getLogger(__name__)
 
 
 def run_MLBiPartMgr(hgr: Netlist):
-    partMgr = MLBiPartMgr(0.4)
+    part_mgr = MLBiPartMgr(0.4)
     mincost = 100000000000
     minpart = []
     for _ in range(10):
@@ -31,9 +31,9 @@ def run_MLBiPartMgr(hgr: Netlist):
         else:
             raise NotImplementedError
 
-        partMgr.run_FMPartition(hgr, hgr.module_weight, part)
-        if mincost > partMgr.totalcost:
-            mincost = partMgr.totalcost
+        part_mgr.run_FMPartition(hgr, hgr.module_weight, part)
+        if mincost > part_mgr.totalcost:
+            mincost = part_mgr.totalcost
             minpart = part.copy()
     return mincost, minpart
 
