@@ -13,14 +13,14 @@ class FMBiGainCalc:
 
     # public:
 
-    def __init__(self, hgr, K=2):
+    def __init__(self, hgr, num_parts=2):
         """Initialization
 
         Arguments:
             hgr (Netlist):  description
 
         Keyword Arguments:
-            K (uint8_t):  number of partitions (default: {2})
+            num_parts (uint8_t):  number of partitions (default: {2})
         """
         self.hgr = hgr
         if isinstance(self.hgr.modules, range):

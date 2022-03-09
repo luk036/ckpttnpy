@@ -18,7 +18,7 @@ from .min_cover import create_contraction_subgraph
 
 
 class MLPartMgr:
-    def __init__(self, GainCalc, GainMgr, ConstrMgr, PartMgr, bal_tol, K=2):
+    def __init__(self, GainCalc, GainMgr, ConstrMgr, PartMgr, bal_tol, num_parts=2):
         """[summary]
 
         Arguments:
@@ -28,14 +28,14 @@ class MLPartMgr:
             bal_tol (type):  description
 
         Keyword Arguments:
-            K (int):  description (default: {2})
+            num_parts (int):  description (default: {2})
         """
         self.GainCalc = GainCalc
         self.GainMgr = GainMgr
         self.ConstrMgr = ConstrMgr
         self.PartMgr = PartMgr
         self.bal_tol = bal_tol
-        self.K = K
+        self.num_parts = num_parts
         self.totalcost = 0
         self._limitsize = 7
 
@@ -62,15 +62,15 @@ class MLPartMgr:
         """
 
         def legalcheck_fn():
-            gainMgr = self.GainMgr(self.GainCalc, hgr, self.K)
-            constrMgr = self.ConstrMgr(hgr, self.bal_tol, module_weight, self.K)
+            gainMgr = self.GainMgr(self.GainCalc, hgr, self.num_parts)
+            constrMgr = self.ConstrMgr(hgr, self.bal_tol, module_weight, self.num_parts)
             partMgr = self.PartMgr(hgr, gainMgr, constrMgr)
             legalcheck = partMgr.legalize(part)
             return legalcheck, partMgr.totalcost
 
         def optimize_fn():
-            gainMgr = self.GainMgr(self.GainCalc, hgr, self.K)
-            constrMgr = self.ConstrMgr(hgr, self.bal_tol, module_weight, self.K)
+            gainMgr = self.GainMgr(self.GainCalc, hgr, self.num_parts)
+            constrMgr = self.ConstrMgr(hgr, self.bal_tol, module_weight, self.num_parts)
             partMgr = self.PartMgr(hgr, gainMgr, constrMgr)
             partMgr.optimize(part)
             return partMgr.totalcost
@@ -107,13 +107,19 @@ class MLBiPartMgr(MLPartMgr):
 
 
 class MLKWayPartMgr(MLPartMgr):
-    def __init__(self, bal_tol, K):
+    def __init__(self, bal_tol, num_parts):
         """[summary]
 
         Args:
             bal_tol ([type]): [description]
-            K ([type]): [description]
+            num_parts ([type]): [description]
         """
         MLPartMgr.__init__(
-            self, FMKWayGainCalc, FMKWayGainMgr, FMKWayConstrMgr, FMPartMgr, bal_tol, K
+            self,
+            FMKWayGainCalc,
+            FMKWayGainMgr,
+            FMKWayConstrMgr,
+            FMPartMgr,
+            bal_tol,
+            num_parts,
         )

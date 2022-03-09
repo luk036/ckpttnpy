@@ -32,19 +32,19 @@ def test_MLBiPartMgr2():
     assert totalcost <= 105
 
 
-def run_MLKWayPartMgr(hgr: Netlist, K: int):
+def run_MLKWayPartMgr(hgr: Netlist, num_parts: int):
     """[summary]
 
     Args:
         hgr (Netlist): [description]
-        K (int): [description]
+        num_parts (int): [description]
 
     Returns:
         [type]: [description]
     """
-    partMgr = MLKWayPartMgr(0.4, K)
+    partMgr = MLKWayPartMgr(0.4, num_parts)
     # partMgr.limitsize = 2000
-    randseq = [randint(0, K - 1) for _ in hgr]
+    randseq = [randint(0, num_parts - 1) for _ in hgr]
 
     if isinstance(hgr.modules, range):
         part = randseq

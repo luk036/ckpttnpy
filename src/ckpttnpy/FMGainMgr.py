@@ -11,7 +11,7 @@ class FMGainMgr:
 
     # public:
 
-    def __init__(self, GainCalc, hgr, K=2):
+    def __init__(self, GainCalc, hgr, num_parts=2):
         """initialiation
 
         Arguments:
@@ -19,13 +19,13 @@ class FMGainMgr:
             GainCalc (type):  description
 
         Keyword Arguments:
-            K (int):  number of partitions (default: {2})
+            num_parts (int):  number of partitions (default: {2})
         """
         self.hgr = hgr
-        self.K = K
-        self.gainCalc = GainCalc(hgr, K)
+        self.num_parts = num_parts
+        self.gainCalc = GainCalc(hgr, num_parts)
         self.pmax = self.hgr.get_max_degree()
-        self.gainbucket = [BPQueue(-self.pmax, self.pmax) for _ in range(K)]
+        self.gainbucket = [BPQueue(-self.pmax, self.pmax) for _ in range(num_parts)]
 
     def init(self, part):
         """(re)initialization after creation
@@ -65,10 +65,10 @@ class FMGainMgr:
         Returns:
             move_info_v:  description
         """
-        # gainmax = list(self.gainbucket[k].get_max() for k in range(self.K))
+        # gainmax = list(self.gainbucket[k].get_max() for k in range(self.num_parts))
         # maxk = max(gainmax)
         # toPart = gainmax.index(maxk)
-        toPart = max(range(self.K), key=lambda k: self.gainbucket[k].get_max())
+        toPart = max(range(self.num_parts), key=lambda k: self.gainbucket[k].get_max())
         maxk = self.gainbucket[toPart].get_max()
         vlink = self.gainbucket[toPart].popleft()
         self.waitinglist.append(vlink)

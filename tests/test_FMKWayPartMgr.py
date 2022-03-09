@@ -15,15 +15,15 @@ from ckpttnpy.netlist import (
 Part = Union[Dict[Any, int], List[int]]
 
 
-def run_FMKWayPartMgr(hgr: Netlist, gainMgr, K, part: Part):
+def run_FMKWayPartMgr(hgr: Netlist, gainMgr, num_parts, part: Part):
     """[summary]
 
     Arguments:
         hgr (Netlist):  description
         gainMgr (gainMgr):  description
-        K (int):  number of partitions
+        num_parts (int):  number of partitions
     """
-    constrMgr = FMKWayConstrMgr(hgr, 0.4, hgr.module_weight, K)  # 0.2 ???
+    constrMgr = FMKWayConstrMgr(hgr, 0.4, hgr.module_weight, num_parts)  # 0.2 ???
     partMgr = FMPartMgr(hgr, gainMgr, constrMgr)
     partMgr.legalize(part)  # ???
     totalcostbefore = partMgr.totalcost

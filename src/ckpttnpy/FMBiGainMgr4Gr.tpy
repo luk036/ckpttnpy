@@ -11,13 +11,13 @@ class FMBiGainMgr(FMGainMgr):
 
     # public:
 
-    # def __init__(self, GainCalc, hgr, K=2):
+    # def __init__(self, GainCalc, hgr, num_parts=2):
     #     """Initialization
 
     #     Arguments:
     #         hgr (Netlist):  description
     #         GainCalc (type):  description
-    #         K (uint8_t):  number of partitions
+    #         num_parts (uint8_t):  number of partitions
     #     """
     #     FMGainMgr.__init__(self, GainCalc, hgr)
 

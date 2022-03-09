@@ -12,16 +12,16 @@ class FMKWayGainMgr(FMGainMgr):
 
     # public:
 
-    def __init__(self, GainCalc, hgr, K: int):
+    def __init__(self, GainCalc, hgr, num_parts: int):
         """Initialization
 
         Arguments:
             hgr (Netlist):  description
             GainCalc (type):  description
-            K (uint8_t):  number of partitions
+            num_parts (uint8_t):  number of partitions
         """
-        FMGainMgr.__init__(self, GainCalc, hgr, K)
-        self.RR = robin(K)
+        FMGainMgr.__init__(self, GainCalc, hgr, num_parts)
+        self.RR = robin(num_parts)
 
     def init(self, part: Part):
         """(re)initialization after creation

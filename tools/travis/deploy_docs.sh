@@ -23,7 +23,7 @@ if [[ $TRAVIS_PULL_REQUEST == false && $TRAVIS_BRANCH == "master" && $BUILD_DOCS
 	# The ``travis encrypt-file deploy-key`` command provides the ``openssl`` command below.
 
 	# Decrypt the deploy-key with the Travis-CI key
-	openssl aes-256-cbc -K "$encrypted_64abb7a9cf51_key" -iv "$encrypted_64abb7a9cf51_iv" -in tools/travis/deploy-key.enc -out deploy-key -d
+	openssl aes-256-cbc -num_parts "$encrypted_64abb7a9cf51_key" -iv "$encrypted_64abb7a9cf51_iv" -in tools/travis/deploy-key.enc -out deploy-key -d
 	chmod 600 deploy-key
 	eval $(ssh-agent -s)
 	ssh-add deploy-key

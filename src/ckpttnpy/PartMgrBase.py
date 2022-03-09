@@ -25,7 +25,7 @@ class PartMgrBase:
         self.hgr = hgr
         self.gainMgr = gainMgr
         self.validator = constrMgr
-        self.K = gainMgr.K
+        self.num_parts = gainMgr.num_parts
         self.totalcost = 0
 
     def init(self, part: Part):

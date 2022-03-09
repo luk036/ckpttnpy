@@ -9,15 +9,15 @@ Part = Union[Dict[Any, int], List[int]]
 
 
 class FMKWayConstrMgr(FMConstrMgr):
-    def __init__(self, hgr, bal_tol, module_weight, K: int):
+    def __init__(self, hgr, bal_tol, module_weight, num_parts: int):
         """[summary]
 
         Arguments:
             hgr (type):  description
             bal_tol (type):  description
         """
-        FMConstrMgr.__init__(self, hgr, bal_tol, module_weight, K)
-        self.illegal = list(True for _ in range(K))
+        FMConstrMgr.__init__(self, hgr, bal_tol, module_weight, num_parts)
+        self.illegal = list(True for _ in range(num_parts))
 
     def init(self, part: Part):
         """[summary]
@@ -31,7 +31,7 @@ class FMKWayConstrMgr(FMConstrMgr):
     def select_togo(self):
         # minb = min(self.diff)
         # return self.diff.index(minb)
-        return min(range(self.K), key=lambda k: self.diff[k])
+        return min(range(self.num_parts), key=lambda k: self.diff[k])
 
     def check_legal(self, move_info_v):
         """[summary]

@@ -24,8 +24,8 @@ class robin:
 
     __slots__ = "cycle"
 
-    def __init__(self, K: int):
-        self.cycle = list(slnode(k) for k in range(K))
+    def __init__(self, num_parts: int):
+        self.cycle = list(slnode(k) for k in range(num_parts))
         sl2 = self.cycle[-1]
         for sl1 in self.cycle:
             sl2.next = sl1
