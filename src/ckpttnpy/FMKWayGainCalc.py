@@ -218,7 +218,7 @@ class FMKWayGainCalc:
 
         return w
 
-    def init_IdVec(self, v, net):
+    def init_idx_vec(self, v, net):
         self.idx_vec = [w for w in self.hgr.gr[net] if w != v]
         # self.idx_vec = []
         # for w in self.hgr.gr[net]:

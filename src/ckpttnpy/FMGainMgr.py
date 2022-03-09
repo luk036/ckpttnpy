@@ -110,7 +110,7 @@ class FMGainMgr:
             if degree == 2:
                 self._update_move_2pin_net(part, move_info)
             else:
-                self.gain_calc.init_IdVec(v, net)
+                self.gain_calc.init_idx_vec(v, net)
                 if degree == 3:
                     self._update_move_3pin_net(part, move_info)
                 else:

@@ -180,7 +180,7 @@ class FMBiGainCalc:
         self.delta_gain_w = delta * weight
         return w
 
-    def init_IdVec(self, v, net):
+    def init_idx_vec(self, v, net):
         self.idx_vec = [w for w in self.hgr.gr[net] if w != v]
         # for w in filter(lambda w: w != v, self.hgr.gr[net]):
         #     self.idx_vec.append(w)
