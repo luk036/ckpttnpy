@@ -14,17 +14,17 @@ Part = Union[Dict[Any, int], List[int]]
 
 
 class PartMgrBase:
-    def __init__(self, hgr, gain_mgr, constrMgr):
+    def __init__(self, hgr, gain_mgr, constr_mgr):
         """[summary]
 
         Arguments:
             hgr (type):  description
             gain_mgr (type):  description
-            constrMgr (type):  description
+            constr_mgr (type):  description
         """
         self.hgr = hgr
         self.gain_mgr = gain_mgr
-        self.validator = constrMgr
+        self.validator = constr_mgr
         self.num_parts = gain_mgr.num_parts
         self.totalcost = 0
 

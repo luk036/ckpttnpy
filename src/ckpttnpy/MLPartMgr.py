@@ -63,15 +63,19 @@ class MLPartMgr:
 
         def legalcheck_fn():
             gain_mgr = self.GainMgr(self.GainCalc, hgr, self.num_parts)
-            constrMgr = self.ConstrMgr(hgr, self.bal_tol, module_weight, self.num_parts)
-            part_mgr = self.PartMgr(hgr, gain_mgr, constrMgr)
+            constr_mgr = self.ConstrMgr(
+                hgr, self.bal_tol, module_weight, self.num_parts
+            )
+            part_mgr = self.PartMgr(hgr, gain_mgr, constr_mgr)
             legalcheck = part_mgr.legalize(part)
             return legalcheck, part_mgr.totalcost
 
         def optimize_fn():
             gain_mgr = self.GainMgr(self.GainCalc, hgr, self.num_parts)
-            constrMgr = self.ConstrMgr(hgr, self.bal_tol, module_weight, self.num_parts)
-            part_mgr = self.PartMgr(hgr, gain_mgr, constrMgr)
+            constr_mgr = self.ConstrMgr(
+                hgr, self.bal_tol, module_weight, self.num_parts
+            )
+            part_mgr = self.PartMgr(hgr, gain_mgr, constr_mgr)
             part_mgr.optimize(part)
             return part_mgr.totalcost
 

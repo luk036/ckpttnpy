@@ -17,8 +17,8 @@ Part = Union[Dict[Any, int], List[int]]
 
 def run_FMBiPartMgr(hgr: Netlist, part: Part):
     gain_mgr = FMBiGainMgr(FMBiGainCalc, hgr)
-    constrMgr = FMBiConstrMgr(hgr, 0.3, hgr.module_weight)
-    part_mgr = FMPartMgr(hgr, gain_mgr, constrMgr)
+    constr_mgr = FMBiConstrMgr(hgr, 0.3, hgr.module_weight)
+    part_mgr = FMPartMgr(hgr, gain_mgr, constr_mgr)
     part_mgr.legalize(part)
     totalcostbefore = part_mgr.totalcost
     part_mgr.init(part)
