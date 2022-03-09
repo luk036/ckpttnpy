@@ -85,8 +85,8 @@ def create_contraction_subgraph(
     # cluster_map = dict()
     for net in hgr.nets:
         if net in S:
-            # netCur = iter(hgr.gr[net])
-            # master = next(netCur)
+            # net_cur = iter(hgr.gr[net])
+            # master = next(net_cur)
             # clusters.append(master)
             clusters.append(net)
             module_up_map.update({v: net for v in hgr.gr[net]})

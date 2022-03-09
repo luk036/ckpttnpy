@@ -107,9 +107,9 @@ class FMKWayGainCalc:
             net (node_t):  description
             part (list):  description
         """
-        netCur = iter(self.hgr.gr[net])
-        w = next(netCur)
-        v = next(netCur)
+        net_cur = iter(self.hgr.gr[net])
+        w = next(net_cur)
+        v = next(net_cur)
         part_w = part[w]
         part_v = part[v]
         weight = self.hgr.get_net_weight(net)
@@ -128,10 +128,10 @@ class FMKWayGainCalc:
             net (node_t):  description
             part (list):  description
         """
-        netCur = iter(self.hgr.gr[net])
-        w = next(netCur)
-        v = next(netCur)
-        u = next(netCur)
+        net_cur = iter(self.hgr.gr[net])
+        w = next(net_cur)
+        v = next(net_cur)
+        u = next(net_cur)
         part_w = part[w]
         part_v = part[v]
         part_u = part[u]
@@ -201,9 +201,9 @@ class FMKWayGainCalc:
             dtype:  description
         """
         net, v, fromPart, toPart = move_info
-        netCur = iter(self.hgr.gr[net])
-        u = next(netCur)
-        w = u if u != v else next(netCur)
+        net_cur = iter(self.hgr.gr[net])
+        u = next(net_cur)
+        w = u if u != v else next(net_cur)
         part_w = part[w]
         weight = self.hgr.get_net_weight(net)
         self.deltaGainW = list(0 for _ in range(self.num_parts))

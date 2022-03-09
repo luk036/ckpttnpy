@@ -92,9 +92,9 @@ class FMBiGainCalc:
             net (node_t):  description
             part (list):  description
         """
-        netCur = iter(self.hgr.gr[net])
-        w = next(netCur)
-        v = next(netCur)
+        net_cur = iter(self.hgr.gr[net])
+        w = next(net_cur)
+        v = next(net_cur)
         weight = self.hgr.get_net_weight(net)
         if part[w] != part[v]:
             self.totalcost += weight
@@ -111,10 +111,10 @@ class FMBiGainCalc:
             net (node_t):  description
             part (list):  description
         """
-        netCur = iter(self.hgr.gr[net])
-        w = next(netCur)
-        v = next(netCur)
-        u = next(netCur)
+        net_cur = iter(self.hgr.gr[net])
+        w = next(net_cur)
+        v = next(net_cur)
+        u = next(net_cur)
         weight = self.hgr.get_net_weight(net)
         if part[u] == part[v]:
             if part[w] == part[v]:
@@ -172,9 +172,9 @@ class FMBiGainCalc:
             dtype:  description
         """
         net, v, fromPart, _ = move_info
-        netCur = iter(self.hgr.gr[net])
-        u = next(netCur)
-        w = u if u != v else next(netCur)
+        net_cur = iter(self.hgr.gr[net])
+        u = next(net_cur)
+        w = u if u != v else next(net_cur)
         weight = self.hgr.get_net_weight(net)
         delta = 2 if part[w] == fromPart else -2
         self.deltaGainW = delta * weight
