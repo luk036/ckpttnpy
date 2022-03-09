@@ -9,14 +9,14 @@ Part = Union[Dict[Any, int], List[int]]
 
 
 class FMKWayConstrMgr(FMConstrMgr):
-    def __init__(self, H, BalTol, module_weight, K: int):
+    def __init__(self, hgr, bal_tol, module_weight, K: int):
         """[summary]
 
         Arguments:
-            H (type):  description
-            BalTol (type):  description
+            hgr (type):  description
+            bal_tol (type):  description
         """
-        FMConstrMgr.__init__(self, H, BalTol, module_weight, K)
+        FMConstrMgr.__init__(self, hgr, bal_tol, module_weight, K)
         self.illegal = list(True for _ in range(K))
 
     def init(self, part: Part):

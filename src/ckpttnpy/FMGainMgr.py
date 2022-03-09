@@ -11,20 +11,20 @@ class FMGainMgr:
 
     # public:
 
-    def __init__(self, GainCalc, H, K=2):
+    def __init__(self, GainCalc, hgr, K=2):
         """initialiation
 
         Arguments:
-            H (Netlist):  description
+            hgr (Netlist):  description
             GainCalc (type):  description
 
         Keyword Arguments:
             K (int):  number of partitions (default: {2})
         """
-        self.H = H
+        self.hgr = hgr
         self.K = K
-        self.gainCalc = GainCalc(H, K)
-        self.pmax = self.H.get_max_degree()
+        self.gainCalc = GainCalc(hgr, K)
+        self.pmax = self.hgr.get_max_degree()
         self.gainbucket = [BPQueue(-self.pmax, self.pmax) for _ in range(K)]
 
     def init(self, part):
@@ -102,8 +102,8 @@ class FMGainMgr:
         self.gainCalc.update_move_init()
         v, fromPart, toPart = move_info_v
         # v = v
-        for net in self.H.G[v]:
-            degree = self.H.G.degree[net]
+        for net in self.hgr.gr[v]:
+            degree = self.hgr.gr.degree[net]
             if degree < 2:  # unlikely, self-loop, etc.
                 continue  # does not provide any gain change when move
             move_info = [net, v, fromPart, toPart]

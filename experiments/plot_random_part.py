@@ -17,35 +17,41 @@ __license__ = "mit"
 _logger = logging.getLogger(__name__)
 
 
-def run_MLBiPartMgr(H: Netlist):
+def run_MLBiPartMgr(hgr: Netlist):
     partMgr = MLBiPartMgr(0.4)
     mincost = 100000000000
     minpart = []
     for _ in range(10):
-        randseq = [randint(0, 1) for _ in H]
+        randseq = [randint(0, 1) for _ in hgr]
 
-        if isinstance(H.modules, range):
+        if isinstance(hgr.modules, range):
             part = randseq
-        elif isinstance(H.modules, list):
-            part = {v: k for v, k in zip(H.modules, randseq)}
+        elif isinstance(hgr.modules, list):
+            part = {v: k for v, k in zip(hgr.modules, randseq)}
         else:
             raise NotImplementedError
 
-        partMgr.run_FMPartition(H, H.module_weight, part)
+        partMgr.run_FMPartition(hgr, hgr.module_weight, part)
         if mincost > partMgr.totalcost:
             mincost = partMgr.totalcost
             minpart = part.copy()
     return mincost, minpart
 
 
-def plot(H: Netlist, part):
-    part0 = [i for i in H if part[i] == 0]
-    part1 = [i for i in H if part[i] == 1]
-    pos = nx.spring_layout(H.G)
-    nx.draw_networkx_nodes(H.G, nodelist=part0, node_color="g", node_size=50, pos=pos)
-    nx.draw_networkx_nodes(H.G, nodelist=part1, node_color="r", node_size=50, pos=pos)
-    nx.draw_networkx_nodes(H.G, nodelist=H.nets, node_color="k", node_size=20, pos=pos)
-    nx.draw_networkx_edges(H.G, pos=pos, width=1)
+def plot(hgr: Netlist, part):
+    part0 = [i for i in hgr if part[i] == 0]
+    part1 = [i for i in hgr if part[i] == 1]
+    pos = nx.spring_layout(hgr.gr)
+    nx.draw_networkx_nodes(
+        hgr.gr, nodelist=part0, node_color="g", node_size=50, pos=pos
+    )
+    nx.draw_networkx_nodes(
+        hgr.gr, nodelist=part1, node_color="r", node_size=50, pos=pos
+    )
+    nx.draw_networkx_nodes(
+        hgr.gr, nodelist=hgr.nets, node_color="k", node_size=20, pos=pos
+    )
+    nx.draw_networkx_edges(hgr.gr, pos=pos, width=1)
     plt.show()
 
 
@@ -104,7 +110,10 @@ def setup_logging(loglevel):
     """
     logformat = "[%(asctime)s] %(levelname)s:%(name)s:%(message)s"
     logging.basicConfig(
-        level=loglevel, stream=sys.stdout, format=logformat, datefmt="%Y-%m-%d %H:%M:%S"
+        level=loglevel,
+        stream=sys.stdout,
+        format=logformat,
+        datefmt="%Y-%m-%d %hgr:%M:%S",
     )
 
 
@@ -125,12 +134,12 @@ def main(args):
     if args.eta > 0.3:
         _logger.warning("eta value {} may be too big".format(args.eta))
 
-    H = create_random_hgraph(args.N, args.M, args.eta)
-    totalcost, part = run_MLBiPartMgr(H)
+    hgr = create_random_hgraph(args.N, args.M, args.eta)
+    totalcost, part = run_MLBiPartMgr(hgr)
     print("total cost = {}".format(totalcost))
 
     if args.plot:
-        plot(H, part)
+        plot(hgr, part)
     _logger.info("Script ends here")
 
 

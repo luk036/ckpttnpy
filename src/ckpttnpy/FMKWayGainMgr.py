@@ -12,15 +12,15 @@ class FMKWayGainMgr(FMGainMgr):
 
     # public:
 
-    def __init__(self, GainCalc, H, K: int):
+    def __init__(self, GainCalc, hgr, K: int):
         """Initialization
 
         Arguments:
-            H (Netlist):  description
+            hgr (Netlist):  description
             GainCalc (type):  description
             K (uint8_t):  number of partitions
         """
-        FMGainMgr.__init__(self, GainCalc, H, K)
+        FMGainMgr.__init__(self, GainCalc, hgr, K)
         self.RR = robin(K)
 
     def init(self, part: Part):
@@ -34,7 +34,7 @@ class FMKWayGainMgr(FMGainMgr):
         for bckt in self.gainbucket:
             bckt.clear()
 
-        for v in self.H:
+        for v in self.hgr:
             pv = part[v]
             for k in self.RR.exclude(pv):
                 vlink = self.gainCalc.vertex_list[k][v]
@@ -43,7 +43,7 @@ class FMKWayGainMgr(FMGainMgr):
             self.gainbucket[pv].set_key(vlink, 0)
             self.waitinglist.append(vlink)
 
-        for v in self.H.module_fixed:
+        for v in self.hgr.module_fixed:
             self.lock_all(part[v], v)
 
         return totalcost

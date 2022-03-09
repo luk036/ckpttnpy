@@ -9,21 +9,21 @@ Part = Union[Dict[Any, int], List[int]]
 
 class FMBiGainCalc4Gr:
 
-    __slots__ = ('totalcost', 'H', 'vertex_list', 'IdVec', 'deltaGainW')
+    __slots__ = ('totalcost', 'hgr', 'vertex_list', 'IdVec', 'deltaGainW')
 
     # public:
 
-    def __init__(self, H, K=2):
+    def __init__(self, hgr, K=2):
         """Initialization
 
         Arguments:
-            H (Netlist):  description
+            hgr (Netlist):  description
 
         Keyword Arguments:
             K (uint8_t):  number of partitions (default: {2})
         """
-        self.H = H
-        self.vertex_list = {v: Dllink([0, v]) for v in self.H}
+        self.hgr = hgr
+        self.vertex_list = {v: Dllink([0, v]) for v in self.hgr}
 
     def init(self, part: Part) -> int:
         """(re)initialization after creation
@@ -41,8 +41,8 @@ class FMBiGainCalc4Gr:
         for vlink in self.vertex_list.values():
             vlink.data[0] = 0
 
-        for e in self.H.edges():
-            # for net in self.H.net_list:
+        for e in self.hgr.edges():
+            # for net in self.hgr.net_list:
             self._init_gain(e, part)
         return self.totalcost
 
@@ -77,7 +77,7 @@ class FMBiGainCalc4Gr:
             part (list):  description
         """
         w, v = e
-        weight = self.H.get_net_weight(e)
+        weight = self.hgr.get_net_weight(e)
         if part[w] != part[v]:
             self.totalcost += weight
             self._modify_gain(w, weight)
@@ -106,7 +106,7 @@ class FMBiGainCalc4Gr:
         e, v, fromPart, _ = move_info
         u, u2 = e
         w = u if u != v else u2
-        weight = self.H.get_net_weight(e)
+        weight = self.hgr.get_net_weight(e)
         delta = 2 if part[w] == fromPart else -2
         self.deltaGainW = delta * weight
         return w

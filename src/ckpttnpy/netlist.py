@@ -36,16 +36,16 @@ class Netlist:
     cost_model = 0
 
     def __init__(
-        self, G: nx.Graph, modules: Union[range, List], nets: Union[range, List]
+        self, gr: nx.Graph, modules: Union[range, List], nets: Union[range, List]
     ):
         """[summary]
 
         Arguments:
-            G (nx.Graph): [description]
+            gr (nx.Graph): [description]
             modules (Union[range, List]): [description]
             nets (Union[range, List]): [description]
         """
-        self.G = G
+        self.gr = gr
         self.modules = modules
         self.nets = nets
 
@@ -65,8 +65,8 @@ class Netlist:
 
         # self.module_fixed = module_fixed
         # self.has_fixed_modules = (self.module_fixed != [])
-        self.max_degree = max(self.G.degree[cell] for cell in modules)
-        # self.max_net_degree = max(self.G.degree[net] for net in nets)
+        self.max_degree = max(self.gr.degree[cell] for cell in modules)
+        # self.max_net_degree = max(self.gr.degree[net] for net in nets)
 
     def number_of_modules(self) -> int:
         """[summary]
@@ -90,7 +90,7 @@ class Netlist:
         Returns:
             dtype:  description
         """
-        return self.G.number_of_nodes()
+        return self.gr.number_of_nodes()
 
     def number_of_pins(self) -> int:
         """[summary]
@@ -98,7 +98,7 @@ class Netlist:
         Returns:
             dtype:  description
         """
-        return self.G.number_of_edges()
+        return self.gr.number_of_edges()
 
     def get_max_degree(self) -> int:
         """[summary]
@@ -106,7 +106,7 @@ class Netlist:
         Returns:
             dtype:  description
         """
-        return max(self.G.degree[cell] for cell in self.modules)
+        return max(self.gr.degree[cell] for cell in self.modules)
 
     def get_module_weight(self, v) -> int:
         """[summary]
@@ -143,7 +143,7 @@ class Netlist:
         return 1
 
     def __iter__(self):
-        """Iterate over the modules. Use: 'for v in H'.
+        """Iterate over the modules. Use: 'for v in hgr'.
 
         Returns:
             iterator: An iterator over all modules in the Netlist.
@@ -154,22 +154,22 @@ class Netlist:
 def read_json(filename):
     with open(filename, "r") as fr:
         data = json.load(fr)
-    G = json_graph.node_link_graph(data)
-    num_modules = G.graph["num_modules"]
-    num_nets = G.graph["num_nets"]
-    num_pads = G.graph["num_pads"]
-    H = Netlist(G, range(num_modules), range(num_modules, num_modules + num_nets))
-    H.num_pads = num_pads
-    H.module_weight = repeat_array(1, num_modules)
-    H.net_weight = repeat_array(1, num_nets)
-    # H.net_weight = shift_array(1 for _ in range(num_nets))
-    # H.net_weight.set_start(num_modules)
-    return H
+    gr = json_graph.node_link_graph(data)
+    num_modules = gr.graph["num_modules"]
+    num_nets = gr.graph["num_nets"]
+    num_pads = gr.graph["num_pads"]
+    hgr = Netlist(gr, range(num_modules), range(num_modules, num_modules + num_nets))
+    hgr.num_pads = num_pads
+    hgr.module_weight = repeat_array(1, num_modules)
+    hgr.net_weight = repeat_array(1, num_nets)
+    # hgr.net_weight = shift_array(1 for _ in range(num_nets))
+    # hgr.net_weight.set_start(num_modules)
+    return hgr
 
 
 def create_drawf():
-    G = ThinGraph()
-    G.add_nodes_from(
+    gr = ThinGraph()
+    gr.add_nodes_from(
         [
             "a0",
             "a1",
@@ -200,7 +200,7 @@ def create_drawf():
     # module_weight = [1, 3, 4, 2, 0, 0, 0]
     module_weight = {"a0": 1, "a1": 3, "a2": 4, "a3": 2, "p1": 0, "p2": 0, "p3": 0}
 
-    G.add_edges_from(
+    gr.add_edges_from(
         [
             ("n0", "p1", {"dir": "I"}),
             ("n0", "a0", {"dir": "I"}),
@@ -218,22 +218,22 @@ def create_drawf():
             ("n5", "p2", {"dir": "B"}),
         ]
     )
-    G.graph["num_modules"] = 7
-    G.graph["num_nets"] = 6
-    G.graph["num_pads"] = 3
-    H = Netlist(G, modules, nets)
-    H.module_weight = module_weight
-    H.net_weight = repeat_array(1, len(nets))
-    H.num_pads = 3
-    return H
+    gr.graph["num_modules"] = 7
+    gr.graph["num_nets"] = 6
+    gr.graph["num_pads"] = 3
+    hgr = Netlist(gr, modules, nets)
+    hgr.module_weight = module_weight
+    hgr.net_weight = repeat_array(1, len(nets))
+    hgr.num_pads = 3
+    return hgr
 
 
 def create_test_netlist():
-    G = ThinGraph()
-    G.add_nodes_from(["a0", "a1", "a2", "a3", "a4", "a5"])
+    gr = ThinGraph()
+    gr.add_nodes_from(["a0", "a1", "a2", "a3", "a4", "a5"])
     # module_weight = [533, 543, 532]
     module_weight = {"a0": 533, "a1": 543, "a2": 532}
-    G.add_edges_from(
+    gr.add_edges_from(
         [
             ("a3", "a0"),
             ("a3", "a1"),
@@ -244,18 +244,18 @@ def create_test_netlist():
         ]
     )
 
-    G.graph["num_modules"] = 3
-    G.graph["num_nets"] = 3
+    gr.graph["num_modules"] = 3
+    gr.graph["num_nets"] = 3
     modules = ["a0", "a1", "a2"]
     # module_map = {v: i_v for i_v, v in enumerate(modules)}
     nets = ["a3", "a4", "a5"]
     # net_weight = {net: 1 for net in nets}
     net_weight = repeat_array(1, len(nets))
 
-    H = Netlist(G, modules, nets)
-    H.module_weight = module_weight
-    H.net_weight = net_weight
-    return H
+    hgr = Netlist(gr, modules, nets)
+    hgr.module_weight = module_weight
+    hgr.net_weight = net_weight
+    return hgr
 
 
 def vdc(n, base=2):
@@ -312,9 +312,9 @@ def formGraph(N, M, pos, eta, seed=None):
         random.seed(seed)
 
     # connect nodes with edges
-    G = bipartite.random_graph(N, M, eta)
-    # G = nx.DiGraph(G)
-    return G
+    gr = bipartite.random_graph(N, M, eta)
+    # gr = nx.DiGraph(gr)
+    return gr
 
 
 def create_random_hgraph(N=30, M=26, eta=0.1):
@@ -324,13 +324,13 @@ def create_random_hgraph(N=30, M=26, eta=0.1):
     x = [i for i in vdcorput(T, xbase)]
     y = [i for i in vdcorput(T, ybase)]
     pos = zip(x, y)
-    G = formGraph(N, M, pos, eta, seed=5)
+    gr = formGraph(N, M, pos, eta, seed=5)
 
-    G.graph["num_modules"] = N
-    G.graph["num_nets"] = M
-    H = Netlist(G, range(N), range(N, N + M))
-    H.module_weight = repeat_array(1, N)
-    H.net_weight = repeat_array(1, M)
-    # H.net_weight = shift_array(1 for _ in range(M))
-    # H.net_weight.set_start(N)
-    return H
+    gr.graph["num_modules"] = N
+    gr.graph["num_nets"] = M
+    hgr = Netlist(gr, range(N), range(N, N + M))
+    hgr.module_weight = repeat_array(1, N)
+    hgr.net_weight = repeat_array(1, M)
+    # hgr.net_weight = shift_array(1 for _ in range(M))
+    # hgr.net_weight.set_start(N)
+    return hgr

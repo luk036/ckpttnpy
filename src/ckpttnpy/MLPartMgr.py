@@ -18,14 +18,14 @@ from .min_cover import create_contraction_subgraph
 
 
 class MLPartMgr:
-    def __init__(self, GainCalc, GainMgr, ConstrMgr, PartMgr, BalTol, K=2):
+    def __init__(self, GainCalc, GainMgr, ConstrMgr, PartMgr, bal_tol, K=2):
         """[summary]
 
         Arguments:
             GainCalc (type):  description
             GainMgr (type):  description
             ConstrMgr (type):  description
-            BalTol (type):  description
+            bal_tol (type):  description
 
         Keyword Arguments:
             K (int):  description (default: {2})
@@ -34,7 +34,7 @@ class MLPartMgr:
         self.GainMgr = GainMgr
         self.ConstrMgr = ConstrMgr
         self.PartMgr = PartMgr
-        self.BalTol = BalTol
+        self.bal_tol = bal_tol
         self.K = K
         self.totalcost = 0
         self._limitsize = 7
@@ -47,11 +47,11 @@ class MLPartMgr:
     def limitsize(self, limit):
         self._limitsize = limit
 
-    def run_FMPartition(self, H, module_weight, part):
+    def run_FMPartition(self, hgr, module_weight, part):
         """[summary]
 
         Arguments:
-            H (type):  description
+            hgr (type):  description
             part (type):  description
 
         Keyword Arguments:
@@ -62,16 +62,16 @@ class MLPartMgr:
         """
 
         def legalcheck_fn():
-            gainMgr = self.GainMgr(self.GainCalc, H, self.K)
-            constrMgr = self.ConstrMgr(H, self.BalTol, module_weight, self.K)
-            partMgr = self.PartMgr(H, gainMgr, constrMgr)
+            gainMgr = self.GainMgr(self.GainCalc, hgr, self.K)
+            constrMgr = self.ConstrMgr(hgr, self.bal_tol, module_weight, self.K)
+            partMgr = self.PartMgr(hgr, gainMgr, constrMgr)
             legalcheck = partMgr.legalize(part)
             return legalcheck, partMgr.totalcost
 
         def optimize_fn():
-            gainMgr = self.GainMgr(self.GainCalc, H, self.K)
-            constrMgr = self.ConstrMgr(H, self.BalTol, module_weight, self.K)
-            partMgr = self.PartMgr(H, gainMgr, constrMgr)
+            gainMgr = self.GainMgr(self.GainCalc, hgr, self.K)
+            constrMgr = self.ConstrMgr(hgr, self.bal_tol, module_weight, self.K)
+            partMgr = self.PartMgr(hgr, gainMgr, constrMgr)
             partMgr.optimize(part)
             return partMgr.totalcost
 
@@ -80,9 +80,9 @@ class MLPartMgr:
             self.totalcost = totalcost
             return legalcheck
 
-        if H.number_of_modules() >= self._limitsize:  # OK
-            H2, module_weight2 = create_contraction_subgraph(H, module_weight, set())
-            if H2.number_of_modules() <= H.number_of_modules():
+        if hgr.number_of_modules() >= self._limitsize:  # OK
+            H2, module_weight2 = create_contraction_subgraph(hgr, module_weight, set())
+            if H2.number_of_modules() <= hgr.number_of_modules():
                 part2 = list(0 for _ in range(H2.number_of_modules()))
                 H2.projection_up(part, part2)
                 legalcheck_recur = self.run_FMPartition(H2, module_weight2, part2)
@@ -95,25 +95,25 @@ class MLPartMgr:
 
 
 class MLBiPartMgr(MLPartMgr):
-    def __init__(self, BalTol):
+    def __init__(self, bal_tol):
         """[summary]
 
         Args:
-            BalTol ([type]): [description]
+            bal_tol ([type]): [description]
         """
         MLPartMgr.__init__(
-            self, FMBiGainCalc, FMBiGainMgr, FMBiConstrMgr, FMPartMgr, BalTol
+            self, FMBiGainCalc, FMBiGainMgr, FMBiConstrMgr, FMPartMgr, bal_tol
         )
 
 
 class MLKWayPartMgr(MLPartMgr):
-    def __init__(self, BalTol, K):
+    def __init__(self, bal_tol, K):
         """[summary]
 
         Args:
-            BalTol ([type]): [description]
+            bal_tol ([type]): [description]
             K ([type]): [description]
         """
         MLPartMgr.__init__(
-            self, FMKWayGainCalc, FMKWayGainMgr, FMKWayConstrMgr, FMPartMgr, BalTol, K
+            self, FMKWayGainCalc, FMKWayGainMgr, FMKWayConstrMgr, FMPartMgr, bal_tol, K
         )

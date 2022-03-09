@@ -13,7 +13,7 @@ class FMKWayGainCalc:
 
     __slots__ = (
         "totalcost",
-        "H",
+        "hgr",
         "vertex_list",
         "K",
         "RR",
@@ -24,25 +24,25 @@ class FMKWayGainCalc:
 
     # public:
 
-    def __init__(self, H, K: int):
+    def __init__(self, hgr, K: int):
         """initialization
 
         Arguments:
-            H (Netlist):  description
+            hgr (Netlist):  description
             K (uint8_t):  number of partitions
         """
         self.deltaGainV = list()
 
-        self.H = H
+        self.hgr = hgr
         self.K = K
         self.RR = robin(K)
 
         self.vertex_list = []
 
-        if isinstance(self.H.modules, range):
-            self.vertex_list = [[Dllink([0, i]) for i in self.H] for _ in range(K)]
-        elif isinstance(self.H.modules, list):
-            self.vertex_list = [{v: Dllink([0, v]) for v in self.H} for _ in range(K)]
+        if isinstance(self.hgr.modules, range):
+            self.vertex_list = [[Dllink([0, i]) for i in self.hgr] for _ in range(K)]
+        elif isinstance(self.hgr.modules, list):
+            self.vertex_list = [{v: Dllink([0, v]) for v in self.hgr} for _ in range(K)]
         else:
             raise NotImplementedError
 
@@ -54,18 +54,18 @@ class FMKWayGainCalc:
         """
         self.totalcost = 0
 
-        if isinstance(self.H.modules, range):
+        if isinstance(self.hgr.modules, range):
             for vlist in self.vertex_list:
                 for vlink in vlist:
                     vlink.data[0] = 0
-        elif isinstance(self.H.modules, list):
+        elif isinstance(self.hgr.modules, list):
             for vlist in self.vertex_list:
                 for vlink in vlist.values():
                     vlink.data[0] = 0
         else:
             raise NotImplementedError
 
-        for net in self.H.nets:
+        for net in self.hgr.nets:
             self._init_gain(net, part)
         return self.totalcost
 
@@ -76,7 +76,7 @@ class FMKWayGainCalc:
             net (node_t):  description
             part (list):  description
         """
-        degree = self.H.G.degree[net]
+        degree = self.hgr.gr.degree[net]
         if degree < 2:  # unlikely, self-loop, etc.
             return  # does not provide any gain when move
         if degree > 3:
@@ -103,12 +103,12 @@ class FMKWayGainCalc:
             net (node_t):  description
             part (list):  description
         """
-        netCur = iter(self.H.G[net])
+        netCur = iter(self.hgr.gr[net])
         w = next(netCur)
         v = next(netCur)
         part_w = part[w]
         part_v = part[v]
-        weight = self.H.get_net_weight(net)
+        weight = self.hgr.get_net_weight(net)
         if part_v == part_w:
             for a in [w, v]:
                 self._modify_gain(a, part_v, -weight)
@@ -124,14 +124,14 @@ class FMKWayGainCalc:
             net (node_t):  description
             part (list):  description
         """
-        netCur = iter(self.H.G[net])
+        netCur = iter(self.hgr.gr[net])
         w = next(netCur)
         v = next(netCur)
         u = next(netCur)
         part_w = part[w]
         part_v = part[v]
         part_u = part[u]
-        weight = self.H.get_net_weight(net)
+        weight = self.hgr.get_net_weight(net)
         if part_u == part_v:
             if part_w == part_v:
                 for a in [u, v, w]:
@@ -162,10 +162,10 @@ class FMKWayGainCalc:
             part (list):  description
         """
         num = list(0 for _ in range(self.K))
-        for w in self.H.G[net]:
+        for w in self.hgr.gr[net]:
             num[part[w]] += 1
 
-        weight = self.H.get_net_weight(net)
+        weight = self.hgr.get_net_weight(net)
 
         for c in num:
             if c > 0:
@@ -174,10 +174,10 @@ class FMKWayGainCalc:
 
         for k, c in enumerate(num):
             if c == 0:
-                for w in self.H.G[net]:
+                for w in self.hgr.gr[net]:
                     self.vertex_list[k][w].data[0] -= weight
             elif c == 1:
-                for w in self.H.G[net]:
+                for w in self.hgr.gr[net]:
                     if part[w] == k:
                         self._modify_gain(w, part[w], weight)
                         break
@@ -197,11 +197,11 @@ class FMKWayGainCalc:
             dtype:  description
         """
         net, v, fromPart, toPart = move_info
-        netCur = iter(self.H.G[net])
+        netCur = iter(self.hgr.gr[net])
         u = next(netCur)
         w = u if u != v else next(netCur)
         part_w = part[w]
-        weight = self.H.get_net_weight(net)
+        weight = self.hgr.get_net_weight(net)
         self.deltaGainW = list(0 for _ in range(self.K))
 
         for lPart in [fromPart, toPart]:
@@ -215,9 +215,9 @@ class FMKWayGainCalc:
         return w
 
     def init_IdVec(self, v, net):
-        self.IdVec = [w for w in self.H.G[net] if w != v]
+        self.IdVec = [w for w in self.hgr.gr[net] if w != v]
         # self.IdVec = []
-        # for w in self.H.G[net]:
+        # for w in self.hgr.gr[net]:
         #     if w == v:
         #         continue
         #     self.IdVec.append(w)
@@ -238,7 +238,7 @@ class FMKWayGainCalc:
         degree = len(self.IdVec)
         deltaGain = list(list(0 for _ in range(self.K)) for _ in range(degree))
 
-        weight = self.H.get_net_weight(net)
+        weight = self.hgr.get_net_weight(net)
 
         l, u = fromPart, toPart
 
@@ -289,7 +289,7 @@ class FMKWayGainCalc:
         num = list(0 for _ in range(self.K))
         # deltaGain = []
         # IdVec = []
-        # for w in self.H.G[net]:
+        # for w in self.hgr.gr[net]:
         #     if w == v:
         #         continue
         #     num[part[w]] += 1
@@ -300,7 +300,7 @@ class FMKWayGainCalc:
         degree = len(self.IdVec)
         deltaGain = list(list(0 for _ in range(self.K)) for _ in range(degree))
 
-        weight = self.H.get_net_weight(net)
+        weight = self.hgr.get_net_weight(net)
 
         l, u = fromPart, toPart
         for _ in [0, 1]:

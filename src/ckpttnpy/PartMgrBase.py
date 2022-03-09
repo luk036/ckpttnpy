@@ -14,15 +14,15 @@ Part = Union[Dict[Any, int], List[int]]
 
 
 class PartMgrBase:
-    def __init__(self, H, gainMgr, constrMgr):
+    def __init__(self, hgr, gainMgr, constrMgr):
         """[summary]
 
         Arguments:
-            H (type):  description
+            hgr (type):  description
             gainMgr (type):  description
             constrMgr (type):  description
         """
-        self.H = H
+        self.hgr = hgr
         self.gainMgr = gainMgr
         self.validator = constrMgr
         self.K = gainMgr.K
@@ -51,8 +51,9 @@ class PartMgrBase:
 
         # Zero-weighted modules does not contribute legalization
         for v in filter(
-            lambda v: self.H.get_module_weight(v) == 0 and self.H.module_fixed is False,
-            self.H,
+            lambda v: self.hgr.get_module_weight(v) == 0
+            and self.hgr.module_fixed is False,
+            self.hgr,
         ):
             self.gainMgr.lock_all(part[v], v)
 

@@ -11,15 +11,15 @@ class FMBiGainMgr(FMGainMgr):
 
     # public:
 
-    # def __init__(self, GainCalc, H, K=2):
+    # def __init__(self, GainCalc, hgr, K=2):
     #     """Initialization
 
     #     Arguments:
-    #         H (Netlist):  description
+    #         hgr (Netlist):  description
     #         GainCalc (type):  description
     #         K (uint8_t):  number of partitions
     #     """
-    #     FMGainMgr.__init__(self, GainCalc, H)
+    #     FMGainMgr.__init__(self, GainCalc, hgr)
 
     def init(self, part: Part):
         """(re)initialization after creation
@@ -32,12 +32,12 @@ class FMBiGainMgr(FMGainMgr):
         for bckt in self.gainbucket:
             bckt.clear()
 
-        for v in self.H:
+        for v in self.hgr:
             vlink = self.gainCalc.vertex_list[v]
             toPart = 1 - part[v]
             self.gainbucket[toPart].append_direct(vlink)
 
-        for v in self.H.module_fixed:
+        for v in self.hgr.module_fixed:
             self.lock_all(part[v], v)
 
         return totalcost

@@ -15,16 +15,16 @@ from ckpttnpy.netlist import (
 Part = Union[Dict[Any, int], List[int]]
 
 
-def run_FMKWayPartMgr(H: Netlist, gainMgr, K, part: Part):
+def run_FMKWayPartMgr(hgr: Netlist, gainMgr, K, part: Part):
     """[summary]
 
     Arguments:
-        H (Netlist):  description
+        hgr (Netlist):  description
         gainMgr (gainMgr):  description
         K (int):  number of partitions
     """
-    constrMgr = FMKWayConstrMgr(H, 0.4, H.module_weight, K)  # 0.2 ???
-    partMgr = FMPartMgr(H, gainMgr, constrMgr)
+    constrMgr = FMKWayConstrMgr(hgr, 0.4, hgr.module_weight, K)  # 0.2 ???
+    partMgr = FMPartMgr(hgr, gainMgr, constrMgr)
     partMgr.legalize(part)  # ???
     totalcostbefore = partMgr.totalcost
     partMgr.init(part)
@@ -38,32 +38,32 @@ def run_FMKWayPartMgr(H: Netlist, gainMgr, K, part: Part):
 
 
 def test_FMKWayPartMgr():
-    H = create_drawf()
-    gainMgr = FMKWayGainMgr(FMKWayGainCalc, H, 3)
-    H.module_fixed = {"p1"}
-    part = {v: 0 for v in H}
-    run_FMKWayPartMgr(H, gainMgr, 3, part)
+    hgr = create_drawf()
+    gainMgr = FMKWayGainMgr(FMKWayGainCalc, hgr, 3)
+    hgr.module_fixed = {"p1"}
+    part = {v: 0 for v in hgr}
+    run_FMKWayPartMgr(hgr, gainMgr, 3, part)
 
 
 def test_FMKWayPartMgr2():
-    H = create_test_netlist()
-    gainMgr = FMKWayGainMgr(FMKWayGainCalc, H, 3)
-    part = {v: 0 for v in H}
-    run_FMKWayPartMgr(H, gainMgr, 3, part)
+    hgr = create_test_netlist()
+    gainMgr = FMKWayGainMgr(FMKWayGainCalc, hgr, 3)
+    part = {v: 0 for v in hgr}
+    run_FMKWayPartMgr(hgr, gainMgr, 3, part)
 
 
 def test_FMKWayPartMgr3():
-    H = create_random_hgraph()
-    gainMgr = FMKWayGainMgr(FMKWayGainCalc, H, 3)
-    part = [0 for _ in H]
-    run_FMKWayPartMgr(H, gainMgr, 3, part)
+    hgr = create_random_hgraph()
+    gainMgr = FMKWayGainMgr(FMKWayGainCalc, hgr, 3)
+    part = [0 for _ in hgr]
+    run_FMKWayPartMgr(hgr, gainMgr, 3, part)
 
 
 def test_FMKWayPartMgr4():
-    H = read_json("testcases/p1.json")
-    gainMgr = FMKWayGainMgr(FMKWayGainCalc, H, 3)
-    part = [0 for _ in H]
-    run_FMKWayPartMgr(H, gainMgr, 3, part)
+    hgr = read_json("testcases/p1.json")
+    gainMgr = FMKWayGainMgr(FMKWayGainCalc, hgr, 3)
+    part = [0 for _ in hgr]
+    run_FMKWayPartMgr(hgr, gainMgr, 3, part)
 
 
 # if __name__ == "__main__":
