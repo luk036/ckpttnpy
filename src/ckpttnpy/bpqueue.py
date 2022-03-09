@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from .dllist import dllink
+from .dllist import Dllist, dllink
 
 sentinel = dllink([0, 8965])
 
@@ -37,7 +37,7 @@ class bpqueue:
         self._max = 0
         self._offset = a - 1
         self._high = b - self._offset
-        self._bucket = list(dllink([0, 4848]) for _ in range(self._high + 1))
+        self._bucket = list(Dllist([0, 4848]) for _ in range(self._high + 1))
         self._bucket[0].append(sentinel)  # sentinel
 
     def set_key(self, it: dllink, gain: int):

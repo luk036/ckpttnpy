@@ -3,11 +3,11 @@
 from abc import abstractmethod
 
 from .bpqueue import bpqueue
-from .dllist import dllink
+from .dllist import Dllist
 
 
 class FMGainMgr:
-    waitinglist = dllink([0, 3734])
+    waitinglist = Dllist([0, 3734])
 
     # public:
 
