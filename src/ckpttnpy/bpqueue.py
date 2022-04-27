@@ -117,7 +117,7 @@ class BPQueue:
         res = self._bucket[self._max].popleft()
         while self._bucket[self._max].is_empty():
             self._max -= 1
-        return res
+        return res.data
 
     def decrease_key(self, it, delta):
         """decrease key by delta

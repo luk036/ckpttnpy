@@ -70,9 +70,16 @@ class FMGainMgr:
         # to_part = gainmax.index(maxk)
         to_part = max(range(self.num_parts), key=lambda k: self.gainbucket[k].get_max())
         maxk = self.gainbucket[to_part].get_max()
-        vlink = self.gainbucket[to_part].popleft()
+
+        # vlink = self.gainbucket[to_part].popleft()
+        (_, v) = self.gainbucket[to_part].popleft()
+        if self.num_parts == 2:
+            vlink = self.gain_calc.vertex_list[v]
+        else:
+            vlink = self.gain_calc.vertex_list[to_part][v]
+
         self.waitinglist.append(vlink)
-        v = vlink.data[1]
+        # v = vlink.data[1]
         from_part = part[v]
         move_info_v = v, from_part, to_part
         return move_info_v, maxk
@@ -87,9 +94,14 @@ class FMGainMgr:
             node_t:  description
         """
         gainmax = self.gainbucket[to_part].get_max()
-        vlink = self.gainbucket[to_part].popleft()
+        # vlink = self.gainbucket[to_part].popleft()
+        (_, v) = self.gainbucket[to_part].popleft()
+        if self.num_parts == 2:
+            vlink = self.gain_calc.vertex_list[v]
+        else:
+            vlink = self.gain_calc.vertex_list[to_part][v]
         self.waitinglist.append(vlink)
-        v = vlink.data[1]
+        # v = vlink.data[1]
         return v, gainmax
 
     def update_move(self, part, move_info_v):
