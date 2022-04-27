@@ -17,13 +17,37 @@ class Dllink:
 
         Keyword Arguments:
             index (type):  description (default: {None})
+
+        Examples:
+            >>> a = Dllink(3)
+            >>> a.data
+            3
         """
         self.next = self.prev = self
         # self.key = 0
         self.data = data
 
+    def is_locked(self):
+        """whether the node is locked
+
+        Returns:
+            bool:  description
+
+        Examples:
+            >>> a = Dllink(3)
+            >>> a.is_locked()
+            False
+        """
+        return self.next is None
+
     def detach(self):
-        """detach from a list"""
+        """detach from a list
+
+        Examples:
+            >>> a = Dllink(3)
+            >>> a.data
+            3
+        """
         assert self.next
         n = self.next
         p = self.prev
@@ -33,14 +57,6 @@ class Dllink:
     def lock(self):
         """lock the node (and don't append it to any list)"""
         self.next = None
-
-    def is_locked(self):
-        """whether the node is locked
-
-        Returns:
-            bool:  description
-        """
-        return self.next is None
 
     def appendleft(self, node):
         """append the node to the front
@@ -226,3 +242,9 @@ class DllIterator:
     #         dtype:  description
     #     """
     #     return self.next()
+
+
+if __name__ == "__main__":
+    import doctest
+
+    doctest.testmod()
