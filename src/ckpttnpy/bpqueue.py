@@ -32,6 +32,13 @@ class BPQueue:
         Arguments:
             a (int):  lower bound
             b (int):  upper bound
+
+        Examples:
+            >>> bpq = BPQueue(-3, 3)
+            >>> bpq._bucket[0].is_empty()
+            False
+            >>> bpq._bucket[1].is_empty()
+            True
         """
         assert a <= b
         self._max = 0
@@ -39,6 +46,45 @@ class BPQueue:
         self._high = b - self._offset
         self._bucket = list(Dllist([0, 4848]) for _ in range(self._high + 1))
         self._bucket[0].append(sentinel)  # sentinel
+
+    def is_empty(self) -> bool:
+        """whether empty
+
+        Returns:
+            bool:  description
+
+        Examples:
+            >>> bpq = BPQueue(-3, 3)
+            >>> bpq.is_empty()
+            True
+        """
+        return self._max == 0
+
+    def get_max(self) -> int:
+        """Get the max value
+
+        Returns:
+            int:  maximum value
+
+        Examples:
+            >>> bpq = BPQueue(-3, 3)
+            >>> bpq.get_max()
+            -4
+        """
+        return self._max + self._offset
+
+    def clear(self):
+        """reset the PQ
+
+        Examples:
+            >>> bpq = BPQueue(-3, 3)
+            >>> bpq.clear()
+            >>> bpq.is_empty()
+            True
+        """
+        while self._max > 0:
+            self._bucket[self._max].clear()
+            self._max -= 1
 
     def set_key(self, it: Dllink, gain: int):
         """Set the key value
@@ -48,28 +94,6 @@ class BPQueue:
             gain (int):  the key of it
         """
         it.data[0] = gain - self._offset
-
-    def get_max(self) -> int:
-        """Get the max value
-
-        Returns:
-            int:  maximum value
-        """
-        return self._max + self._offset
-
-    def is_empty(self) -> bool:
-        """whether empty
-
-        Returns:
-            bool:  description
-        """
-        return self._max == 0
-
-    def clear(self):
-        """reset the PQ"""
-        while self._max > 0:
-            self._bucket[self._max].clear()
-            self._max -= 1
 
     def append_direct(self, it):
         """append item with internal key
@@ -87,6 +111,13 @@ class BPQueue:
         Arguments:
             it (Dllink):  description
             k (int):  key
+
+        Examples:
+            >>> bpq = BPQueue(-3, 3)
+            >>> a = Dllink([0, 3])
+            >>> bpq.append(a, 0)
+            >>> bpq.is_empty()
+            False
         """
         assert k > self._offset
         it.data[0] = k - self._offset
@@ -113,11 +144,19 @@ class BPQueue:
 
         Returns:
             Dllink:  description
+
+        Examples:
+            >>> bpq = BPQueue(-3, 3)
+            >>> a = Dllink([0, 3])
+            >>> bpq.append(a, 0)
+            >>> b = bpq.popleft()
+            >>> bpq.is_empty()
+            True
         """
         res = self._bucket[self._max].popleft()
         while self._bucket[self._max].is_empty():
             self._max -= 1
-        return res.data
+        return res
 
     def decrease_key(self, it, delta):
         """decrease key by delta

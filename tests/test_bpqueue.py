@@ -23,15 +23,15 @@ def test_bpqueue():
     bpq1.append(f, -10)
     bpq1.append(d, 5)
 
-    # bpq2.append(bpq1.popleft(), -6)  # d
-    # bpq2.append(bpq1.popleft(), 3)
-    # bpq2.append(bpq1.popleft(), 0)
+    bpq2.append(bpq1.popleft(), -6)  # d
+    bpq2.append(bpq1.popleft(), 3)
+    bpq2.append(bpq1.popleft(), 0)
 
-    # bpq2.modify_key(d, 15)
-    # bpq2.modify_key(d, -3)
-    # bpq2.detach(f)
-    # assert bpq1._max == 0  # is_empty()
-    # assert bpq2.get_max() == 6
+    bpq2.modify_key(d, 15)
+    bpq2.modify_key(d, -3)
+    bpq2.detach(f)
+    assert bpq1._max == 0  # is_empty()
+    assert bpq2.get_max() == 6
     bpq1.clear()
     nodelist = list(Dllink([0, i]) for i in range(10))
 

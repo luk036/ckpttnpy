@@ -40,22 +40,15 @@ class Dllink:
         """
         return self.next is None
 
-    def detach(self):
-        """detach from a list
+    def lock(self):
+        """lock the node (and don't append it to any list)
 
         Examples:
             >>> a = Dllink(3)
-            >>> a.data
-            3
+            >>> a.lock()
+            >>> a.is_locked()
+            True
         """
-        assert self.next
-        n = self.next
-        p = self.prev
-        p.next = n
-        n.prev = p
-
-    def lock(self):
-        """lock the node (and don't append it to any list)"""
         self.next = None
 
     def appendleft(self, node):
@@ -63,6 +56,11 @@ class Dllink:
 
         Arguments:
             node (Dllink):  description
+
+        Examples:
+            >>> a = Dllink(3)
+            >>> b = Dllink(4)
+            >>> a.appendleft(b)
         """
         node.next = self.next
         self.next.prev = node
@@ -74,6 +72,11 @@ class Dllink:
 
         Arguments:
             node (Dllink):  description
+
+        Examples:
+            >>> a = Dllink(3)
+            >>> b = Dllink(4)
+            >>> a.append(b)
         """
         node.prev = self.prev
         self.prev.next = node
@@ -85,6 +88,14 @@ class Dllink:
 
         Returns:
             Dllink:  description
+
+        Examples:
+            >>> a = Dllink(3)
+            >>> b = Dllink(4)
+            >>> a.appendleft(b)
+            >>> c = a.popleft()
+            >>> b == c
+            True
         """
         res = self.next
         self.next = res.next
@@ -96,11 +107,34 @@ class Dllink:
 
         Returns:
             Dllink:  description
+
+        Examples:
+            >>> a = Dllink(3)
+            >>> b = Dllink(4)
+            >>> a.append(b)
+            >>> c = a.pop()
+            >>> b == c
+            True
         """
         res = self.prev
         self.prev = res.prev
         self.prev.next = self
         return res
+
+    def detach(self):
+        """detach from a list
+
+        Examples:
+            >>> a = Dllink(3)
+            >>> b = Dllink(4)
+            >>> a.append(b)
+            >>> b.detach()
+        """
+        assert self.next
+        n = self.next
+        p = self.prev
+        p.next = n
+        n.prev = p
 
     # def __iter__(self):
     #     """iterable
@@ -136,6 +170,11 @@ class Dllist:
 
         Keyword Arguments:
             index (type):  description (default: {None})
+
+        Examples:
+            >>> a = Dllist(3)
+            >>> a.head.data
+            3
         """
         self.head = Dllink(data)
 
@@ -144,11 +183,23 @@ class Dllist:
 
         Returns:
             bool:  description
+
+        Examples:
+            >>> a = Dllist(3)
+            >>> a.is_empty()
+            True
         """
         return self.head.next == self.head
 
     def clear(self):
-        """clear"""
+        """clear
+
+        Examples:
+            >>> a = Dllist(3)
+            >>> a.clear()
+            >>> a.is_empty()
+            True
+        """
         self.head.next = self.head.prev = self.head
 
     def appendleft(self, node):
@@ -156,6 +207,13 @@ class Dllist:
 
         Arguments:
             node (Dllink):  description
+
+        Examples:
+            >>> a = Dllist(3)
+            >>> b = Dllink(4)
+            >>> a.appendleft(b)
+            >>> a.is_empty()
+            False
         """
         self.head.appendleft(node)
 
@@ -164,6 +222,13 @@ class Dllist:
 
         Arguments:
             node (Dllink):  description
+
+        Examples:
+            >>> a = Dllist(3)
+            >>> b = Dllink(4)
+            >>> a.append(b)
+            >>> a.is_empty()
+            False
         """
         self.head.append(node)
 
@@ -172,6 +237,14 @@ class Dllist:
 
         Returns:
             Dllink:  description
+
+        Examples:
+            >>> a = Dllist(3)
+            >>> b = Dllink(4)
+            >>> a.appendleft(b)
+            >>> c = a.popleft()
+            >>> b == c
+            True
         """
         return self.head.popleft()
 
@@ -180,6 +253,14 @@ class Dllist:
 
         Returns:
             Dllink:  description
+
+        Examples:
+            >>> a = Dllist(3)
+            >>> b = Dllink(4)
+            >>> a.append(b)
+            >>> c = a.pop()
+            >>> b == c
+            True
         """
         return self.head.pop()
 
@@ -215,6 +296,10 @@ class DllIterator:
 
         Arguments:
             link (Dllink):  description
+
+        Examples:
+            >>> a = Dllist(3)
+            >>> it = iter(a)
         """
         self.link = link
         self.cur = link.next
@@ -227,6 +312,15 @@ class DllIterator:
 
         Returns:
             Dllink:  the next item
+
+        Examples:
+            >>> a = Dllist(3)
+            >>> b = Dllink(4)
+            >>> a.append(b)
+            >>> cursor = iter(a)
+            >>> c = next(cursor)
+            >>> b == c
+            True
         """
         if self.cur != self.link:
             res = self.cur
