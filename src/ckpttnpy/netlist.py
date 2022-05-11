@@ -36,7 +36,9 @@ class Netlist:
     cost_model = 0
 
     def __init__(
-        self, gr: nx.Graph, modules: Union[range, List], nets: Union[range, List]
+        self, gr: nx.Graph,
+        modules: Union[range, List],
+        nets: Union[range, List]
     ):
         """[summary]
 
