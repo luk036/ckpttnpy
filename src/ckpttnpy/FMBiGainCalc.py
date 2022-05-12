@@ -242,7 +242,7 @@ class FMBiGainCalc:
         for w in self.idx_vec:
             num[part[w]] += 1
         degree = len(self.idx_vec)
-        delta_gain = list(0 for _ in range(degree))
+        delta_gain = [0] * degree
         weight = self.hgr.get_net_weight(net)
 
         for l_part in [from_part, to_part]:

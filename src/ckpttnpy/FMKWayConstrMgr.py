@@ -17,7 +17,7 @@ class FMKWayConstrMgr(FMConstrMgr):
             bal_tol (type):  description
         """
         FMConstrMgr.__init__(self, hgr, bal_tol, module_weight, num_parts)
-        self.illegal = list(True for _ in range(num_parts))
+        self.illegal = [True] * num_parts
 
     def init(self, part: Part):
         """[summary]

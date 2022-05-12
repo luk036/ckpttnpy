@@ -89,7 +89,7 @@ class MLPartMgr:
                 hgr, module_weight, set()
             )
             if hgr2.number_of_modules() <= hgr.number_of_modules():
-                part2 = list(0 for _ in range(hgr2.number_of_modules()))
+                part2 = [0] * hgr2.number_of_modules()
                 hgr2.projection_up(part, part2)
                 legalcheck_recur = self.run_FMPartition(hgr2, module_weight2, part2)
                 if legalcheck_recur == LegalCheck.AllSatisfied:

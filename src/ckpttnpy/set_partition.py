@@ -280,7 +280,7 @@ def NEG1_odd(n: int, k: int) -> Iterator[Tuple[int, int]]:
 
 if __name__ == "__main__":
     n, k = 5, 3
-    b = [0 for i in range(n - k + 1)] + list(range(k))
+    b = [0] * (n - k + 1) + list(range(k))
     cnt = 1
     for x, y in set_partition(n, k):
         old = b[x]

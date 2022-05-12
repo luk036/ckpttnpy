@@ -51,7 +51,7 @@ class FMConstrMgr:
         self.bal_tol = bal_tol
         self.module_weight = module_weight
         self.num_parts = num_parts
-        self.diff = list(0 for _ in range(num_parts))
+        self.diff = [0] * num_parts
         self.totalweight = sum(self.get_module_weight(v) for v in self.hgr)
         totalweightK = self.totalweight * (2.0 / self.num_parts)
         self.lowerbound = round(totalweightK * self.bal_tol)
@@ -62,7 +62,7 @@ class FMConstrMgr:
         Arguments:
             part (type):  description
         """
-        self.diff = list(0 for _ in range(self.num_parts))
+        self.diff = [0] * self.num_parts
         for v in self.hgr:
             self.diff[part[v]] += self.get_module_weight(v)
 

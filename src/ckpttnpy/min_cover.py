@@ -162,7 +162,7 @@ def create_contraction_subgraph(
     hgr2 = HierNetlist(gr, range(numModules), updated_nets)
 
     # node_down_map = {v2: v1 for v1, v2 in node_up_map.items()}
-    node_down_map = [0 for _ in range(numModules)]
+    node_down_map = [0] * numModules
     for v1, v2 in node_up_dict.items():
         node_down_map[v2] = v1
 
@@ -170,7 +170,7 @@ def create_contraction_subgraph(
     #     for v, net in cluster_map.items()}
     cluster_down_map = {node_up_dict[v]: netk for netk in s1 for v in hgr.gr[netk]}
 
-    module_weight2 = list(0 for _ in range(numModules))
+    module_weight2 = [0] * numModules
     for i_v in range(numModules):
         if i_v in cluster_down_map:
             net = cluster_down_map[i_v]

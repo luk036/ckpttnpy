@@ -165,7 +165,7 @@ class FMKWayGainCalc:
             net (node_t):  description
             part (list):  description
         """
-        num = list(0 for _ in range(self.num_parts))
+        num = [0] * self.num_parts
         for w in self.hgr.gr[net]:
             num[part[w]] += 1
 
@@ -188,7 +188,7 @@ class FMKWayGainCalc:
 
     def update_move_init(self):
         """update move init"""
-        self.delta_gain_v = list(0 for _ in range(self.num_parts))
+        self.delta_gain_v = [0] * self.num_parts
 
     def update_move_2pin_net(self, part, move_info):
         """Update move for 2-pin net
@@ -206,7 +206,7 @@ class FMKWayGainCalc:
         w = u if u != v else next(net_cur)
         part_w = part[w]
         weight = self.hgr.get_net_weight(net)
-        self.delta_gain_w = list(0 for _ in range(self.num_parts))
+        self.delta_gain_w = [0] * self.num_parts
 
         for l_part in [from_part, to_part]:
             if part_w == l_part:
@@ -240,7 +240,7 @@ class FMKWayGainCalc:
 
         delta_gain = []
         degree = len(self.idx_vec)
-        delta_gain = list(list(0 for _ in range(self.num_parts)) for _ in range(degree))
+        delta_gain = list([0] * self.num_parts for _ in range(degree))
 
         weight = self.hgr.get_net_weight(net)
 
@@ -290,7 +290,7 @@ class FMKWayGainCalc:
             dtype:  description
         """
         net, v, from_part, to_part = move_info
-        num = list(0 for _ in range(self.num_parts))
+        num = [0] * self.num_parts
         # delta_gain = []
         # idx_vec = []
         # for w in self.hgr.gr[net]:
@@ -302,7 +302,7 @@ class FMKWayGainCalc:
             num[part[w]] += 1
 
         degree = len(self.idx_vec)
-        delta_gain = list(list(0 for _ in range(self.num_parts)) for _ in range(degree))
+        delta_gain = list([0] * self.num_parts for _ in range(degree))
 
         weight = self.hgr.get_net_weight(net)
 

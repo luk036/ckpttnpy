@@ -16,7 +16,7 @@ def test_setpart_odd():
 
 def test_setpart_even():
     n, k = 9, 4
-    b = [0 for i in range(n - k + 1)] + list(range(k))
+    b = [0] * (n - k + 1) + list(range(k))
     cnt = 1
     for x, y in set_partition(n, k):
         # old = b[x]
