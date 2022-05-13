@@ -25,7 +25,7 @@ def run_FMKWayPartMgr(hgr: Netlist, gain_mgr, num_parts, part: Part):
     """
     constr_mgr = FMKWayConstrMgr(hgr, 0.4, hgr.module_weight, num_parts)  # 0.2 ???
     part_mgr = FMPartMgr(hgr, gain_mgr, constr_mgr)
-    part_mgr.legalize(part)  # ???
+    part_mgr.legalize(part)  # TODO
     totalcostbefore = part_mgr.totalcost
     part_mgr.init(part)
     assert part_mgr.totalcost == totalcostbefore

@@ -34,7 +34,7 @@ class FMBiGainMgr(FMGainMgr):
 
         for v in self.hgr:
             vlink = self.gain_calc.vertex_list[v]
-            to_part = 1 - part[v]
+            to_part = part[v] ^ 1  # toggle 0 or 1
             self.gainbucket[to_part].append_direct(vlink)
 
         for v in self.hgr.module_fixed:
@@ -60,7 +60,7 @@ class FMBiGainMgr(FMGainMgr):
             whichPart (uint8_t):  description
             v (node_t):  description
         """
-        self.lock(1 - from_part, v)
+        self.lock(from_part ^ 1, v)
 
     def modify_key(self, w, part_w, key):
         """Update gain for the moving cell
@@ -70,7 +70,8 @@ class FMBiGainMgr(FMGainMgr):
             move_info_v (type):  description
             gain (type):  description
         """
-        self.gainbucket[1 - part_w].modify_key(self.gain_calc.vertex_list[w], key)
+        self.gainbucket[part_w ^ 1].modify_key(
+            self.gain_calc.vertex_list[w], key)
 
     def update_move_v(self, move_info_v, gain):
         """[summary]
