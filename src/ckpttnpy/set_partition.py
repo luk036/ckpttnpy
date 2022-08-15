@@ -286,6 +286,6 @@ if __name__ == "__main__":
         old = b[x]
         b[x] = y
         cnt += 1
-        print(b[1:], ": Move {} from block {} to {}".format(x, old, y))
+        print(b[1:], f": Move {x} from block {old} to {y}")
     assert stirling2nd(n, k) == cnt
     print("Done.")
