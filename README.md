@@ -24,7 +24,7 @@ To run unit tests:
 
 ## See also
 
-[ckpttncpp](https://github.com/luk036/ckpttncpp)
+[ckpttn-cpp](https://github.com/luk036/ckpttn-cpp)
 
 ## Note
 

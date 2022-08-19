@@ -25,35 +25,42 @@ class Lict:
         return len(self.rng)
 
 
-NUM_NODES = 1000;
+# NUM_NODES = 1000
 
 
 class TinyGraph(nx.Graph):
+    num_nodes = 0
     all_edge_dict = {"weight": 1}
     all_node_dict = {"weight": 1}
 
     def single_edge_dict(self):
         return self.all_edge_dict
- 
+
     def single_node_dict(self):
         return self.all_node_dict
- 
+
     def trick_node_dict(self):
-        return Lict(NUM_NODES, self.single_node_dict)
+        return Lict(self.num_nodes, self.single_node_dict)
 
     def trick_adjlist_outer_dict(self):
-        return Lict(NUM_NODES, dict)
+        return Lict(self.num_nodes, dict)
 
     edge_attr_dict_factory = single_edge_dict
     node_attr_dict_factory = single_node_dict
-    node_dict_factory = trick_node_dict
-    adjlist_outer_dict_factory = trick_adjlist_outer_dict
+    # node_dict_factory = trick_node_dict
+    # adjlist_outer_dict_factory = trick_adjlist_outer_dict
     # adjlist_inner_dict_factory = dict
     # node_attr_dict_factory = dict
+
+    def init_nodes(self, n: int):
+        self.num_nodes = n
+        self._node = self.trick_node_dict()
+        self._adj = self.trick_adjlist_outer_dict()
 
 
 if __name__ == "__main__":
     gr = TinyGraph()
+    gr.init_nodes(1000)
     gr.add_edge(2, 1)
     print(gr.number_of_nodes())
     print(gr.number_of_edges())
