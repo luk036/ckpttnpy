@@ -73,5 +73,5 @@ if __name__ == "__main__":
     for i in a:
         a[i] = i * i
     for i, v in a.items():
-        print(f'{i}: {v}')
+        print(f"{i}: {v}")
     print(3 in a)

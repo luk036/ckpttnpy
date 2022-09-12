@@ -72,15 +72,13 @@ def parse_args(args):
     Returns:
       :obj:`argparse.Namespace`: command line parameters namespace
     """
-    parser = argparse.ArgumentParser(
-        description="Just a Fibonacci demonstration")
+    parser = argparse.ArgumentParser(description="Just a Fibonacci demonstration")
     parser.add_argument(
         "--version",
         action="version",
         version="ckpttnpy {ver}".format(ver=__version__),
     )
-    parser.add_argument(
-        dest="n", help="n-th Fibonacci number", type=int, metavar="INT")
+    parser.add_argument(dest="n", help="n-th Fibonacci number", type=int, metavar="INT")
     parser.add_argument(
         "-v",
         "--verbose",
