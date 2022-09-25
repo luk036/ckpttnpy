@@ -72,14 +72,14 @@ def create_contraction_subgraph(
     weight = {
         net: sum(module_weight[v] for v in hgr.gr[net]) for net in hgr.nets
     }  # can be done in parallel
-    s1 = set()
+    s1: Set = set()
     _ = min_maximal_matching(hgr, weight, s1, DontSelect)
 
     module_up_map: dict = {v: v for v in hgr}
     # for v in hgr:
     #     module_up_map[v] = v
 
-    C = set()
+    C: Set = set()
     nets = list()
     clusters = list()
     # cluster_map = dict()
