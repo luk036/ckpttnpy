@@ -9,6 +9,7 @@ from networkx.algorithms import bipartite
 from networkx.readwrite import json_graph
 
 from .array_like import repeat_array
+from .lict import Lict
 
 
 class ThinGraph(nx.Graph):
@@ -29,6 +30,25 @@ class SimpleGraph(nx.Graph):
 
     edge_attr_dict_factory = single_edge_dict
     node_attr_dict_factory = single_edge_dict
+
+
+class TinyDiGraph(nx.DiGraph):
+    num_nodes = 0
+
+    def cheat_node_dict(self):
+        return Lict([dict() for _ in range(self.num_nodes)])
+
+    def cheat_adjlist_outer_dict(self):
+        return Lict([dict() for _ in range(self.num_nodes)])
+
+    node_dict_factory = cheat_node_dict
+    adjlist_outer_dict_factory = cheat_adjlist_outer_dict
+
+    def init_nodes(self, n: int):
+        self.num_nodes = n
+        self._node = self.cheat_node_dict()
+        self._adj = self.cheat_adjlist_outer_dict()
+        self._pred = self.cheat_adjlist_outer_dict()
 
 
 class Netlist:
