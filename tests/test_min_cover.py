@@ -1,4 +1,4 @@
-from ckpttnpy.min_cover import create_contraction_subgraph
+from ckpttnpy.min_cover import contract_subgraph
 from ckpttnpy.netlist import create_drawf
 
 # def test_max_independent_net():
@@ -8,10 +8,10 @@ from ckpttnpy.netlist import create_drawf
 #     assert cost1 == 3
 
 
-def test_create_contraction_subgraph():
+def test_contract_subgraph():
     hgr = create_drawf()
-    hgr2, module_weight2 = create_contraction_subgraph(hgr, hgr.module_weight, set())
-    create_contraction_subgraph(hgr2, module_weight2, set())
+    hgr2, module_weight2 = contract_subgraph(hgr, hgr.module_weight, set())
+    contract_subgraph(hgr2, module_weight2, set())
     assert hgr2.number_of_modules() < 7
     assert hgr2.number_of_nets() == 1
     assert hgr2.number_of_pins() < 13
