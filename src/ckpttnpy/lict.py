@@ -1,6 +1,7 @@
 # from collections.abc import Mapping
 from typing import Iterator
 
+
 class Lict:
     def __init__(self, lst: list):
         """Dict-like adaptor for a list

@@ -85,6 +85,9 @@ class shift_array(list):
         """
         list.__setitem__(self, key - self.start, newValue)
 
+    def items(self):
+        return iter((i + self.start, v) for i, v in enumerate(self))
+
 
 if __name__ == "__main__":
     arr = repeat_array(1, 10)
