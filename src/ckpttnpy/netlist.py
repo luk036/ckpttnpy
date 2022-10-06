@@ -32,7 +32,7 @@ class SimpleGraph(nx.Graph):
     node_attr_dict_factory = single_edge_dict
 
 
-class TinyDiGraph(nx.DiGraph):
+class TinyGraph(nx.Graph):
     num_nodes = 0
 
     def cheat_node_dict(self):
@@ -48,7 +48,7 @@ class TinyDiGraph(nx.DiGraph):
         self.num_nodes = n
         self._node = self.cheat_node_dict()
         self._adj = self.cheat_adjlist_outer_dict()
-        self._pred = self.cheat_adjlist_outer_dict()
+        # self._pred = self.cheat_adjlist_outer_dict()
 
 
 class Netlist:

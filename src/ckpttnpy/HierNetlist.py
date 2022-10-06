@@ -1,6 +1,5 @@
-# -*- coding: utf-8 -*-
-
-from typing import Dict, List, Union
+# from typing import Dict, List, Union
+from collections.abc import Mapping
 
 import networkx as nx
 
@@ -18,8 +17,8 @@ class HierNetlist(Netlist):
         """
         Netlist.__init__(self, gr, modules, nets)
         self.parent = None
-        self.node_up_map: Union[Dict, List] = {}
-        self.node_down_map: Union[Dict, List] = {}
+        # self.node_up_map: Mapping = {}
+        self.node_down_map: Mapping = {}
         self.cluster_down_map: dict = {}
         self.net_weight: dict = {}
 
@@ -29,10 +28,16 @@ class HierNetlist(Netlist):
     def get_max_degree(self):
         return max(self.get_degree(v) for v in self.modules)
 
-    def projection_down(
-        self, part: Union[Dict, List[int]], part_down: Union[Dict, List[int]]
-    ):
+    def projection_down(self, part: Mapping, part_down: Mapping):
         """[summary]
+
+        3 3 3 2 0 2 3 4 3 1     self
+
+        0 1 2 3 4 5 6 7 8 9,    parent
+
+        cluster_down_map
+        2   3   4
+        10  13  12
 
         Args:
             part (Union[Dict, List[int]]): [description]
@@ -48,18 +53,28 @@ class HierNetlist(Netlist):
                 v2 = self.node_down_map[v]
                 part_down[v2] = part[v]
 
-    def projection_up(
-        self, part: Union[Dict, List[int]], part_up: Union[Dict, List[int]]
-    ):
+    def projection_up(self, part: Mapping, part_up: Mapping):
         """[summary]
+
+        node_up_map:
+            0 1 2 3 4 5 6 7 8 9,    parent
+            3 3 4 2 0 2 3 4 3 1     self
 
         Args:
             part (Union[Dict, List[int]]): [description]
             part_up (Union[Dict, List[int]]): [description]
         """
         hgr = self.parent
-        for v in hgr:
-            part_up[self.node_up_map[v]] = part[v]
+        for v in self.modules:
+            if v in self.cluster_down_map:
+                net = self.cluster_down_map[v]
+                for v2 in hgr.gr[net]:
+                    part_up[v] = part[v2]
+            else:
+                v2 = self.node_down_map[v]
+                part_up[v] = part[v2]
+        # for v in hgr:
+        #     part_up[self.node_up_map[v]] = part[v]
 
     def get_net_weight(self, net) -> int:
         """[summary]

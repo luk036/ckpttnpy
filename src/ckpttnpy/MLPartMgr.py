@@ -1,6 +1,6 @@
 # type: ignore
 
-# from ckpttnpy.min_cover import create_contraction_subgraph
+# from ckpttnpy.min_cover import contract_subgraph
 from ckpttnpy.FMPartMgr import FMPartMgr
 
 # **Special code for two-pin nets**
@@ -14,7 +14,7 @@ from .FMKWayGainMgr import FMKWayGainMgr
 
 # Take a snapshot when a move make **negative** gain.
 # Snapshot in the form of "interface"???
-from .min_cover import create_contraction_subgraph
+from .min_cover import contract_subgraph
 
 
 class MLPartMgr:
@@ -37,7 +37,7 @@ class MLPartMgr:
         self.bal_tol = bal_tol
         self.num_parts = num_parts
         self.totalcost = 0
-        self._limitsize = 7
+        self._limitsize = 7  # magic number
 
     @property
     def limitsize(self):
@@ -85,13 +85,14 @@ class MLPartMgr:
             return legalcheck
 
         if hgr.number_of_modules() >= self._limitsize:  # OK
-            hgr2, module_weight2 = create_contraction_subgraph(
+            hgr2, module_weight2 = contract_subgraph(
                 hgr, module_weight, set()
             )
             if hgr2.number_of_modules() <= hgr.number_of_modules():
                 part2 = [0] * hgr2.number_of_modules()
                 hgr2.projection_up(part, part2)
-                legalcheck_recur = self.run_FMPartition(hgr2, module_weight2, part2)
+                legalcheck_recur = self.run_FMPartition(
+                    hgr2, module_weight2, part2)
                 if legalcheck_recur == LegalCheck.AllSatisfied:
                     hgr2.projection_down(part2, part)
 
