@@ -18,9 +18,11 @@ class HierNetlist(Netlist):
         Netlist.__init__(self, gr, modules, nets)
         self.parent = None
         # self.node_up_map: Mapping = {}
-        self.node_down_map: Mapping = {}
-        self.cluster_down_map: dict = {}
+        self.node_down_list: Mapping = {}
+        # self.cluster_down_map = None
         self.net_weight: dict = {}
+        self.clusters = None
+        self.num_clusters = 0
 
     def get_degree(self, v):
         return sum(self.net_weight.get(net, 1) for net in self.gr[v])
@@ -42,15 +44,23 @@ class HierNetlist(Netlist):
             part (Union[Dict, List[int]]): [description]
             part_down (Union[Dict, List[int]]): [description]
         """
-        hgr = self.parent
-        for v in self.modules:
-            if v in self.cluster_down_map:
-                net = self.cluster_down_map[v]
-                for v2 in hgr.gr[net]:
-                    part_down[v2] = part[v]
-            else:
-                v2 = self.node_down_map[v]
-                part_down[v2] = part[v]
+        # hgr = self.parent
+        # for v in self.modules:
+        #     if v in self.cluster_down_map:
+        #         net = self.cluster_down_map[v]
+        #         for v2 in hgr.gr[net]:
+        #             part_down[v2] = part[v]
+        #     else:
+        #         v2 = self.node_down_list[v]
+        #         part_down[v2] = part[v]
+        #
+        num_cells = self.num_modules - self.num_clusters
+        for v1, v2 in enumerate(self.node_down_list):
+            # TODO: take only first num_cells items
+            part_down[v2] = part[v1]
+        for i_v, net in enumerate(self.clusters):
+            for v2 in self.parent.gr[net]:
+                part_down[v2] = part[num_cells + i_v]
 
     def projection_up(self, part: Mapping, part_up: Mapping):
         """[summary]
@@ -63,20 +73,29 @@ class HierNetlist(Netlist):
             part (Union[Dict, List[int]]): [description]
             part_up (Union[Dict, List[int]]): [description]
         """
-        hgr = self.parent
-        for v in self.modules:
-            if v in self.cluster_down_map:
-                net = self.cluster_down_map[v]
-                for v2 in hgr.gr[net]:
-                    part_up[v] = part[v2]
-            else:
-                v2 = self.node_down_map[v]
-                part_up[v] = part[v2]
+        # for v in self.modules:
+        #     part_up[v] = part[self.node_down_list[v]]
+        for v1, v2 in enumerate(self.node_down_list):
+            part_up[v1] = part[v2]
+        # hgr = self.parent
+        # for v in self.modules:
+        #     if v in self.cluster_down_map:
+        #         net = self.cluster_down_map[v]
+        #         # for v2 in hgr.gr[net]:
+        #         #     part_up[v] = part[v2]
+        #         v2 = next(iter(hgr.gr[net]))  # pick the first one
+        #         part_up[v] = part[v2]
+        #     else:
+        #         v2 = self.node_down_list[v]
+        #         part_up[v] = part[v2]
+
         # for v in hgr:
         #     part_up[self.node_up_map[v]] = part[v]
 
     def get_net_weight(self, net) -> int:
         """[summary]
+
+        Note: override the base class!
 
         Arguments:
             i_net (size_t):  description

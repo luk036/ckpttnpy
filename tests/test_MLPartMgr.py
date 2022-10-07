@@ -1,4 +1,4 @@
-from random import randint
+from random import randint, seed
 
 from ckpttnpy.MLPartMgr import MLBiPartMgr, MLKWayPartMgr
 from ckpttnpy.netlist import Netlist, create_drawf, read_json
@@ -58,6 +58,7 @@ def run_MLKWayPartMgr(hgr: Netlist, num_parts: int):
 
 
 def test_MLKWayPartMgr():
+    seed(1234)
     hgr = read_json("testcases/p1.json")
     totalcost = run_MLKWayPartMgr(hgr, 3)
     assert totalcost >= 77

@@ -41,6 +41,9 @@ class repeat_array:
         """
         return repeat(self.value, self.size)
 
+    def get(self, defaultvalue):
+        return self.value
+
 
 class shift_array(list):
     """list with arbitrary range"""
