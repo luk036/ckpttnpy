@@ -1,22 +1,18 @@
 from typing import Set
 
-# import networkx as nx
-
 from .HierNetlist import HierNetlist
 from .netlist import Netlist, TinyGraph
-# from .array_like import shift_array
-# from .minhash import MinHash
 
 """
 Notes:
     module and net should have a unique id because
-    they tread the same node in the underlying graph.
+    they treat the same node in the underlying graph.
 """
 
 
 def min_maximal_matching(hgr, weight, matchset, dep):
-    """Perform minimum weighted maximal matching using primal-dual
-    approximation algorithm
+    """Perform minimum weighted maximal matching
+       using primal-dual approximation algorithm
 
     Returns:
         [type]: [description]
@@ -72,41 +68,17 @@ def contract_subgraph(hgr: Netlist, module_weight, forbid: Set) -> HierNetlist:
         net: sum(module_weight[v] for v in hgr.gr[net]) for net in hgr.nets
     }  # can be done in parallel
 
-    node_up_dict, clusters, nets, cell_list = setup(hgr, cluster_weight, forbid)
+    clusters, nets, cell_list = setup(hgr, cluster_weight, forbid)
+    # Construct a graph for the next level's netlist
+    gr = construct_graph(hgr, nets, cell_list, clusters)
 
     num_modules = len(cell_list) + len(clusters)
     num_clusters = len(clusters)
 
-    # Construct a graph for the next level's netlist
-    gr = TinyGraph()  # gr is a bipartite graph
-    gr.init_nodes(num_modules + len(nets))
-    for i_net, net in enumerate(nets):
-        for v in hgr.gr[net]:
-            gr.add_edge(node_up_dict[v], i_net + num_modules)
-            # automatically merge the same cell-net
-    node_up_dict.clear()  # no more node_up_dict
+    gr2, net_weight2, num_nets = reconstruct_graph(
+            hgr, gr, nets, num_clusters, num_modules)
 
-    # Purging duplicate nets
-    net_weight, updated_nets = purge_duplicate_nets(
-        hgr, gr, nets, num_clusters, num_modules)
-
-    # Reconstruct a new graph with purged nets
-    num_nets = len(updated_nets)
-    gr2 = TinyGraph()
-    gr2.init_nodes(num_modules + num_nets)
-    for i_net, net in enumerate(updated_nets):
-        for v in gr[net]:
-            assert net >= num_modules
-            assert net < num_modules + len(nets)
-            gr2.add_edge(v, num_modules + i_net)
-
-    # Update net weight
-    net_weight2 = {}
-    for i_net, net in enumerate(updated_nets):
-        if net not in net_weight:
-            continue
-        net_weight2[i_net] = net_weight[net]
-    net_weight.clear()  # no moe net_weight
+    nets.clear()  # no more nets
 
     hgr2 = HierNetlist(gr2, range(num_modules),
                        range(num_modules, num_modules + num_nets))
@@ -130,29 +102,60 @@ def contract_subgraph(hgr: Netlist, module_weight, forbid: Set) -> HierNetlist:
 def setup(hgr, cluster_weight, forbid):
     s1 = set()  # initially no preferrence
     min_maximal_matching(hgr, cluster_weight, s1, forbid)
-
-    module_up_map: dict = {v: v for v in hgr}  # initially map to itself
     covered = set()
     nets = list()
     clusters = list()
     for net in hgr.nets:
         if net in s1:
             clusters.append(net)
-            module_up_map.update({v: net for v in hgr.gr[net]})
             covered.update(v for v in hgr.gr[net])
         else:
             nets.append(net)
 
     cell_list = [v for v in hgr if v not in covered]
-    modules = cell_list + clusters
-    module_map = {v: i_v for i_v, v in enumerate(modules)}
-    node_up_dict = {v: module_map[module_up_map[v]] for v in hgr}
-    return node_up_dict, clusters, nets, cell_list
+    return clusters, nets, cell_list
+
+
+def construct_graph(hgr, nets, cell_list, clusters):
+    num_modules = len(cell_list) + len(clusters)
+    # Construct a graph for the next level's netlist
+    num_cell = len(cell_list)
+    node_up_map = {v: i_v + num_cell for i_v, net in
+                   enumerate(clusters) for v in hgr.gr[net]}
+    node_up_map.update({v: i_v for i_v, v in enumerate(cell_list)})
+    gr = TinyGraph()  # gr is a bipartite graph
+    gr.init_nodes(num_modules + len(nets))
+    for i_net, net in enumerate(nets):
+        for v in hgr.gr[net]:
+            gr.add_edge(node_up_map[v], i_net + num_modules)
+            # automatically merge the same cell-net
+    return gr
+
+
+def reconstruct_graph(hgr, gr, nets, num_clusters, num_modules):
+    # Purging duplicate nets
+    net_weight, updated_nets = purge_duplicate_nets(
+        hgr, gr, nets, num_clusters, num_modules)
+    # Reconstruct a new graph with purged nets
+    num_nets = len(updated_nets)
+    gr2 = TinyGraph()
+    gr2.init_nodes(num_modules + num_nets)
+    for i_net, net in enumerate(updated_nets):
+        for v in gr[net]:
+            assert net >= num_modules
+            assert net < num_modules + len(nets)
+            gr2.add_edge(v, num_modules + i_net)
+    # Update net weight
+    net_weight2 = {}
+    for i_net, net in enumerate(updated_nets):
+        if net not in net_weight:
+            continue
+        net_weight2[i_net] = net_weight[net]
+    return gr2, net_weight2, num_nets
 
 
 def purge_duplicate_nets(hgr, gr, nets, num_clusters, num_modules):
     # Purging duplicate nets
-    # num_modules = len(module_map)
     num_nets = len(nets)
     net_weight = {}
     # net_weight.set_start(num_modules)
@@ -162,8 +165,6 @@ def purge_duplicate_nets(hgr, gr, nets, num_clusters, num_modules):
             net_weight[num_modules + i_net] = wt
 
     removelist = set()
-    # for net in clusters:
-    #     cluster = module_map[net]
     for cluster in range(num_modules - num_clusters, num_modules):
         for net1 in gr[cluster]:  # only check the nets of cluster
             assert net1 >= num_modules
@@ -176,7 +177,8 @@ def purge_duplicate_nets(hgr, gr, nets, num_clusters, num_modules):
                     continue  # no need to check if pins are different
                 same = False
                 # TODO: consider to use MinHash to check for more nets
-                if gr.degree(net1) <= 3:  # only check for low-pin nets
+                if gr.degree(net1) <= 5:  # magic number!
+                    # only check for low-pin nets
                     set1 = set(v for v in gr[net1])
                     set2 = set(v for v in gr[net2])
                     if set1 == set2:  # expensive operation for high-pin nets
@@ -186,6 +188,7 @@ def purge_duplicate_nets(hgr, gr, nets, num_clusters, num_modules):
                     net_weight[net1] = net_weight.get(
                         net1, 1) + net_weight.get(net2, 1)
     # gr.remove_nodes_from(removelist)
+    print("removed {} nets".format(len(removelist)))
     gr_nets = range(num_modules, num_modules + len(nets))
     updated_nets = [net for net in gr_nets if net not in removelist]
     return net_weight, updated_nets

@@ -18,7 +18,8 @@ from .min_cover import contract_subgraph
 
 
 class MLPartMgr:
-    def __init__(self, GainCalc, GainMgr, ConstrMgr, PartMgr, bal_tol, num_parts=2):
+    def __init__(self, GainCalc, GainMgr, ConstrMgr, PartMgr,
+                 bal_tol, num_parts=2):
         """[summary]
 
         Arguments:
