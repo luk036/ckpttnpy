@@ -17,7 +17,7 @@ class HierNetlist(Netlist):
         """
         Netlist.__init__(self, gr, modules, nets)
         self.parent = None
-        self.cell_list = None
+        self.node_down_list = None
         self.net_weight: dict = {}
         self.clusters = None
 
@@ -41,32 +41,23 @@ class HierNetlist(Netlist):
             part (Union[Dict, List[int]]): [description]
             part_down (Union[Dict, List[int]]): [description]
         """
-        num_cells = len(self.cell_list)
-        for v1, v2 in enumerate(self.cell_list):
+        num_cells = len(self.node_down_list) - len(self.clusters)
+        for v1, v2 in enumerate(self.node_down_list[:num_cells]):
             part_down[v2] = part[v1]
         for i_v, net in enumerate(self.clusters):
+            p = part[num_cells + i_v]
             for v2 in self.parent.gr[net]:
-                part_down[v2] = part[num_cells + i_v]
+                part_down[v2] = p
 
     def projection_up(self, part: Mapping, part_up: Mapping):
         """[summary]
-
-        node_up_map:
-            0 1 2 3 4 5 6 7 8 9,    parent
-            3 3 4 2 0 2 3 4 3 1     self
 
         Args:
             part (Union[Dict, List[int]]): [description]
             part_up (Union[Dict, List[int]]): [description]
         """
-        # for v in self.modules:
-        #     part_up[v] = part[self.node_down_list[v]]
-        num_cells = len(self.cell_list)
-        for v1, v2 in enumerate(self.cell_list):
+        for v1, v2 in enumerate(self.node_down_list):
             part_up[v1] = part[v2]
-        for i_v, net in enumerate(self.clusters):
-            part_up[num_cells + i_v] = part[next(iter(self.parent.gr[net]))]
-            # pick the first modules connected to the net
 
     def get_net_weight(self, net) -> int:
         """[summary]

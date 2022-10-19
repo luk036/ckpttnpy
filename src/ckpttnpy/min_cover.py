@@ -91,8 +91,11 @@ def contract_subgraph(hgr: Netlist, module_weight, forbid: Set) -> HierNetlist:
     for i_v, net in enumerate(clusters):
         module_weight2[num_cells + i_v] = cluster_weight[net]
 
+    node_down_list = cell_list
+    node_down_list += [next(iter(hgr.gr[net])) for net in clusters]
+
     hgr2.clusters = clusters
-    hgr2.cell_list = cell_list
+    hgr2.node_down_list = node_down_list
     hgr2.module_weight = module_weight2
     hgr2.net_weight = net_weight2
     hgr2.parent = hgr
