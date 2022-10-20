@@ -3,6 +3,7 @@
 from typing import Any, Dict, List, Union
 
 from .PartMgrBase import PartMgrBase
+from .lict import Lict
 
 Part = Union[Dict[Any, int], List[int]]
 
@@ -35,7 +36,7 @@ class FMPartMgr(PartMgrBase):
         if isinstance(snapshot, list):
             for v, k in enumerate(snapshot):
                 part[v] = k
-        elif isinstance(snapshot, dict):
+        elif isinstance(snapshot, dict) or isinstance(snapshot, Lict):
             for v, k in snapshot.items():
                 part[v] = k
         else:

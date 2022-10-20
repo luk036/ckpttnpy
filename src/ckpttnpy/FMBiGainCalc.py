@@ -3,6 +3,7 @@
 from typing import Any, Dict, List, Union
 # from collections import Mapping
 from .dllist import Dllink
+from .lict import Lict
 
 Part = Union[Dict[Any, int], List[int]]
 
@@ -24,7 +25,7 @@ class FMBiGainCalc:
         """
         self.hgr = hgr
         if isinstance(self.hgr.modules, range):
-            self.vertex_list = [Dllink([0, i]) for i in self.hgr]
+            self.vertex_list = Lict([Dllink([0, i]) for i in self.hgr])
         elif isinstance(self.hgr.modules, list):
             self.vertex_list = {v: Dllink([0, v]) for v in self.hgr}
         else:
@@ -43,15 +44,8 @@ class FMBiGainCalc:
             [type]: [description]
         """
         self.totalcost = 0
-        if isinstance(self.hgr.modules, range):
-            for vlink in self.vertex_list:
-                vlink.data[0] = 0
-        elif isinstance(self.hgr.modules, list):
-            for vlink in self.vertex_list.values():
-                vlink.data[0] = 0
-        else:
-            raise NotImplementedError
-
+        for vlink in self.vertex_list.values():
+            vlink.data[0] = 0
         for net in self.hgr.nets:
             # for net in self.hgr.net_list:
             self._init_gain(net, part)

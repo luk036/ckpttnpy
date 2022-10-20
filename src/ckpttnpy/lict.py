@@ -120,6 +120,10 @@ class Lict:
         """
         return enumerate(self.lst)
 
+    def copy(self):
+        return Lict(self.lst.copy())
+
+
 # if __name__ == "__main__":
 #     gr = TinyDiGraph()
 #     gr.init_nodes(1000)

@@ -5,6 +5,7 @@ from typing import Any, Dict, List, Union
 
 from .dllist import Dllink
 from .robin import Robin
+from .lict import Lict
 
 Part = Union[Dict[Any, int], List[int]]
 
@@ -41,7 +42,8 @@ class FMKWayGainCalc:
 
         if isinstance(self.hgr.modules, range):
             self.vertex_list = [
-                [Dllink([0, i]) for i in self.hgr] for _ in range(num_parts)
+                Lict([Dllink([0, i]) for i in self.hgr])
+                for _ in range(num_parts)
             ]
         elif isinstance(self.hgr.modules, list):
             self.vertex_list = [
@@ -57,18 +59,9 @@ class FMKWayGainCalc:
             part (list):  description
         """
         self.totalcost = 0
-
-        if isinstance(self.hgr.modules, range):
-            for vlist in self.vertex_list:
-                for vlink in vlist:
-                    vlink.data[0] = 0
-        elif isinstance(self.hgr.modules, list):
-            for vlist in self.vertex_list:
-                for vlink in vlist.values():
-                    vlink.data[0] = 0
-        else:
-            raise NotImplementedError
-
+        for vlist in self.vertex_list:
+            for vlink in vlist.values():
+                vlink.data[0] = 0
         for net in self.hgr.nets:
             self._init_gain(net, part)
         return self.totalcost
