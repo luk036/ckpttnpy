@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from typing import Any, Dict, List, Union
+
 # from collections import Mapping
 from .dllist import Dllink
 from .lict import Lict

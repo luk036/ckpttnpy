@@ -26,9 +26,7 @@ def min_maximal_matching(hgr, weight, matchset, dep):
     gap = weight.copy()
     total_primal_cost = 0
     total_dual_cost = 0
-    for net in filter(
-        lambda net: not (any_of_dep(net) or (net in matchset)), hgr.nets
-    ):
+    for net in filter(lambda net: not (any_of_dep(net) or (net in matchset)), hgr.nets):
         min_val = gap[net]
         min_net = net
         for v in hgr.gr[net]:
@@ -116,7 +114,8 @@ def contract_subgraph(hgr: Netlist, module_weight, forbid: Set) -> HierNetlist:
             # automatically merge the same cell-net
 
     updated_nets, net_weight = purge_duplicate_nets(
-        hgr, gr, nets, net_up_map, clusters, module_map, num_modules)
+        hgr, gr, nets, net_up_map, clusters, module_map, num_modules
+    )
 
     hgr2 = HierNetlist(gr, range(num_modules), updated_nets)
 

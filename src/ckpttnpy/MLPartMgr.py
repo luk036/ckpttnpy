@@ -18,8 +18,7 @@ from .min_cover import contract_subgraph
 
 
 class MLPartMgr:
-    def __init__(self, GainCalc, GainMgr, ConstrMgr, PartMgr,
-                 bal_tol, num_parts=2):
+    def __init__(self, GainCalc, GainMgr, ConstrMgr, PartMgr, bal_tol, num_parts=2):
         """[summary]
 
         Arguments:
@@ -86,14 +85,11 @@ class MLPartMgr:
             return legalcheck
 
         if hgr.number_of_modules() >= self._limitsize:  # OK
-            hgr2, module_weight2 = contract_subgraph(
-                hgr, module_weight, set()
-            )
+            hgr2, module_weight2 = contract_subgraph(hgr, module_weight, set())
             if hgr2.number_of_modules() <= hgr.number_of_modules():
                 part2 = [0] * hgr2.number_of_modules()
                 hgr2.projection_up(part, part2)
-                legalcheck_recur = self.run_FMPartition(
-                    hgr2, module_weight2, part2)
+                legalcheck_recur = self.run_FMPartition(hgr2, module_weight2, part2)
                 if legalcheck_recur == LegalCheck.AllSatisfied:
                     hgr2.projection_down(part2, part)
 

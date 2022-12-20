@@ -1,6 +1,6 @@
 version: 0.1
 cli:
-  version: 0.17.0-beta
+  version: 1.2.1
 plugins:
   sources:
     - id: trunk
@@ -20,3 +20,11 @@ lint:
     - shellcheck@0.8.0
     - shfmt@3.5.0
     - taplo@release-taplo-cli-0.7.0
+actions:
+  enabled:
+    - trunk-upgrade-available
+runtimes:
+  enabled:
+    - go@1.18.3
+    - node@16.14.2
+    - python@3.10.8

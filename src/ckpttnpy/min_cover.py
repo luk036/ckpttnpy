@@ -17,6 +17,7 @@ def min_maximal_matching(hgr, weight, matchset, dep):
     Returns:
         [type]: [description]
     """
+
     def cover(net):
         for v in hgr.gr[net]:
             dep.add(v)
@@ -27,13 +28,11 @@ def min_maximal_matching(hgr, weight, matchset, dep):
     gap = weight.copy()
     total_primal_cost = 0
     total_dual_cost = 0
-    for net in filter(lambda net: not (any_of_dep(net)
-                      or (net in matchset)), hgr.nets):
+    for net in filter(lambda net: not (any_of_dep(net) or (net in matchset)), hgr.nets):
         min_val = gap[net]
         min_net = net
         for v in hgr.gr[net]:
-            for net2 in filter(lambda net2: not
-                               any_of_dep(net2), hgr.gr[v]):
+            for net2 in filter(lambda net2: not any_of_dep(net2), hgr.gr[v]):
                 if min_val > gap[net2]:
                     min_val = gap[net2]
                     min_net = net2
@@ -76,12 +75,14 @@ def contract_subgraph(hgr: Netlist, module_weight, forbid: Set) -> HierNetlist:
     num_clusters = len(clusters)
 
     gr2, net_weight2, num_nets = reconstruct_graph(
-            hgr, gr, nets, num_clusters, num_modules)
+        hgr, gr, nets, num_clusters, num_modules
+    )
 
     nets.clear()  # no more nets
 
-    hgr2 = HierNetlist(gr2, range(num_modules),
-                       range(num_modules, num_modules + num_nets))
+    hgr2 = HierNetlist(
+        gr2, range(num_modules), range(num_modules, num_modules + num_nets)
+    )
 
     # Update module_weight
     module_weight2 = [0] * num_modules
@@ -123,8 +124,9 @@ def construct_graph(hgr, nets, cell_list, clusters):
     num_modules = len(cell_list) + len(clusters)
     # Construct a graph for the next level's netlist
     num_cell = len(cell_list)
-    node_up_map = {v: i_v + num_cell for i_v, net in
-                   enumerate(clusters) for v in hgr.gr[net]}
+    node_up_map = {
+        v: i_v + num_cell for i_v, net in enumerate(clusters) for v in hgr.gr[net]
+    }
     node_up_map.update({v: i_v for i_v, v in enumerate(cell_list)})
     gr = TinyGraph()  # gr is a bipartite graph
     gr.init_nodes(num_modules + len(nets))
@@ -138,7 +140,8 @@ def construct_graph(hgr, nets, cell_list, clusters):
 def reconstruct_graph(hgr, gr, nets, num_clusters, num_modules):
     # Purging duplicate nets
     net_weight, updated_nets = purge_duplicate_nets(
-        hgr, gr, nets, num_clusters, num_modules)
+        hgr, gr, nets, num_clusters, num_modules
+    )
     # Reconstruct a new graph with purged nets
     num_nets = len(updated_nets)
     gr2 = TinyGraph()
@@ -188,8 +191,7 @@ def purge_duplicate_nets(hgr, gr, nets, num_clusters, num_modules):
                         same = True
                 if same:
                     removelist.add(net2)
-                    net_weight[net1] = net_weight.get(
-                        net1, 1) + net_weight.get(net2, 1)
+                    net_weight[net1] = net_weight.get(net1, 1) + net_weight.get(net2, 1)
     # gr.remove_nodes_from(removelist)
     print("removed {} nets".format(len(removelist)))
     gr_nets = range(num_modules, num_modules + len(nets))

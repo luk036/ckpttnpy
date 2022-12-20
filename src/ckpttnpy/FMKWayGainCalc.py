@@ -4,8 +4,8 @@ from itertools import permutations
 from typing import Any, Dict, List, Union
 
 from .dllist import Dllink
-from .robin import Robin
 from .lict import Lict
+from .robin import Robin
 
 Part = Union[Dict[Any, int], List[int]]
 
@@ -42,8 +42,7 @@ class FMKWayGainCalc:
 
         if isinstance(self.hgr.modules, range):
             self.vertex_list = [
-                Lict([Dllink([0, i]) for i in self.hgr])
-                for _ in range(num_parts)
+                Lict([Dllink([0, i]) for i in self.hgr]) for _ in range(num_parts)
             ]
         elif isinstance(self.hgr.modules, list):
             self.vertex_list = [

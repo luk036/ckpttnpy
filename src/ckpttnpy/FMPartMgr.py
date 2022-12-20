@@ -2,8 +2,8 @@
 
 from typing import Any, Dict, List, Union
 
-from .PartMgrBase import PartMgrBase
 from .lict import Lict
+from .PartMgrBase import PartMgrBase
 
 Part = Union[Dict[Any, int], List[int]]
 
