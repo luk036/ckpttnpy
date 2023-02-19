@@ -11,7 +11,6 @@ Part = Union[Dict[Any, int], List[int]]
 
 
 class FMKWayGainCalc:
-
     __slots__ = (
         "totalcost",
         "hgr",

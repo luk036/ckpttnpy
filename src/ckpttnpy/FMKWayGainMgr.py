@@ -9,7 +9,6 @@ Part = Union[Dict[Any, int], List[int]]
 
 
 class FMKWayGainMgr(FMGainMgr):
-
     # public:
 
     def __init__(self, GainCalc, hgr, num_parts: int):

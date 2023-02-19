@@ -10,7 +10,6 @@ Part = Union[Dict[Any, int], List[int]]
 
 
 class FMBiGainCalc:
-
     __slots__ = ("totalcost", "hgr", "vertex_list", "idx_vec", "delta_gain_w")
 
     # public:

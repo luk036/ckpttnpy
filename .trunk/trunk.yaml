@@ -1,27 +1,30 @@
 version: 0.1
 cli:
-  version: 1.2.1
+  version: 1.5.0
 plugins:
   sources:
     - id: trunk
-      ref: v0.0.3
+      ref: v0.0.11
       uri: https://github.com/trunk-io/plugins
 lint:
   enabled:
-    - actionlint@1.6.17
-    - black@22.8.0
-    - flake8@5.0.4
+    - actionlint@1.6.23
+    - black@23.1.0
+    - flake8@6.0.0
     - git-diff-check@SYSTEM
-    - gitleaks@8.12.0
-    - hadolint@2.10.0
-    - isort@5.10.1
-    - markdownlint@0.32.2
-    - prettier@2.7.1
-    - shellcheck@0.8.0
+    - gitleaks@8.15.3
+    - hadolint@2.12.0
+    - isort@5.12.0
+    - markdownlint@0.33.0
+    - prettier@2.8.4
+    - shellcheck@0.9.0
     - shfmt@3.5.0
-    - taplo@release-taplo-cli-0.7.0
+    - taplo@0.7.0
 actions:
   enabled:
+    - trunk-announce
+    - trunk-check-pre-push
+    - trunk-fmt-pre-commit
     - trunk-upgrade-available
 runtimes:
   enabled:
