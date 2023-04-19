@@ -227,7 +227,7 @@ class FMKWayGainCalc:
         Returns:
             dtype:  description
         """
-        net, v, from_part, to_part = move_info
+        net, _, from_part, to_part = move_info
 
         delta_gain = []
         degree = len(self.idx_vec)
@@ -280,7 +280,7 @@ class FMKWayGainCalc:
         Returns:
             dtype:  description
         """
-        net, v, from_part, to_part = move_info
+        net, _, from_part, to_part = move_info
         num = [0] * self.num_parts
         # delta_gain = []
         # idx_vec = []

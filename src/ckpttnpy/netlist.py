@@ -8,7 +8,7 @@ import networkx as nx
 from networkx.algorithms import bipartite
 from networkx.readwrite import json_graph
 
-from .array_like import repeat_array
+from .array_like import RepeatArray
 from .lict import Lict
 
 
@@ -180,9 +180,9 @@ def read_json(filename):
     num_pads = gr.graph["num_pads"]
     hgr = Netlist(gr, range(num_modules), range(num_modules, num_modules + num_nets))
     hgr.num_pads = num_pads
-    hgr.module_weight = repeat_array(1, num_modules)
-    hgr.net_weight = repeat_array(1, num_nets)
-    # hgr.net_weight = shift_array(1 for _ in range(num_nets))
+    hgr.module_weight = RepeatArray(1, num_modules)
+    hgr.net_weight = RepeatArray(1, num_nets)
+    # hgr.net_weight = ShiftArray(1 for _ in range(num_nets))
     # hgr.net_weight.set_start(num_modules)
     return hgr
 
@@ -243,7 +243,7 @@ def create_drawf():
     gr.graph["num_pads"] = 3
     hgr = Netlist(gr, modules, nets)
     hgr.module_weight = module_weight
-    hgr.net_weight = repeat_array(1, len(nets))
+    hgr.net_weight = RepeatArray(1, len(nets))
     hgr.num_pads = 3
     return hgr
 
@@ -270,7 +270,7 @@ def create_test_netlist():
     # module_map = {v: i_v for i_v, v in enumerate(modules)}
     nets = ["a3", "a4", "a5"]
     # net_weight = {net: 1 for net in nets}
-    net_weight = repeat_array(1, len(nets))
+    net_weight = RepeatArray(1, len(nets))
 
     hgr = Netlist(gr, modules, nets)
     hgr.module_weight = module_weight
@@ -349,8 +349,8 @@ def create_random_hgraph(N=30, M=26, eta=0.1):
     gr.graph["num_modules"] = N
     gr.graph["num_nets"] = M
     hgr = Netlist(gr, range(N), range(N, N + M))
-    hgr.module_weight = repeat_array(1, N)
-    hgr.net_weight = repeat_array(1, M)
-    # hgr.net_weight = shift_array(1 for _ in range(M))
+    hgr.module_weight = RepeatArray(1, N)
+    hgr.net_weight = RepeatArray(1, M)
+    # hgr.net_weight = ShiftArray(1 for _ in range(M))
     # hgr.net_weight.set_start(N)
     return hgr

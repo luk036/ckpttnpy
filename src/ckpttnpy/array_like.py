@@ -1,7 +1,7 @@
 from itertools import repeat
 
 
-class repeat_array:
+class RepeatArray:
     """list with arbitrary range"""
 
     def __init__(self, value, size):
@@ -14,7 +14,7 @@ class repeat_array:
         self.value = value
         self.size = size
 
-    def __getitem__(self, key):
+    def __getitem__(self, _):  # key is ignored
         """[summary]
 
         Args:
@@ -41,11 +41,11 @@ class repeat_array:
         """
         return repeat(self.value, self.size)
 
-    def get(self, defaultvalue):
+    def get(self, _):  # defaultvalue is ignored
         return self.value
 
 
-class shift_array(list):
+class ShiftArray(list):
     """list with arbitrary range"""
 
     def __new__(cls, *args, **kwargs):
@@ -93,12 +93,12 @@ class shift_array(list):
 
 
 if __name__ == "__main__":
-    arr = repeat_array(1, 10)
+    arr = RepeatArray(1, 10)
     print(arr[4])
     for i in arr:
         print(i)
 
-    b = shift_array([9, 4, 1, 3, 8, 7, 6, 5])
+    b = ShiftArray([9, 4, 1, 3, 8, 7, 6, 5])
     b.set_start(10)
     print(b[14])
     for i in b:

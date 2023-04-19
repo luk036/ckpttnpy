@@ -1,12 +1,14 @@
-# from typing import Dict, List, Union
-from collections.abc import Mapping
-
 import networkx as nx
 
 from .netlist import Netlist
 
+# from typing import Dict, List, Union
+from collections.abc import Mapping, MutableMapping
+
 
 class HierNetlist(Netlist):
+    parent: Netlist
+
     def __init__(self, gr: nx.Graph, modules, nets):
         """[summary]
 
@@ -16,10 +18,10 @@ class HierNetlist(Netlist):
             nets (Union[range, List]): [description]
         """
         Netlist.__init__(self, gr, modules, nets)
-        self.parent = None
-        self.node_down_list = None
+        # self.parent = self
+        self.node_down_list = []
         self.net_weight: dict = {}
-        self.clusters = None
+        self.clusters = []
 
     def get_degree(self, v):
         return sum(self.net_weight.get(net, 1) for net in self.gr[v])
@@ -27,7 +29,7 @@ class HierNetlist(Netlist):
     def get_max_degree(self):
         return max(self.get_degree(v) for v in self.modules)
 
-    def projection_down(self, part: Mapping, part_down: Mapping):
+    def projection_down(self, part, part_down):
         """[summary]
 
         3 3 3 2 0 2 3 4 3 1     self
@@ -49,7 +51,7 @@ class HierNetlist(Netlist):
             for v2 in self.parent.gr[net]:
                 part_down[v2] = p
 
-    def projection_up(self, part: Mapping, part_up: Mapping):
+    def projection_up(self, part, part_up):
         """[summary]
 
         Args:

@@ -50,7 +50,7 @@ class FMBiGainMgr(FMGainMgr):
         """
         vlink = self.gain_calc.vertex_list[v]
         self.gainbucket[whichPart].detach(vlink)
-        vlink.next = None  # lock
+        vlink.next = vlink  # lock
 
     def lock_all(self, from_part, v):
         """Lock

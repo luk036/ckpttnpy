@@ -1,9 +1,11 @@
-# from collections.abc import Mapping
-from typing import Iterator
+from collections.abc import MutableMapping
+from typing import Iterator, TypeVar, List
+
+T = TypeVar("T")
 
 
-class Lict:
-    def __init__(self, lst: list):
+class Lict(MutableMapping[int, T]):
+    def __init__(self, lst: List[T]) -> None:
         """Dict-like adaptor for a list
 
         Args:
@@ -12,7 +14,7 @@ class Lict:
         self.rng = range(len(lst))
         self.lst = lst
 
-    def __getitem__(self, key):
+    def __getitem__(self, key: int) -> T:
         """_summary_
 
         Args:
@@ -28,7 +30,7 @@ class Lict:
         """
         return self.lst.__getitem__(key)
 
-    def __setitem__(self, key, new_value):
+    def __setitem__(self, key: int, new_value: T):
         """_summary_
 
         Args:
@@ -42,6 +44,17 @@ class Lict:
             7
         """
         self.lst.__setitem__(key, new_value)
+
+    def __delitem__(self, _):
+        """ (You really should not delete item from Lict)
+
+        Args:
+            key (_type_): _description_
+
+        Returns:
+            _type_: _description_
+        """
+        raise NotImplementedError
 
     def __iter__(self) -> Iterator:
         """_summary_
@@ -74,7 +87,7 @@ class Lict:
 
         Examples:
             >>> a = Lict([1, 4, 3, 6])
-            >>> 3 in a
+            >>> 2 in a
             True
         """
         return value in self.rng
@@ -92,7 +105,7 @@ class Lict:
         """
         return len(self.rng)
 
-    def values(self) -> Iterator:
+    def values(self):
         """_summary_
 
         Returns:

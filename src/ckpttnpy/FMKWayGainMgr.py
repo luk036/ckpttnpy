@@ -57,13 +57,13 @@ class FMKWayGainMgr(FMGainMgr):
         """
         vlink = self.gain_calc.vertex_list[whichPart][v]
         self.gainbucket[whichPart].detach(vlink)
-        vlink.next = None  # lock
+        vlink.next = vlink  # lock
 
     def lock_all(self, _, v):
         for vlist, bckt in zip(self.gain_calc.vertex_list, self.gainbucket):
             vlink = vlist[v]
             bckt.detach(vlink)
-            vlink.next = None  # lock
+            vlink.next = vlink  # lock
 
     def update_move_v(self, move_info_v, gain):
         """Update gain for the moving cell

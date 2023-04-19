@@ -28,7 +28,8 @@ def min_maximal_matching(hgr, weight, matchset, dep):
     gap = weight.copy()
     total_primal_cost = 0
     total_dual_cost = 0
-    for net in filter(lambda net: not (any_of_dep(net) or (net in matchset)), hgr.nets):
+    for net in filter(lambda net: not (any_of_dep(net) or (net in matchset)),
+                      hgr.nets):
         min_val = gap[net]
         min_net = net
         for v in hgr.gr[net]:
@@ -191,7 +192,8 @@ def purge_duplicate_nets(hgr, gr, nets, num_clusters, num_modules):
                         same = True
                 if same:
                     removelist.add(net2)
-                    net_weight[net1] = net_weight.get(net1, 1) + net_weight.get(net2, 1)
+                    net_weight[net1] = net_weight.get(
+                        net1, 1) + net_weight.get(net2, 1)
     # gr.remove_nodes_from(removelist)
     print("removed {} nets".format(len(removelist)))
     gr_nets = range(num_modules, num_modules + len(nets))

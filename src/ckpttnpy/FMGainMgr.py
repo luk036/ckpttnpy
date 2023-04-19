@@ -1,13 +1,14 @@
-# -*- coding: utf-8 -*-
+from .bpqueue import BPQueue
+from .dllist import Dllist, Dllink
 
 from abc import abstractmethod
+from typing import List
 
-from .bpqueue import BPQueue
-from .dllist import Dllist
+Item = Dllink[List[int]]
 
 
 class FMGainMgr:
-    waitinglist = Dllist([0, 3734])
+    waitinglist = Dllist[List[int]]([0, 3734])
 
     # public:
 
@@ -25,7 +26,8 @@ class FMGainMgr:
         self.num_parts = num_parts
         self.gain_calc = GainCalc(hgr, num_parts)
         self.pmax = self.hgr.get_max_degree()
-        self.gainbucket = [BPQueue(-self.pmax, self.pmax) for _ in range(num_parts)]
+        self.gainbucket = [BPQueue(-self.pmax, self.pmax)
+                           for _ in range(num_parts)]
 
     def init(self, part):
         """(re)initialization after creation
@@ -68,7 +70,8 @@ class FMGainMgr:
         # gainmax = list(self.gainbucket[k].get_max() for k in range(self.num_parts))
         # maxk = max(gainmax)
         # to_part = gainmax.index(maxk)
-        to_part = max(range(self.num_parts), key=lambda k: self.gainbucket[k].get_max())
+        to_part = max(range(self.num_parts),
+                      key=lambda k: self.gainbucket[k].get_max())
         maxk = self.gainbucket[to_part].get_max()
 
         vlink = self.gainbucket[to_part].popleft()
@@ -125,6 +128,7 @@ class FMGainMgr:
             w (node_t):  description
             key (int/int[]):  description
         """
+        pass
 
     # private:
 

@@ -2,11 +2,11 @@ from ckpttnpy.dllist import Dllink, Dllist
 
 
 def test_dllink():
-    L1 = Dllist()
-    L2 = Dllist()
-    d = Dllink()
-    e = Dllink()
-    f = Dllink()
+    L1 = Dllist(99)
+    L2 = Dllist(99)
+    d = Dllink(1)
+    e = Dllink(2)
+    f = Dllink(3)
     # assert L1.next == L1  # is_empty()
 
     L1.appendleft(e)

@@ -157,7 +157,7 @@ def contract_subgraph(hgr: Netlist, module_weight, forbid: Set) -> HierNetlist:
     hgr2.cluster_down_map = cluster_down_map
     hgr2.module_weight = module_weight2
     hgr2.net_weight = net_weight
-    # hgr2.net_weight = shift_array(1 for _ in range(num_nets))
+    # hgr2.net_weight = ShiftArray(1 for _ in range(num_nets))
     # hgr2.net_weight.set_start(num_modules)
     hgr2.parent = hgr
     return hgr2, module_weight2

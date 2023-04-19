@@ -14,7 +14,7 @@ class FMBiGainCalc:
 
     # public:
 
-    def __init__(self, hgr, num_parts=2):
+    def __init__(self, hgr, _: int = 2):  # num_parts == 2
         """Initialization
 
         Arguments:
@@ -189,28 +189,31 @@ class FMBiGainCalc:
         Returns:
             dtype:  description
         """
-        net, v, from_part, _ = move_info
-        delta_gain = []
-        # idx_vec = []
-        # for w in self.hgr.gr[net]:
-        #     if w == v:
-        #         continue
-        #     idx_vec.append(w)
-
+        net, _, from_part, _ = move_info
         delta_gain = [0, 0]
-        weight = self.hgr.get_net_weight(net)
+        gain = self.hgr.get_net_weight(net)
 
         part_w = part[self.idx_vec[0]]
 
         if part_w != from_part:
-            weight = -weight
+            gain = -gain
 
         if part_w == part[self.idx_vec[1]]:
-            delta_gain[0] += weight
-            delta_gain[1] += weight
+            # from: [w, x, v] | []
+            # to: [w, x] | [v]
+            # or (gain < 0)
+            # from: [w, x] | [v]
+            # to: [w, x, v] | []
+            delta_gain[0] += gain
+            delta_gain[1] += gain
         else:
-            delta_gain[0] += weight
-            delta_gain[1] -= weight
+            # from: [w, v] | [x]
+            # to: [w] | [v, x]
+            # or (gain < 0)
+            # from: [w] | [v, x]
+            # to: [w, v] | [x]
+            delta_gain[0] += gain
+            delta_gain[1] -= gain
 
         return delta_gain
 
@@ -224,32 +227,29 @@ class FMBiGainCalc:
         Returns:
             dtype:  description
         """
-        net, v, from_part, to_part = move_info
-        # delta_gain = []
-        # idx_vec = []
-        # for w in self.hgr.gr[net]:
-        #     if w == v:
-        #         continue
-        #     num[part[w]] += 1
-        #     idx_vec.append(w)
+        net, _, from_part, to_part = move_info
         num = [0, 0]
         for w in self.idx_vec:
             num[part[w]] += 1
         degree = len(self.idx_vec)
         delta_gain = [0] * degree
-        weight = self.hgr.get_net_weight(net)
+        gain = self.hgr.get_net_weight(net)
 
         for l_part in [from_part, to_part]:
             if num[l_part] == 0:
+                # from: [w1, w2, w3 ..., v] | []
+                # to: [w1, w2, w3 ... ] | [v]
                 for index in range(degree):
-                    delta_gain[index] -= weight
+                    delta_gain[index] -= gain
                 return delta_gain
             elif num[l_part] == 1:
+                # from: [w1, w2, w3 ..., v] | [w]
+                # to: [w1, w2, w3 ... ] | [v, w]
                 for index in range(degree):
                     part_w = part[self.idx_vec[index]]
                     if part_w == l_part:
-                        delta_gain[index] += weight
+                        delta_gain[index] += gain
                         break
-            weight = -weight
+            gain = -gain
 
         return delta_gain

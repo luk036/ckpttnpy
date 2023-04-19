@@ -1,4 +1,9 @@
-class Dllink:
+from typing import Generic, TypeVar
+
+T = TypeVar("T")
+
+
+class Dllink(Generic[T]):
     """doubly linked node (that may also be a "head" a list)
 
     A Doubly-linked List class. This class simply contains a link of
@@ -12,7 +17,11 @@ class Dllink:
 
     __slots__ = ("next", "prev", "data")
 
-    def __init__(self, data=None):
+    next: "Dllink[T]"
+    prev: "Dllink[T]"
+    data: T
+
+    def __init__(self, data: T) -> None:
         """initialization
 
         Keyword Arguments:
@@ -27,7 +36,7 @@ class Dllink:
         # self.key = 0
         self.data = data
 
-    def is_locked(self):
+    def is_locked(self) -> bool:
         """whether the node is locked
 
         Returns:
@@ -36,11 +45,11 @@ class Dllink:
         Examples:
             >>> a = Dllink(3)
             >>> a.is_locked()
-            False
+            True
         """
-        return self.next is None
+        return self.next == self
 
-    def lock(self):
+    def lock(self) -> None:
         """lock the node (and don't append it to any list)
 
         Examples:
@@ -49,9 +58,9 @@ class Dllink:
             >>> a.is_locked()
             True
         """
-        self.next = None
+        self.next = self
 
-    def appendleft(self, node):
+    def appendleft(self, node: "Dllink") -> None:
         """append the node to the front
 
         Arguments:
@@ -67,7 +76,7 @@ class Dllink:
         self.next = node
         node.prev = self
 
-    def append(self, node):
+    def append(self, node: "Dllink") -> None:
         """append the node to the back
 
         Arguments:
@@ -83,7 +92,7 @@ class Dllink:
         self.prev = node
         node.next = self
 
-    def popleft(self):
+    def popleft(self) -> "Dllink[T]":
         """pop a node from the front
 
         Returns:
@@ -102,7 +111,7 @@ class Dllink:
         self.next.prev = self
         return res
 
-    def pop(self):
+    def pop(self) -> "Dllink[T]":
         """pop a node from the back
 
         Returns:
@@ -121,7 +130,7 @@ class Dllink:
         self.prev.next = self
         return res
 
-    def detach(self):
+    def detach(self) -> None:
         """detach from a list
 
         Examples:
@@ -151,7 +160,7 @@ class Dllink:
 # -*- coding: utf-8 -*-
 
 
-class Dllist:
+class Dllist(Generic[T]):
     """doubly linked node (that may also be a "head" a list)
 
     A Doubly-linked List class. This class simply contains a link of
@@ -165,7 +174,9 @@ class Dllist:
 
     __slots__ = "head"
 
-    def __init__(self, data=None):
+    head: Dllink[T]
+
+    def __init__(self, data: T) -> None:
         """initialization
 
         Keyword Arguments:
@@ -178,7 +189,7 @@ class Dllist:
         """
         self.head = Dllink(data)
 
-    def is_empty(self):
+    def is_empty(self) -> bool:
         """whether the list is empty
 
         Returns:
@@ -191,7 +202,7 @@ class Dllist:
         """
         return self.head.next == self.head
 
-    def clear(self):
+    def clear(self) -> None:
         """clear
 
         Examples:
@@ -202,7 +213,7 @@ class Dllist:
         """
         self.head.next = self.head.prev = self.head
 
-    def appendleft(self, node):
+    def appendleft(self, node: Dllink[T]) -> None:
         """append the node to the front
 
         Arguments:
@@ -217,7 +228,7 @@ class Dllist:
         """
         self.head.appendleft(node)
 
-    def append(self, node):
+    def append(self, node: Dllink[T]) -> None:
         """append the node to the back
 
         Arguments:
@@ -275,7 +286,7 @@ class Dllist:
     #         yield cur
     #         cur = cur.next
 
-    def __iter__(self):
+    def __iter__(self) -> "DllIterator":
         """iterable
 
         Returns:
@@ -284,14 +295,14 @@ class Dllist:
         return DllIterator(self.head)
 
 
-class DllIterator:
+class DllIterator(Generic[T]):
     """List iterator
 
     Traverse the list from the first item. Usually it is safe
     to attach/detach list items during the iterator is active.
     """
 
-    def __init__(self, link):
+    def __init__(self, link: Dllink[T]) -> None:
         """Initialization
 
         Arguments:

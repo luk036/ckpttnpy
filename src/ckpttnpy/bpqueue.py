@@ -1,7 +1,9 @@
-# -*- coding: utf-8 -*-
 from .dllist import Dllink, Dllist
+from typing import List, Iterable
 
-sentinel = Dllink([0, 8965])
+Item = Dllink[List[int]]
+
+sentinel = Item([0, 8965])
 
 
 class BPQueue:
@@ -26,7 +28,12 @@ class BPQueue:
 
     __slots__ = ("_max", "_offset", "_high", "_bucket")
 
-    def __init__(self, a: int, b: int):
+    _max: int
+    _offset: int
+    _high: int
+    _bucket: List[Dllist[List[int]]]
+
+    def __init__(self, a: int, b: int) -> None:
         """initialization
 
         Arguments:
@@ -44,7 +51,7 @@ class BPQueue:
         self._max = 0
         self._offset = a - 1
         self._high = b - self._offset
-        self._bucket = list(Dllist([0, 4848]) for _ in range(self._high + 1))
+        self._bucket = list(Dllist([i, 4848]) for i in range(self._high + 1))
         self._bucket[0].append(sentinel)  # sentinel
 
     def is_empty(self) -> bool:
@@ -73,7 +80,7 @@ class BPQueue:
         """
         return self._max + self._offset
 
-    def clear(self):
+    def clear(self) -> None:
         """reset the PQ
 
         Examples:
@@ -86,7 +93,7 @@ class BPQueue:
             self._bucket[self._max].clear()
             self._max -= 1
 
-    def set_key(self, it: Dllink, gain: int):
+    def set_key(self, it: Item, gain: int) -> None:
         """Set the key value
 
         Arguments:
@@ -95,7 +102,7 @@ class BPQueue:
         """
         it.data[0] = gain - self._offset
 
-    def append_direct(self, it):
+    def append_direct(self, it: Item) -> None:
         """append item with internal key
 
         Arguments:
@@ -105,7 +112,7 @@ class BPQueue:
         assert it.data[0] > self._offset
         self.append(it, it.data[0])
 
-    def append(self, it, k):
+    def append(self, it: Item, k: int) -> None:
         """append item with external key
 
         Arguments:
@@ -125,7 +132,7 @@ class BPQueue:
             self._max = it.data[0]
         self._bucket[it.data[0]].append(it)
 
-    def appendfrom(self, nodes):
+    def appendfrom(self, nodes: Iterable[Item]) -> None:
         """append from list
 
         Arguments:
@@ -158,7 +165,7 @@ class BPQueue:
             self._max -= 1
         return res
 
-    def decrease_key(self, it, delta):
+    def decrease_key(self, it: Item, delta: int) -> None:
         """decrease key by delta
 
         Arguments:
@@ -181,7 +188,7 @@ class BPQueue:
         while self._bucket[self._max].is_empty():
             self._max -= 1
 
-    def increase_key(self, it, delta):
+    def increase_key(self, it: Item, delta: int) -> None:
         """increase key by delta
 
         Arguments:
@@ -202,7 +209,7 @@ class BPQueue:
         if self._max < it.data[0]:
             self._max = it.data[0]
 
-    def modify_key(self, it, delta):
+    def modify_key(self, it: Item, delta: int) -> None:
         """modify key by delta
 
         Arguments:
@@ -213,14 +220,14 @@ class BPQueue:
         not be preserved.
         For FM algorithm, this is a prefered behavior.
         """
-        if it.next is None:  # locked
+        if it.next == it:  # locked
             return
         if delta > 0:
             self.increase_key(it, delta)
         elif delta < 0:
             self.decrease_key(it, delta)
 
-    def detach(self, it):
+    def detach(self, it: Item) -> None:
         """detach the item from BPQueue
 
         Arguments:
@@ -249,10 +256,10 @@ class BPQueue:
         Returns:
             bpq_iterator
         """
-        return bpq_iterator(self)
+        return BPQueueIterator(self)
 
 
-class bpq_iterator:
+class BPQueueIterator:
     """bounded priority queue iterator
 
     Bounded Priority Queue Iterator. Traverse the queue in descending
@@ -260,7 +267,7 @@ class bpq_iterator:
     the iterator makes a copy of current key.
     """
 
-    def __init__(self, bpq):
+    def __init__(self, bpq: BPQueue) -> None:
         """[summary]
 
         Arguments:
