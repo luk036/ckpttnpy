@@ -3,7 +3,7 @@ import networkx as nx
 from .netlist import Netlist
 
 # from typing import Dict, List, Union
-from collections.abc import Mapping, MutableMapping
+# from collections.abc import Mapping, MutableMapping
 
 
 class HierNetlist(Netlist):
