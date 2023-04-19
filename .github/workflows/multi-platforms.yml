@@ -8,7 +8,7 @@ jobs:
     strategy:
       matrix:
         os: ["ubuntu-latest", "windows-latest", "macos-latest"]
-        version: [3.7, 3.8]
+        version: [3.8, 3.9]
     steps:
       - uses: actions/checkout@v2
       - uses: conda-incubator/setup-miniconda@v2
@@ -31,6 +31,7 @@ jobs:
         shell: bash -l {0}
         run: |
           conda install pytest
-          pip install git+https://github.com/luk036/ecgenpy
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
           python setup.py develop
           pytest
