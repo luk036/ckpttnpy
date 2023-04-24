@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
+from .FMGainMgr import FMGainMgr
 
 from typing import Any, Dict, List, Union
-
-from .FMGainMgr import FMGainMgr
 
 Part = Union[Dict[Any, int], List[int]]
 
@@ -69,7 +67,8 @@ class FMBiGainMgr(FMGainMgr):
             move_info_v (type):  description
             gain (type):  description
         """
-        self.gainbucket[part_w ^ 1].modify_key(self.gain_calc.vertex_list[w], key)
+        self.gainbucket[part_w ^ 1].modify_key(
+            self.gain_calc.vertex_list[w], key)
 
     def update_move_v(self, move_info_v, gain):
         """[summary]

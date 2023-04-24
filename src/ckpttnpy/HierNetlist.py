@@ -2,7 +2,7 @@ import networkx as nx
 
 from .netlist import Netlist
 
-# from typing import Dict, List, Union
+from typing import List, Any
 # from collections.abc import Mapping, MutableMapping
 
 
@@ -19,9 +19,9 @@ class HierNetlist(Netlist):
         """
         Netlist.__init__(self, gr, modules, nets)
         # self.parent = self
-        self.node_down_list = []
+        self.node_down_list: List[Any] = []
         self.net_weight: dict = {}
-        self.clusters = []
+        self.clusters: List[Any] = []
 
     def get_degree(self, v):
         return sum(self.net_weight.get(net, 1) for net in self.gr[v])

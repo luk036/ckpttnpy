@@ -1,8 +1,13 @@
-# -*- coding: utf-8 -*-
+from typing import Generic, TypeVar
+
+T = TypeVar("T")
 
 
-class SlNode:
-    def __init__(self, data):
+class SlNode(Generic[T]):
+    next: "SlNode[T]"
+    data: T
+
+    def __init__(self, data: T) -> None:
         """initialization
 
         Keyword Arguments:
@@ -35,12 +40,12 @@ class Robin:
         """iterator
 
         Returns:
-            robin_iterator
+            RobinIterator
         """
-        return robin_iterator(self, from_part)
+        return RobinIterator(self, from_part)
 
 
-class robin_iterator:
+class RobinIterator:
     __slots__ = ("cur", "stop")
 
     def __init__(self, Robin, from_part: int):
@@ -55,7 +60,7 @@ class robin_iterator:
         """iterable
 
         Returns:
-            robin_iterator:  itself
+            RobinIterator:  itself
         """
         return self
 
