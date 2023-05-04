@@ -54,7 +54,7 @@ class Lict(MutableMapping[int, T]):
         Returns:
             _type_: _description_
         """
-        raise NotImplementedError
+        raise NotImplementedError()
 
     def __iter__(self) -> Iterator:
         """_summary_
@@ -133,8 +133,8 @@ class Lict(MutableMapping[int, T]):
         """
         return enumerate(self.lst)
 
-    def copy(self):
-        return Lict(self.lst.copy())
+    # def copy(self):
+    #     return Lict(self.lst.copy())
 
 
 # if __name__ == "__main__":

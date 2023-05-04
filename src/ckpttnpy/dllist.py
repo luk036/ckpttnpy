@@ -1,4 +1,5 @@
 from typing import Generic, TypeVar
+from typing_extensions import Self
 
 T = TypeVar("T")
 
@@ -17,8 +18,8 @@ class Dllink(Generic[T]):
 
     __slots__ = ("next", "prev", "data")
 
-    next: "Dllink[T]"
-    prev: "Dllink[T]"
+    next: Self
+    prev: Self
     data: T
 
     def __init__(self, data: T) -> None:
@@ -60,7 +61,7 @@ class Dllink(Generic[T]):
         """
         self.next = self
 
-    def appendleft(self, node: "Dllink") -> None:
+    def appendleft(self, node: Self) -> None:
         """append the node to the front
 
         Arguments:
@@ -76,7 +77,7 @@ class Dllink(Generic[T]):
         self.next = node
         node.prev = self
 
-    def append(self, node: "Dllink") -> None:
+    def append(self, node: Self) -> None:
         """append the node to the back
 
         Arguments:
@@ -92,7 +93,7 @@ class Dllink(Generic[T]):
         self.prev = node
         node.next = self
 
-    def popleft(self) -> "Dllink[T]":
+    def popleft(self) -> Self:
         """pop a node from the front
 
         Returns:
@@ -111,7 +112,7 @@ class Dllink(Generic[T]):
         self.next.prev = self
         return res
 
-    def pop(self) -> "Dllink[T]":
+    def pop(self) -> Self:
         """pop a node from the back
 
         Returns:
@@ -157,7 +158,58 @@ class Dllink(Generic[T]):
     #         cur = cur.next
 
 
-# -*- coding: utf-8 -*-
+class DllIterator(Generic[T]):
+    """List iterator
+
+    Traverse the list from the first item. Usually it is safe
+    to attach/detach list items during the iterator is active.
+    """
+
+    def __init__(self, link: Dllink[T]) -> None:
+        """Initialization
+
+        Arguments:
+            link (Dllink):  description
+
+        Examples:
+            >>> a = Dllist(3)
+            >>> it = iter(a)
+        """
+        self.link = link
+        self.cur = link.next
+
+    def __next__(self):
+        """Get the next item
+
+        Raises:
+            StopIteration:  description
+
+        Returns:
+            Dllink:  the next item
+
+        Examples:
+            >>> a = Dllist(3)
+            >>> b = Dllink(4)
+            >>> a.append(b)
+            >>> cursor = iter(a)
+            >>> c = next(cursor)
+            >>> b == c
+            True
+        """
+        if self.cur != self.link:
+            res = self.cur
+            self.cur = self.cur.next
+            return res
+        else:
+            raise StopIteration()
+
+    # def __next__(self):
+    #     """[summary]
+
+    #     Returns:
+    #         dtype:  description
+    #     """
+    #     return self.next()
 
 
 class Dllist(Generic[T]):
@@ -286,7 +338,7 @@ class Dllist(Generic[T]):
     #         yield cur
     #         cur = cur.next
 
-    def __iter__(self) -> "DllIterator":
+    def __iter__(self) -> DllIterator[T]:
         """iterable
 
         Returns:
@@ -295,61 +347,6 @@ class Dllist(Generic[T]):
         return DllIterator(self.head)
 
 
-class DllIterator(Generic[T]):
-    """List iterator
-
-    Traverse the list from the first item. Usually it is safe
-    to attach/detach list items during the iterator is active.
-    """
-
-    def __init__(self, link: Dllink[T]) -> None:
-        """Initialization
-
-        Arguments:
-            link (Dllink):  description
-
-        Examples:
-            >>> a = Dllist(3)
-            >>> it = iter(a)
-        """
-        self.link = link
-        self.cur = link.next
-
-    def __next__(self):
-        """Get the next item
-
-        Raises:
-            StopIteration:  description
-
-        Returns:
-            Dllink:  the next item
-
-        Examples:
-            >>> a = Dllist(3)
-            >>> b = Dllink(4)
-            >>> a.append(b)
-            >>> cursor = iter(a)
-            >>> c = next(cursor)
-            >>> b == c
-            True
-        """
-        if self.cur != self.link:
-            res = self.cur
-            self.cur = self.cur.next
-            return res
-        else:
-            raise StopIteration
-
-    # def __next__(self):
-    #     """[summary]
-
-    #     Returns:
-    #         dtype:  description
-    #     """
-    #     return self.next()
-
-
 if __name__ == "__main__":
     import doctest
-
     doctest.testmod()
