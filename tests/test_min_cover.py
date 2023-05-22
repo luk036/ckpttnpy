@@ -2,7 +2,7 @@ from ckpttnpy.min_cover import contract_subgraph
 from ckpttnpy.netlist import create_drawf
 
 # def test_max_independent_net():
-#     # random_graph(gr,5,20)
+#     # random_graph(gra,5,20)
 #     hgr = create_drawf()
 #     _, cost1 = max_independent_net(hgr, hgr.module_weight, set())
 #     assert cost1 == 3

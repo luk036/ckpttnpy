@@ -42,17 +42,17 @@ def run_MLBiPartMgr(hgr: Netlist):
 def plot(hgr: Netlist, part):
     part0 = [i for i in hgr if part[i] == 0]
     part1 = [i for i in hgr if part[i] == 1]
-    pos = nx.spring_layout(hgr.gr)
+    pos = nx.spring_layout(hgr.gra)
     nx.draw_networkx_nodes(
-        hgr.gr, nodelist=part0, node_color="g", node_size=50, pos=pos
+        hgr.gra, nodelist=part0, node_color="g", node_size=50, pos=pos
     )
     nx.draw_networkx_nodes(
-        hgr.gr, nodelist=part1, node_color="r", node_size=50, pos=pos
+        hgr.gra, nodelist=part1, node_color="r", node_size=50, pos=pos
     )
     nx.draw_networkx_nodes(
-        hgr.gr, nodelist=hgr.nets, node_color="k", node_size=20, pos=pos
+        hgr.gra, nodelist=hgr.nets, node_color="k", node_size=20, pos=pos
     )
-    nx.draw_networkx_edges(hgr.gr, pos=pos, width=1)
+    nx.draw_networkx_edges(hgr.gra, pos=pos, width=1)
     plt.show()
 
 

@@ -103,8 +103,8 @@ class FMGainMgr:
         self.gain_calc.update_move_init()
         v, from_part, to_part = move_info_v
         # v = v
-        for net in self.hgr.gr[v]:
-            degree = self.hgr.gr.degree[net]
+        for net in self.hgr.gra[v]:
+            degree = self.hgr.gra.degree[net]
             if degree < 2:  # unlikely, self-loop, etc.
                 continue  # does not provide any gain change when move
             move_info = [net, v, from_part, to_part]

@@ -58,7 +58,7 @@ class FMBiGainCalc:
             net (node_t):  description
             part (list):  description
         """
-        degree = self.hgr.gr.degree[net]
+        degree = self.hgr.gra.degree[net]
         if degree < 2:  # unlikely, self-loop, etc.
             return  # does not provide any gain when move
         if degree == 3:
@@ -84,7 +84,7 @@ class FMBiGainCalc:
             net (node_t):  description
             part (list):  description
         """
-        net_cur = iter(self.hgr.gr[net])
+        net_cur = iter(self.hgr.gra[net])
         w = next(net_cur)
         v = next(net_cur)
         weight = self.hgr.get_net_weight(net)
@@ -103,7 +103,7 @@ class FMBiGainCalc:
             net (node_t):  description
             part (list):  description
         """
-        net_cur = iter(self.hgr.gr[net])
+        net_cur = iter(self.hgr.gra[net])
         w = next(net_cur)
         v = next(net_cur)
         u = next(net_cur)
@@ -128,7 +128,7 @@ class FMBiGainCalc:
             part (list):  description
         """
         num = [0, 0]
-        for w in self.hgr.gr[net]:
+        for w in self.hgr.gra[net]:
             num[part[w]] += 1
 
         weight = self.hgr.get_net_weight(net)
@@ -138,10 +138,10 @@ class FMBiGainCalc:
 
         for k in [0, 1]:
             if num[k] == 0:
-                for w in self.hgr.gr[net]:
+                for w in self.hgr.gra[net]:
                     self._modify_gain(w, -weight)
             elif num[k] == 1:
-                for w in self.hgr.gr[net]:
+                for w in self.hgr.gra[net]:
                     if part[w] == k:
                         self._modify_gain(w, weight)
                         break
@@ -164,7 +164,7 @@ class FMBiGainCalc:
             dtype:  description
         """
         net, v, from_part, _ = move_info
-        net_cur = iter(self.hgr.gr[net])
+        net_cur = iter(self.hgr.gra[net])
         u = next(net_cur)
         w = u if u != v else next(net_cur)
         weight = self.hgr.get_net_weight(net)
@@ -173,8 +173,8 @@ class FMBiGainCalc:
         return w
 
     def init_idx_vec(self, v, net):
-        self.idx_vec = [w for w in self.hgr.gr[net] if w != v]
-        # for w in filter(lambda w: w != v, self.hgr.gr[net]):
+        self.idx_vec = [w for w in self.hgr.gra[net] if w != v]
+        # for w in filter(lambda w: w != v, self.hgr.gra[net]):
         #     self.idx_vec.append(w)
 
     def update_move_3pin_net(self, part, move_info):

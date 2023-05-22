@@ -138,14 +138,14 @@ class Lict(MutableMapping[int, T]):
 
 
 # if __name__ == "__main__":
-#     gr = TinyDiGraph()
-#     gr.init_nodes(1000)
-#     gr.add_edge(2, 1)
-#     print(gr.number_of_nodes())
-#     print(gr.number_of_edges())
+#     gra = TinyDiGraph()
+#     gra.init_nodes(1000)
+#     gra.add_edge(2, 1)
+#     print(gra.number_of_nodes())
+#     print(gra.number_of_edges())
 
-#     for u in gr:
-#         for v in gr.neighbors(u):
+#     for u in gra:
+#         for v in gra.neighbors(u):
 #             print(f"{u}, {v}")
 
 #     a = Lict([0] * 8)

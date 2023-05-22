@@ -31,26 +31,26 @@ def test_drawf():
 
 def test_json():
     # hgr = create_drawf()
-    # data = json_graph.node_link_data(hgr.gr)
+    # data = json_graph.node_link_data(hgr.gra)
     # with open('testcases/drawf.json', 'w') as fw:
     #     json.dump(data, fw, indent=1)
     with open("testcases/drawf.json", "r") as fr:
         data2 = json.load(fr)
-    gr = json_graph.node_link_graph(data2)
-    assert gr.number_of_nodes() == 13
-    assert gr.graph["num_modules"] == 7
-    assert gr.graph["num_nets"] == 6
-    assert gr.graph["num_pads"] == 3
+    gra = json_graph.node_link_graph(data2)
+    assert gra.number_of_nodes() == 13
+    assert gra.graph["num_modules"] == 7
+    assert gra.graph["num_nets"] == 6
+    assert gra.graph["num_pads"] == 3
 
 
 def test_json2():
     with open("testcases/p1.json", "r") as fr:
         data = json.load(fr)
-    gr = json_graph.node_link_graph(data)
-    assert gr.number_of_nodes() == 1735
-    assert gr.graph["num_modules"] == 833
-    assert gr.graph["num_nets"] == 902
-    assert gr.graph["num_pads"] == 81
+    gra = json_graph.node_link_graph(data)
+    assert gra.number_of_nodes() == 1735
+    assert gra.graph["num_modules"] == 833
+    assert gra.graph["num_nets"] == 902
+    assert gra.graph["num_pads"] == 81
 
 
 def test_readjson():
@@ -59,7 +59,7 @@ def test_readjson():
     count_3 = 0
     count_rest = 0
     for net in hgr.nets:
-        deg = hgr.gr.degree(net)
+        deg = hgr.gra.degree(net)
         if deg == 2:
             count_2 += 1
         elif deg == 3:

@@ -9,22 +9,22 @@ from typing import List, Any
 class HierNetlist(Netlist):
     parent: Netlist
 
-    def __init__(self, gr: nx.Graph, modules, nets):
+    def __init__(self, gra: nx.Graph, modules, nets):
         """[summary]
 
         Arguments:
-            gr (nx.Graph): [description]
+            gra (nx.Graph): [description]
             modules (Union[range, List]): [description]
             nets (Union[range, List]): [description]
         """
-        Netlist.__init__(self, gr, modules, nets)
+        Netlist.__init__(self, gra, modules, nets)
         # self.parent = self
         self.node_down_list: List[Any] = []
         self.net_weight: dict = {}
         self.clusters: List[Any] = []
 
     def get_degree(self, v):
-        return sum(self.net_weight.get(net, 1) for net in self.gr[v])
+        return sum(self.net_weight.get(net, 1) for net in self.gra[v])
 
     def get_max_degree(self):
         return max(self.get_degree(v) for v in self.modules)
@@ -48,7 +48,7 @@ class HierNetlist(Netlist):
             part_down[v2] = part[v1]
         for i_v, net in enumerate(self.clusters):
             p = part[num_cells + i_v]
-            for v2 in self.parent.gr[net]:
+            for v2 in self.parent.gra[net]:
                 part_down[v2] = p
 
     def projection_up(self, part, part_up):

@@ -71,7 +71,7 @@ class FMKWayGainCalc:
             net (node_t):  description
             part (list):  description
         """
-        degree = self.hgr.gr.degree[net]
+        degree = self.hgr.gra.degree[net]
         if degree < 2:  # unlikely, self-loop, etc.
             return  # does not provide any gain when move
         if degree > 3:
@@ -98,7 +98,7 @@ class FMKWayGainCalc:
             net (node_t):  description
             part (list):  description
         """
-        net_cur = iter(self.hgr.gr[net])
+        net_cur = iter(self.hgr.gra[net])
         w = next(net_cur)
         v = next(net_cur)
         part_w = part[w]
@@ -119,7 +119,7 @@ class FMKWayGainCalc:
             net (node_t):  description
             part (list):  description
         """
-        net_cur = iter(self.hgr.gr[net])
+        net_cur = iter(self.hgr.gra[net])
         w = next(net_cur)
         v = next(net_cur)
         u = next(net_cur)
@@ -157,7 +157,7 @@ class FMKWayGainCalc:
             part (list):  description
         """
         num = [0] * self.num_parts
-        for w in self.hgr.gr[net]:
+        for w in self.hgr.gra[net]:
             num[part[w]] += 1
 
         weight = self.hgr.get_net_weight(net)
@@ -169,10 +169,10 @@ class FMKWayGainCalc:
 
         for k, c in enumerate(num):
             if c == 0:
-                for w in self.hgr.gr[net]:
+                for w in self.hgr.gra[net]:
                     self.vertex_list[k][w].data[0] -= weight
             elif c == 1:
-                for w in self.hgr.gr[net]:
+                for w in self.hgr.gra[net]:
                     if part[w] == k:
                         self._modify_gain(w, part[w], weight)
                         break
@@ -192,7 +192,7 @@ class FMKWayGainCalc:
             dtype:  description
         """
         net, v, from_part, to_part = move_info
-        net_cur = iter(self.hgr.gr[net])
+        net_cur = iter(self.hgr.gra[net])
         u = next(net_cur)
         w = u if u != v else next(net_cur)
         part_w = part[w]
@@ -210,9 +210,9 @@ class FMKWayGainCalc:
         return w
 
     def init_idx_vec(self, v, net):
-        self.idx_vec = [w for w in self.hgr.gr[net] if w != v]
+        self.idx_vec = [w for w in self.hgr.gra[net] if w != v]
         # self.idx_vec = []
-        # for w in self.hgr.gr[net]:
+        # for w in self.hgr.gra[net]:
         #     if w == v:
         #         continue
         #     self.idx_vec.append(w)
@@ -284,7 +284,7 @@ class FMKWayGainCalc:
         num = [0] * self.num_parts
         # delta_gain = []
         # idx_vec = []
-        # for w in self.hgr.gr[net]:
+        # for w in self.hgr.gra[net]:
         #     if w == v:
         #         continue
         #     num[part[w]] += 1
