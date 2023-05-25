@@ -54,7 +54,10 @@ class Netlist:
     cost_model = 0
 
     def __init__(
-        self, gra: nx.Graph, modules: Union[range, List[Any]], nets: Union[range, List[Any]]
+        self,
+        gra: nx.Graph,
+        modules: Union[range, List[Any]],
+        nets: Union[range, List[Any]],
     ):
         """[summary]
 
@@ -176,8 +179,7 @@ def read_json(filename):
     num_modules = gra.graph["num_modules"]
     num_nets = gra.graph["num_nets"]
     num_pads = gra.graph["num_pads"]
-    hgr = Netlist(gra, range(num_modules), range(
-        num_modules, num_modules + num_nets))
+    hgr = Netlist(gra, range(num_modules), range(num_modules, num_modules + num_nets))
     hgr.num_pads = num_pads
     hgr.module_weight = RepeatArray(1, num_modules)
     hgr.net_weight = RepeatArray(1, num_nets)
@@ -217,8 +219,7 @@ def create_drawf():
     modules = ["a0", "a1", "a2", "a3", "p1", "p2", "p3"]
     # module_map = {v: i_v for i_v, v in enumerate(modules)}
     # module_weight = [1, 3, 4, 2, 0, 0, 0]
-    module_weight = {"a0": 1, "a1": 3, "a2": 4,
-                     "a3": 2, "p1": 0, "p2": 0, "p3": 0}
+    module_weight = {"a0": 1, "a1": 3, "a2": 4, "a3": 2, "p1": 0, "p2": 0, "p3": 0}
 
     gra.add_edges_from(
         [
@@ -313,7 +314,7 @@ def vdcorput(n, base=2):
     return [vdc(i, base) for i in range(n)]
 
 
-def formGraph(N, M, _, eta, seed=None): # ignore pos
+def formGraph(N, M, _, eta, seed=None):  # ignore pos
     """Form N by N grid of nodes, connect nodes within eta.
         mu and eta are relative to 1/(N-1)
 

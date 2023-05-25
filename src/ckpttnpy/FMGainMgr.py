@@ -26,8 +26,7 @@ class FMGainMgr:
         self.num_parts = num_parts
         self.gain_calc = GainCalc(hgr, num_parts)
         self.pmax = self.hgr.get_max_degree()
-        self.gainbucket = [BPQueue(-self.pmax, self.pmax)
-                           for _ in range(num_parts)]
+        self.gainbucket = [BPQueue(-self.pmax, self.pmax) for _ in range(num_parts)]
 
     def init(self, part):
         """(re)initialization after creation
@@ -70,8 +69,7 @@ class FMGainMgr:
         # gainmax = list(self.gainbucket[k].get_max() for k in range(self.num_parts))
         # maxk = max(gainmax)
         # to_part = gainmax.index(maxk)
-        to_part = max(range(self.num_parts),
-                      key=lambda k: self.gainbucket[k].get_max())
+        to_part = max(range(self.num_parts), key=lambda k: self.gainbucket[k].get_max())
         maxk = self.gainbucket[to_part].get_max()
 
         vlink = self.gainbucket[to_part].popleft()

@@ -11,8 +11,10 @@ from collections.abc import MutableMapping
 
 
 def min_maximal_matching(
-    hgr, weight: MutableMapping, matchset: Optional[Set] = None,
-    dep: Optional[Set] = None
+    hgr,
+    weight: MutableMapping,
+    matchset: Optional[Set] = None,
+    dep: Optional[Set] = None,
 ) -> Tuple[Set, Union[int, float]]:
     """Perform minimum weighted maximal matching using primal-dual
     approximation algorithm
@@ -248,8 +250,7 @@ def purge_duplicate_nets(hgr, gra, nets, num_clusters, num_modules):
                         same = True
                 if same:
                     removelist.add(net2)
-                    net_weight[net1] = net_weight.get(
-                        net1, 1) + net_weight.get(net2, 1)
+                    net_weight[net1] = net_weight.get(net1, 1) + net_weight.get(net2, 1)
     # gra.remove_nodes_from(removelist)
     print("removed {} nets".format(len(removelist)))
     gr_nets = range(num_modules, num_modules + len(nets))

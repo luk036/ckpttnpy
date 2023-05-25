@@ -46,7 +46,7 @@ class Lict(MutableMapping[int, T]):
         self.lst.__setitem__(key, new_value)
 
     def __delitem__(self, _):
-        """ (You really should not delete item from Lict)
+        """(You really should not delete item from Lict)
 
         Args:
             key (_type_): _description_

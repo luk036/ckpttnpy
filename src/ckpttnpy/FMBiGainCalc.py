@@ -2,6 +2,7 @@ from .dllist import Dllink
 from .lict import Lict
 
 from typing import Any, Dict, List, Union
+
 # from collections import Mapping
 
 Part = Union[Dict[Any, int], List[int]]
