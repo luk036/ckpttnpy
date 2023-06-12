@@ -133,24 +133,11 @@ class Lict(MutableMapping[int, T]):
         """
         return enumerate(self.lst)
 
-    # def copy(self):
-    #     return Lict(self.lst.copy())
 
-
-# if __name__ == "__main__":
-#     gra = TinyDiGraph()
-#     gra.init_nodes(1000)
-#     gra.add_edge(2, 1)
-#     print(gra.number_of_nodes())
-#     print(gra.number_of_edges())
-
-#     for u in gra:
-#         for v in gra.neighbors(u):
-#             print(f"{u}, {v}")
-
-#     a = Lict([0] * 8)
-#     for i in a:
-#         a[i] = i * i
-#     for i, v in a.items():
-#         print(f'{i}: {v}')
-#     print(3 in a)
+if __name__ == "__main__":
+    a = Lict([0] * 8)
+    for i in a:
+        a[i] = i * i
+    for i, v in a.items():
+        print(f'{i}: {v}')
+    print(3 in a)
