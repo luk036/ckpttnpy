@@ -22,11 +22,11 @@ To run unit tests:
 
     python3 setup.py test
 
-## See also
+## 👀 See also
 
 [ckpttn-cpp](https://github.com/luk036/ckpttn-cpp)
 
-## Note
+## 👉 Note
 
 This project has been set up using PyScaffold 3.2.1. For details and usage
 information on PyScaffold see <https://pyscaffold.org/>.
