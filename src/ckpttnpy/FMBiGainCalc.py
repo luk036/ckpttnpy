@@ -15,12 +15,16 @@ class FMBiGainCalc:
 
     def __init__(self, hgr, _: int = 2):  # num_parts == 2
         """Initialization
-
-        Arguments:
-            hgr (Netlist):  description
-
-        Keyword Arguments:
-            num_parts (uint8_t):  number of partitions (default: {2})
+        The function initializes an object with a given Netlist and a default number of partitions, and
+        creates a vertex list based on the type of modules in the Netlist.
+        
+        :param hgr: The `hgr` parameter is of type `Netlist` and represents a description of a netlist. It
+        is used to initialize the `self.hgr` attribute of the class
+        :param _: The parameter "_" is a placeholder variable that is not used in the code. It is common to
+        use "_" as a variable name when you want to indicate that the value is not important or not used in
+        the code. In this case, it is used as a placeholder for the second argument of the "__, defaults to
+        2
+        :type _: int (optional)
         """
         self.hgr = hgr
         if isinstance(self.hgr.modules, range):
@@ -31,16 +35,15 @@ class FMBiGainCalc:
             raise NotImplementedError
 
     def init(self, part: Part) -> int:
-        """(re)initialization after creation
-
-        Arguments:
-            part ([type]): [description]
-
-        Raises:
-            NotImplementedError: [description]
-
-        Returns:
-            [type]: [description]
+        """
+        The `init` function is used for (re)initializing the data and calculating the total cost for a given
+        `part` in a graph.
+        
+        :param part: The `part` parameter is of type `Part`. It is used as an argument to the `init` method.
+        The purpose of this parameter is not clear from the provided code snippet. It is likely that the
+        `Part` class is defined elsewhere in the code and is used to represent some part
+        :type part: Part
+        :return: an integer value, which is the total cost.
         """
         self.totalcost = 0
         for vlink in self.vertex_list.values():
@@ -53,11 +56,14 @@ class FMBiGainCalc:
     # private:
 
     def _init_gain(self, net, part: Part):
-        """initialize gain
-
-        Arguments:
-            net (node_t):  description
-            part (list):  description
+        """
+        The function `_init_gain` initializes the gain for a given network and partition.
+        
+        :param net: The `net` parameter represents a node in a graph. It is of type `node_t`
+        :param part: The `part` parameter is a list that represents a partition of nodes in the network. It
+        is used to determine the gain of moving a node from one partition to another
+        :type part: Part
+        :return: nothing.
         """
         degree = self.hgr.gra.degree[net]
         if degree < 2:  # unlikely, self-loop, etc.
@@ -70,11 +76,13 @@ class FMBiGainCalc:
             self._init_gain_general_net(net, part)
 
     def _modify_gain(self, w, weight):
-        """Modify gain
-
-        Arguments:
-            v (node_t):  description
-            weight (int):  description
+        """
+        The function `_modify_gain` modifies the gain of a vertex by adding a weight to its data.
+        
+        :param w: The parameter `w` represents a node in the graph. It is used to access a specific vertex
+        in the `vertex_list` attribute of the class
+        :param weight: The `weight` parameter is an integer that represents the weight to be added to the
+        first element of the `data` attribute of the `w`-th element in the `vertex_list` list
         """
         self.vertex_list[w].data[0] += weight
 

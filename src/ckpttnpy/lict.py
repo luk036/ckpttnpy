@@ -5,23 +5,32 @@ T = TypeVar("T")
 
 
 class Lict(MutableMapping[int, T]):
-    def __init__(self, lst: List[T]) -> None:
-        """Dict-like adaptor for a list
+    """Lict
 
-        Args:
-            lst (list): _description_
+    The `Lict` class is a custom implementation of a mutable mapping with integer keys and generic
+    values, which adapts a list to behave like a dictionary.
+    """
+
+    def __init__(self, lst: List[T]) -> None:
+        """
+        The function is a constructor for a dictionary-like adaptor for a list.
+        
+        :param lst: The `lst` parameter is a list that is being passed to the `__init__` method. It is used
+        to initialize the `self.lst` attribute of the class
+        :type lst: List[T]
         """
         self.rng = range(len(lst))
         self.lst = lst
 
     def __getitem__(self, key: int) -> T:
-        """_summary_
-
-        Args:
-            key (_type_): _description_
-
-        Returns:
-            _type_: _description_
+        """
+        This function allows you to access an element in a Lict object by its index.
+        
+        :param key: The `key` parameter is of type `int` and it represents the index of the element that you
+        want to retrieve from the list
+        :type key: int
+        :return: The `__getitem__` method is returning the item at the specified index in the `lst`
+        attribute.
 
         Examples:
             >>> a = Lict([1, 4, 3, 6])
