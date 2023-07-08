@@ -14,7 +14,7 @@ class Lict(MutableMapping[int, T]):
     def __init__(self, lst: List[T]) -> None:
         """
         The function is a constructor for a dictionary-like adaptor for a list.
-        
+
         :param lst: The `lst` parameter is a list that is being passed to the `__init__` method. It is used
         to initialize the `self.lst` attribute of the class
         :type lst: List[T]
@@ -25,7 +25,7 @@ class Lict(MutableMapping[int, T]):
     def __getitem__(self, key: int) -> T:
         """
         This function allows you to access an element in a Lict object by its index.
-        
+
         :param key: The `key` parameter is of type `int` and it represents the index of the element that you
         want to retrieve from the list
         :type key: int
@@ -148,5 +148,5 @@ if __name__ == "__main__":
     for i in a:
         a[i] = i * i
     for i, v in a.items():
-        print(f'{i}: {v}')
+        print(f"{i}: {v}")
     print(3 in a)

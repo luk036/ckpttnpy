@@ -58,7 +58,7 @@ class ShiftArray(list):
     def __new__(cls, *args, **kwargs):
         """
         The function overrides the `__new__` method of the `list` class in Python.
-        
+
         :param cls: The `cls` parameter in the `__new__` method refers to the class itself. It is
         automatically passed as the first argument when the method is called
         :return: The `__new__` method is returning a new instance of the class `cls` as a list.
@@ -76,7 +76,7 @@ class ShiftArray(list):
     def set_start(self, start):
         """
         The function sets the value of the "start" attribute.
-        
+
         :param start: The `start` parameter is a value that will be assigned to the `start` attribute of the
         object
         """
@@ -86,7 +86,7 @@ class ShiftArray(list):
         """
         The `__getitem__` function returns the item at the specified index, adjusted by the `start`
         attribute.
-        
+
         :param key: The `key` parameter is the index or slice object used to access the elements of the
         list. It can be an integer index or a slice object that specifies a range of indices
         :return: The method is returning the item at the specified index in the list.
@@ -97,7 +97,7 @@ class ShiftArray(list):
         """
         The `__setitem__` function is used to set the value of an item in a list-like object, adjusting the
         index based on the start value.
-        
+
         :param key: The key parameter represents the index of the element in the list that you want to set a
         new value for
         :param newValue: The `newValue` parameter is the value that you want to set for the given key in the

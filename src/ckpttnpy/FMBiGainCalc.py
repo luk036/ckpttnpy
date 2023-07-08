@@ -17,7 +17,7 @@ class FMBiGainCalc:
         """Initialization
         The function initializes an object with a given Netlist and a default number of partitions, and
         creates a vertex list based on the type of modules in the Netlist.
-        
+
         :param hgr: The `hgr` parameter is of type `Netlist` and represents a description of a netlist. It
         is used to initialize the `self.hgr` attribute of the class
         :param _: The parameter "_" is a placeholder variable that is not used in the code. It is common to
@@ -38,7 +38,7 @@ class FMBiGainCalc:
         """
         The `init` function is used for (re)initializing the data and calculating the total cost for a given
         `part` in a graph.
-        
+
         :param part: The `part` parameter is of type `Part`. It is used as an argument to the `init` method.
         The purpose of this parameter is not clear from the provided code snippet. It is likely that the
         `Part` class is defined elsewhere in the code and is used to represent some part
@@ -58,7 +58,7 @@ class FMBiGainCalc:
     def _init_gain(self, net, part: Part):
         """
         The function `_init_gain` initializes the gain for a given network and partition.
-        
+
         :param net: The `net` parameter represents a node in a graph. It is of type `node_t`
         :param part: The `part` parameter is a list that represents a partition of nodes in the network. It
         is used to determine the gain of moving a node from one partition to another
@@ -78,7 +78,7 @@ class FMBiGainCalc:
     def _modify_gain(self, w, weight):
         """
         The function `_modify_gain` modifies the gain of a vertex by adding a weight to its data.
-        
+
         :param w: The parameter `w` represents a node in the graph. It is used to access a specific vertex
         in the `vertex_list` attribute of the class
         :param weight: The `weight` parameter is an integer that represents the weight to be added to the
