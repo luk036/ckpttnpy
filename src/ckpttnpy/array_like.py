@@ -2,52 +2,61 @@ from itertools import repeat
 
 
 class RepeatArray:
-    """list with arbitrary range
-
-    The RepeatArray class allows for the repetition of elements in an array.
-    """
+    """The RepeatArray class creates a list-like object that repeats a given value for a specified number
+    of times."""
 
     def __init__(self, value, size):
-        """[summary]
+        """
+        The function initializes an object with a value and size attribute.
 
-        Args:
-            value ([type]): [description]
-            size ([type]): [description]
+        :param value: The value parameter is used to store the value of an object. It can be of any data
+        type, such as an integer, string, or even another object
+        :param size: The `size` parameter represents the size of an object or data structure. It could refer
+        to the number of elements in a list, the length of a string, or the dimensions of a matrix, for
+        example. The specific meaning of `size` would depend on the context in which this code is
         """
         self.value = value
         self.size = size
 
     def __getitem__(self, _):  # key is ignored
-        """[summary]
+        """
+        The `__getitem__` function returns the value of the object regardless of the key provided.
 
-        Args:
-            key ([type]): [description]
-
-        Returns:
-            [type]: [description]
+        :param _: The parameter "_" in the __getitem__ method is used to indicate that the key argument is
+        ignored. It is a convention in Python to use "_" as a placeholder for variables that are not used or
+        not important in a particular context. In this case, the key argument is not used in the method
+        implementation
+        :return: The value stored in the `self.value` attribute.
         """
         return self.value
 
     def __len__(self):
-        """[summary]
-
-        Returns:
-            [type]: [description]
+        """
+        The function returns the size of an object.
+        :return: The size of the object.
         """
         return self.size
 
     def __iter__(self):
-        """[summary]
-
-        Returns:
-            [type]: [description]
+        """
+        The function returns an iterator that repeats the value of the object a specified number of times.
+        :return: The `repeat` function is being returned.
         """
         return repeat(self.value, self.size)
 
     def get(self, _):  # defaultvalue is ignored
+        """
+        The `get` function returns the value of the object.
+
+        :param _: The underscore (_) is a convention in Python to indicate that a parameter is not going to
+        be used in the function. In this case, the parameter is ignored and not used in the function logic
+        :return: The value of the `self.value` attribute is being returned.
+        """
         return self.value
 
 
+# The ShiftArray class is a subclass of the list class that allows for indexing and setting values
+# with an arbitrary starting index.
 class ShiftArray(list):
     """ShiftArray
     The `ShiftArray` class is a subclass of the built-in `list` class in Python. It extends the

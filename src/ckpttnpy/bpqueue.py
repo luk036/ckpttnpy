@@ -7,7 +7,8 @@ sentinel = Item([0, 8965])
 
 
 class BPQueue:
-    """bounded priority queue
+    """The `BPQueue` class is a bounded priority queue implementation using an array of doubly-linked
+    lists, optimized for small integer keys.
 
     Bounded Priority Queue with integer keys in [a..b].
     Implemented by array (bucket) of doubly-linked lists.
@@ -34,11 +35,13 @@ class BPQueue:
     _bucket: List[Dllist[List[int]]]
 
     def __init__(self, a: int, b: int) -> None:
-        """initialization
+        """
+        The function initializes a BPQueue object with a lower bound and an upper bound.
 
-        Arguments:
-            a (int):  lower bound
-            b (int):  upper bound
+        :param a: The lower bound of the range
+        :type a: int
+        :param b: The parameter `b` represents the upper bound of the range
+        :type b: int
 
         Examples:
             >>> bpq = BPQueue(-3, 3)
@@ -55,10 +58,9 @@ class BPQueue:
         self._bucket[0].append(sentinel)  # sentinel
 
     def is_empty(self) -> bool:
-        """whether empty
-
-        Returns:
-            bool:  description
+        """
+        The `is_empty` function checks if a BPQueue object is empty.
+        :return: The method is returning a boolean value, indicating whether the object is empty or not.
 
         Examples:
             >>> bpq = BPQueue(-3, 3)
@@ -68,10 +70,9 @@ class BPQueue:
         return self._max == 0
 
     def get_max(self) -> int:
-        """Get the max value
-
-        Returns:
-            int:  maximum value
+        """
+        The `get_max` function returns the maximum value in a BPQueue object.
+        :return: The method `get_max` returns the maximum value, which is an integer.
 
         Examples:
             >>> bpq = BPQueue(-3, 3)
@@ -81,7 +82,8 @@ class BPQueue:
         return self._max + self._offset
 
     def clear(self) -> None:
-        """reset the PQ
+        """
+        The `clear` function resets the priority queue by clearing all the buckets.
 
         Examples:
             >>> bpq = BPQueue(-3, 3)
@@ -94,30 +96,40 @@ class BPQueue:
             self._max -= 1
 
     def set_key(self, it: Item, gain: int) -> None:
-        """Set the key value
+        """
+        The function `set_key` sets the key value of an item by subtracting the offset from the given gain
+        value.
 
-        Arguments:
-            it (Dllink):  the item
-            gain (int):  the key of it
+        :param it: The `it` parameter is of type `Item` and represents the item for which the key value is
+        being set
+        :type it: Item
+        :param gain: The `gain` parameter is an integer representing the key value that will be set for the
+        item
+        :type gain: int
         """
         it.data[0] = gain - self._offset
 
     def append_direct(self, it: Item) -> None:
-        """append item with internal key
+        """
+        The `append_direct` function appends an item to a list using its internal key.
 
-        Arguments:
-            it (Dllink):  the item
-            k (int):  the key
+        :param it: The parameter `it` is of type `Item`, which is a class or data structure representing an
+        item
+        :type it: Item
         """
         assert it.data[0] > self._offset
         self.append(it, it.data[0])
 
     def append(self, it: Item, k: int) -> None:
-        """append item with external key
+        """
+        The `append` function appends an item with an external key to a priority queue.
 
-        Arguments:
-            it (Dllink):  description
-            k (int):  key
+        :param it: The parameter "it" is of type Dllink, which is a class or object that represents a doubly
+        linked list node. It is used to store the item that needs to be appended to the BPQueue
+        :type it: Item
+        :param k: The parameter `k` represents the external key that is associated with the item being
+        appended to the BPQueue
+        :type k: int
 
         Examples:
             >>> bpq = BPQueue(-3, 3)
@@ -133,10 +145,12 @@ class BPQueue:
         self._bucket[it.data[0]].append(it)
 
     def appendfrom(self, nodes: Iterable[Item]) -> None:
-        """append from list
+        """
+        The `appendfrom` function appends items from a list to a bucket, adjusting the data values of the
+        items and updating the maximum value.
 
-        Arguments:
-            C (list):  description
+        :param nodes: The `nodes` parameter is an iterable of `Item` objects
+        :type nodes: Iterable[Item]
         """
         for it in nodes:
             it.data[0] -= self._offset
@@ -147,10 +161,9 @@ class BPQueue:
             self._max -= 1
 
     def popleft(self):
-        """pop node with the highest key
-
-        Returns:
-            Dllink:  description
+        """
+        The `popleft` function removes and returns the node with the highest key from the BPQueue.
+        :return: The method `popleft` returns a `Dllink` object.
 
         Examples:
             >>> bpq = BPQueue(-3, 3)
@@ -166,17 +179,21 @@ class BPQueue:
         return res
 
     def decrease_key(self, it: Item, delta: int) -> None:
-        """decrease key by delta
+        """
+        The `decrease_key` function decreases the key of an item by a specified delta and updates the item's
+        position in a bucket data structure.
 
-        Arguments:
-            it (Dllink):  the item
-            delta (int):  the change of the key
+        :param it: it is a reference to an item in a doubly linked list
+        :type it: Item
+        :param delta: The parameter "delta" represents the change in the key value of the item. It is an
+        integer value that determines how much the key value should be decreased
+        :type delta: int
+        :return: There is no return statement in the code, so nothing is being returned.
 
         Note that the order of items with same key will
         not be preserved.
         For FM algorithm, this is a prefered behavior.
         """
-        # self._bucket[it.data[0]].detach(it)
         it.detach()
         it.data[0] += delta
         assert it.data[0] > 0
@@ -189,17 +206,21 @@ class BPQueue:
             self._max -= 1
 
     def increase_key(self, it: Item, delta: int) -> None:
-        """increase key by delta
+        """
+        The `increase_key` function increases the key of an item by a given delta and updates the item's
+        position in a bucket list.
 
-        Arguments:
-            it (Dllink):  the item
-            delta (int):  the change of the key
+        :param it: it is a variable of type Item, which represents an item in a data structure
+        :type it: Item
+        :param delta: The `delta` parameter in the `increase_key` function represents the change in the key
+        value of the item `it`. It is an integer value that determines how much the key value should be
+        increased
+        :type delta: int
 
         Note that the order of items with same key will
         not be preserved.
         For FM algorithm, this is a prefered behavior.
         """
-        # self._bucket[it.data[0]].detach(it)
         it.detach()
         it.data[0] += delta
         assert it.data[0] > 0
@@ -210,11 +231,16 @@ class BPQueue:
             self._max = it.data[0]
 
     def modify_key(self, it: Item, delta: int) -> None:
-        """modify key by delta
+        """
+        The `modify_key` function modifies the key of an item by a specified delta and updates the item's
+        position in a bucket data structure.
 
-        Arguments:
-            it (Dllink):  the item
-            delta (int):  the change of the key
+        :param it: it is a reference to an item in a doubly linked list
+        :type it: Item
+        :param delta: The parameter "delta" represents the change in the key value of the item. It is an
+        integer value that determines how much the key value should be modified
+        :type delta: int
+        :return: There is no return statement in the code, so nothing is being returned.
 
         Note that the order of items with same key will
         not be preserved.
@@ -228,12 +254,21 @@ class BPQueue:
             self.decrease_key(it, delta)
 
     def detach(self, it: Item) -> None:
-        """detach the item from BPQueue
-
-        Arguments:
-            it (type):  the item
         """
-        # self._bucket[it.data[0]].detach(it)
+        The `detach` function detachs an item from a priority queue.
+
+        :param it: The parameter "it" is of type Dllink, which is a class or object that represents a doubly
+        linked list node to be detached from the BPQueue
+        :type it: Item
+
+        Examples:
+            >>> bpq = BPQueue(-3, 3)
+            >>> a = Dllink([0, 3])
+            >>> bpq.append(a, 0)
+            >>> bpq.detach(a)
+            >>> bpq.is_empty()
+            True
+        """
         it.detach()
         while self._bucket[self._max].is_empty():
             self._max -= 1
