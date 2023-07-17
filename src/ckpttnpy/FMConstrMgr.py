@@ -106,7 +106,7 @@ class FMConstrMgr:
     def check_constraints(self, move_info_v) -> bool:
         """
         The function `check_constraints` checks if a given move satisfies certain constraints.
-        
+
         :param move_info_v: A tuple containing three elements: v, from_part, and an underscore
         :return: a boolean value.
         """
@@ -119,7 +119,7 @@ class FMConstrMgr:
         """
         The `update_move` function updates the `diff` dictionary by adding the weight to the `to_part` key
         and subtracting the weight from the `from_part` key.
-        
+
         :param move_info_v: The `move_info_v` parameter is a tuple containing three elements. The first
         element is not used in this method, so it is ignored. The second element, `from_part`, represents
         the part from which the move is being made. The third element, `to_part`, represents the part to
