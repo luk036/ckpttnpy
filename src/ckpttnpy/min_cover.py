@@ -7,7 +7,7 @@ from .HierNetlist import HierNetlist
 from .netlist import Netlist, TinyGraph
 import copy
 from typing import Union, Set, Tuple, Optional
-from collections.abc import MutableMapping
+from typing import MutableMapping
 
 
 def min_maximal_matching(

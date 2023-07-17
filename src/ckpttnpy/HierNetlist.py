@@ -4,7 +4,7 @@ from .netlist import Netlist
 
 from typing import List, Any
 
-# from collections.abc import Mapping, MutableMapping
+# from typing import Mapping, MutableMapping
 
 
 class HierNetlist(Netlist):

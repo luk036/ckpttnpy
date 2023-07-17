@@ -1,4 +1,4 @@
-from collections.abc import MutableMapping
+from typing import MutableMapping
 from typing import Iterator, TypeVar, List
 
 T = TypeVar("T")
