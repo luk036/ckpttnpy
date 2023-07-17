@@ -1,5 +1,4 @@
 from typing import Generic, TypeVar
-from typing_extensions import Self
 
 T = TypeVar("T")
 
@@ -19,8 +18,8 @@ class Dllink(Generic[T]):
 
     __slots__ = ("next", "prev", "data")
 
-    next: Self
-    prev: Self
+    next: "Dllink[T]"
+    prev: "Dllink[T]"
     data: T
 
     def __init__(self, data: T) -> None:
@@ -66,12 +65,12 @@ class Dllink(Generic[T]):
         """
         self.next = self
 
-    def appendleft(self, node: Self) -> None:
+    def appendleft(self, node: "Dllink[T]") -> None:
         """
         The `appendleft` function appends a node to the front of a doubly linked list.
 
         :param node: The `node` parameter is an instance of the `Dllink` class
-        :type node: Self
+        :type node: "Dllink[T]"
 
         Examples:
             >>> a = Dllink(3)
@@ -83,12 +82,12 @@ class Dllink(Generic[T]):
         self.next = node
         node.prev = self
 
-    def append(self, node: Self) -> None:
+    def append(self, node: "Dllink[T]") -> None:
         """
         The `append` function appends a node to the back of a doubly linked list.
 
         :param node: The `node` parameter is an instance of the `Dllink` class
-        :type node: Self
+        :type node: "Dllink[T]"
 
         Examples:
             >>> a = Dllink(3)
@@ -100,7 +99,7 @@ class Dllink(Generic[T]):
         self.prev = node
         node.next = self
 
-    def popleft(self) -> Self:
+    def popleft(self) -> "Dllink[T]":
         """
         The `popleft` function removes and returns the node at the front of a doubly linked list.
         :return: The method `popleft` returns a `Dllink` object.
@@ -118,7 +117,7 @@ class Dllink(Generic[T]):
         self.next.prev = self
         return res
 
-    def pop(self) -> Self:
+    def pop(self) -> "Dllink[T]":
         """
         The `pop` function removes and returns the previous node in a doubly linked list.
         :return: The `pop` method is returning a `Dllink` object.
