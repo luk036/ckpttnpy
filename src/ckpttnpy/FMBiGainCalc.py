@@ -9,6 +9,8 @@ Part = Union[Dict[Any, int], List[int]]
 
 
 class FMBiGainCalc:
+    """The FMBiGainCalc class is used for calculating the bipartition gain."""
+
     __slots__ = ("totalcost", "hgr", "vertex_list", "idx_vec", "delta_gain_w")
 
     # public:
@@ -106,11 +108,16 @@ class FMBiGainCalc:
             self._modify_gain(v, -weight)
 
     def _init_gain_3pin_net(self, net, part: Part):
-        """initialize gain for 3-pin net
+        """
+        The function initializes the gain for a 3-pin net based on the parts assigned to each pin.
 
-        Arguments:
-            net (node_t):  description
-            part (list):  description
+        :param net: The `net` parameter is a `node_t` object, which represents a net in a circuit. It is
+        used to identify a specific net in the circuit
+        :param part: The `part` parameter is a list that represents the partitioning of nodes in the graph.
+        Each element in the list corresponds to a node in the graph, and the value of the element indicates
+        the partition to which the node belongs
+        :type part: Part
+        :return: Nothing is being returned. The function does not have a return statement.
         """
         net_cur = iter(self.hgr.gra[net])
         w = next(net_cur)
@@ -129,12 +136,17 @@ class FMBiGainCalc:
             self._modify_gain(v, weight)
         self.totalcost += weight
 
-    def _init_gain_general_net(self, net, part: Part):
-        """initialize gain for general net
+    def _init_gain_general_net(self, net, part: Part) -> None:
+        """
+        The function `_init_gain_general_net` initializes the gain for a general net based on the number of
+        connections to each partition.
 
-        Arguments:
-            net (node_t):  description
-            part (list):  description
+        :param net: The `net` parameter is a node in a graph. It represents a general net in the context of
+        the code
+        :param part: The `part` parameter is a list that represents the partitioning of nodes in the
+        network. Each element in the list corresponds to a node in the network, and the value of the element
+        indicates which partition the node belongs to. For example, if `part = [0, 1,
+        :type part: Part
         """
         num = [0, 0]
         for w in self.hgr.gra[net]:
@@ -155,22 +167,23 @@ class FMBiGainCalc:
                         self._modify_gain(w, weight)
                         break
 
-    def update_move_init(self):
-        """update move init
-
-        nothing to do in 2-way partitioning
+    def update_move_init(self) -> None:
+        """
+        The function "update_move_init" does not perform any actions in the case of 2-way partitioning.
         """
         pass
 
     def update_move_2pin_net(self, part, move_info):
-        """Update move for 2-pin net
+        """
+        The function `update_move_2pin_net` updates the move for a 2-pin net by calculating the weight and
+        delta gain.
 
-        Arguments:
-            part (list):  description
-            move_info (MoveInfoV):  description
-
-        Returns:
-            dtype:  description
+        :param part: The `part` parameter is a list that represents the partitioning of the net. Each
+        element in the list corresponds to a vertex in the net, and the value of the element indicates the
+        partition to which the vertex belongs
+        :param move_info: The `move_info` parameter is an instance of the `MoveInfoV` class. It contains
+        information about the move being made for a 2-pin net. The attributes of the `MoveInfoV` class are:
+        :return: the value of the variable "w".
         """
         net, v, from_part, _ = move_info
         net_cur = iter(self.hgr.gra[net])
@@ -181,20 +194,26 @@ class FMBiGainCalc:
         self.delta_gain_w = delta * weight
         return w
 
-    def init_idx_vec(self, v, net):
+    def init_idx_vec(self, v, net) -> None:
+        """
+        The function `init_idx_vec` initializes the `idx_vec` attribute by filtering out the vertex `v` from
+        the `gra[net]` list.
+
+        :param v: The parameter `v` represents a vertex in the graph
+        :param net: The `net` parameter represents a network or graph
+        """
         self.idx_vec = [w for w in self.hgr.gra[net] if w != v]
-        # for w in filter(lambda w: w != v, self.hgr.gra[net]):
-        #     self.idx_vec.append(w)
 
     def update_move_3pin_net(self, part, move_info):
-        """Update move for 3-pin net
+        """
+        The function `update_move_3pin_net` updates the move for a 3-pin net by calculating the delta gain
+        based on the current part assignment and the move information.
 
-        Arguments:
-            part (list):  description
-            move_info (MoveInfoV):  description
-
-        Returns:
-            dtype:  description
+        :param part: A list that represents the partition of the net. It contains the indices of the parts
+        that the net is currently connected to
+        :param move_info: The `move_info` parameter is a tuple containing information about the move. It has
+        the following structure:
+        :return: a list of two elements, `delta_gain`.
         """
         net, _, from_part, _ = move_info
         delta_gain = [0, 0]
@@ -225,14 +244,15 @@ class FMBiGainCalc:
         return delta_gain
 
     def update_move_general_net(self, part, move_info):
-        """Update move for general net
+        """
+        The function `update_move_general_net` updates the move for a general net in a graph based on the
+        given move information.
 
-        Arguments:
-            part (list):  description
-            move_info (MoveInfoV):  description
-
-        Returns:
-            dtype:  description
+        :param part: A list that represents the partition of nodes in the network. Each element in the list
+        corresponds to a node in the network and indicates which partition that node belongs to
+        :param move_info: The `move_info` parameter is an instance of the `MoveInfoV` class. It contains
+        information about the move being made in the general net
+        :return: a list of delta gains.
         """
         net, _, from_part, to_part = move_info
         num = [0, 0]

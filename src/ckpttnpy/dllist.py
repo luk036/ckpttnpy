@@ -5,7 +5,8 @@ T = TypeVar("T")
 
 
 class Dllink(Generic[T]):
-    """doubly linked node (that may also be a "head" a list)
+    """The `Dllink` class is a doubly linked list implementation that
+    does not keep track of the length of the list.
 
     A Doubly-linked List class. This class simply contains a link of
     node's. By adding a "head" node (sentinel), deleting a node is
@@ -23,10 +24,14 @@ class Dllink(Generic[T]):
     data: T
 
     def __init__(self, data: T) -> None:
-        """initialization
+        """
+        The `__init__` function initializes a `Dllink` object with a given data value and sets the `next`
+        and `prev` attributes to point to itself.
 
-        Keyword Arguments:
-            index (type):  description (default: {None})
+        :param data: The `data` parameter is of type `T` and represents the data that will be stored in the
+        `Dllink` object. The `T` type is a generic type, meaning it can be replaced with any specific type
+        when creating an instance of the `Dllink` class
+        :type data: T
 
         Examples:
             >>> a = Dllink(3)
@@ -34,14 +39,12 @@ class Dllink(Generic[T]):
             3
         """
         self.next = self.prev = self
-        # self.key = 0
         self.data = data
 
     def is_locked(self) -> bool:
-        """whether the node is locked
-
-        Returns:
-            bool:  description
+        """
+        The `is_locked` function returns `True` if the node is locked, and `False` otherwise.
+        :return: The method is returning a boolean value indicating whether the node is locked or not.
 
         Examples:
             >>> a = Dllink(3)
@@ -51,7 +54,9 @@ class Dllink(Generic[T]):
         return self.next == self
 
     def lock(self) -> None:
-        """lock the node (and don't append it to any list)
+        """
+        The `lock` function locks a node by setting its `next` attribute to itself.
+        (and don't append it to any list)
 
         Examples:
             >>> a = Dllink(3)
@@ -62,10 +67,11 @@ class Dllink(Generic[T]):
         self.next = self
 
     def appendleft(self, node: Self) -> None:
-        """append the node to the front
+        """
+        The `appendleft` function appends a node to the front of a doubly linked list.
 
-        Arguments:
-            node (Dllink):  description
+        :param node: The `node` parameter is an instance of the `Dllink` class
+        :type node: Self
 
         Examples:
             >>> a = Dllink(3)
@@ -78,10 +84,11 @@ class Dllink(Generic[T]):
         node.prev = self
 
     def append(self, node: Self) -> None:
-        """append the node to the back
+        """
+        The `append` function appends a node to the back of a doubly linked list.
 
-        Arguments:
-            node (Dllink):  description
+        :param node: The `node` parameter is an instance of the `Dllink` class
+        :type node: Self
 
         Examples:
             >>> a = Dllink(3)
@@ -94,10 +101,9 @@ class Dllink(Generic[T]):
         node.next = self
 
     def popleft(self) -> Self:
-        """pop a node from the front
-
-        Returns:
-            Dllink:  description
+        """
+        The `popleft` function removes and returns the node at the front of a doubly linked list.
+        :return: The method `popleft` returns a `Dllink` object.
 
         Examples:
             >>> a = Dllink(3)
@@ -113,10 +119,9 @@ class Dllink(Generic[T]):
         return res
 
     def pop(self) -> Self:
-        """pop a node from the back
-
-        Returns:
-            Dllink:  description
+        """
+        The `pop` function removes and returns the previous node in a doubly linked list.
+        :return: The `pop` method is returning a `Dllink` object.
 
         Examples:
             >>> a = Dllink(3)
@@ -132,7 +137,9 @@ class Dllink(Generic[T]):
         return res
 
     def detach(self) -> None:
-        """detach from a list
+        """
+        The `detach` function removes a node from a doubly linked list by updating the previous and next
+        pointers of the surrounding nodes.
 
         Examples:
             >>> a = Dllink(3)
@@ -159,17 +166,18 @@ class Dllink(Generic[T]):
 
 
 class DllIterator(Generic[T]):
-    """List iterator
-
-    Traverse the list from the first item. Usually it is safe
-    to attach/detach list items during the iterator is active.
+    """The `DllIterator` class is a list iterator that allows traversal of a doubly
+    linked list from the first item.
     """
 
     def __init__(self, link: Dllink[T]) -> None:
-        """Initialization
+        """
+        The `__init__` function initializes a Dllist object with a given link.
 
-        Arguments:
-            link (Dllink):  description
+        :param link: The `link` parameter is of type `Dllink[T]`, which means it is a reference to a
+        `Dllink` object. The `Dllink` class is likely a custom class that represents a node in a doubly
+        linked list. The `T` in `Dllink[T]`
+        :type link: Dllink[T]
 
         Examples:
             >>> a = Dllist(3)
@@ -179,13 +187,10 @@ class DllIterator(Generic[T]):
         self.cur = link.next
 
     def __next__(self):
-        """Get the next item
-
-        Raises:
-            StopIteration:  description
-
-        Returns:
-            Dllink:  the next item
+        """
+        The `__next__` function returns the next item in a doubly linked list and raises a `StopIteration`
+        exception if there are no more items.
+        :return: The next item in the Dllist.
 
         Examples:
             >>> a = Dllist(3)
@@ -203,20 +208,12 @@ class DllIterator(Generic[T]):
         else:
             raise StopIteration()
 
-    # def __next__(self):
-    #     """[summary]
-
-    #     Returns:
-    #         dtype:  description
-    #     """
-    #     return self.next()
-
 
 class Dllist(Generic[T]):
-    """doubly linked node (that may also be a "head" a list)
+    """The `Dllist` class is a doubly linked list implementation that uses a "head" node for efficient
+    deletion operations.
 
-    A Doubly-linked List class. This class simply contains a link of
-    node's. By adding a "head" node (sentinel), deleting a node is
+    By adding a "head" node (sentinel), deleting a node is
     extremely fast (see "Introduction to Algorithm"). This class does
     not keep the length information as it is not necessary for the FM
     algorithm. This saves memory and run-time to update the length
@@ -229,10 +226,12 @@ class Dllist(Generic[T]):
     head: Dllink[T]
 
     def __init__(self, data: T) -> None:
-        """initialization
+        """
+        The function initializes a doubly linked list with a given data value.
 
-        Keyword Arguments:
-            index (type):  description (default: {None})
+        :param data: The "data" parameter is the value that will be stored in the Dllink object. It can
+        be of any type
+        :type data: T
 
         Examples:
             >>> a = Dllist(3)
@@ -242,10 +241,9 @@ class Dllist(Generic[T]):
         self.head = Dllink(data)
 
     def is_empty(self) -> bool:
-        """whether the list is empty
-
-        Returns:
-            bool:  description
+        """
+        The `is_empty` function checks if a doubly linked list is empty.
+        :return: a boolean value indicating whether the list is empty or not.
 
         Examples:
             >>> a = Dllist(3)
@@ -255,7 +253,8 @@ class Dllist(Generic[T]):
         return self.head.next == self.head
 
     def clear(self) -> None:
-        """clear
+        """
+        The `clear` function clears all elements from a doubly linked list.
 
         Examples:
             >>> a = Dllist(3)
@@ -266,10 +265,12 @@ class Dllist(Generic[T]):
         self.head.next = self.head.prev = self.head
 
     def appendleft(self, node: Dllink[T]) -> None:
-        """append the node to the front
+        """
+        The `appendleft` function appends a node to the front of a doubly linked list.
 
-        Arguments:
-            node (Dllink):  description
+        :param node: The `node` parameter is an instance of the `Dllink` class. It represents a node that
+        you want to append to the front of the doubly linked list
+        :type node: Dllink[T]
 
         Examples:
             >>> a = Dllist(3)
@@ -281,10 +282,12 @@ class Dllist(Generic[T]):
         self.head.appendleft(node)
 
     def append(self, node: Dllink[T]) -> None:
-        """append the node to the back
+        """
+        The `append` function adds a node to the end of a doubly linked list.
 
-        Arguments:
-            node (Dllink):  description
+        :param node: The `node` parameter is of type `Dllink[T]`, which represents a node in a doubly linked
+        list
+        :type node: Dllink[T]
 
         Examples:
             >>> a = Dllist(3)
@@ -296,10 +299,9 @@ class Dllist(Generic[T]):
         self.head.append(node)
 
     def popleft(self):
-        """pop a node from the front
-
-        Returns:
-            Dllink:  description
+        """
+        The `popleft` function removes and returns the first node in a doubly linked list.
+        :return: The `popleft` method is returning a `Dllink` object.
 
         Examples:
             >>> a = Dllist(3)
@@ -312,10 +314,9 @@ class Dllist(Generic[T]):
         return self.head.popleft()
 
     def pop(self):
-        """pop a node from the back
-
-        Returns:
-            Dllink:  description
+        """
+        The `pop` function removes and returns the last node in a doubly linked list.
+        :return: The `pop` method is returning a `Dllink` object.
 
         Examples:
             >>> a = Dllist(3)
@@ -327,22 +328,11 @@ class Dllist(Generic[T]):
         """
         return self.head.pop()
 
-    # def __iter__(self):
-    #     """iterable
-
-    #     Returns:
-    #         Dllink:  itself
-    #     """
-    #     cur = self.next
-    #     while cur != self:
-    #         yield cur
-    #         cur = cur.next
-
     def __iter__(self) -> DllIterator[T]:
-        """iterable
-
-        Returns:
-            Dllink:  itself
+        """
+        The `__iter__` function returns an iterator object for a doubly linked list.
+        :return: The `__iter__` method is returning an instance of the `DllIterator` class, passing
+        `self.head` as an argument.
         """
         return DllIterator(self.head)
 

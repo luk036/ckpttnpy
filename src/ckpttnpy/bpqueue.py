@@ -160,7 +160,7 @@ class BPQueue:
         while self._bucket[self._max].is_empty():
             self._max -= 1
 
-    def popleft(self):
+    def popleft(self) -> Item:
         """
         The `popleft` function removes and returns the node with the highest key from the BPQueue.
         :return: The method `popleft` returns a `Dllink` object.
@@ -286,16 +286,15 @@ class BPQueue:
     #         curkey -= 1
 
     def __iter__(self):
-        """iterator
-
-        Returns:
-            bpq_iterator
+        """
+        The function returns an iterator object for a priority queue.
+        :return: The `__iter__` method is returning an instance of the `BPQueueIterator` class.
         """
         return BPQueueIterator(self)
 
 
 class BPQueueIterator:
-    """bounded priority queue iterator
+    """The BPQueueIterator class is a bounded priority queue iterator that allows traversal of the queue in descending order.
 
     Bounded Priority Queue Iterator. Traverse the queue in descending
     order. Detaching queue items may invalidate the iterator because
@@ -303,23 +302,22 @@ class BPQueueIterator:
     """
 
     def __init__(self, bpq: BPQueue) -> None:
-        """[summary]
+        """
+        The function initializes an object with a given BPQueue and sets the current key and item.
 
-        Arguments:
-            bpq (type):  description
+        :param bpq: The `bpq` parameter is of type `BPQueue`. It is an object that represents a bounded
+        priority queue
+        :type bpq: BPQueue
         """
         self.bpq = bpq
         self.curkey = bpq._max
         self.curitem = iter(bpq._bucket[bpq._max])
 
-    def __next__(self):
-        """next
-
-        Raises:
-            StopIteration:  description
-
-        Returns:
-            Dllink:  description
+    def __next__(self) -> Item:
+        """
+        The `__next__` function returns the next item in a linked list, iterating through the buckets in
+        reverse order.
+        :return: an object of type "Dllink".
         """
         while self.curkey > 0:
             try:
