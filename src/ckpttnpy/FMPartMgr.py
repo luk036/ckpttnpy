@@ -13,25 +13,30 @@ Part = Union[Dict[Any, int], List[int]]
 
 
 class FMPartMgr(PartMgrBase):
+    """The `FMPartMgr` class is a subclass of `PartMgrBase` that provides methods for taking snapshots of
+    parts and restoring part information from a snapshot.
+    """
+
     def take_snapshot(self, part: Part):
-        """[summary]
+        """
+        The `take_snapshot` function takes a `Part` object as input and returns a copy of it.
 
-        Arguments:
-            part (type):  description
-
-        Returns:
-            dtype:  description
+        :param part: The "part" parameter is of type "Part" and it represents the part that you want to take
+        a snapshot of
+        :type part: Part
+        :return: a copy of the "part" object.
         """
         return part.copy()
 
     def restore_part_info(self, snapshot, part: Part):
-        """[summary]
+        """
+        The function `restore_part_info` takes a snapshot and updates the attributes of a `Part` object
+        based on the snapshot.
 
-        Arguments:
-            snapshot (type):  description
-
-        Returns:
-            dtype:  description
+        :param snapshot: The `snapshot` parameter is a variable that represents the data that needs to be
+        restored. It can be either a list, a dictionary, or an object of type `Lict`
+        :param part: The `part` parameter is an instance of the `Part` class
+        :type part: Part
         """
         if isinstance(snapshot, list):
             for v, k in enumerate(snapshot):

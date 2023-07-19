@@ -11,6 +11,8 @@ Part = Union[Dict[Any, int], List[int]]
 
 
 class FMKWayGainCalc:
+    """The `FMKWayGainCalc` class is used for calculating gain values in a hypergraph partitioning problem."""
+
     __slots__ = (
         "totalcost",
         "hgr",
@@ -24,12 +26,16 @@ class FMKWayGainCalc:
 
     # public:
 
-    def __init__(self, hgr, num_parts: int):
-        """initialization
+    def __init__(self, hgr, num_parts: int) -> None:
+        """
+        The above function is an initialization function that sets up various variables and data structures
+        for a graph partitioning algorithm.
 
-        Arguments:
-            hgr (Netlist):  description
-            num_parts (uint8_t):  number of partitions
+        :param hgr: The `hgr` parameter is of type `Netlist` and represents a description of a netlist. It
+        is used to store information about the modules and their connections in the netlist
+        :param num_parts: The `num_parts` parameter is an integer that represents the number of partitions.
+        It specifies how many partitions the algorithm should divide the given `hgr` (Netlist) into
+        :type num_parts: int
         """
         self.delta_gain_v = list()
 
@@ -50,11 +56,16 @@ class FMKWayGainCalc:
         else:
             raise NotImplementedError
 
-    def init(self, part: Part):
-        """(re)initialization after creation
+    def init(self, part: Part) -> None:
+        """
+        The `init` function initializes the total cost and resets the data values for each vertex link, and
+        then initializes the gain for each net.
 
-        Arguments:
-            part (list):  description
+        :param part: The "part" parameter is a list that represents the partitioning of the graph. Each
+        element in the list corresponds to a vertex in the graph, and the value of the element indicates
+        which partition the vertex belongs to
+        :type part: Part
+        :return: The method is returning the value of the `totalcost` variable.
         """
         self.totalcost = 0
         for vlist in self.vertex_list:
@@ -65,11 +76,14 @@ class FMKWayGainCalc:
         return self.totalcost
 
     def _init_gain(self, net, part: Part):
-        """initialize gain
+        """
+        The function `_init_gain` initializes the gain for a given network based on its degree.
 
-        Arguments:
-            net (node_t):  description
-            part (list):  description
+        :param net: The `net` parameter represents a node in a graph. It is of type `node_t`
+        :param part: The `part` parameter is a list that represents a partition of nodes in the network. It
+        is used to determine the gain of moving a particular node to a different partition
+        :type part: Part
+        :return: nothing.
         """
         degree = self.hgr.gra.degree[net]
         if degree < 2:  # unlikely, self-loop, etc.
@@ -82,21 +96,28 @@ class FMKWayGainCalc:
             self._init_gain_2pin_net(net, part)
 
     def _modify_gain(self, v, pv, weight):
-        """Modify gain
+        """
+        The function `_modify_gain` modifies the gain of a node in a graph by adding a weight to it.
 
-        Arguments:
-            v (node_t):  description
-            weight (int):  description
+        :param v: The parameter `v` is of type `node_t` and represents a node in a graph. It is used as an
+        argument in the function `_modify_gain`
+        :param pv: pv is a node that is being excluded from the rr (round-robin) list
+        :param weight: The weight parameter is an integer that represents the weight to be added to the data
+        of each vertex in the vertex list
         """
         for k in self.rr.exclude(pv):
             self.vertex_list[k][v].data[0] += weight
 
     def _init_gain_2pin_net(self, net, part: Part):
-        """initialize gain for 2-pin net
+        """
+        The function `_init_gain_2pin_net` initializes the gain for a 2-pin net in a graph.
 
-        Arguments:
-            net (node_t):  description
-            part (list):  description
+        :param net: The `net` parameter is a `node_t` object, which represents a net in a graph. It is used
+        to identify a specific net in the graph
+        :param part: The `part` parameter is a list that represents the partitioning of the nodes in the
+        graph. Each element in the list corresponds to a node in the graph, and the value of the element
+        indicates the partition to which the node belongs
+        :type part: Part
         """
         net_cur = iter(self.hgr.gra[net])
         w = next(net_cur)
@@ -113,11 +134,15 @@ class FMKWayGainCalc:
             self.vertex_list[part_w][v].data[0] += weight
 
     def _init_gain_3pin_net(self, net, part: Part):
-        """initialize gain for 3-pin net
+        """
+        The function `_init_gain_3pin_net` initializes the gain for a 3-pin net in a graph.
 
-        Arguments:
-            net (node_t):  description
-            part (list):  description
+        :param net: The `net` parameter represents a node in a graph. It is of type `node_t`
+        :param part: The `part` parameter is a list that represents the partitioning of nodes in the graph.
+        Each element in the list corresponds to a node in the graph, and the value of the element represents
+        the partition that the node belongs to
+        :type part: Part
+        :return: The function does not explicitly return anything.
         """
         net_cur = iter(self.hgr.gra[net])
         w = next(net_cur)
@@ -150,11 +175,16 @@ class FMKWayGainCalc:
         self.totalcost += weight
 
     def _init_gain_general_net(self, net, part: Part):
-        """initialize gain for general net
+        """
+        The function `_init_gain_general_net` initializes the gain for a general net based on the number of
+        connections to each partition.
 
-        Arguments:
-            net (node_t):  description
-            part (list):  description
+        :param net: The `net` parameter is a node in a graph. It represents a general net in the context of
+        the code
+        :param part: The `part` parameter is a list that represents the partitioning of nodes in the
+        network. Each element in the list corresponds to a node in the network, and the value of the element
+        represents the partition to which the node belongs
+        :type part: Part
         """
         num = [0] * self.num_parts
         for w in self.hgr.gra[net]:
@@ -178,18 +208,21 @@ class FMKWayGainCalc:
                         break
 
     def update_move_init(self):
-        """update move init"""
+        """
+        The function "update_move_init" initializes a list called "delta_gain_v" with zeros.
+        """
         self.delta_gain_v = [0] * self.num_parts
 
     def update_move_2pin_net(self, part, move_info):
         """Update move for 2-pin net
 
-        Arguments:
-            part (list):  description
-            move_info (MoveInfoV):  description
+        The function `update_move_2pin_net` updates the move for a 2-pin net in a graph.
 
-        Returns:
-            dtype:  description
+        :param part: A list that represents the partitioning of the circuit. Each element in the list
+        corresponds to a vertex in the circuit graph and indicates which partition the vertex belongs to
+        :param move_info: The `move_info` parameter is a tuple containing four elements: `net`, `v`,
+        `from_part`, and `to_part`
+        :return: the value of the variable "w".
         """
         net, v, from_part, to_part = move_info
         net_cur = iter(self.hgr.gra[net])
@@ -210,22 +243,25 @@ class FMKWayGainCalc:
         return w
 
     def init_idx_vec(self, v, net):
+        """
+        The function `init_idx_vec` initializes the `idx_vec` attribute by creating a list of all elements
+        in `self.hgr.gra[net]` except for `v`.
+
+        :param v: The parameter `v` represents a vertex in the graph `net`
+        :param net: The parameter "net" is a variable that represents a network or graph
+        """
         self.idx_vec = [w for w in self.hgr.gra[net] if w != v]
-        # self.idx_vec = []
-        # for w in self.hgr.gra[net]:
-        #     if w == v:
-        #         continue
-        #     self.idx_vec.append(w)
 
     def update_move_3pin_net(self, part, move_info):
         """Update move for 3-pin net
 
-        Arguments:
-            part (list):  description
-            move_info (MoveInfoV):  description
+        The function `update_move_3pin_net` updates the move for a 3-pin net in a graph.
 
-        Returns:
-            dtype:  description
+        :param part: A list representing the partition of the net. Each element in the list corresponds to a
+        pin in the net and indicates which part of the partition the pin belongs to
+        :param move_info: The `move_info` parameter is a tuple containing information about the move. It has
+        the following structure:
+        :return: the variable `delta_gain`, which is a list of lists.
         """
         net, _, from_part, to_part = move_info
 
@@ -273,22 +309,18 @@ class FMKWayGainCalc:
     def update_move_general_net(self, part, move_info):
         """Update move for general net
 
-        Arguments:
-            part (list):  description
-            move_info (MoveInfoV):  description
+        The function `update_move_general_net` updates the move for a general net in a graph partitioning
+        algorithm.
 
-        Returns:
-            dtype:  description
+        :param part: A list that represents the partition of the nodes in the network. Each element in the
+        list corresponds to a node and indicates which part of the network the node belongs to
+        :param move_info: The `move_info` parameter is an instance of the `MoveInfoV` class. It contains
+        information about the move being made in the general net. The `move_info` object has the following
+        attributes:
+        :return: the variable "delta_gain", which is a list of lists.
         """
         net, _, from_part, to_part = move_info
         num = [0] * self.num_parts
-        # delta_gain = []
-        # idx_vec = []
-        # for w in self.hgr.gra[net]:
-        #     if w == v:
-        #         continue
-        #     num[part[w]] += 1
-        #     idx_vec.append(w)
         for w in self.idx_vec:
             num[part[w]] += 1
 
