@@ -18,17 +18,26 @@ from .min_cover import contract_subgraph
 
 
 class MLPartMgr:
-    def __init__(self, GainCalc, GainMgr, ConstrMgr, PartMgr, bal_tol, num_parts=2):
-        """[summary]
+    """The `MLPartMgr` class is a manager for machine learning parts, with functionality for calculating
+    gains, managing gains, managing constraints, managing parts, and tracking total cost.
+    """
 
-        Arguments:
-            GainCalc (type):  description
-            GainMgr (type):  description
-            ConstrMgr (type):  description
-            bal_tol (type):  description
-
-        Keyword Arguments:
-            num_parts (int):  description (default: {2})
+    def __init__(self, GainCalc, GainMgr, ConstrMgr, PartMgr, bal_tol, num_parts=2) -> None:
+        """
+        The function initializes an object with various attributes and assigns values to them.
+        
+        :param GainCalc: A class or function that calculates the gain. It is not specified what type it is,
+        so it could be any type of object that performs gain calculations
+        :param GainMgr: The `GainMgr` parameter is an object that manages the calculation and management of
+        gains. It likely contains methods and attributes related to gain calculations and management
+        :param ConstrMgr: A manager class that handles constraints for the optimization problem
+        :param PartMgr: The `PartMgr` parameter is an object that manages the parts in the system. It likely
+        has methods for adding, removing, and retrieving parts, as well as other operations related to
+        managing parts
+        :param bal_tol: The `bal_tol` parameter is a tolerance value used for balancing calculations. It is
+        used to determine if the calculated gains are within an acceptable range of balance
+        :param num_parts: The number of parts in the system. It is an optional parameter with a default
+        value of 2, defaults to 2 (optional)
         """
         self.GainCalc = GainCalc
         self.GainMgr = GainMgr
@@ -41,27 +50,44 @@ class MLPartMgr:
 
     @property
     def limitsize(self):
+        """
+        The `limitsize` function is a property that returns the value of the `_limitsize` attribute.
+        :return: The `limitsize` property is returning the value of the `_limitsize` attribute.
+        """
         return self._limitsize
 
     @limitsize.setter
     def limitsize(self, limit):
+        """
+        The above function is a setter method that sets the value of the "_limitsize" attribute in a class.
+        
+        :param limit: The `limit` parameter is the value that will be assigned to the `_limitsize` attribute
+        of the object
+        """
         self._limitsize = limit
 
     def run_FMPartition(self, hgr, module_weight, part):
-        """[summary]
-
-        Arguments:
-            hgr (type):  description
-            part (type):  description
-
-        Keyword Arguments:
-            limitsize (int):  description (default: {7})
-
-        Returns:
-            dtype:  description
+        """
+        The `run_FMPartition` function performs a partitioning algorithm on a hypergraph, optimizing the
+        partitioning based on module weights and balancing constraints.
+        
+        :param hgr: The "hgr" parameter represents a hypergraph, which is a mathematical structure used to
+        model relationships between objects. It is not clear what specific properties or data the hypergraph
+        in this code represents without further context
+        :param module_weight: The `module_weight` parameter represents the weight of each module in the
+        hypergraph. It is used in the optimization process to calculate the cost of each partition
+        :param part: The `part` parameter is a list that represents the current partitioning of the modules
+        in the hypergraph `hgr`. Each element in the list corresponds to a module and contains an integer
+        value representing the partition number to which the module belongs
+        :return: The function `run_FMPartition` returns the value of `legalcheck`.
         """
 
         def legalcheck_fn():
+            """
+            The function `legalcheck_fn` creates instances of various managers and uses them to perform a legal
+            check on a given part, returning the result and the total cost.
+            :return: two values: `legalcheck` and `part_mgr.totalcost`.
+            """
             gain_mgr = self.GainMgr(self.GainCalc, hgr, self.num_parts)
             constr_mgr = self.ConstrMgr(
                 hgr, self.bal_tol, module_weight, self.num_parts
