@@ -42,7 +42,7 @@ class Lict(MutableMapping[int, T]):
     def __setitem__(self, key: int, new_value: T):
         """
         This function sets the value at a given index in a list-like object.
-        
+
         :param key: The key parameter represents the index at which the new value should be set in the list
         :type key: int
         :param new_value: The `new_value` parameter is the value that you want to assign to the element at
@@ -61,7 +61,7 @@ class Lict(MutableMapping[int, T]):
         """
         The __delitem__ function raises a NotImplementedError and provides a docstring explaining that
         deleting items from Lict is not recommended.
-        
+
         :param _: The underscore (_) is typically used as a placeholder for a variable or value that is not
         going to be used or referenced in the code. In this case, it is used as a placeholder for the key
         parameter in the __delitem__ method
@@ -87,7 +87,7 @@ class Lict(MutableMapping[int, T]):
     def __contains__(self, value) -> bool:
         """
         The `__contains__` function checks if a given value is present in the `rng` attribute of the object.
-        
+
         :param value: The `value` parameter represents the value that we want to check if it is present in
         the `self.rng` attribute
         :return: The method is returning a boolean value, indicating whether the given value is present in

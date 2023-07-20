@@ -19,7 +19,7 @@ def min_maximal_matching(
     """
     The `min_maximal_matching` function performs a minimum weighted maximal matching using a primal-dual
     approximation algorithm.
-    
+
     :param hgr: The `hgr` parameter is an object representing a hypergraph. It likely contains
     information about the vertices and edges of the hypergraph
     :param weight: The `weight` parameter is a mutable mapping that represents the weight of each net in
@@ -131,7 +131,7 @@ def contract_subgraph(hgr: Netlist, module_weight, forbid: Set):
     """
     The `contract_subgraph` function takes a hierarchical netlist, module weights, and a set of
     forbidden nets as input, and returns a contracted hierarchical netlist with updated module weights.
-    
+
     :param hgr: The `hgr` parameter is a Netlist object, which represents a hierarchical graph. It
     contains information about the modules (cells) and their connections (nets) in the graph
     :type hgr: Netlist
@@ -187,7 +187,7 @@ def setup(hgr, cluster_weight, forbid):
     """
     The `setup` function takes in a hypergraph `hgr`, cluster weights `cluster_weight`, and a set of
     forbidden dependencies `forbid`, and returns a tuple containing the clusters, nets, and cell list.
-    
+
     :param hgr: The parameter "hgr" is likely an input graph or hypergraph. It represents the
     connections between cells or nodes in a system
     :param cluster_weight: The parameter "cluster_weight" represents the weight of each cluster in the
@@ -217,7 +217,7 @@ def construct_graph(hgr, nets, cell_list, clusters):
     """
     The function constructs a bipartite graph based on a given hypergraph, netlist, cell list, and
     clusters.
-    
+
     :param hgr: The parameter `hgr` is likely an object representing a hypergraph. It is used to access
     the connections between cells and nets
     :param nets: The `nets` parameter is a list of nets. Each net is represented as a list of cells that
@@ -248,7 +248,7 @@ def construct_graph(hgr, nets, cell_list, clusters):
 def reconstruct_graph(hgr, gra, nets, num_clusters, num_modules):
     """
     The function reconstructs a new graph by purging duplicate nets and updating net weights.
-    
+
     :param hgr: The `hgr` parameter is a hypergraph representation of the graph. It is a dictionary
     where the keys are the nodes of the graph and the values are the hyperedges that the node belongs to
     :param gra: gra is a dictionary that represents the connections between modules and nets in the
@@ -286,7 +286,7 @@ def purge_duplicate_nets(hgr, gra, nets, num_clusters, num_modules):
     """
     The function `purge_duplicate_nets` removes duplicate nets from a graph and returns the updated net
     weights and list of nets.
-    
+
     :param hgr: The `hgr` parameter is an object that represents a hypergraph. It likely has methods to
     access information about the hypergraph, such as the weight of a net
     :param gra: The variable `gra` represents a graph where each node represents a cluster and each edge

@@ -83,7 +83,7 @@ class HierNetlist(Netlist):
         """
         The `projection_up` function maps values from `part` to `part_up` based on the indices in
         `self.node_down_list`.
-        
+
         :param part: The parameter `part` can be either a dictionary or a list of integers
         :param part_up: The `part_up` parameter is either a dictionary or a list of integers
         """
@@ -94,7 +94,7 @@ class HierNetlist(Netlist):
         """
         The function `get_net_weight` returns the net weight of a given net, with a default value of 1 if
         the net weight is not found.
-        
+
         :param net: The parameter "net" in the get_net_weight method is the key used to retrieve the value
         from the net_weight dictionary
         :return: the value associated with the key 'net' in the dictionary 'self.net_weight'. If the key is

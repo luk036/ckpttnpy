@@ -22,10 +22,12 @@ class MLPartMgr:
     gains, managing gains, managing constraints, managing parts, and tracking total cost.
     """
 
-    def __init__(self, GainCalc, GainMgr, ConstrMgr, PartMgr, bal_tol, num_parts=2) -> None:
+    def __init__(
+        self, GainCalc, GainMgr, ConstrMgr, PartMgr, bal_tol, num_parts=2
+    ) -> None:
         """
         The function initializes an object with various attributes and assigns values to them.
-        
+
         :param GainCalc: A class or function that calculates the gain. It is not specified what type it is,
         so it could be any type of object that performs gain calculations
         :param GainMgr: The `GainMgr` parameter is an object that manages the calculation and management of
@@ -60,7 +62,7 @@ class MLPartMgr:
     def limitsize(self, limit):
         """
         The above function is a setter method that sets the value of the "_limitsize" attribute in a class.
-        
+
         :param limit: The `limit` parameter is the value that will be assigned to the `_limitsize` attribute
         of the object
         """
@@ -70,7 +72,7 @@ class MLPartMgr:
         """
         The `run_FMPartition` function performs a partitioning algorithm on a hypergraph, optimizing the
         partitioning based on module weights and balancing constraints.
-        
+
         :param hgr: The "hgr" parameter represents a hypergraph, which is a mathematical structure used to
         model relationships between objects. It is not clear what specific properties or data the hypergraph
         in this code represents without further context
