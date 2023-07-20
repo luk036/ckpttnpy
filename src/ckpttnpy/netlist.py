@@ -10,6 +10,8 @@ from .array_like import RepeatArray
 from .lict import Lict
 
 
+# The `ThinGraph` class is a subclass of `nx.Graph` that defines default attributes for edges and
+# nodes.
 class ThinGraph(nx.Graph):
     all_edge_dict = {"weight": 1}
 
@@ -20,6 +22,7 @@ class ThinGraph(nx.Graph):
     node_attr_dict_factory = single_edge_dict
 
 
+# The class SimpleGraph is a subclass of nx.Graph and defines default attributes for edges and nodes.
 class SimpleGraph(nx.Graph):
     all_edge_dict = {"weight": 1}
 
@@ -30,6 +33,8 @@ class SimpleGraph(nx.Graph):
     node_attr_dict_factory = single_edge_dict
 
 
+# The TinyGraph class is a subclass of nx.Graph that initializes a graph with a specified number of
+# nodes and provides methods for creating node dictionaries and adjacency list dictionaries.
 class TinyGraph(nx.Graph):
     num_nodes = 0
 
@@ -49,6 +54,8 @@ class TinyGraph(nx.Graph):
         # self._pred = self.cheat_adjlist_outer_dict()
 
 
+# The `Netlist` class represents a netlist, which is a collection of modules and nets in a graph
+# structure, and provides various properties and methods for working with the netlist.
 class Netlist:
     num_pads = 0
     cost_model = 0
@@ -59,12 +66,19 @@ class Netlist:
         modules: Union[range, List[Any]],
         nets: Union[range, List[Any]],
     ):
-        """[summary]
-
-        Arguments:
-            gra (nx.Graph): [description]
-            modules (Union[range, List]): [description]
-            nets (Union[range, List]): [description]
+        """
+        The function initializes an object with a graph, modules, and nets, and calculates some properties
+        of the graph.
+        
+        :param gra: The parameter `gra` is a graph object of type `nx.Graph`. It represents the graph
+        structure of the system
+        :type gra: nx.Graph
+        :param modules: The `modules` parameter is a list or range object that represents the modules in the
+        graph. Each module is a node in the graph
+        :type modules: Union[range, List[Any]]
+        :param nets: The `nets` parameter is a list or range that represents the nets in the graph. A net is
+        a connection between two or more modules
+        :type nets: Union[range, List[Any]]
         """
         self.gra = gra
         self.modules = modules
@@ -90,53 +104,47 @@ class Netlist:
         # self.max_net_degree = max(self.gra.degree[net] for net in nets)
 
     def number_of_modules(self) -> int:
-        """[summary]
-
-        Returns:
-            dtype:  description
+        """
+        The function "number_of_modules" returns the number of modules.
+        :return: The method is returning the value of the attribute `num_modules`.
         """
         return self.num_modules
 
     def number_of_nets(self) -> int:
-        """[summary]
-
-        Returns:
-            dtype:  description
+        """
+        The function "number_of_nets" returns the number of nets.
+        :return: The number of nets.
         """
         return self.num_nets
 
     def number_of_nodes(self) -> int:
-        """[summary]
-
-        Returns:
-            dtype:  description
+        """
+        The function "number_of_nodes" returns the number of nodes in a graph.
+        :return: The number of nodes in the graph.
         """
         return self.gra.number_of_nodes()
 
     def number_of_pins(self) -> int:
-        """[summary]
-
-        Returns:
-            dtype:  description
+        """
+        The function `number_of_pins` returns the number of edges in a graph.
+        :return: The number of edges in the graph.
         """
         return self.gra.number_of_edges()
 
     def get_max_degree(self) -> int:
-        """[summary]
-
-        Returns:
-            dtype:  description
+        """
+        The function `get_max_degree` returns the maximum degree of nodes in a graph.
+        :return: the maximum degree of the nodes in the graph.
         """
         return max(self.gra.degree[cell] for cell in self.modules)
 
     def get_module_weight(self, v) -> int:
-        """[summary]
-
-        Arguments:
-            v (size_t):  description
-
-        Returns:
-            [size_t]:  description
+        """
+        The function `get_module_weight` returns the weight of a module given its index.
+        
+        :param v: The parameter `v` in the `get_module_weight` function is of type `size_t`. It represents
+        the index or key of the module weight that you want to retrieve
+        :return: the value of `self.module_weight[v]`.
         """
         return self.module_weight[v]
 
@@ -153,26 +161,34 @@ class Netlist:
     #         else self.module_weight[v]
 
     def get_net_weight(self, _) -> int:
-        """[summary]
-
-        Arguments:
-            i_net (size_t):  description
-
-        Returns:
-            size_t:  description
+        """
+        The function `get_net_weight` returns an integer value.
+        
+        :param _: The underscore (_) in the function signature is a convention in Python to indicate that
+        the parameter is not used within the function. It is often used when a parameter is required by the
+        function signature but not actually used within the function's implementation. In this case, the
+        underscore (_) is used as a placeholder for
+        :return: An integer value of 1 is being returned.
         """
         return 1
 
     def __iter__(self):
-        """Iterate over the modules. Use: 'for v in hgr'.
-
-        Returns:
-            iterator: An iterator over all modules in the Netlist.
+        """
+        The function returns an iterator over all modules in the Netlist.
+        :return: The `iter(self.modules)` is being returned.
         """
         return iter(self.modules)
 
 
 def read_json(filename):
+    """
+    The function `read_json` reads a JSON file, converts it into a graph, and creates a netlist object
+    with module and net weights.
+    
+    :param filename: The filename parameter is the name of the JSON file that contains the data you want
+    to read
+    :return: an object of type `Netlist`.
+    """
     with open(filename, "r") as fr:
         data = json.load(fr)
     gra = json_graph.node_link_graph(data)
@@ -189,6 +205,12 @@ def read_json(filename):
 
 
 def create_drawf():
+    """
+    The function `create_drawf` creates a graph and netlist object with specified nodes, edges, and
+    weights.
+    :return: an instance of the Netlist class, which is created using the ThinGraph class and some
+    predefined modules and nets.
+    """
     gra = ThinGraph()
     gra.add_nodes_from(
         [
@@ -250,6 +272,11 @@ def create_drawf():
 
 
 def create_test_netlist():
+    """
+    The function `create_test_netlist` creates a test netlist with nodes, edges, module weights, and net
+    weights.
+    :return: an instance of the `Netlist` class, which represents a netlist with modules and nets.
+    """
     gra = ThinGraph()
     gra.add_nodes_from(["a0", "a1", "a2", "a3", "a4", "a5"])
     # module_weight = [533, 543, 532]
