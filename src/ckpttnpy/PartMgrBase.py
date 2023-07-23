@@ -20,7 +20,7 @@ class PartMgrBase:
         """
         The function initializes an object with three arguments and sets their values as attributes of the
         object.
-        
+
         :param hgr: The `hgr` parameter is an object of type `hgr` which is used for some purpose in the
         class. The specific purpose is not mentioned in the code snippet provided
         :param gain_mgr: The `gain_mgr` parameter is an object of type `gain_mgr`. It is used to manage the
@@ -38,7 +38,7 @@ class PartMgrBase:
         """
         The `init` function initializes the `totalcost` attribute and calls the `init` method of the
         `gain_mgr` and `validator` objects.
-        
+
         :param part: The "part" parameter is of type "Part" and it represents some kind of part object
         :type part: Part
         """
@@ -49,7 +49,7 @@ class PartMgrBase:
     def legalize(self, part: Part):
         """
         The `legalize` function is used to perform a legalization process on a given part in a graph.
-        
+
         :param part: The `part` parameter represents the current partitioning of the modules. It is a data
         structure that assigns each module to a specific partition
         :type part: Part
@@ -95,7 +95,7 @@ class PartMgrBase:
         """
         The `optimize` function iteratively optimizes the cost of a given part until no further improvement
         can be made.
-        
+
         :param part: The "part" parameter is an object of type "Part". It is used as input for the
         optimization process
         :type part: Part
@@ -112,7 +112,7 @@ class PartMgrBase:
         """
         The `_optimize_1pass` function optimizes the placement of parts by selecting moves with the maximum
         gain and updating the placement accordingly.
-        
+
         :param part: The `part` parameter represents a specific partition or group of elements. It is used
         in the context of a partitioning algorithm where elements are divided into different groups or
         partitions based on certain criteria
@@ -164,7 +164,7 @@ class PartMgrBase:
         """
         The `take_snapshot` function is an abstract method that takes a `Part` object as an argument and
         returns a value.
-        
+
         :param part: The "part" parameter is of type "Part" and is used to specify the part of the system
         for which a snapshot needs to be taken
         :type part: Part
@@ -175,7 +175,7 @@ class PartMgrBase:
     def restore_part_info(self, snapshot, part: Part):
         """
         The function `restore_part_info` restores the information of a specific part from a given snapshot.
-        
+
         :param snapshot: A snapshot of the part's information that needs to be restored. This could be a
         dictionary, object, or any other data structure that contains the necessary information to restore
         the part

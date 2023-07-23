@@ -69,7 +69,7 @@ class Netlist:
         """
         The function initializes an object with a graph, modules, and nets, and calculates some properties
         of the graph.
-        
+
         :param gra: The parameter `gra` is a graph object of type `nx.Graph`. It represents the graph
         structure of the system
         :type gra: nx.Graph
@@ -141,7 +141,7 @@ class Netlist:
     def get_module_weight(self, v) -> int:
         """
         The function `get_module_weight` returns the weight of a module given its index.
-        
+
         :param v: The parameter `v` in the `get_module_weight` function is of type `size_t`. It represents
         the index or key of the module weight that you want to retrieve
         :return: the value of `self.module_weight[v]`.
@@ -163,7 +163,7 @@ class Netlist:
     def get_net_weight(self, _) -> int:
         """
         The function `get_net_weight` returns an integer value.
-        
+
         :param _: The underscore (_) in the function signature is a convention in Python to indicate that
         the parameter is not used within the function. It is often used when a parameter is required by the
         function signature but not actually used within the function's implementation. In this case, the
@@ -184,7 +184,7 @@ def read_json(filename):
     """
     The function `read_json` reads a JSON file, converts it into a graph, and creates a netlist object
     with module and net weights.
-    
+
     :param filename: The filename parameter is the name of the JSON file that contains the data you want
     to read
     :return: an object of type `Netlist`.

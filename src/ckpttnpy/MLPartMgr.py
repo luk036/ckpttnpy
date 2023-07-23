@@ -138,7 +138,7 @@ class MLBiPartMgr(MLPartMgr):
         """
         The `__init__` function initializes an object with the given balance tolerance and calls the
         `__init__` function of the parent class `MLPartMgr` with specific arguments.
-        
+
         :param bal_tol: The `bal_tol` parameter is the balance tolerance. It represents the maximum allowed
         imbalance between partitions in a multi-level partitioning algorithm. It is used to control the
         balance of the partitions, ensuring that they are as evenly distributed as possible
@@ -155,7 +155,7 @@ class MLKWayPartMgr(MLPartMgr):
         """
         The function is a constructor that initializes an object with certain parameters and calls the
         constructor of a parent class.
-        
+
         :param bal_tol: The `bal_tol` parameter represents the balance tolerance for the partitioning
         algorithm. It is a measure of how evenly the workload is distributed among the partitions. A lower
         value indicates a stricter balance requirement, while a higher value allows for more imbalance
