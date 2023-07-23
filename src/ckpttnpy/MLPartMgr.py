@@ -99,6 +99,11 @@ class MLPartMgr:
             return legalcheck, part_mgr.totalcost
 
         def optimize_fn():
+            """
+            The function `optimize_fn` optimizes a given part by calculating the total cost using various
+            managers and returns the result.
+            :return: the total cost calculated by the `part_mgr.optimize()` method.
+            """
             gain_mgr = self.GainMgr(self.GainCalc, hgr, self.num_parts)
             constr_mgr = self.ConstrMgr(
                 hgr, self.bal_tol, module_weight, self.num_parts
@@ -126,25 +131,36 @@ class MLPartMgr:
         return legalcheck
 
 
+# The MLBiPartMgr class is a subclass of MLPartMgr that initializes with specific parameters for
+# balancing tolerance.
 class MLBiPartMgr(MLPartMgr):
     def __init__(self, bal_tol):
-        """[summary]
-
-        Args:
-            bal_tol ([type]): [description]
+        """
+        The `__init__` function initializes an object with the given balance tolerance and calls the
+        `__init__` function of the parent class `MLPartMgr` with specific arguments.
+        
+        :param bal_tol: The `bal_tol` parameter is the balance tolerance. It represents the maximum allowed
+        imbalance between partitions in a multi-level partitioning algorithm. It is used to control the
+        balance of the partitions, ensuring that they are as evenly distributed as possible
         """
         MLPartMgr.__init__(
             self, FMBiGainCalc, FMBiGainMgr, FMBiConstrMgr, FMPartMgr, bal_tol
         )
 
 
+# The MLKWayPartMgr class is a subclass of MLPartMgr that initializes with specific parameters and
+# inherits methods from various other classes.
 class MLKWayPartMgr(MLPartMgr):
     def __init__(self, bal_tol, num_parts):
-        """[summary]
-
-        Args:
-            bal_tol ([type]): [description]
-            num_parts ([type]): [description]
+        """
+        The function is a constructor that initializes an object with certain parameters and calls the
+        constructor of a parent class.
+        
+        :param bal_tol: The `bal_tol` parameter represents the balance tolerance for the partitioning
+        algorithm. It is a measure of how evenly the workload is distributed among the partitions. A lower
+        value indicates a stricter balance requirement, while a higher value allows for more imbalance
+        :param num_parts: The `num_parts` parameter represents the number of parts or partitions that will
+        be created in the system
         """
         MLPartMgr.__init__(
             self,
