@@ -14,6 +14,14 @@ class RepeatArray:
         :param size: The `size` parameter represents the size of an object or data structure. It could refer
         to the number of elements in a list, the length of a string, or the dimensions of a matrix, for
         example. The specific meaning of `size` would depend on the context in which this code is
+
+        Examples:
+            >>> repeat_array = RepeatArray(1, 5)
+            >>> repeat_array.value
+            1
+            >>> repeat_array.size
+            5
+
         """
         self.value = value
         self.size = size
@@ -27,6 +35,20 @@ class RepeatArray:
         not important in a particular context. In this case, the key argument is not used in the method
         implementation
         :return: The value stored in the `self.value` attribute.
+
+        Examples:
+            >>> repeat_array = RepeatArray(1, 5)
+            >>> repeat_array[0]
+            1
+            >>> repeat_array[1]
+            1
+            >>> repeat_array[2]
+            1
+            >>> repeat_array[3]
+            1
+            >>> repeat_array[4]
+            1
+
         """
         return self.value
 
@@ -34,6 +56,12 @@ class RepeatArray:
         """
         The function returns the size of an object.
         :return: The size of the object.
+
+        Examples:
+            >>> repeat_array = RepeatArray(1, 5)
+            >>> len(repeat_array)
+            5
+
         """
         return self.size
 
@@ -41,6 +69,16 @@ class RepeatArray:
         """
         The function returns an iterator that repeats the value of the object a specified number of times.
         :return: The `repeat` function is being returned.
+
+        Examples:
+            >>> repeat_array = RepeatArray(1, 5)
+            >>> for i in repeat_array:
+            ...     print(i)
+            1
+            1
+            1
+            1
+            1
         """
         return repeat(self.value, self.size)
 
@@ -51,6 +89,20 @@ class RepeatArray:
         :param _: The underscore (_) is a convention in Python to indicate that a parameter is not going to
         be used in the function. In this case, the parameter is ignored and not used in the function logic
         :return: The value of the `self.value` attribute is being returned.
+
+        Examples:
+            >>> repeat_array = RepeatArray(1, 5)
+            >>> repeat_array.get(0)
+            1
+            >>> repeat_array.get(1)
+            1
+            >>> repeat_array.get(2)
+            1
+            >>> repeat_array.get(3)
+            1
+            >>> repeat_array.get(4)
+            1
+
         """
         return self.value
 
@@ -71,6 +123,21 @@ class ShiftArray(list):
         :param cls: The `cls` parameter in the `__new__` method refers to the class itself. It is
         automatically passed as the first argument when the method is called
         :return: The `__new__` method is returning a new instance of the class `cls` as a list.
+
+        Examples:
+            >>> shift_array = ShiftArray([1, 2, 3, 4, 5])
+            >>> shift_array.set_start(3)
+            >>> shift_array[6]
+            4
+            >>> shift_array[7]
+            5
+            >>> shift_array[3]
+            1
+            >>> shift_array[4]
+            2
+            >>> shift_array[5]
+            3
+
         """
         return list.__new__(cls, *args, **kwargs)
 
@@ -78,6 +145,20 @@ class ShiftArray(list):
         """
         The function is a constructor that initializes an object with a start value of 0 and calls the
         constructor of the parent class "list".
+
+        Examples:
+            >>> shift_array = ShiftArray([1, 2, 3, 4, 5])
+            >>> shift_array.set_start(3)
+            >>> shift_array[6]
+            4
+            >>> shift_array[7]
+            5
+            >>> shift_array[3]
+            1
+            >>> shift_array[4]
+            2
+            >>> shift_array[5]
+            3
         """
         self.start = 0
         list.__init__(self, *args, **kwargs)
@@ -88,6 +169,22 @@ class ShiftArray(list):
 
         :param start: The `start` parameter is a value that will be assigned to the `start` attribute of the
         object
+
+        Examples:
+            >>> shift_array = ShiftArray([1, 2, 3, 4, 5])
+            >>> shift_array.set_start(3)
+            >>> shift_array[6]
+            4
+            >>> shift_array[7]
+            5
+            >>> shift_array[3]
+            1
+            >>> shift_array[4]
+            2
+            >>> shift_array[5]
+            3
+
+
         """
         self.start = start
 
@@ -99,6 +196,21 @@ class ShiftArray(list):
         :param key: The `key` parameter is the index or slice object used to access the elements of the
         list. It can be an integer index or a slice object that specifies a range of indices
         :return: The method is returning the item at the specified index in the list.
+
+        Examples:
+            >>> shift_array = ShiftArray([1, 2, 3, 4, 5])
+            >>> shift_array.set_start(3)
+            >>> shift_array[6]
+            4
+            >>> shift_array[7]
+            5
+            >>> shift_array[3]
+            1
+            >>> shift_array[4]
+            2
+            >>> shift_array[5]
+            3
+
         """
         return list.__getitem__(self, key - self.start)
 
@@ -111,6 +223,15 @@ class ShiftArray(list):
         new value for
         :param newValue: The `newValue` parameter is the value that you want to set for the given key in the
         list
+
+        Examples:
+            >>> shift_array = ShiftArray([1, 2, 3, 4, 5])
+            >>> shift_array.set_start(3)
+            >>> shift_array[6]
+            4
+            >>> shift_array[6] = 8
+            >>> shift_array[6]
+            8
         """
         list.__setitem__(self, key - self.start, newValue)
 
@@ -120,6 +241,18 @@ class ShiftArray(list):
         element in the object.
         :return: The `items` method is returning an iterator that yields tuples containing the index
         (starting from `self.start`) and the corresponding value for each element in the object.
+
+        Examples:
+            >>> shift_array = ShiftArray([1, 2, 3, 4, 5])
+            >>> shift_array.set_start(3)
+            >>> for i, v in shift_array.items():
+            ...     print(i, v)
+            3 1
+            4 2
+            5 3
+            6 4
+            7 5
+
         """
         return iter((i + self.start, v) for i, v in enumerate(self))
 

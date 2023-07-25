@@ -4,6 +4,9 @@ import numpy as np
 class MinHash(object):
     """The MinHash class is a Python implementation of the MinHash algorithm, which is used to estimate the
     similarity between sets by hashing their elements.
+
+    Examples:
+        >>> m1 = MinHash(k=10)
     """
 
     def __init__(self, k, seed=10):
@@ -16,6 +19,34 @@ class MinHash(object):
         specific seed value, you can ensure that the random numbers generated are reproducible. If you use
         the same seed value, you will get the same sequence of random numbers every time you run the code,
         defaults to 10 (optional)
+
+        Examples:
+            >>> m1 = MinHash(k=10)
+            >>> m2 = MinHash(k=10, seed=10)
+            >>> m3 = MinHash(k=10, seed=10)
+            >>> m1.jaccard(m2)
+            1.0
+            >>> m1.jaccard(m3)
+            1.0
+            >>> m2.jaccard(m3)
+            1.0
+            >>> m1.add(1)
+            >>> m2.add(1)
+            >>> m1.jaccard(m2)
+            1.0
+            >>> m1.jaccard(m3)
+            0.0
+            >>> m2.jaccard(m3)
+            0.0
+            >>> m1.add(2)
+            >>> m2.add(2)
+            >>> m1.jaccard(m2)
+            1.0
+            >>> m1.jaccard(m3)
+            0.0
+            >>> m2.jaccard(m3)
+            0.0
+
         """
         self._k = k
         self._seed = seed

@@ -60,6 +60,13 @@ class FMConstrMgr:
         :param num_parts: The `num_parts` parameter represents the number of parts or modules that the
         system is divided into. It is an optional parameter with a default value of 2, defaults to 2
         (optional)
+
+        Examples:
+            >>> FMConstrMgr([1, 2, 3], 0.5, {1: 1, 2: 2, 3: 3})
+            FMConstrMgr(hgr=[1, 2, 3], bal_tol=0.5, module_weight={1: 1, 2: 2, 3: 3})
+            >>> FMConstrMgr([1, 2, 3], 0.5, {1: 1, 2: 2, 3: 3}, 3)
+            FMConstrMgr(hgr=[1, 2, 3], bal_tol=0.5, module_weight={1: 1, 2: 2, 3: 3}, num_parts=3)
+
         """
         self.hgr = hgr
         self.bal_tol = bal_tol

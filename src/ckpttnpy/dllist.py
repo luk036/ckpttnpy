@@ -14,6 +14,9 @@ class Dllink(Generic[T]):
     algorithm. This saves memory and run-time to update the length
     information. Note that this class does not own the list node. They
     are supplied by the caller in order to better reuse the nodes.
+
+    Examples:
+        >>> a = Dllink(3)
     """
 
     __slots__ = ("next", "prev", "data")
@@ -332,6 +335,16 @@ class Dllist(Generic[T]):
         The `__iter__` function returns an iterator object for a doubly linked list.
         :return: The `__iter__` method is returning an instance of the `DllIterator` class, passing
         `self.head` as an argument.
+
+        Examples:
+            >>> a = Dllist(3)
+            >>> b = Dllink(4)
+            >>> a.append(b)
+            >>> it = iter(a)
+            >>> c = next(it)
+            >>> b == c
+            True
+
         """
         return DllIterator(self.head)
 

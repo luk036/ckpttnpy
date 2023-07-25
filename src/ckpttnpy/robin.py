@@ -37,6 +37,44 @@ class RobinIterator:
         :param node: The `node` parameter is an instance of the `SlNode` class. It represents a node in a
         singly linked list
         :type node: SlNode
+
+        Examples:
+            >>> node = SlNode(1)
+            >>> iter = RobinIterator(node)
+            >>> iter.cur == node
+            True
+            >>> iter.stop == node
+            True
+            >>> iter.cur.next == node
+            True
+            >>> iter.stop.next == node
+            True
+            >>> iter.cur.data == 1
+            True
+            >>> iter.stop.data == 1
+            True
+            >>> iter.cur.next.data == 1
+            True
+            >>> iter.stop.next.data == 1
+            True
+            >>> iter.cur.next.next == node
+            True
+            >>> iter.stop.next.next == node
+            True
+            >>> iter.cur.next.next.data == 1
+            True
+            >>> iter.stop.next.next.data == 1
+            True
+            >>> iter.cur.next.next.next == node
+            True
+            >>> iter.stop.next.next.next == node
+            True
+            >>> iter.cur.next.next.next.data == 1
+            True
+            >>> iter.stop.next.next.next.data == 1
+            True
+            >>> iter.cur.next.next.next.next == node
+            True
         """
         self.cur = self.stop = node
 
@@ -100,6 +138,14 @@ class Robin:
         cycle that should be excluded
         :type from_part: int
         :return: The `exclude` method is returning a `RobinIterator` object.
+
+        Examples:
+            >>> r = Robin(5)
+            >>> iter = r.exclude(3)
+            >>> iter.cur.data == 3
+            True
+            >>> iter.stop.data == 3
+            True
         """
         return RobinIterator(self.cycle[from_part])
 

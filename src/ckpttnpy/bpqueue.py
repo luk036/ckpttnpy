@@ -106,6 +106,14 @@ class BPQueue:
         :param gain: The `gain` parameter is an integer representing the key value that will be set for the
         item
         :type gain: int
+
+        Examples:
+            >>> bpq = BPQueue(-3, 3)
+            >>> a = Dllink([0, 3])
+            >>> bpq.set_key(a, 0)
+            >>> a.data[0]
+            4
+
         """
         it.data[0] = gain - self._offset
 
@@ -116,6 +124,13 @@ class BPQueue:
         :param it: The parameter `it` is of type `Item`, which is a class or data structure representing an
         item
         :type it: Item
+
+        Examples:
+            >>> bpq = BPQueue(-3, 3)
+            >>> a = Dllink([0, 3])
+            >>> bpq.append_direct(a)
+            >>> bpq.is_empty()
+            False
         """
         assert it.data[0] > self._offset
         self.append(it, it.data[0])
@@ -137,6 +152,8 @@ class BPQueue:
             >>> bpq.append(a, 0)
             >>> bpq.is_empty()
             False
+            >>> a.data[0]
+            4
         """
         assert k > self._offset
         it.data[0] = k - self._offset
@@ -151,6 +168,15 @@ class BPQueue:
 
         :param nodes: The `nodes` parameter is an iterable of `Item` objects
         :type nodes: Iterable[Item]
+
+        Examples:
+            >>> bpq = BPQueue(-3, 3)
+            >>> a = Dllink([0, 3])
+            >>> b = Dllink([1, 2])
+            >>> bpq.appendfrom([a, b])
+            >>> bpq.is_empty()
+            False
+
         """
         for it in nodes:
             it.data[0] -= self._offset
@@ -193,6 +219,14 @@ class BPQueue:
         Note that the order of items with same key will
         not be preserved.
         For FM algorithm, this is a prefered behavior.
+
+        Examples:
+            >>> bpq = BPQueue(-3, 3)
+            >>> a = Dllink([0, 3])
+            >>> bpq.append(a, 0)
+            >>> bpq.decrease_key(a, -1)
+            >>> a.data[0]
+            3
         """
         it.detach()
         it.data[0] += delta
@@ -220,6 +254,14 @@ class BPQueue:
         Note that the order of items with same key will
         not be preserved.
         For FM algorithm, this is a prefered behavior.
+
+        Examples:
+            >>> bpq = BPQueue(-3, 3)
+            >>> a = Dllink([0, 3])
+            >>> bpq.append(a, 0)
+            >>> bpq.increase_key(a, 1)
+            >>> a.data[0]
+            5
         """
         it.detach()
         it.data[0] += delta
@@ -245,6 +287,15 @@ class BPQueue:
         Note that the order of items with same key will
         not be preserved.
         For FM algorithm, this is a prefered behavior.
+
+        Examples:
+            >>> bpq = BPQueue(-3, 3)
+            >>> a = Dllink([0, 3])
+            >>> bpq.append(a, 0)
+            >>> bpq.modify_key(a, 1)
+            >>> a.data[0]
+            5
+
         """
         if it.next == it:  # locked
             return
@@ -308,6 +359,17 @@ class BPQueueIterator:
         :param bpq: The `bpq` parameter is of type `BPQueue`. It is an object that represents a bounded
         priority queue
         :type bpq: BPQueue
+
+        Examples:
+            >>> bpq = BPQueue(-3, 3)
+            >>> a = Dllink([0, 3])
+            >>> bpq.append(a, 0)
+            >>> it = BPQueueIterator(bpq)
+            >>> b = next(it)
+            >>> next(it)
+            Traceback (most recent call last):
+            ...
+            StopIteration
         """
         self.bpq = bpq
         self.curkey = bpq._max
@@ -318,6 +380,18 @@ class BPQueueIterator:
         The `__next__` function returns the next item in a linked list, iterating through the buckets in
         reverse order.
         :return: an object of type "Dllink".
+
+        Examples:
+            >>> bpq = BPQueue(-3, 3)
+            >>> a = Dllink([0, 3])
+            >>> bpq.append(a, 0)
+            >>> it = BPQueueIterator(bpq)
+            >>> b = next(it)
+            >>> next(it)
+            Traceback (most recent call last):
+            ...
+            StopIteration
+
         """
         while self.curkey > 0:
             try:
