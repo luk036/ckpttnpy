@@ -30,9 +30,7 @@ class Dllink(Generic[T]):
         The `__init__` function initializes a `Dllink` object with a given data value and sets the `next`
         and `prev` attributes to point to itself.
 
-        :param data: The `data` parameter is of type `T` and represents the data that will be stored in the
-        `Dllink` object. The `T` type is a generic type, meaning it can be replaced with any specific type
-        when creating an instance of the `Dllink` class
+        :param data: The `data` parameter is of type `T` and represents the data that will be stored in the `Dllink` object. The `T` type is a generic type, meaning it can be replaced with any specific type when creating an instance of the `Dllink` class
         :type data: T
 
         Examples:
@@ -176,9 +174,7 @@ class DllIterator(Generic[T]):
         """
         The `__init__` function initializes a Dllist object with a given link.
 
-        :param link: The `link` parameter is of type `Dllink[T]`, which means it is a reference to a
-        `Dllink` object. The `Dllink` class is likely a custom class that represents a node in a doubly
-        linked list. The `T` in `Dllink[T]`
+        :param link: The `link` parameter is of type `Dllink[T]`, which means it is a reference to a `Dllink` object. The `Dllink` class is likely a custom class that represents a node in a doubly linked list. The `T` in `Dllink[T]`
         :type link: Dllink[T]
 
         Examples:
@@ -231,8 +227,7 @@ class Dllist(Generic[T]):
         """
         The function initializes a doubly linked list with a given data value.
 
-        :param data: The "data" parameter is the value that will be stored in the Dllink object. It can
-        be of any type
+        :param data: The "data" parameter is the value that will be stored in the Dllink object. It can be of any type
         :type data: T
 
         Examples:
@@ -270,8 +265,7 @@ class Dllist(Generic[T]):
         """
         The `appendleft` function appends a node to the front of a doubly linked list.
 
-        :param node: The `node` parameter is an instance of the `Dllink` class. It represents a node that
-        you want to append to the front of the doubly linked list
+        :param node: The `node` parameter is an instance of the `Dllink` class. It represents a node that you want to append to the front of the doubly linked list
         :type node: Dllink[T]
 
         Examples:
@@ -287,8 +281,7 @@ class Dllist(Generic[T]):
         """
         The `append` function adds a node to the end of a doubly linked list.
 
-        :param node: The `node` parameter is of type `Dllink[T]`, which represents a node in a doubly linked
-        list
+        :param node: The `node` parameter is of type `Dllink[T]`, which represents a node in a doubly linked list
         :type node: Dllink[T]
 
         Examples:

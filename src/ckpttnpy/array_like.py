@@ -3,20 +3,23 @@ from itertools import repeat
 
 class RepeatArray:
     """The RepeatArray class creates a list-like object that repeats a given value for a specified number
-    of times.
-
-    :param value: The value parameter is used to store the value of an object. It can be of any data type, such as an integer, string, or even another object
-    :param size: The `size` parameter represents the size of an object or data structure. It could refer to the number of elements in a list, the length of a string, or the dimensions of a matrix, for example. The specific meaning of `size` would depend on the context in which this code is
-
-    Examples:
-        >>> repeat_array = RepeatArray(1, 5)
-        >>> repeat_array.value
-        1
-        >>> repeat_array.size
-        5
-    """
+    of times."""
 
     def __init__(self, value, size):
+        """
+        The function initializes an object with a value and size attribute.
+
+        :param value: The value parameter is used to store the value of an object. It can be of any data type, such as an integer, string, or even another object
+        :param size: The `size` parameter represents the size of an object or data structure. It could refer to the number of elements in a list, the length of a string, or the dimensions of a matrix, for example. The specific meaning of `size` would depend on the context in which this code is
+
+        Examples:
+            >>> repeat_array = RepeatArray(1, 5)
+            >>> repeat_array.value
+            1
+            >>> repeat_array.size
+            5
+
+        """
         self.value = value
         self.size = size
 
@@ -24,10 +27,7 @@ class RepeatArray:
         """
         The `__getitem__` function returns the value of the object regardless of the key provided.
 
-        :param _: The parameter "_" in the __getitem__ method is used to indicate that the key argument is
-        ignored. It is a convention in Python to use "_" as a placeholder for variables that are not used or
-        not important in a particular context. In this case, the key argument is not used in the method
-        implementation
+        :param _: The parameter "_" in the __getitem__ method is used to indicate that the key argument is ignored. It is a convention in Python to use "_" as a placeholder for variables that are not used or not important in a particular context. In this case, the key argument is not used in the method implementation
         :return: The value stored in the `self.value` attribute.
 
         Examples:
@@ -114,8 +114,7 @@ class ShiftArray(list):
         """
         The function overrides the `__new__` method of the `list` class in Python.
 
-        :param cls: The `cls` parameter in the `__new__` method refers to the class itself. It is
-        automatically passed as the first argument when the method is called
+        :param cls: The `cls` parameter in the `__new__` method refers to the class itself. It is automatically passed as the first argument when the method is called
         :return: The `__new__` method is returning a new instance of the class `cls` as a list.
 
         Examples:
@@ -161,8 +160,7 @@ class ShiftArray(list):
         """
         The function sets the value of the "start" attribute.
 
-        :param start: The `start` parameter is a value that will be assigned to the `start` attribute of the
-        object
+        :param start: The `start` parameter is a value that will be assigned to the `start` attribute of the object
 
         Examples:
             >>> shift_array = ShiftArray([1, 2, 3, 4, 5])
@@ -177,16 +175,16 @@ class ShiftArray(list):
             2
             >>> shift_array[5]
             3
+
+
         """
         self.start = start
 
     def __getitem__(self, key):
         """
-        The `__getitem__` function returns the item at the specified index, adjusted by the `start`
-        attribute.
+        The `__getitem__` function returns the item at the specified index, adjusted by the `start` attribute.
 
-        :param key: The `key` parameter is the index or slice object used to access the elements of the
-        list. It can be an integer index or a slice object that specifies a range of indices
+        :param key: The `key` parameter is the index or slice object used to access the elements of the list. It can be an integer index or a slice object that specifies a range of indices
         :return: The method is returning the item at the specified index in the list.
 
         Examples:
@@ -202,6 +200,7 @@ class ShiftArray(list):
             2
             >>> shift_array[5]
             3
+
         """
         return list.__getitem__(self, key - self.start)
 
@@ -210,10 +209,8 @@ class ShiftArray(list):
         The `__setitem__` function is used to set the value of an item in a list-like object, adjusting the
         index based on the start value.
 
-        :param key: The key parameter represents the index of the element in the list that you want to set a
-        new value for
-        :param newValue: The `newValue` parameter is the value that you want to set for the given key in the
-        list
+        :param key: The key parameter represents the index of the element in the list that you want to set a new value for
+        :param newValue: The `newValue` parameter is the value that you want to set for the given key in the list
 
         Examples:
             >>> shift_array = ShiftArray([1, 2, 3, 4, 5])
@@ -230,8 +227,8 @@ class ShiftArray(list):
         """
         The `items` function returns an iterator that yields tuples containing the index and value of each
         element in the object.
-        :return: The `items` method is returning an iterator that yields tuples containing the index
-        (starting from `self.start`) and the corresponding value for each element in the object.
+
+        :return: The `items` method is returning an iterator that yields tuples containing the index (starting from `self.start`) and the corresponding value for each element in the object.
 
         Examples:
             >>> shift_array = ShiftArray([1, 2, 3, 4, 5])
@@ -243,6 +240,7 @@ class ShiftArray(list):
             5 3
             6 4
             7 5
+
         """
         return iter((i + self.start, v) for i, v in enumerate(self))
 

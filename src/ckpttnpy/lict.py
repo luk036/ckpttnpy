@@ -15,8 +15,7 @@ class Lict(MutableMapping[int, T]):
         """
         The function is a constructor for a dictionary-like adaptor for a list.
 
-        :param lst: The `lst` parameter is a list that is being passed to the `__init__` method. It is used
-        to initialize the `self.lst` attribute of the class
+        :param lst: The `lst` parameter is a list that is being passed to the `__init__` method. It is used to initialize the `self.lst` attribute of the class
         :type lst: List[T]
         """
         self.rng = range(len(lst))
@@ -26,8 +25,7 @@ class Lict(MutableMapping[int, T]):
         """
         This function allows you to access an element in a Lict object by its index.
 
-        :param key: The `key` parameter is of type `int` and it represents the index of the element that you
-        want to retrieve from the list
+        :param key: The `key` parameter is of type `int` and it represents the index of the element that you want to retrieve from the list
         :type key: int
         :return: The `__getitem__` method is returning the item at the specified index in the `lst`
         attribute.
@@ -45,8 +43,7 @@ class Lict(MutableMapping[int, T]):
 
         :param key: The key parameter represents the index at which the new value should be set in the list
         :type key: int
-        :param new_value: The `new_value` parameter is the value that you want to assign to the element at
-        the specified key in the list
+        :param new_value: The `new_value` parameter is the value that you want to assign to the element at the specified key in the list
         :type new_value: T
 
         Examples:
@@ -62,9 +59,7 @@ class Lict(MutableMapping[int, T]):
         The __delitem__ function raises a NotImplementedError and provides a docstring explaining that
         deleting items from Lict is not recommended.
 
-        :param _: The underscore (_) is typically used as a placeholder for a variable or value that is not
-        going to be used or referenced in the code. In this case, it is used as a placeholder for the key
-        parameter in the __delitem__ method
+        :param _: The underscore (_) is typically used as a placeholder for a variable or value that is not going to be used or referenced in the code. In this case, it is used as a placeholder for the key parameter in the __delitem__ method
         """
         raise NotImplementedError()
 
@@ -88,10 +83,8 @@ class Lict(MutableMapping[int, T]):
         """
         The `__contains__` function checks if a given value is present in the `rng` attribute of the object.
 
-        :param value: The `value` parameter represents the value that we want to check if it is present in
-        the `self.rng` attribute
-        :return: The method is returning a boolean value, indicating whether the given value is present in
-        the `self.rng` attribute.
+        :param value: The `value` parameter represents the value that we want to check if it is present in the `self.rng` attribute
+        :return: The method is returning a boolean value, indicating whether the given value is present in the `self.rng` attribute.
 
         Examples:
             >>> a = Lict([1, 4, 3, 6])

@@ -100,11 +100,9 @@ class BPQueue:
         The function `set_key` sets the key value of an item by subtracting the offset from the given gain
         value.
 
-        :param it: The `it` parameter is of type `Item` and represents the item for which the key value is
-        being set
+        :param it: The `it` parameter is of type `Item` and represents the item for which the key value is being set
         :type it: Item
-        :param gain: The `gain` parameter is an integer representing the key value that will be set for the
-        item
+        :param gain: The `gain` parameter is an integer representing the key value that will be set for the item
         :type gain: int
 
         Examples:
@@ -121,8 +119,7 @@ class BPQueue:
         """
         The `append_direct` function appends an item to a list using its internal key.
 
-        :param it: The parameter `it` is of type `Item`, which is a class or data structure representing an
-        item
+        :param it: The parameter `it` is of type `Item`, which is a class or data structure representing an item
         :type it: Item
 
         Examples:
@@ -139,11 +136,9 @@ class BPQueue:
         """
         The `append` function appends an item with an external key to a priority queue.
 
-        :param it: The parameter "it" is of type Dllink, which is a class or object that represents a doubly
-        linked list node. It is used to store the item that needs to be appended to the BPQueue
+        :param it: The parameter "it" is of type Dllink, which is a class or object that represents a doubly linked list node. It is used to store the item that needs to be appended to the BPQueue
         :type it: Item
-        :param k: The parameter `k` represents the external key that is associated with the item being
-        appended to the BPQueue
+        :param k: The parameter `k` represents the external key that is associated with the item being appended to the BPQueue
         :type k: int
 
         Examples:
@@ -211,14 +206,12 @@ class BPQueue:
 
         :param it: it is a reference to an item in a doubly linked list
         :type it: Item
-        :param delta: The parameter "delta" represents the change in the key value of the item. It is an
-        integer value that determines how much the key value should be decreased
+        :param delta: The parameter "delta" represents the change in the key value of the item. It is an integer value that determines how much the key value should be decreased
         :type delta: int
         :return: There is no return statement in the code, so nothing is being returned.
 
-        Note that the order of items with same key will
-        not be preserved.
-        For FM algorithm, this is a prefered behavior.
+        Note:
+            The order of items with same key will not be preserved. For FM algorithm, this is a prefered behavior.
 
         Examples:
             >>> bpq = BPQueue(-3, 3)
@@ -251,9 +244,8 @@ class BPQueue:
         increased
         :type delta: int
 
-        Note that the order of items with same key will
-        not be preserved.
-        For FM algorithm, this is a prefered behavior.
+        Note:
+            The order of items with same key will not be preserved. For FM algorithm, this is a prefered behavior.
 
         Examples:
             >>> bpq = BPQueue(-3, 3)
@@ -284,9 +276,8 @@ class BPQueue:
         :type delta: int
         :return: There is no return statement in the code, so nothing is being returned.
 
-        Note that the order of items with same key will
-        not be preserved.
-        For FM algorithm, this is a prefered behavior.
+        Note:
+            The order of items with same key will not be preserved. For FM algorithm, this is a prefered behavior.
 
         Examples:
             >>> bpq = BPQueue(-3, 3)
@@ -295,6 +286,7 @@ class BPQueue:
             >>> bpq.modify_key(a, 1)
             >>> a.data[0]
             5
+
         """
         if it.next == it:  # locked
             return
@@ -355,8 +347,7 @@ class BPQueueIterator:
         """
         The function initializes an object with a given BPQueue and sets the current key and item.
 
-        :param bpq: The `bpq` parameter is of type `BPQueue`. It is an object that represents a bounded
-        priority queue
+        :param bpq: The `bpq` parameter is of type `BPQueue`. It is an object that represents a bounded priority queue
         :type bpq: BPQueue
 
         Examples:
