@@ -224,12 +224,12 @@ class BPQueue:
             >>> bpq = BPQueue(-3, 3)
             >>> a = Dllink([0, 3])
             >>> bpq.append(a, 0)
-            >>> bpq.decrease_key(a, -1)
+            >>> bpq.decrease_key(a, 1)
             >>> a.data[0]
             3
         """
         it.detach()
-        it.data[0] += delta
+        it.data[0] -= delta
         assert it.data[0] > 0
         assert it.data[0] <= self._high
         self._bucket[it.data[0]].append(it)  # FIFO
@@ -302,7 +302,7 @@ class BPQueue:
         if delta > 0:
             self.increase_key(it, delta)
         elif delta < 0:
-            self.decrease_key(it, delta)
+            self.decrease_key(it, -delta)
 
     def detach(self, it: Item) -> None:
         """
