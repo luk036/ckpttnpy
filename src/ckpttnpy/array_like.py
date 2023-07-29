@@ -3,26 +3,19 @@ from itertools import repeat
 
 class RepeatArray:
     """The RepeatArray class creates a list-like object that repeats a given value for a specified number
-    of times."""
+    of times.
 
+    :param value: The value parameter is used to store the value of an object. It can be of any data type, such as an integer, string, or even another object
+    :param size: The `size` parameter represents the size of an object or data structure. It could refer to the number of elements in a list, the length of a string, or the dimensions of a matrix, for example. The specific meaning of `size` would depend on the context in which this code is
+ 
+    Examples:
+        >>> repeat_array = RepeatArray(1, 5)
+        >>> repeat_array.value
+        1
+        >>> repeat_array.size
+        5
+    """
     def __init__(self, value, size):
-        """
-        The function initializes an object with a value and size attribute.
-
-        :param value: The value parameter is used to store the value of an object. It can be of any data
-        type, such as an integer, string, or even another object
-        :param size: The `size` parameter represents the size of an object or data structure. It could refer
-        to the number of elements in a list, the length of a string, or the dimensions of a matrix, for
-        example. The specific meaning of `size` would depend on the context in which this code is
-
-        Examples:
-            >>> repeat_array = RepeatArray(1, 5)
-            >>> repeat_array.value
-            1
-            >>> repeat_array.size
-            5
-
-        """
         self.value = value
         self.size = size
 
