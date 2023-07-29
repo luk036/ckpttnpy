@@ -7,7 +7,7 @@ class RepeatArray:
 
     :param value: The value parameter is used to store the value of an object. It can be of any data type, such as an integer, string, or even another object
     :param size: The `size` parameter represents the size of an object or data structure. It could refer to the number of elements in a list, the length of a string, or the dimensions of a matrix, for example. The specific meaning of `size` would depend on the context in which this code is
- 
+
     Examples:
         >>> repeat_array = RepeatArray(1, 5)
         >>> repeat_array.value
@@ -15,6 +15,7 @@ class RepeatArray:
         >>> repeat_array.size
         5
     """
+
     def __init__(self, value, size):
         self.value = value
         self.size = size

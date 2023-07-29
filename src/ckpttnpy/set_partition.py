@@ -54,7 +54,7 @@ def stirling2nd(n: int, k: int) -> int:
     """
     The `stirling2nd` function calculates the Stirling number of the second kind for given values of `n`
     and `k`.
-    
+
     :param n: The parameter `n` represents the total number of objects, and `k` represents the number of
     non-empty subsets that can be formed from the objects
     :type n: int
@@ -72,7 +72,7 @@ def stirling2nd(n: int, k: int) -> int:
 def set_partition(n: int, k: int) -> Iterator[Tuple[int, int]]:
     """
     The function `set_partition` generates a partition of a set of size `n` into `k` subsets.
-    
+
     :param n: The parameter `n` represents the number that we want to partition
     :type n: int
     :param k: The parameter `k` represents the number of partitions you want to create
@@ -91,7 +91,7 @@ def Move(x: int, y: int) -> Iterator[Tuple[int, int]]:
     """
     The function `Move` takes two integer arguments `x` and `y` and returns an iterator that yields
     tuples of integers representing the coordinates.
-    
+
     :param x: The x parameter represents the current x-coordinate of the position you want to move to
     :type x: int
     :param y: The parameter `y` represents the vertical position or the y-coordinate of the point
