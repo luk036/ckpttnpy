@@ -176,8 +176,6 @@ class ShiftArray(list):
             2
             >>> shift_array[5]
             3
-
-
         """
         self.start = start
 
@@ -203,7 +201,6 @@ class ShiftArray(list):
             2
             >>> shift_array[5]
             3
-
         """
         return list.__getitem__(self, key - self.start)
 
@@ -245,7 +242,6 @@ class ShiftArray(list):
             5 3
             6 4
             7 5
-
         """
         return iter((i + self.start, v) for i, v in enumerate(self))
 

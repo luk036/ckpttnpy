@@ -295,7 +295,6 @@ class BPQueue:
             >>> bpq.modify_key(a, 1)
             >>> a.data[0]
             5
-
         """
         if it.next == it:  # locked
             return
