@@ -1,6 +1,6 @@
-from .FMGainMgr import FMGainMgr
-
 from typing import Any, Dict, List, Union
+
+from .FMGainMgr import FMGainMgr
 
 Part = Union[Dict[Any, int], List[int]]
 

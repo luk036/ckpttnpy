@@ -1,7 +1,7 @@
+from typing import Any, Dict, List, Union
+
 from .dllist import Dllink
 from .lict import Lict
-
-from typing import Any, Dict, List, Union
 
 # from collections import Mapping
 

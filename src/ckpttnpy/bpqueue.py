@@ -1,5 +1,6 @@
+from typing import Iterable, List
+
 from .dllist import Dllink, Dllist
-from typing import List, Iterable
 
 Item = Dllink[List[int]]
 

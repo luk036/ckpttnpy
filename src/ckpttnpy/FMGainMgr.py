@@ -1,8 +1,8 @@
-from .bpqueue import BPQueue
-from .dllist import Dllist, Dllink
-
 from abc import abstractmethod
 from typing import List
+
+from .bpqueue import BPQueue
+from .dllist import Dllink, Dllist
 
 Item = Dllink[List[int]]
 

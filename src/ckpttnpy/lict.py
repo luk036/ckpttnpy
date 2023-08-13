@@ -1,5 +1,4 @@
-from typing import MutableMapping
-from typing import Iterator, TypeVar, List
+from typing import Iterator, List, MutableMapping, TypeVar
 
 T = TypeVar("T")
 

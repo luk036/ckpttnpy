@@ -10,7 +10,7 @@ class RepeatArray:
         The function initializes an object with a value and size attribute.
 
         :param value: The value parameter is used to store the value of an object. It can be of any data type, such as an integer, string, or even another object
-        :param size: The `size` parameter represents the size of an object or data structure. It could refer to the number of elements in a list, the length of a string, or the dimensions of a matrix, for example. The specific meaning of `size` would depend on the context in which this code is
+        :param size: The `size` parameter represents the size of an object or data structure.
 
         Examples:
             >>> repeat_array = RepeatArray(1, 5)
@@ -27,7 +27,9 @@ class RepeatArray:
         """
         The `__getitem__` function returns the value of the object regardless of the key provided.
 
-        :param _: The parameter "_" in the __getitem__ method is used to indicate that the key argument is ignored. It is a convention in Python to use "_" as a placeholder for variables that are not used or not important in a particular context. In this case, the key argument is not used in the method implementation
+        :param _: The parameter "_" in the __getitem__ method is used to indicate that the key argument is
+        ignored. It is a convention in Python to use "_" as a placeholder for variables that are not used or
+        not important in a particular context. In this case, the key argument is not used in the method implementation
         :return: The value stored in the `self.value` attribute.
 
         Examples:

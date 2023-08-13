@@ -3,11 +3,11 @@ Notes:
     module and net should have a unique id because
     they treat the same node in the underlying graph.
 """
+import copy
+from typing import MutableMapping, Optional, Set, Tuple, Union
+
 from .HierNetlist import HierNetlist
 from .netlist import Netlist, TinyGraph
-import copy
-from typing import Union, Set, Tuple, Optional
-from typing import MutableMapping
 
 
 def min_maximal_matching(
