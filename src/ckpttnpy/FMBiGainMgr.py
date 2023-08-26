@@ -1,3 +1,7 @@
+"""
+This file is part of the FMBiGainMgr package.
+"""
+
 from typing import Any, Dict, List, Union
 
 from .FMGainMgr import FMGainMgr
@@ -6,8 +10,7 @@ Part = Union[Dict[Any, int], List[int]]
 
 
 class FMBiGainMgr(FMGainMgr):
-    """_summary_
-
+    """
     The `FMBiGainMgr` class is a subclass of `FMGainMgr` that provides methods for initialization and
     reinitialization of a partitioned netlist.
     """

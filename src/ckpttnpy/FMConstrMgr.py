@@ -1,4 +1,7 @@
-# -*- coding: utf-8 -*-
+"""
+This file contains the class `FMConstrMgr`.
+"""
+
 from enum import Enum
 from typing import Any, Dict, List, Union
 
@@ -10,6 +13,10 @@ class LegalCheck(Enum):
 
     The LegalCheck class is used to determine if a move can be satisfied, get better, or is not
     satisfied.
+
+    Examples:
+        >>> LegalCheck.NotSatisfied
+        LegalCheck.NotSatisfied
     """
 
     NotSatisfied = 0
@@ -35,17 +42,6 @@ class FMConstrMgr:
         "totalweight",
         "lowerbound",
     )
-
-    def get_module_weight(self, v) -> int:
-        """
-        The function `get_module_weight` returns the weight of a module, given its index.
-
-        :param v: The parameter `v` is of type `size_t` and it represents the index or key used to access
-        the `module_weight` dictionary
-        :return: the value of `1` if `self.module_weight` is `None`, otherwise it is returning the value of
-        `self.module_weight[v]`.
-        """
-        return 1 if self.module_weight is None else self.module_weight[v]
 
     def __init__(self, hgr, bal_tol, module_weight, num_parts=2) -> None:
         """
@@ -89,6 +85,17 @@ class FMConstrMgr:
         self.diff = [0] * self.num_parts
         for v in self.hgr:
             self.diff[part[v]] += self.get_module_weight(v)
+
+    def get_module_weight(self, v) -> int:
+        """
+        The function `get_module_weight` returns the weight of a module, given its index.
+
+        :param v: The parameter `v` is of type `size_t` and it represents the index or key used to access
+        the `module_weight` dictionary
+        :return: the value of `1` if `self.module_weight` is `None`, otherwise it is returning the value of
+        `self.module_weight[v]`.
+        """
+        return 1 if self.module_weight is None else self.module_weight[v]
 
     def check_legal(self, move_info_v) -> LegalCheck:
         """[summary]

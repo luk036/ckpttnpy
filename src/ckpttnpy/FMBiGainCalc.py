@@ -24,8 +24,7 @@ class FMBiGainCalc:
         is used to initialize the `self.hgr` attribute of the class
         :param _: The parameter "_" is a placeholder variable that is not used in the code. It is common to
         use "_" as a variable name when you want to indicate that the value is not important or not used in
-        the code. In this case, it is used as a placeholder for the second argument of the "__, defaults to
-        2
+        the code. In this case, it is used as a placeholder for the second argument of the "__, defaults to 2
         :type _: int (optional)
         """
         self.hgr = hgr
@@ -91,9 +90,14 @@ class FMBiGainCalc:
     def _init_gain_2pin_net(self, net, part: Part):
         """initialize gain for 2-pin net
 
-        Arguments:
-            net (node_t):  description
-            part (list):  description
+        The function initializes the gain for a 2-pin net in a graph.
+        
+        :param net: The `net` parameter is a node in the graph representing a net. It is of type
+        `node_t`
+        :param part: The `part` parameter is a list that represents the partitioning of the nodes in the
+        graph. Each element in the list corresponds to a node in the graph, and the value of the element
+        indicates the partition to which the node belongs
+        :type part: Part
         """
         net_cur = iter(self.hgr.gra[net])
         w = next(net_cur)
