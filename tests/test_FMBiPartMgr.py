@@ -15,10 +15,10 @@ from ckpttnpy.netlist import (
 Part = Union[Dict[Any, int], List[int]]
 
 
-def run_FMBiPartMgr(hgr: Netlist, part: Part):
-    gain_mgr = FMBiGainMgr(FMBiGainCalc, hgr)
-    constr_mgr = FMBiConstrMgr(hgr, 0.3, hgr.module_weight)
-    part_mgr = FMPartMgr(hgr, gain_mgr, constr_mgr)
+def run_FMBiPartMgr(hyprgraph: Netlist, part: Part):
+    gain_mgr = FMBiGainMgr(FMBiGainCalc, hyprgraph)
+    constr_mgr = FMBiConstrMgr(hyprgraph, 0.3, hyprgraph.module_weight)
+    part_mgr = FMPartMgr(hyprgraph, gain_mgr, constr_mgr)
     part_mgr.legalize(part)
     totalcostbefore = part_mgr.totalcost
     part_mgr.init(part)
@@ -31,25 +31,25 @@ def run_FMBiPartMgr(hgr: Netlist, part: Part):
 
 
 def test_FMBiPartMgr():
-    hgr = create_drawf()
-    part = {v: 0 for v in hgr}
-    hgr.module_fixed = {"p1"}
-    run_FMBiPartMgr(hgr, part)
+    hyprgraph = create_drawf()
+    part = {v: 0 for v in hyprgraph}
+    hyprgraph.module_fixed = {"p1"}
+    run_FMBiPartMgr(hyprgraph, part)
 
 
 def test_FMBiPartMgr2():
-    hgr = create_test_netlist()
-    part = {v: 0 for v in hgr}
-    run_FMBiPartMgr(hgr, part)
+    hyprgraph = create_test_netlist()
+    part = {v: 0 for v in hyprgraph}
+    run_FMBiPartMgr(hyprgraph, part)
 
 
 def test_FMBiPartMgr3():
-    hgr = create_random_hgraph()
-    part = [0 for _ in hgr]
-    run_FMBiPartMgr(hgr, part)
+    hyprgraph = create_random_hgraph()
+    part = [0 for _ in hyprgraph]
+    run_FMBiPartMgr(hyprgraph, part)
 
 
 def test_FMBiPartMgr4():
-    hgr = read_json("testcases/p1.json")
-    part = [0 for _ in hgr]
-    run_FMBiPartMgr(hgr, part)
+    hyprgraph = read_json("testcases/p1.json")
+    part = [0 for _ in hyprgraph]
+    run_FMBiPartMgr(hyprgraph, part)

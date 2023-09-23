@@ -68,18 +68,18 @@ class MLPartMgr:
         """
         self._limitsize = limit
 
-    def run_FMPartition(self, hgr, module_weight, part):
+    def run_FMPartition(self, hyprgraph, module_weight, part):
         """
         The `run_FMPartition` function performs a partitioning algorithm on a hypergraph, optimizing the
         partitioning based on module weights and balancing constraints.
 
-        :param hgr: The "hgr" parameter represents a hypergraph, which is a mathematical structure used to
+        :param hyprgraph: The "hyprgraph" parameter represents a hypergraph, which is a mathematical structure used to
         model relationships between objects. It is not clear what specific properties or data the hypergraph
         in this code represents without further context
         :param module_weight: The `module_weight` parameter represents the weight of each module in the
         hypergraph. It is used in the optimization process to calculate the cost of each partition
         :param part: The `part` parameter is a list that represents the current partitioning of the modules
-        in the hypergraph `hgr`. Each element in the list corresponds to a module and contains an integer
+        in the hypergraph `hyprgraph`. Each element in the list corresponds to a module and contains an integer
         value representing the partition number to which the module belongs
         :return: The function `run_FMPartition` returns the value of `legalcheck`.
         """
@@ -90,11 +90,11 @@ class MLPartMgr:
             check on a given part, returning the result and the total cost.
             :return: two values: `legalcheck` and `part_mgr.totalcost`.
             """
-            gain_mgr = self.GainMgr(self.GainCalc, hgr, self.num_parts)
+            gain_mgr = self.GainMgr(self.GainCalc, hyprgraph, self.num_parts)
             constr_mgr = self.ConstrMgr(
-                hgr, self.bal_tol, module_weight, self.num_parts
+                hyprgraph, self.bal_tol, module_weight, self.num_parts
             )
-            part_mgr = self.PartMgr(hgr, gain_mgr, constr_mgr)
+            part_mgr = self.PartMgr(hyprgraph, gain_mgr, constr_mgr)
             legalcheck = part_mgr.legalize(part)
             return legalcheck, part_mgr.totalcost
 
@@ -104,11 +104,11 @@ class MLPartMgr:
             managers and returns the result.
             :return: the total cost calculated by the `part_mgr.optimize()` method.
             """
-            gain_mgr = self.GainMgr(self.GainCalc, hgr, self.num_parts)
+            gain_mgr = self.GainMgr(self.GainCalc, hyprgraph, self.num_parts)
             constr_mgr = self.ConstrMgr(
-                hgr, self.bal_tol, module_weight, self.num_parts
+                hyprgraph, self.bal_tol, module_weight, self.num_parts
             )
-            part_mgr = self.PartMgr(hgr, gain_mgr, constr_mgr)
+            part_mgr = self.PartMgr(hyprgraph, gain_mgr, constr_mgr)
             part_mgr.optimize(part)
             return part_mgr.totalcost
 
@@ -117,9 +117,9 @@ class MLPartMgr:
             self.totalcost = totalcost
             return legalcheck
 
-        if hgr.number_of_modules() >= self._limitsize:  # OK
-            hgr2, module_weight2 = contract_subgraph(hgr, module_weight, set())
-            if hgr2.number_of_modules() <= hgr.number_of_modules():
+        if hyprgraph.number_of_modules() >= self._limitsize:  # OK
+            hgr2, module_weight2 = contract_subgraph(hyprgraph, module_weight, set())
+            if hgr2.number_of_modules() <= hyprgraph.number_of_modules():
                 part2 = [0] * hgr2.number_of_modules()
                 hgr2.projection_up(part, part2)
                 legalcheck_recur = self.run_FMPartition(hgr2, module_weight2, part2)

@@ -17,41 +17,41 @@ __license__ = "mit"
 _logger = logging.getLogger(__name__)
 
 
-def run_MLBiPartMgr(hgr: Netlist):
+def run_MLBiPartMgr(hyprgraph: Netlist):
     part_mgr = MLBiPartMgr(0.4)
     mincost = 100000000000
     minpart = []
     for _ in range(10):
-        randseq = [randint(0, 1) for _ in hgr]
+        randseq = [randint(0, 1) for _ in hyprgraph]
 
-        if isinstance(hgr.modules, range):
+        if isinstance(hyprgraph.modules, range):
             part = randseq
-        elif isinstance(hgr.modules, list):
-            part = {v: k for v, k in zip(hgr.modules, randseq)}
+        elif isinstance(hyprgraph.modules, list):
+            part = {v: k for v, k in zip(hyprgraph.modules, randseq)}
         else:
             raise NotImplementedError
 
-        part_mgr.run_FMPartition(hgr, hgr.module_weight, part)
+        part_mgr.run_FMPartition(hyprgraph, hyprgraph.module_weight, part)
         if mincost > part_mgr.totalcost:
             mincost = part_mgr.totalcost
             minpart = part.copy()
     return mincost, minpart
 
 
-def plot(hgr: Netlist, part):
-    part0 = [i for i in hgr if part[i] == 0]
-    part1 = [i for i in hgr if part[i] == 1]
-    pos = nx.spring_layout(hgr.gra)
+def plot(hyprgraph: Netlist, part):
+    part0 = [i for i in hyprgraph if part[i] == 0]
+    part1 = [i for i in hyprgraph if part[i] == 1]
+    pos = nx.spring_layout(hyprgraph.gra)
     nx.draw_networkx_nodes(
-        hgr.gra, nodelist=part0, node_color="g", node_size=50, pos=pos
+        hyprgraph.gra, nodelist=part0, node_color="g", node_size=50, pos=pos
     )
     nx.draw_networkx_nodes(
-        hgr.gra, nodelist=part1, node_color="r", node_size=50, pos=pos
+        hyprgraph.gra, nodelist=part1, node_color="r", node_size=50, pos=pos
     )
     nx.draw_networkx_nodes(
-        hgr.gra, nodelist=hgr.nets, node_color="k", node_size=20, pos=pos
+        hyprgraph.gra, nodelist=hyprgraph.nets, node_color="k", node_size=20, pos=pos
     )
-    nx.draw_networkx_edges(hgr.gra, pos=pos, width=1)
+    nx.draw_networkx_edges(hyprgraph.gra, pos=pos, width=1)
     plt.show()
 
 
@@ -113,7 +113,7 @@ def setup_logging(loglevel):
         level=loglevel,
         stream=sys.stdout,
         format=logformat,
-        datefmt="%Y-%m-%d %hgr:%M:%S",
+        datefmt="%Y-%m-%d %hyprgraph:%M:%S",
     )
 
 
@@ -134,12 +134,12 @@ def main(args):
     if args.eta > 0.3:
         _logger.warning("eta value {} may be too big".format(args.eta))
 
-    hgr = create_random_hgraph(args.N, args.M, args.eta)
-    totalcost, part = run_MLBiPartMgr(hgr)
+    hyprgraph = create_random_hgraph(args.N, args.M, args.eta)
+    totalcost, part = run_MLBiPartMgr(hyprgraph)
     print("total cost = {}".format(totalcost))
 
     if args.plot:
-        plot(hgr, part)
+        plot(hyprgraph, part)
     _logger.info("Script ends here")
 
 

@@ -34,7 +34,7 @@ class FMConstrMgr:
 
     __slots__ = (
         "weight",
-        "hgr",
+        "hyprgraph",
         "bal_tol",
         "module_weight",
         "num_parts",
@@ -43,11 +43,11 @@ class FMConstrMgr:
         "lowerbound",
     )
 
-    def __init__(self, hgr, bal_tol, module_weight, num_parts=2) -> None:
+    def __init__(self, hyprgraph, bal_tol, module_weight, num_parts=2) -> None:
         """
         The function initializes the attributes of an object and calculates a lower bound value.
 
-        :param hgr: The `hgr` parameter represents a list of values. It is not clear what these values
+        :param hyprgraph: The `hyprgraph` parameter represents a list of values. It is not clear what these values
         represent without further context
         :param bal_tol: The `bal_tol` parameter represents the balance tolerance. It is a value that
         determines how balanced the weights of the parts should be. The lower the value, the more balanced
@@ -59,17 +59,17 @@ class FMConstrMgr:
 
         Examples:
             >>> FMConstrMgr([1, 2, 3], 0.5, {1: 1, 2: 2, 3: 3})
-            FMConstrMgr(hgr=[1, 2, 3], bal_tol=0.5, module_weight={1: 1, 2: 2, 3: 3})
+            FMConstrMgr(hyprgraph=[1, 2, 3], bal_tol=0.5, module_weight={1: 1, 2: 2, 3: 3})
             >>> FMConstrMgr([1, 2, 3], 0.5, {1: 1, 2: 2, 3: 3}, 3)
-            FMConstrMgr(hgr=[1, 2, 3], bal_tol=0.5, module_weight={1: 1, 2: 2, 3: 3}, num_parts=3)
+            FMConstrMgr(hyprgraph=[1, 2, 3], bal_tol=0.5, module_weight={1: 1, 2: 2, 3: 3}, num_parts=3)
 
         """
-        self.hgr = hgr
+        self.hyprgraph = hyprgraph
         self.bal_tol = bal_tol
         self.module_weight = module_weight
         self.num_parts = num_parts
         self.diff = [0] * num_parts
-        self.totalweight = sum(self.get_module_weight(v) for v in self.hgr)
+        self.totalweight = sum(self.get_module_weight(v) for v in self.hyprgraph)
         totalweightK = self.totalweight * (2.0 / self.num_parts)
         self.lowerbound = round(totalweightK * self.bal_tol)
 
@@ -83,7 +83,7 @@ class FMConstrMgr:
         :type part: Part
         """
         self.diff = [0] * self.num_parts
-        for v in self.hgr:
+        for v in self.hyprgraph:
             self.diff[part[v]] += self.get_module_weight(v)
 
     def get_module_weight(self, v) -> int:

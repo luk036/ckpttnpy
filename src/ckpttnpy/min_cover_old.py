@@ -8,7 +8,7 @@ from .netlist import Netlist
 # from .minhash import MinHash
 
 
-def min_maximal_matching(hgr, weight, matchset, dep):
+def min_maximal_matching(hyprgraph, weight, matchset, dep):
     """Perform minimum weighted maximal matching using primal-dual
     approximation algorithm
 
@@ -17,20 +17,20 @@ def min_maximal_matching(hgr, weight, matchset, dep):
     """
 
     def cover(net):
-        for v in hgr.gra[net]:
+        for v in hyprgraph.gra[net]:
             dep.add(v)
 
     def any_of_dep(net):
-        return any(v in dep for v in hgr.gra[net])
+        return any(v in dep for v in hyprgraph.gra[net])
 
     gap = weight.copy()
     total_primal_cost = 0
     total_dual_cost = 0
-    for net in filter(lambda net: not (any_of_dep(net) or (net in matchset)), hgr.nets):
+    for net in filter(lambda net: not (any_of_dep(net) or (net in matchset)), hyprgraph.nets):
         min_val = gap[net]
         min_net = net
-        for v in hgr.gra[net]:
-            for net2 in filter(lambda net2: not any_of_dep(net2), hgr.gra[v]):
+        for v in hyprgraph.gra[net]:
+            for net2 in filter(lambda net2: not any_of_dep(net2), hyprgraph.gra[v]):
                 if min_val > gap[net2]:
                     min_val = gap[net2]
                     min_net = net2
@@ -41,55 +41,55 @@ def min_maximal_matching(hgr, weight, matchset, dep):
         if min_net == net:
             continue
         gap[net] -= min_val
-        for v in hgr.gra[net]:
-            for net2 in hgr.gra[v]:
+        for v in hyprgraph.gra[net]:
+            for net2 in hyprgraph.gra[v]:
                 gap[net2] -= min_val
 
     assert total_dual_cost <= total_primal_cost
     return total_primal_cost
 
 
-def contract_subgraph(hgr: Netlist, module_weight, forbid: Set) -> HierNetlist:
+def contract_subgraph(hyprgraph: Netlist, module_weight, forbid: Set) -> HierNetlist:
     """[summary]
 
     Args:
-        hgr (Netlist): [description]
+        hyprgraph (Netlist): [description]
         forbid (Set): [description]
 
     Returns:
         HierNetlist: [description]
     """
-    # s1, _ = max_independent_net(hgr, hgr.module_weight, forbid)
+    # s1, _ = max_independent_net(hyprgraph, hyprgraph.module_weight, forbid)
     # weight = dict()
-    # for net in hgr.nets:
-    #     weight[net] = sum(hgr.get_module_weight(v) for v in hgr.gra[net])
+    # for net in hyprgraph.nets:
+    #     weight[net] = sum(hyprgraph.get_module_weight(v) for v in hyprgraph.gra[net])
     weight = {
-        net: sum(module_weight[v] for v in hgr.gra[net]) for net in hgr.nets
+        net: sum(module_weight[v] for v in hyprgraph.gra[net]) for net in hyprgraph.nets
     }  # can be done in parallel
     s1 = set()
-    min_maximal_matching(hgr, weight, s1, forbid)
+    min_maximal_matching(hyprgraph, weight, s1, forbid)
 
-    module_up_map: dict = {v: v for v in hgr}
-    # for v in hgr:
+    module_up_map: dict = {v: v for v in hyprgraph}
+    # for v in hyprgraph:
     #     module_up_map[v] = v
 
     covered = set()
     nets = list()
     clusters = list()
     # cluster_map = dict()
-    for net in hgr.nets:
+    for net in hyprgraph.nets:
         if net in s1:
-            # net_cur = iter(hgr.gra[net])
+            # net_cur = iter(hyprgraph.gra[net])
             # master = next(net_cur)
             # clusters.append(master)
             clusters.append(net)
-            module_up_map.update({v: net for v in hgr.gra[net]})
-            covered.update(v for v in hgr.gra[net])
+            module_up_map.update({v: net for v in hyprgraph.gra[net]})
+            covered.update(v for v in hyprgraph.gra[net])
             # cluster_map[master] = net
         else:
             nets.append(net)
 
-    modules: List = [v for v in hgr if v not in covered]
+    modules: List = [v for v in hyprgraph if v not in covered]
 
     # no more C
     covered.clear()
@@ -100,7 +100,7 @@ def contract_subgraph(hgr: Netlist, module_weight, forbid: Set) -> HierNetlist:
 
     module_map = {v: i_v for i_v, v in enumerate(modules)}
     # net_map = {net: i_net for i_net, net in enumerate(nets)}
-    node_up_dict = {v: module_map[module_up_map[v]] for v in hgr}
+    node_up_dict = {v: module_map[module_up_map[v]] for v in hyprgraph}
     net_up_map = {net: i_net + num_modules for i_net, net in enumerate(nets)}
     # for net in nets:
     #     node_up_map[net] = net_map[net] + num_modules
@@ -108,13 +108,13 @@ def contract_subgraph(hgr: Netlist, module_weight, forbid: Set) -> HierNetlist:
 
     gra = nx.Graph()
     gra.add_nodes_from(n for n in range(num_modules + num_nets))
-    for v in hgr:
-        for net in filter(lambda net: net not in s1, hgr.gra[v]):
+    for v in hyprgraph:
+        for net in filter(lambda net: net not in s1, hyprgraph.gra[v]):
             gra.add_edge(node_up_dict[v], net_up_map[net])
             # automatically merge the same cell-net
 
     updated_nets, net_weight = purge_duplicate_nets(
-        hgr, gra, nets, net_up_map, clusters, module_map, num_modules
+        hyprgraph, gra, nets, net_up_map, clusters, module_map, num_modules
     )
 
     hgr2 = HierNetlist(gra, range(num_modules), updated_nets)
@@ -126,30 +126,30 @@ def contract_subgraph(hgr: Netlist, module_weight, forbid: Set) -> HierNetlist:
 
     # cluster_down_map = {node_up_dict[v]: net
     #     for v, net in cluster_map.items()}
-    cluster_down_map = {node_up_dict[v]: netk for netk in s1 for v in hgr.gra[netk]}
+    cluster_down_map = {node_up_dict[v]: netk for netk in s1 for v in hyprgraph.gra[netk]}
 
     module_weight2 = [0] * num_modules
     for i_v in range(num_modules):
         if i_v in cluster_down_map:
             net = cluster_down_map[i_v]
             # cluster_weight = 0
-            # for v2 in hgr.gra[net]:
-            #     cluster_weight += hgr.get_module_weight(v2)
-            # cluster_weight = sum(hgr.get_module_weight(v) for v in hgr.gra[net])
+            # for v2 in hyprgraph.gra[net]:
+            #     cluster_weight += hyprgraph.get_module_weight(v2)
+            # cluster_weight = sum(hyprgraph.get_module_weight(v) for v in hyprgraph.gra[net])
             cluster_weight = weight[net]
             module_weight2[i_v] = cluster_weight
         else:
             v2 = node_down_map[i_v]
             module_weight2[i_v] = module_weight[v2]
 
-    if isinstance(hgr.modules, range):
-        node_up_map = [0 for _ in hgr.modules]
-    elif isinstance(hgr.modules, list):
+    if isinstance(hyprgraph.modules, range):
+        node_up_map = [0 for _ in hyprgraph.modules]
+    elif isinstance(hyprgraph.modules, list):
         node_up_map = {}
     else:
         raise NotImplementedError
 
-    for v in hgr.modules:
+    for v in hyprgraph.modules:
         node_up_map[v] = node_up_dict[v]
 
     hgr2.node_up_map = node_up_map
@@ -159,16 +159,16 @@ def contract_subgraph(hgr: Netlist, module_weight, forbid: Set) -> HierNetlist:
     hgr2.net_weight = net_weight
     # hgr2.net_weight = ShiftArray(1 for _ in range(num_nets))
     # hgr2.net_weight.set_start(num_modules)
-    hgr2.parent = hgr
+    hgr2.parent = hyprgraph
     return hgr2, module_weight2
 
 
-def purge_duplicate_nets(hgr, gra, nets, net_up_map, clusters, module_map, num_modules):
+def purge_duplicate_nets(hyprgraph, gra, nets, net_up_map, clusters, module_map, num_modules):
     # Purging duplicate nets
     num_nets = len(nets)
     net_weight = dict()
     for net in nets:
-        wt = hgr.get_net_weight(net)
+        wt = hyprgraph.get_net_weight(net)
         if wt > 1:
             net_weight[net_up_map[net]] = wt
 

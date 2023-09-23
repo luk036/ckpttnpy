@@ -17,8 +17,8 @@ class FMBiGainMgr(FMGainMgr):
 
     # public:
 
-    # def __init__(self, GainCalc, hgr, num_parts=2):
-    #     FMGainMgr.__init__(self, GainCalc, hgr)
+    # def __init__(self, GainCalc, hyprgraph, num_parts=2):
+    #     FMGainMgr.__init__(self, GainCalc, hyprgraph)
 
     def init(self, part: Part) -> None:
         """
@@ -35,11 +35,11 @@ class FMBiGainMgr(FMGainMgr):
 
         for bckt in self.gainbucket:
             bckt.clear()
-        for v in self.hgr:
+        for v in self.hyprgraph:
             vlink = self.gain_calc.vertex_list[v]
             to_part = part[v] ^ 1  # toggle 0 or 1
             self.gainbucket[to_part].append_direct(vlink)
-        for v in self.hgr.module_fixed:
+        for v in self.hyprgraph.module_fixed:
             self.lock_all(part[v], v)
         return totalcost
 

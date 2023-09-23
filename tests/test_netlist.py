@@ -6,32 +6,32 @@ from ckpttnpy.netlist import create_drawf, create_test_netlist, read_json
 
 
 def test_netlist():
-    hgr = create_test_netlist()
-    assert hgr.number_of_modules() == 3
-    assert hgr.number_of_nets() == 3
-    assert hgr.number_of_nodes() == 6
-    assert hgr.number_of_pins() == 6
-    assert hgr.get_max_degree() == 3
-    # assert hgr.get_max_net_degree() == 3
-    # assert not hgr.has_fixed_modules
-    # assert hgr.get_module_weight_by_id(0) == 533
-    assert isinstance(hgr.module_weight, dict)
+    hyprgraph = create_test_netlist()
+    assert hyprgraph.number_of_modules() == 3
+    assert hyprgraph.number_of_nets() == 3
+    assert hyprgraph.number_of_nodes() == 6
+    assert hyprgraph.number_of_pins() == 6
+    assert hyprgraph.get_max_degree() == 3
+    # assert hyprgraph.get_max_net_degree() == 3
+    # assert not hyprgraph.has_fixed_modules
+    # assert hyprgraph.get_module_weight_by_id(0) == 533
+    assert isinstance(hyprgraph.module_weight, dict)
 
 
 def test_drawf():
-    hgr = create_drawf()
-    assert hgr.number_of_modules() == 7
-    assert hgr.number_of_nets() == 6
-    assert hgr.number_of_pins() == 14
-    assert hgr.get_max_degree() == 3
-    # assert hgr.get_max_net_degree() == 3
-    # assert not hgr.has_fixed_modules
-    # assert hgr.get_module_weight_by_id(1) == 3
+    hyprgraph = create_drawf()
+    assert hyprgraph.number_of_modules() == 7
+    assert hyprgraph.number_of_nets() == 6
+    assert hyprgraph.number_of_pins() == 14
+    assert hyprgraph.get_max_degree() == 3
+    # assert hyprgraph.get_max_net_degree() == 3
+    # assert not hyprgraph.has_fixed_modules
+    # assert hyprgraph.get_module_weight_by_id(1) == 3
 
 
 def test_json():
-    # hgr = create_drawf()
-    # data = json_graph.node_link_data(hgr.gra)
+    # hyprgraph = create_drawf()
+    # data = json_graph.node_link_data(hyprgraph.gra)
     # with open('testcases/drawf.json', 'w') as fw:
     #     json.dump(data, fw, indent=1)
     with open("testcases/drawf.json", "r") as fr:
@@ -54,12 +54,12 @@ def test_json2():
 
 
 def test_readjson():
-    hgr = read_json("testcases/p1.json")
+    hyprgraph = read_json("testcases/p1.json")
     count_2 = 0
     count_3 = 0
     count_rest = 0
-    for net in hgr.nets:
-        deg = hgr.gra.degree(net)
+    for net in hyprgraph.nets:
+        deg = hyprgraph.gra.degree(net)
         if deg == 2:
             count_2 += 1
         elif deg == 3:

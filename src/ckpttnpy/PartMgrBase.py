@@ -16,19 +16,19 @@ Part = Union[Dict[Any, int], List[int]]
 # The `PartMgrBase` class is a base class that manages parts, including their hierarchy, gain, and
 # constraints.
 class PartMgrBase:
-    def __init__(self, hgr, gain_mgr, constr_mgr):
+    def __init__(self, hyprgraph, gain_mgr, constr_mgr):
         """
         The function initializes an object with three arguments and sets their values as attributes of the
         object.
 
-        :param hgr: The `hgr` parameter is an object of type `hgr` which is used for some purpose in the
+        :param hyprgraph: The `hyprgraph` parameter is an object of type `hyprgraph` which is used for some purpose in the
         class. The specific purpose is not mentioned in the code snippet provided
         :param gain_mgr: The `gain_mgr` parameter is an object of type `gain_mgr`. It is used to manage the
         gains of the system
         :param constr_mgr: The `constr_mgr` parameter is an object of type `constr_mgr`. It is used to
         manage constraints in the code
         """
-        self.hgr = hgr
+        self.hyprgraph = hyprgraph
         self.gain_mgr = gain_mgr
         self.validator = constr_mgr
         self.num_parts = gain_mgr.num_parts
@@ -59,9 +59,9 @@ class PartMgrBase:
 
         # Zero-weighted modules does not contribute legalization
         for v in filter(
-            lambda v: self.hgr.get_module_weight(v) == 0
-            and self.hgr.module_fixed is False,
-            self.hgr,
+            lambda v: self.hyprgraph.get_module_weight(v) == 0
+            and self.hyprgraph.module_fixed is False,
+            self.hyprgraph,
         ):
             self.gain_mgr.lock_all(part[v], v)
 

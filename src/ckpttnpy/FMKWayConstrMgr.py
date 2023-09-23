@@ -13,12 +13,12 @@ class FMKWayConstrMgr(FMConstrMgr):
     parts.
     """
 
-    def __init__(self, hgr, bal_tol, module_weight, num_parts: int):
+    def __init__(self, hyprgraph, bal_tol, module_weight, num_parts: int):
         """
         The function initializes an object with certain parameters and sets all elements of the "illegal"
         list to True.
 
-        :param hgr: The `hgr` parameter is a type that is not specified in the code snippet. It is likely a
+        :param hyprgraph: The `hyprgraph` parameter is a type that is not specified in the code snippet. It is likely a
         custom type or a reference to another class or module
         :param bal_tol: The `bal_tol` parameter is used to specify the balance tolerance for the module. It
         represents the maximum allowable difference in weight between the heaviest and lightest parts in the
@@ -28,7 +28,7 @@ class FMKWayConstrMgr(FMConstrMgr):
         system
         :type num_parts: int
         """
-        FMConstrMgr.__init__(self, hgr, bal_tol, module_weight, num_parts)
+        FMConstrMgr.__init__(self, hyprgraph, bal_tol, module_weight, num_parts)
         self.illegal = [True] * num_parts
 
     def init(self, part: Part):

@@ -195,13 +195,13 @@ def read_json(filename):
     num_modules = gra.graph["num_modules"]
     num_nets = gra.graph["num_nets"]
     num_pads = gra.graph["num_pads"]
-    hgr = Netlist(gra, range(num_modules), range(num_modules, num_modules + num_nets))
-    hgr.num_pads = num_pads
-    hgr.module_weight = RepeatArray(1, num_modules)
-    hgr.net_weight = RepeatArray(1, num_nets)
-    # hgr.net_weight = ShiftArray(1 for _ in range(num_nets))
-    # hgr.net_weight.set_start(num_modules)
-    return hgr
+    hyprgraph = Netlist(gra, range(num_modules), range(num_modules, num_modules + num_nets))
+    hyprgraph.num_pads = num_pads
+    hyprgraph.module_weight = RepeatArray(1, num_modules)
+    hyprgraph.net_weight = RepeatArray(1, num_nets)
+    # hyprgraph.net_weight = ShiftArray(1 for _ in range(num_nets))
+    # hyprgraph.net_weight.set_start(num_modules)
+    return hyprgraph
 
 
 def create_drawf():
@@ -264,11 +264,11 @@ def create_drawf():
     gra.graph["num_modules"] = 7
     gra.graph["num_nets"] = 6
     gra.graph["num_pads"] = 3
-    hgr = Netlist(gra, modules, nets)
-    hgr.module_weight = module_weight
-    hgr.net_weight = RepeatArray(1, len(nets))
-    hgr.num_pads = 3
-    return hgr
+    hyprgraph = Netlist(gra, modules, nets)
+    hyprgraph.module_weight = module_weight
+    hyprgraph.net_weight = RepeatArray(1, len(nets))
+    hyprgraph.num_pads = 3
+    return hyprgraph
 
 
 def create_test_netlist():
@@ -300,10 +300,10 @@ def create_test_netlist():
     # net_weight = {net: 1 for net in nets}
     net_weight = RepeatArray(1, len(nets))
 
-    hgr = Netlist(gra, modules, nets)
-    hgr.module_weight = module_weight
-    hgr.net_weight = net_weight
-    return hgr
+    hyprgraph = Netlist(gra, modules, nets)
+    hyprgraph.module_weight = module_weight
+    hyprgraph.net_weight = net_weight
+    return hyprgraph
 
 
 def vdc(n, base=2):
@@ -341,7 +341,7 @@ def vdcorput(n, base=2):
     return [vdc(i, base) for i in range(n)]
 
 
-def formGraph(N, M, _, eta, seed=None):  # ignore pos
+def form_graph(N, M, _, eta, seed=None):  # ignore pos
     """Form N by N grid of nodes, connect nodes within eta.
         mu and eta are relative to 1/(N-1)
 
@@ -372,13 +372,13 @@ def create_random_hgraph(N=30, M=26, eta=0.1):
     x = [i for i in vdcorput(T, xbase)]
     y = [i for i in vdcorput(T, ybase)]
     pos = zip(x, y)
-    gra = formGraph(N, M, pos, eta, seed=5)
+    gra = form_graph(N, M, pos, eta, seed=5)
 
     gra.graph["num_modules"] = N
     gra.graph["num_nets"] = M
-    hgr = Netlist(gra, range(N), range(N, N + M))
-    hgr.module_weight = RepeatArray(1, N)
-    hgr.net_weight = RepeatArray(1, M)
-    # hgr.net_weight = ShiftArray(1 for _ in range(M))
-    # hgr.net_weight.set_start(N)
-    return hgr
+    hyprgraph = Netlist(gra, range(N), range(N, N + M))
+    hyprgraph.module_weight = RepeatArray(1, N)
+    hyprgraph.net_weight = RepeatArray(1, M)
+    # hyprgraph.net_weight = ShiftArray(1 for _ in range(M))
+    # hyprgraph.net_weight.set_start(N)
+    return hyprgraph

@@ -15,7 +15,7 @@ class FMKWayGainMgr(FMGainMgr):
 
     # public:
 
-    def __init__(self, GainCalc, hgr, num_parts: int):
+    def __init__(self, GainCalc, hyprgraph, num_parts: int):
         """
         The function initializes an object with the given parameters and calls the parent class's
         initialization method.
@@ -23,12 +23,12 @@ class FMKWayGainMgr(FMGainMgr):
         :param GainCalc: The `GainCalc` parameter is a type or class that is used for calculating the gain
         of a netlist. It is likely a separate class that has methods or functions for calculating the gain
         based on certain criteria or algorithms
-        :param hgr: The `hgr` parameter is of type `Netlist` and it represents a description of the netlist
+        :param hyprgraph: The `hyprgraph` parameter is of type `Netlist` and it represents a description of the netlist
         :param num_parts: The `num_parts` parameter is an integer that represents the number of partitions.
         It is of type `int`
         :type num_parts: int
         """
-        FMGainMgr.__init__(self, GainCalc, hgr, num_parts)
+        FMGainMgr.__init__(self, GainCalc, hyprgraph, num_parts)
         self.rr = Robin(num_parts)
 
     def init(self, part: Part):
@@ -46,7 +46,7 @@ class FMKWayGainMgr(FMGainMgr):
         for bckt in self.gainbucket:
             bckt.clear()
 
-        for v in self.hgr:
+        for v in self.hyprgraph:
             pv = part[v]
             for k in self.rr.exclude(pv):
                 vlink = self.gain_calc.vertex_list[k][v]
@@ -55,7 +55,7 @@ class FMKWayGainMgr(FMGainMgr):
             self.gainbucket[pv].set_key(vlink, 0)
             self.waitinglist.append(vlink)
 
-        for v in self.hgr.module_fixed:
+        for v in self.hyprgraph.module_fixed:
             self.lock_all(part[v], v)
 
         return totalcost

@@ -11,27 +11,27 @@ Part = Union[Dict[Any, int], List[int]]
 class FMBiGainCalc:
     """The FMBiGainCalc class is used for calculating the bipartition gain."""
 
-    __slots__ = ("totalcost", "hgr", "vertex_list", "idx_vec", "delta_gain_w")
+    __slots__ = ("totalcost", "hyprgraph", "vertex_list", "idx_vec", "delta_gain_w")
 
     # public:
 
-    def __init__(self, hgr, _: int = 2):  # num_parts == 2
+    def __init__(self, hyprgraph, _: int = 2):  # num_parts == 2
         """Initialization
         The function initializes an object with a given Netlist and a default number of partitions, and
         creates a vertex list based on the type of modules in the Netlist.
 
-        :param hgr: The `hgr` parameter is of type `Netlist` and represents a description of a netlist. It
-        is used to initialize the `self.hgr` attribute of the class
+        :param hyprgraph: The `hyprgraph` parameter is of type `Netlist` and represents a description of a netlist. It
+        is used to initialize the `self.hyprgraph` attribute of the class
         :param _: The parameter "_" is a placeholder variable that is not used in the code. It is common to
         use "_" as a variable name when you want to indicate that the value is not important or not used in
         the code. In this case, it is used as a placeholder for the second argument of the "__, defaults to 2
         :type _: int (optional)
         """
-        self.hgr = hgr
-        if isinstance(self.hgr.modules, range):
-            self.vertex_list = Lict([Dllink([0, i]) for i in self.hgr])
-        elif isinstance(self.hgr.modules, list):
-            self.vertex_list = {v: Dllink([0, v]) for v in self.hgr}
+        self.hyprgraph = hyprgraph
+        if isinstance(self.hyprgraph.modules, range):
+            self.vertex_list = Lict([Dllink([0, i]) for i in self.hyprgraph])
+        elif isinstance(self.hyprgraph.modules, list):
+            self.vertex_list = {v: Dllink([0, v]) for v in self.hyprgraph}
         else:
             raise NotImplementedError
 
@@ -49,8 +49,8 @@ class FMBiGainCalc:
         self.totalcost = 0
         for vlink in self.vertex_list.values():
             vlink.data[0] = 0
-        for net in self.hgr.nets:
-            # for net in self.hgr.net_list:
+        for net in self.hyprgraph.nets:
+            # for net in self.hyprgraph.net_list:
             self._init_gain(net, part)
         return self.totalcost
 
@@ -66,7 +66,7 @@ class FMBiGainCalc:
         :type part: Part
         :return: nothing.
         """
-        degree = self.hgr.gra.degree[net]
+        degree = self.hyprgraph.gra.degree[net]
         if degree < 2:  # unlikely, self-loop, etc.
             return  # does not provide any gain when move
         if degree == 3:
@@ -99,10 +99,10 @@ class FMBiGainCalc:
         indicates the partition to which the node belongs
         :type part: Part
         """
-        net_cur = iter(self.hgr.gra[net])
+        net_cur = iter(self.hyprgraph.gra[net])
         w = next(net_cur)
         v = next(net_cur)
-        weight = self.hgr.get_net_weight(net)
+        weight = self.hyprgraph.get_net_weight(net)
         if part[w] != part[v]:
             self.totalcost += weight
             self._modify_gain(w, weight)
@@ -123,11 +123,11 @@ class FMBiGainCalc:
         :type part: Part
         :return: Nothing is being returned. The function does not have a return statement.
         """
-        net_cur = iter(self.hgr.gra[net])
+        net_cur = iter(self.hyprgraph.gra[net])
         w = next(net_cur)
         v = next(net_cur)
         u = next(net_cur)
-        weight = self.hgr.get_net_weight(net)
+        weight = self.hyprgraph.get_net_weight(net)
         if part[u] == part[v]:
             if part[w] == part[v]:
                 for a in [u, v, w]:
@@ -153,20 +153,20 @@ class FMBiGainCalc:
         :type part: Part
         """
         num = [0, 0]
-        for w in self.hgr.gra[net]:
+        for w in self.hyprgraph.gra[net]:
             num[part[w]] += 1
 
-        weight = self.hgr.get_net_weight(net)
+        weight = self.hyprgraph.get_net_weight(net)
 
         if num[0] > 0 and num[1] > 0:
             self.totalcost += weight
 
         for k in [0, 1]:
             if num[k] == 0:
-                for w in self.hgr.gra[net]:
+                for w in self.hyprgraph.gra[net]:
                     self._modify_gain(w, -weight)
             elif num[k] == 1:
-                for w in self.hgr.gra[net]:
+                for w in self.hyprgraph.gra[net]:
                     if part[w] == k:
                         self._modify_gain(w, weight)
                         break
@@ -190,10 +190,10 @@ class FMBiGainCalc:
         :return: the value of the variable "w".
         """
         net, v, from_part, _ = move_info
-        net_cur = iter(self.hgr.gra[net])
+        net_cur = iter(self.hyprgraph.gra[net])
         u = next(net_cur)
         w = u if u != v else next(net_cur)
-        weight = self.hgr.get_net_weight(net)
+        weight = self.hyprgraph.get_net_weight(net)
         delta = 2 if part[w] == from_part else -2
         self.delta_gain_w = delta * weight
         return w
@@ -206,7 +206,7 @@ class FMBiGainCalc:
         :param v: The parameter `v` represents a vertex in the graph
         :param net: The `net` parameter represents a network or graph
         """
-        self.idx_vec = [w for w in self.hgr.gra[net] if w != v]
+        self.idx_vec = [w for w in self.hyprgraph.gra[net] if w != v]
 
     def update_move_3pin_net(self, part, move_info):
         """
@@ -221,7 +221,7 @@ class FMBiGainCalc:
         """
         net, _, from_part, _ = move_info
         delta_gain = [0, 0]
-        gain = self.hgr.get_net_weight(net)
+        gain = self.hyprgraph.get_net_weight(net)
 
         part_w = part[self.idx_vec[0]]
 
@@ -264,7 +264,7 @@ class FMBiGainCalc:
             num[part[w]] += 1
         degree = len(self.idx_vec)
         delta_gain = [0] * degree
-        gain = self.hgr.get_net_weight(net)
+        gain = self.hyprgraph.get_net_weight(net)
 
         for l_part in [from_part, to_part]:
             if num[l_part] == 0:

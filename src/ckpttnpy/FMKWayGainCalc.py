@@ -15,7 +15,7 @@ class FMKWayGainCalc:
 
     __slots__ = (
         "totalcost",
-        "hgr",
+        "hyprgraph",
         "vertex_list",
         "num_parts",
         "rr",
@@ -26,32 +26,32 @@ class FMKWayGainCalc:
 
     # public:
 
-    def __init__(self, hgr, num_parts: int) -> None:
+    def __init__(self, hyprgraph, num_parts: int) -> None:
         """
         The above function is an initialization function that sets up various variables and data structures
         for a graph partitioning algorithm.
 
-        :param hgr: The `hgr` parameter is of type `Netlist` and represents a description of a netlist. It
+        :param hyprgraph: The `hyprgraph` parameter is of type `Netlist` and represents a description of a netlist. It
         is used to store information about the modules and their connections in the netlist
         :param num_parts: The `num_parts` parameter is an integer that represents the number of partitions.
-        It specifies how many partitions the algorithm should divide the given `hgr` (Netlist) into
+        It specifies how many partitions the algorithm should divide the given `hyprgraph` (Netlist) into
         :type num_parts: int
         """
         self.delta_gain_v = list()
 
-        self.hgr = hgr
+        self.hyprgraph = hyprgraph
         self.num_parts = num_parts
         self.rr = Robin(num_parts)
 
         self.vertex_list = []
 
-        if isinstance(self.hgr.modules, range):
+        if isinstance(self.hyprgraph.modules, range):
             self.vertex_list = [
-                Lict([Dllink([0, i]) for i in self.hgr]) for _ in range(num_parts)
+                Lict([Dllink([0, i]) for i in self.hyprgraph]) for _ in range(num_parts)
             ]
-        elif isinstance(self.hgr.modules, list):
+        elif isinstance(self.hyprgraph.modules, list):
             self.vertex_list = [
-                {v: Dllink([0, v]) for v in self.hgr} for _ in range(num_parts)
+                {v: Dllink([0, v]) for v in self.hyprgraph} for _ in range(num_parts)
             ]
         else:
             raise NotImplementedError
@@ -71,7 +71,7 @@ class FMKWayGainCalc:
         for vlist in self.vertex_list:
             for vlink in vlist.values():
                 vlink.data[0] = 0
-        for net in self.hgr.nets:
+        for net in self.hyprgraph.nets:
             self._init_gain(net, part)
         return self.totalcost
 
@@ -85,7 +85,7 @@ class FMKWayGainCalc:
         :type part: Part
         :return: nothing.
         """
-        degree = self.hgr.gra.degree[net]
+        degree = self.hyprgraph.gra.degree[net]
         if degree < 2:  # unlikely, self-loop, etc.
             return  # does not provide any gain when move
         if degree > 3:
@@ -119,12 +119,12 @@ class FMKWayGainCalc:
         indicates the partition to which the node belongs
         :type part: Part
         """
-        net_cur = iter(self.hgr.gra[net])
+        net_cur = iter(self.hyprgraph.gra[net])
         w = next(net_cur)
         v = next(net_cur)
         part_w = part[w]
         part_v = part[v]
-        weight = self.hgr.get_net_weight(net)
+        weight = self.hyprgraph.get_net_weight(net)
         if part_v == part_w:
             for a in [w, v]:
                 self._modify_gain(a, part_v, -weight)
@@ -144,14 +144,14 @@ class FMKWayGainCalc:
         :type part: Part
         :return: The function does not explicitly return anything.
         """
-        net_cur = iter(self.hgr.gra[net])
+        net_cur = iter(self.hyprgraph.gra[net])
         w = next(net_cur)
         v = next(net_cur)
         u = next(net_cur)
         part_w = part[w]
         part_v = part[v]
         part_u = part[u]
-        weight = self.hgr.get_net_weight(net)
+        weight = self.hyprgraph.get_net_weight(net)
         if part_u == part_v:
             if part_w == part_v:
                 for a in [u, v, w]:
@@ -187,10 +187,10 @@ class FMKWayGainCalc:
         :type part: Part
         """
         num = [0] * self.num_parts
-        for w in self.hgr.gra[net]:
+        for w in self.hyprgraph.gra[net]:
             num[part[w]] += 1
 
-        weight = self.hgr.get_net_weight(net)
+        weight = self.hyprgraph.get_net_weight(net)
 
         for c in num:
             if c > 0:
@@ -199,10 +199,10 @@ class FMKWayGainCalc:
 
         for k, c in enumerate(num):
             if c == 0:
-                for w in self.hgr.gra[net]:
+                for w in self.hyprgraph.gra[net]:
                     self.vertex_list[k][w].data[0] -= weight
             elif c == 1:
-                for w in self.hgr.gra[net]:
+                for w in self.hyprgraph.gra[net]:
                     if part[w] == k:
                         self._modify_gain(w, part[w], weight)
                         break
@@ -225,11 +225,11 @@ class FMKWayGainCalc:
         :return: the value of the variable "w".
         """
         net, v, from_part, to_part = move_info
-        net_cur = iter(self.hgr.gra[net])
+        net_cur = iter(self.hyprgraph.gra[net])
         u = next(net_cur)
         w = u if u != v else next(net_cur)
         part_w = part[w]
-        weight = self.hgr.get_net_weight(net)
+        weight = self.hyprgraph.get_net_weight(net)
         self.delta_gain_w = [0] * self.num_parts
 
         for l_part in [from_part, to_part]:
@@ -245,12 +245,12 @@ class FMKWayGainCalc:
     def init_idx_vec(self, v, net):
         """
         The function `init_idx_vec` initializes the `idx_vec` attribute by creating a list of all elements
-        in `self.hgr.gra[net]` except for `v`.
+        in `self.hyprgraph.gra[net]` except for `v`.
 
         :param v: The parameter `v` represents a vertex in the graph `net`
         :param net: The parameter "net" is a variable that represents a network or graph
         """
-        self.idx_vec = [w for w in self.hgr.gra[net] if w != v]
+        self.idx_vec = [w for w in self.hyprgraph.gra[net] if w != v]
 
     def update_move_3pin_net(self, part, move_info):
         """Update move for 3-pin net
@@ -269,7 +269,7 @@ class FMKWayGainCalc:
         degree = len(self.idx_vec)
         delta_gain = list([0] * self.num_parts for _ in range(degree))
 
-        weight = self.hgr.get_net_weight(net)
+        weight = self.hyprgraph.get_net_weight(net)
 
         l, u = from_part, to_part
 
@@ -327,7 +327,7 @@ class FMKWayGainCalc:
         degree = len(self.idx_vec)
         delta_gain = list([0] * self.num_parts for _ in range(degree))
 
-        weight = self.hgr.get_net_weight(net)
+        weight = self.hyprgraph.get_net_weight(net)
 
         l, u = from_part, to_part
         for _ in [0, 1]:

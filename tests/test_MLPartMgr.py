@@ -4,63 +4,67 @@ from ckpttnpy.MLPartMgr import MLBiPartMgr, MLKWayPartMgr
 from ckpttnpy.netlist import Netlist, create_drawf, read_json
 
 
-def run_MLBiPartMgr(hgr: Netlist):
+def run_MLBiPartMgr(hyprgraph: Netlist):
     part_mgr = MLBiPartMgr(0.4)
-    # part_mgr.limitsize = 2000
-    randseq = [randint(0, 1) for _ in hgr]
+    # try: part_mgr.limitsize = 2000
+    randseq = [randint(0, 1) for _ in hyprgraph]
 
-    if isinstance(hgr.modules, range):
+    if isinstance(hyprgraph.modules, range):
         part = randseq
-    elif isinstance(hgr.modules, list):
-        part = {v: k for v, k in zip(hgr.modules, randseq)}
+    elif isinstance(hyprgraph.modules, list):
+        part = {v: k for v, k in zip(hyprgraph.modules, randseq)}
     else:
         raise NotImplementedError
 
-    part_mgr.run_FMPartition(hgr, hgr.module_weight, part)
+    part_mgr.run_FMPartition(hyprgraph, hyprgraph.module_weight, part)
     return part_mgr.totalcost
 
 
 def test_MLBiPartMgr():
-    hgr = create_drawf()
-    run_MLBiPartMgr(hgr)
+    hyprgraph = create_drawf()
+    run_MLBiPartMgr(hyprgraph)
 
 
 def test_MLBiPartMgr2():
-    hgr = read_json("testcases/p1.json")
-    totalcost = run_MLBiPartMgr(hgr)
+    hyprgraph = read_json("testcases/p1.json")
+    totalcost = run_MLBiPartMgr(hyprgraph)
     assert totalcost >= 43
     assert totalcost <= 105
 
 
-def run_MLKWayPartMgr(hgr: Netlist, num_parts: int):
-    """[summary]
-
-    Args:
-        hgr (Netlist): [description]
-        num_parts (int): [description]
-
-    Returns:
-        [type]: [description]
+def run_MLKWayPartMgr(hyprgraph: Netlist, num_parts: int):
+    """
+    The function `run_MLKWayPartMgr` takes a hypergraph and the number of partitions as input, and
+    returns the total cost of the partitioning.
+    
+    :param hyprgraph: The `hyprgraph` parameter is a Netlist object, which represents a hypergraph. It
+    likely contains information about the modules and their connections in the hypergraph
+    :type hyprgraph: Netlist
+    :param num_parts: The `num_parts` parameter represents the number of partitions or parts that the
+    hypergraph should be divided into
+    :type num_parts: int
+    :return: The function `run_MLKWayPartMgr` returns the total cost of the partitioning performed by
+    the `MLKWayPartMgr` object.
     """
     part_mgr = MLKWayPartMgr(0.4, num_parts)
-    # part_mgr.limitsize = 2000
-    randseq = [randint(0, num_parts - 1) for _ in hgr]
+    # try: part_mgr.limitsize = 2000
+    randseq = [randint(0, num_parts - 1) for _ in hyprgraph]
 
-    if isinstance(hgr.modules, range):
+    if isinstance(hyprgraph.modules, range):
         part = randseq
-    elif isinstance(hgr.modules, list):
-        part = {v: k for v, k in zip(hgr.modules, randseq)}
+    elif isinstance(hyprgraph.modules, list):
+        part = {v: k for v, k in zip(hyprgraph.modules, randseq)}
     else:
         raise NotImplementedError
 
-    part_mgr.run_FMPartition(hgr, hgr.module_weight, part)
+    part_mgr.run_FMPartition(hyprgraph, hyprgraph.module_weight, part)
     return part_mgr.totalcost
 
 
 def test_MLKWayPartMgr():
     seed(1234)
-    hgr = read_json("testcases/p1.json")
-    totalcost = run_MLKWayPartMgr(hgr, 3)
+    hyprgraph = read_json("testcases/p1.json")
+    totalcost = run_MLKWayPartMgr(hyprgraph, 3)
     assert totalcost >= 77
     assert totalcost <= 197
 

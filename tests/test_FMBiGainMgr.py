@@ -7,8 +7,8 @@ from ckpttnpy.netlist import Netlist, create_drawf, create_test_netlist
 Part = Union[Dict[Any, int], List[int]]
 
 
-def run_FMBiGainMgr(hgr: Netlist, part: Part):
-    mgr = FMBiGainMgr(FMBiGainCalc, hgr)
+def run_FMBiGainMgr(hyprgraph: Netlist, part: Part):
+    mgr = FMBiGainMgr(FMBiGainCalc, hyprgraph)
     mgr.init(part)
     while not mgr.is_empty():
         # Take the gainmax with v from gainbucket
@@ -23,14 +23,14 @@ def run_FMBiGainMgr(hgr: Netlist, part: Part):
 
 
 def test_FMBiGainMgr():
-    hgr = create_test_netlist()
-    part = {v: 0 for v in hgr}
+    hyprgraph = create_test_netlist()
+    part = {v: 0 for v in hyprgraph}
     part["a1"] = 1
-    run_FMBiGainMgr(hgr, part)
+    run_FMBiGainMgr(hyprgraph, part)
 
 
 def test_FMBiGainMgr2():
-    hgr = create_drawf()
-    part = {v: 0 for v in hgr}
+    hyprgraph = create_drawf()
+    part = {v: 0 for v in hyprgraph}
     part["a1"] = 1
-    run_FMBiGainMgr(hgr, part)
+    run_FMBiGainMgr(hyprgraph, part)

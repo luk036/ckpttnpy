@@ -15,16 +15,16 @@ from ckpttnpy.netlist import (
 Part = Union[Dict[Any, int], List[int]]
 
 
-def run_FMKWayPartMgr(hgr: Netlist, gain_mgr, num_parts, part: Part):
+def run_FMKWayPartMgr(hyprgraph: Netlist, gain_mgr, num_parts, part: Part):
     """[summary]
 
     Arguments:
-        hgr (Netlist):  description
+        hyprgraph (Netlist):  description
         gain_mgr (gain_mgr):  description
         num_parts (int):  number of partitions
     """
-    constr_mgr = FMKWayConstrMgr(hgr, 0.4, hgr.module_weight, num_parts)  # 0.2 ???
-    part_mgr = FMPartMgr(hgr, gain_mgr, constr_mgr)
+    constr_mgr = FMKWayConstrMgr(hyprgraph, 0.4, hyprgraph.module_weight, num_parts)  # 0.2 ???
+    part_mgr = FMPartMgr(hyprgraph, gain_mgr, constr_mgr)
     part_mgr.legalize(part)  # TODO
     totalcostbefore = part_mgr.totalcost
     part_mgr.init(part)
@@ -38,32 +38,32 @@ def run_FMKWayPartMgr(hgr: Netlist, gain_mgr, num_parts, part: Part):
 
 
 def test_FMKWayPartMgr():
-    hgr = create_drawf()
-    gain_mgr = FMKWayGainMgr(FMKWayGainCalc, hgr, 3)
-    hgr.module_fixed = {"p1"}
-    part = {v: 0 for v in hgr}
-    run_FMKWayPartMgr(hgr, gain_mgr, 3, part)
+    hyprgraph = create_drawf()
+    gain_mgr = FMKWayGainMgr(FMKWayGainCalc, hyprgraph, 3)
+    hyprgraph.module_fixed = {"p1"}
+    part = {v: 0 for v in hyprgraph}
+    run_FMKWayPartMgr(hyprgraph, gain_mgr, 3, part)
 
 
 def test_FMKWayPartMgr2():
-    hgr = create_test_netlist()
-    gain_mgr = FMKWayGainMgr(FMKWayGainCalc, hgr, 3)
-    part = {v: 0 for v in hgr}
-    run_FMKWayPartMgr(hgr, gain_mgr, 3, part)
+    hyprgraph = create_test_netlist()
+    gain_mgr = FMKWayGainMgr(FMKWayGainCalc, hyprgraph, 3)
+    part = {v: 0 for v in hyprgraph}
+    run_FMKWayPartMgr(hyprgraph, gain_mgr, 3, part)
 
 
 def test_FMKWayPartMgr3():
-    hgr = create_random_hgraph()
-    gain_mgr = FMKWayGainMgr(FMKWayGainCalc, hgr, 3)
-    part = [0 for _ in hgr]
-    run_FMKWayPartMgr(hgr, gain_mgr, 3, part)
+    hyprgraph = create_random_hgraph()
+    gain_mgr = FMKWayGainMgr(FMKWayGainCalc, hyprgraph, 3)
+    part = [0 for _ in hyprgraph]
+    run_FMKWayPartMgr(hyprgraph, gain_mgr, 3, part)
 
 
 def test_FMKWayPartMgr4():
-    hgr = read_json("testcases/p1.json")
-    gain_mgr = FMKWayGainMgr(FMKWayGainCalc, hgr, 3)
-    part = [0 for _ in hgr]
-    run_FMKWayPartMgr(hgr, gain_mgr, 3, part)
+    hyprgraph = read_json("testcases/p1.json")
+    gain_mgr = FMKWayGainMgr(FMKWayGainCalc, hyprgraph, 3)
+    part = [0 for _ in hyprgraph]
+    run_FMKWayPartMgr(hyprgraph, gain_mgr, 3, part)
 
 
 # if __name__ == "__main__":

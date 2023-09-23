@@ -12,7 +12,7 @@ class FMGainMgr:
 
     # public:
 
-    def __init__(self, GainCalc, hgr, num_parts=2) -> None:
+    def __init__(self, GainCalc, hyprgraph, num_parts=2) -> None:
         """
         The function initializes an object with the given parameters and sets up variables for calculating
         gains.
@@ -20,16 +20,16 @@ class FMGainMgr:
         :param GainCalc: The `GainCalc` parameter is a type or class that is used for calculating the gain
         of a partition in the code. It is passed as an argument to the `__init__` method and stored as an
         instance variable `self.gain_calc`
-        :param hgr: The `hgr` parameter is an object of type `Netlist`. It represents a netlist, which is a
+        :param hyprgraph: The `hyprgraph` parameter is an object of type `Netlist`. It represents a netlist, which is a
         description of the connections between components in a circuit or system
         :param num_parts: The `num_parts` parameter is an integer that represents the number of partitions.
-        It determines how many partitions the algorithm will divide the `hgr` (Netlist) into, defaults to 2
+        It determines how many partitions the algorithm will divide the `hyprgraph` (Netlist) into, defaults to 2
         (optional)
         """
-        self.hgr = hgr
+        self.hyprgraph = hyprgraph
         self.num_parts = num_parts
-        self.gain_calc = GainCalc(hgr, num_parts)
-        self.pmax = self.hgr.get_max_degree()
+        self.gain_calc = GainCalc(hyprgraph, num_parts)
+        self.pmax = self.hyprgraph.get_max_degree()
         self.gainbucket = [BPQueue(-self.pmax, self.pmax) for _ in range(num_parts)]
 
     def init(self, part) -> int:
@@ -107,8 +107,8 @@ class FMGainMgr:
         """
         self.gain_calc.update_move_init()
         v, from_part, to_part = move_info_v
-        for net in self.hgr.gra[v]:
-            degree = self.hgr.gra.degree[net]
+        for net in self.hyprgraph.gra[v]:
+            degree = self.hyprgraph.gra.degree[net]
             if degree < 2:  # unlikely, self-loop, etc.
                 continue  # does not provide any gain change when move
             move_info = [net, v, from_part, to_part]

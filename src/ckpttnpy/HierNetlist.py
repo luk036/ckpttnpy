@@ -66,10 +66,6 @@ class HierNetlist(Netlist):
         :param part_down: The `part_down` parameter is either a dictionary or a list of integers. It
         represents the mapping of nodes in the `self.node_down_list` to their corresponding clusters in the
         `part` parameter
-
-        Args:
-            part (Union[Dict, List[int]]): [description]
-            part_down (Union[Dict, List[int]]): [description]
         """
         num_cells = len(self.node_down_list) - len(self.clusters)
         for v1, v2 in enumerate(self.node_down_list[:num_cells]):
