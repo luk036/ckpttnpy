@@ -23,7 +23,9 @@ def run_FMKWayPartMgr(hyprgraph: Netlist, gain_mgr, num_parts, part: Part):
         gain_mgr (gain_mgr):  description
         num_parts (int):  number of partitions
     """
-    constr_mgr = FMKWayConstrMgr(hyprgraph, 0.4, hyprgraph.module_weight, num_parts)  # 0.2 ???
+    constr_mgr = FMKWayConstrMgr(
+        hyprgraph, 0.4, hyprgraph.module_weight, num_parts
+    )  # 0.2 ???
     part_mgr = FMPartMgr(hyprgraph, gain_mgr, constr_mgr)
     part_mgr.legalize(part)  # TODO
     totalcostbefore = part_mgr.totalcost

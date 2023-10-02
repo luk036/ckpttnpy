@@ -233,7 +233,9 @@ def construct_graph(hyprgraph, nets, cell_list, clusters):
     # Construct a graph for the next level's netlist
     num_cell = len(cell_list)
     node_up_map = {
-        v: i_v + num_cell for i_v, net in enumerate(clusters) for v in hyprgraph.gra[net]
+        v: i_v + num_cell
+        for i_v, net in enumerate(clusters)
+        for v in hyprgraph.gra[net]
     }
     node_up_map.update({v: i_v for i_v, v in enumerate(cell_list)})
     gra = TinyGraph()  # gra is a bipartite graph

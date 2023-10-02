@@ -91,7 +91,7 @@ class FMBiGainCalc:
         """initialize gain for 2-pin net
 
         The function initializes the gain for a 2-pin net in a graph.
-        
+
         :param net: The `net` parameter is a node in the graph representing a net. It is of type
         `node_t`
         :param part: The `part` parameter is a list that represents the partitioning of the nodes in the

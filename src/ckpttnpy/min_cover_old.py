@@ -26,7 +26,9 @@ def min_maximal_matching(hyprgraph, weight, matchset, dep):
     gap = weight.copy()
     total_primal_cost = 0
     total_dual_cost = 0
-    for net in filter(lambda net: not (any_of_dep(net) or (net in matchset)), hyprgraph.nets):
+    for net in filter(
+        lambda net: not (any_of_dep(net) or (net in matchset)), hyprgraph.nets
+    ):
         min_val = gap[net]
         min_net = net
         for v in hyprgraph.gra[net]:
@@ -126,7 +128,9 @@ def contract_subgraph(hyprgraph: Netlist, module_weight, forbid: Set) -> HierNet
 
     # cluster_down_map = {node_up_dict[v]: net
     #     for v, net in cluster_map.items()}
-    cluster_down_map = {node_up_dict[v]: netk for netk in s1 for v in hyprgraph.gra[netk]}
+    cluster_down_map = {
+        node_up_dict[v]: netk for netk in s1 for v in hyprgraph.gra[netk]
+    }
 
     module_weight2 = [0] * num_modules
     for i_v in range(num_modules):
@@ -163,7 +167,9 @@ def contract_subgraph(hyprgraph: Netlist, module_weight, forbid: Set) -> HierNet
     return hgr2, module_weight2
 
 
-def purge_duplicate_nets(hyprgraph, gra, nets, net_up_map, clusters, module_map, num_modules):
+def purge_duplicate_nets(
+    hyprgraph, gra, nets, net_up_map, clusters, module_map, num_modules
+):
     # Purging duplicate nets
     num_nets = len(nets)
     net_weight = dict()

@@ -36,7 +36,7 @@ def run_MLKWayPartMgr(hyprgraph: Netlist, num_parts: int):
     """
     The function `run_MLKWayPartMgr` takes a hypergraph and the number of partitions as input, and
     returns the total cost of the partitioning.
-    
+
     :param hyprgraph: The `hyprgraph` parameter is a Netlist object, which represents a hypergraph. It
     likely contains information about the modules and their connections in the hypergraph
     :type hyprgraph: Netlist
