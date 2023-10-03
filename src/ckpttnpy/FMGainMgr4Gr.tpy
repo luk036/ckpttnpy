@@ -2,8 +2,8 @@
 
 from abc import abstractmethod
 
-from .bpqueue import BPQueue
-from .dllist import Dllink
+from mywheel.bpqueue import BPQueue
+from mywheel.dllist import Dllink
 
 
 class FMGainMgr:

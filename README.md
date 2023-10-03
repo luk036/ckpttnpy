@@ -11,10 +11,16 @@ Circuit Partitioning Python Code
 [![CodeFactor](https://www.codefactor.io/repository/github/luk036/ckpttnpy/badge)](https://www.codefactor.io/repository/github/luk036/ckpttnpy)
 [![Maintainability](https://api.codeclimate.com/v1/badges/2551a7289b83520b6cac/maintainability)](https://codeclimate.com/github/luk036/ckpttnpy/maintainability)
 
+## Dependencies
+
+- [luk036/mywheel](https://github.com/luk036/mywheel)
+- networkx/networkx
+
 ## Installation and Run
 
 To setup develop environment:
 
+    pip install git+https://github.com/luk036/mywheel.git
     pip3 install -r ./requirements.txt &&
     python3 setup.py develop
 

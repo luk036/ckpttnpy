@@ -1,8 +1,8 @@
 from abc import abstractmethod
 from typing import List
 
-from .bpqueue import BPQueue
-from .dllist import Dllink, Dllist
+from mywheel.bpqueue import BPQueue
+from mywheel.dllist import Dllink, Dllist
 
 Item = Dllink[List[int]]
 

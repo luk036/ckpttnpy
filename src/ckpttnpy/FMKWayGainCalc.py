@@ -3,9 +3,9 @@
 from itertools import permutations
 from typing import Any, Dict, List, Union
 
-from .dllist import Dllink
-from .lict import Lict
-from .robin import Robin
+from mywheel.dllist import Dllink
+from mywheel.lict import Lict
+from mywheel.robin import Robin
 
 Part = Union[Dict[Any, int], List[int]]
 

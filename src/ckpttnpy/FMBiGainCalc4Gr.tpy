@@ -2,7 +2,7 @@
 
 from typing import Any, Dict, List, Union
 
-from .dllist import Dllink
+from mywheel.dllist import Dllink
 
 Part = Union[Dict[Any, int], List[int]]
 

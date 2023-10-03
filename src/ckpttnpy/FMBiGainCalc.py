@@ -1,7 +1,7 @@
 from typing import Any, Dict, List, Union
 
-from .dllist import Dllink
-from .lict import Lict
+from mywheel.dllist import Dllink
+from mywheel.lict import Lict
 
 # from collections import Mapping
 
