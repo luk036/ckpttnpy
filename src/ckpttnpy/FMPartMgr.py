@@ -3,6 +3,7 @@
 from typing import Any, Dict, List, Union
 
 from mywheel.lict import Lict
+
 from .PartMgrBase import PartMgrBase
 
 Part = Union[Dict[Any, int], List[int]]

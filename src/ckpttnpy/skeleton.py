@@ -109,7 +109,7 @@ def setup_logging(loglevel):
         level=loglevel,
         stream=sys.stdout,
         format=logformat,
-        datefmt="%Y-%m-%d %hyprgraph:%M:%S",
+        datefmt="%Y-%m-%d %H:%M:%S",
     )
 
 

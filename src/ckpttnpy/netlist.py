@@ -3,11 +3,10 @@ import random
 from typing import Any, Dict, List, Optional, Union
 
 import networkx as nx
-from networkx.algorithms import bipartite
-from networkx.readwrite import json_graph
-
 from mywheel.array_like import RepeatArray
 from mywheel.lict import Lict
+from networkx.algorithms import bipartite
+from networkx.readwrite import json_graph
 
 
 # The `ThinGraph` class is a subclass of `nx.Graph` that defines default attributes for edges and
