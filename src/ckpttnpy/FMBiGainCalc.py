@@ -11,7 +11,8 @@ Part = Union[Dict[Any, int], List[int]]
 class FMBiGainCalc:
     """The FMBiGainCalc class is used for calculating the bipartition gain."""
 
-    __slots__ = ("totalcost", "hyprgraph", "vertex_list", "idx_vec", "delta_gain_w")
+    __slots__ = ("totalcost", "hyprgraph", "vertex_list",
+                 "idx_vec", "delta_gain_w")
 
     # public:
 
@@ -276,11 +277,13 @@ class FMBiGainCalc:
             elif num[l_part] == 1:
                 # from: [w1, w2, w3 ..., v] | [w]
                 # to: [w1, w2, w3 ... ] | [v, w]
-                for index in range(degree):
+                index = 0
+                while True:
                     part_w = part[self.idx_vec[index]]
                     if part_w == l_part:
                         delta_gain[index] += gain
                         break
+                    index += 1
             gain = -gain
 
         return delta_gain

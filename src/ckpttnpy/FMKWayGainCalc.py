@@ -338,12 +338,14 @@ class FMKWayGainCalc:
                     for k in range(self.num_parts):
                         self.delta_gain_v[k] -= weight
             elif num[l] == 1:
-                for index in range(degree):
+                index = 0
+                while True:
                     part_w = part[self.idx_vec[index]]
                     if part_w == l:
                         for k in range(self.num_parts):
                             delta_gain[index][k] += weight
                         break
+                    index += 1
             weight = -weight
             l, u = u, l
 
