@@ -43,16 +43,16 @@ class FMGainMgr:
         self.waitinglist.clear()
         return totalcost
 
-    def is_empty_togo(self, to_part) -> bool:
-        """
-        The function `is_empty_togo` checks if a specific part in a gainbucket is empty.
-
-        :param to_part: The `to_part` parameter is of type `uint8_t`, which typically represents an unsigned
-        8-bit integer
-        :return: a boolean value, which indicates whether the gainbucket at the specified to_part index is
-        empty or not.
-        """
-        return self.gainbucket[to_part]._max == 0  # is_empty()
+    # def is_empty_togo(self, to_part) -> bool:
+    #     """
+    #     The function `is_empty_togo` checks if a specific part in a gainbucket is empty.
+    #
+    #     :param to_part: The `to_part` parameter is of type `uint8_t`, which typically represents an unsigned
+    #     8-bit integer
+    #     :return: a boolean value, which indicates whether the gainbucket at the specified to_part index is
+    #     empty or not.
+    #     """
+    #     return self.gainbucket[to_part]._max == 0  # is_empty()
 
     def is_empty(self) -> bool:
         """
@@ -133,7 +133,6 @@ class FMGainMgr:
         :param key: The `key` parameter is of type `int` or `int[]`. It represents a key that will be
         modified in some way
         """
-        pass
 
     # private:
 

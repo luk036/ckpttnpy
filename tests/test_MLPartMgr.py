@@ -7,6 +7,7 @@ from ckpttnpy.netlist import Netlist, create_drawf, read_json
 def run_MLBiPartMgr(hyprgraph: Netlist):
     part_mgr = MLBiPartMgr(0.4)
     # try: part_mgr.limitsize = 2000
+    part_mgr.limitsize = 7
     randseq = [randint(0, 1) for _ in hyprgraph]
 
     if isinstance(hyprgraph.modules, range):

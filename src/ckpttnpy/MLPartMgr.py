@@ -117,14 +117,14 @@ class MLPartMgr:
             self.totalcost = totalcost
             return legalcheck
 
-        if hyprgraph.number_of_modules() >= self._limitsize:  # OK
+        if hyprgraph.number_of_modules() >= self.limitsize:  # OK
             hgr2, module_weight2 = contract_subgraph(hyprgraph, module_weight, set())
-            if hgr2.number_of_modules() <= hyprgraph.number_of_modules():
-                part2 = [0] * hgr2.number_of_modules()
-                hgr2.projection_up(part, part2)
-                legalcheck_recur = self.run_FMPartition(hgr2, module_weight2, part2)
-                if legalcheck_recur == LegalCheck.AllSatisfied:
-                    hgr2.projection_down(part2, part)
+            # try: if 3 * hgr2.number_of_modules() <= 2 * hyprgraph.number_of_modules():
+            part2 = [0] * hgr2.number_of_modules()
+            hgr2.projection_up(part, part2)
+            legalcheck_recur = self.run_FMPartition(hgr2, module_weight2, part2)
+            if legalcheck_recur == LegalCheck.AllSatisfied:
+                hgr2.projection_down(part2, part)
 
         self.totalcost = optimize_fn()
         assert self.totalcost >= 0

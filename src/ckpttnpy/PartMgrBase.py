@@ -169,7 +169,6 @@ class PartMgrBase:
         for which a snapshot needs to be taken
         :type part: Part
         """
-        pass
 
     @abstractmethod
     def restore_part_info(self, snapshot, part: Part):
@@ -182,4 +181,3 @@ class PartMgrBase:
         :param part: The "part" parameter is of type "Part"
         :type part: Part
         """
-        pass
