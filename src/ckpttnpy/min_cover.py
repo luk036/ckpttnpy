@@ -275,12 +275,14 @@ def reconstruct_graph(hyprgraph, gra, nets, num_clusters, num_modules):
             assert net >= num_modules
             assert net < num_modules + len(nets)
             gr2.add_edge(v, num_modules + i_net)
-    # Update net weight
+
+    # Update net weight (@todo: check if it is neccessary)
     net_weight2 = {}
     for i_net, net in enumerate(updated_nets):
         if net not in net_weight:
             continue
         net_weight2[i_net] = net_weight[net]
+
     return gr2, net_weight2, num_nets
 
 
@@ -330,7 +332,8 @@ def purge_duplicate_nets(hyprgraph, gra, nets, num_clusters, num_modules):
                         same = True
                 if same:
                     removelist.add(net2)
-                    net_weight[net1] = net_weight.get(net1, 1) + net_weight.get(net2, 1)
+                    net_weight[net1] = net_weight.get(
+                        net1, 1) + net_weight.get(net2, 1)
     # gra.remove_nodes_from(removelist)
     print("removed {} nets".format(len(removelist)))
     gr_nets = range(num_modules, num_modules + len(nets))

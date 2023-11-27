@@ -167,7 +167,9 @@ class FMBiGainCalc:
                 for w in self.hyprgraph.gra[net]:
                     self._modify_gain(w, -weight)
             elif num[k] == 1:
-                for w in self.hyprgraph.gra[net]:
+                cur = iter(self.hyprgraph.gra[net])
+                while True:
+                    w = next(cur)
                     if part[w] == k:
                         self._modify_gain(w, weight)
                         break
