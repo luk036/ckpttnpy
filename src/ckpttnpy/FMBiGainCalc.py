@@ -11,8 +11,7 @@ Part = Union[Dict[Any, int], List[int]]
 class FMBiGainCalc:
     """The FMBiGainCalc class is used for calculating the bipartition gain."""
 
-    __slots__ = ("totalcost", "hyprgraph", "vertex_list",
-                 "idx_vec", "delta_gain_w")
+    __slots__ = ("totalcost", "hyprgraph", "vertex_list", "idx_vec", "delta_gain_w")
 
     # public:
 
@@ -168,11 +167,10 @@ class FMBiGainCalc:
                     self._modify_gain(w, -weight)
             elif num[k] == 1:
                 cur = iter(self.hyprgraph.gra[net])
-                while True:
+                w = next(cur)
+                while part[w] != k:
                     w = next(cur)
-                    if part[w] == k:
-                        self._modify_gain(w, weight)
-                        break
+                self._modify_gain(w, weight)
 
     def update_move_init(self) -> None:
         """
@@ -275,17 +273,14 @@ class FMBiGainCalc:
                 # to: [w1, w2, w3 ... ] | [v]
                 for index in range(degree):
                     delta_gain[index] -= gain
-                return delta_gain
+                return delta_gain  # no need for further check
             elif num[l_part] == 1:
                 # from: [w1, w2, w3 ..., v] | [w]
                 # to: [w1, w2, w3 ... ] | [v, w]
                 index = 0
-                while True:
-                    part_w = part[self.idx_vec[index]]
-                    if part_w == l_part:
-                        delta_gain[index] += gain
-                        break
+                while part[self.idx_vec[index]] != l_part:
                     index += 1
+                delta_gain[index] += gain
             gain = -gain
 
         return delta_gain

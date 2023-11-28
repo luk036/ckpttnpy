@@ -63,9 +63,9 @@ def test_FMKWayPartMgr3():
 
 def test_FMKWayPartMgr4():
     hyprgraph = read_json("testcases/p1.json")
-    gain_mgr = FMKWayGainMgr(FMKWayGainCalc, hyprgraph, 3)
+    gain_mgr = FMKWayGainMgr(FMKWayGainCalc, hyprgraph, 5)
     part = [0 for _ in hyprgraph]
-    run_FMKWayPartMgr(hyprgraph, gain_mgr, 3, part)
+    run_FMKWayPartMgr(hyprgraph, gain_mgr, 5, part)
 
 
 # if __name__ == "__main__":

@@ -204,11 +204,10 @@ class FMKWayGainCalc:
             elif c == 1:
                 # for w in self.hyprgraph.gra[net]:
                 cur = iter(self.hyprgraph.gra[net])
-                while True:
+                w = next(cur)
+                while part[w] != k:
                     w = next(cur)
-                    if part[w] == k:
-                        self._modify_gain(w, part[w], weight)
-                        break
+                self._modify_gain(w, part[w], weight)
 
     def update_move_init(self):
         """
@@ -342,13 +341,10 @@ class FMKWayGainCalc:
                         self.delta_gain_v[k] -= weight
             elif num[l] == 1:
                 index = 0
-                while True:
-                    part_w = part[self.idx_vec[index]]
-                    if part_w == l:
-                        for k in range(self.num_parts):
-                            delta_gain[index][k] += weight
-                        break
+                while part[self.idx_vec[index]] != l:
                     index += 1
+                for k in range(self.num_parts):
+                    delta_gain[index][k] += weight
             weight = -weight
             l, u = u, l
 

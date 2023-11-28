@@ -332,8 +332,7 @@ def purge_duplicate_nets(hyprgraph, gra, nets, num_clusters, num_modules):
                         same = True
                 if same:
                     removelist.add(net2)
-                    net_weight[net1] = net_weight.get(
-                        net1, 1) + net_weight.get(net2, 1)
+                    net_weight[net1] = net_weight.get(net1, 1) + net_weight.get(net2, 1)
     # gra.remove_nodes_from(removelist)
     print("removed {} nets".format(len(removelist)))
     gr_nets = range(num_modules, num_modules + len(nets))
