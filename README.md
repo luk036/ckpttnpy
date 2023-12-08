@@ -20,7 +20,7 @@ Circuit Partitioning Python Code
 
 To setup develop environment:
 
-    pip install git+https://github.com/luk036/mywheel.git
+    pip3 install git+https://github.com/luk036/mywheel.git
     pip3 install -r ./requirements.txt &&
     python3 setup.py develop
 

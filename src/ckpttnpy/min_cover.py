@@ -4,14 +4,16 @@ Notes:
     they treat the same node in the underlying graph.
 """
 import copy
-from typing import MutableMapping, Optional, Set, Tuple, Union
-
+from typing import MutableMapping, Optional, Set, Tuple, Union, List
+from typing import TypeVar
 from .HierNetlist import HierNetlist
 from .netlist import Netlist, TinyGraph
+from .netlist_algo import min_maximal_matching
 
+Node = TypeVar("Node")  # Hashable
 
 def min_maximal_matching(
-    hyprgraph,
+    hyprgraph: Netlist,
     weight: MutableMapping,
     matchset: Optional[Set] = None,
     dep: Optional[Set] = None,
@@ -22,6 +24,7 @@ def min_maximal_matching(
 
     :param hyprgraph: The `hyprgraph` parameter is an object representing a hypergraph. It likely contains
     information about the vertices and edges of the hypergraph
+    :type hyprgraph: Netlist
     :param weight: The `weight` parameter is a mutable mapping that represents the weight of each net in
     the hypergraph. It is used to determine the cost of each net in the matching
     :type weight: MutableMapping
@@ -84,56 +87,15 @@ def min_maximal_matching(
     return matchset, total_primal_cost
 
 
-# def min_maximal_matching_old(hyprgraph, weight, matchset, dep):
-#     """Perform minimum weighted maximal matching
-#        using primal-dual approximation algorithm
-
-#     Returns:
-#         [type]: [description]
-#     """
-
-#     def cover(net):
-#         for v in hyprgraph.gra[net]:
-#             dep.add(v)
-
-#     def any_of_dep(net):
-#         return any(v in dep for v in hyprgraph.gra[net])
-
-#     gap = weight.copy()
-#     total_primal_cost = 0
-#     total_dual_cost = 0
-#     for net in filter(lambda net: not (any_of_dep(net) or (net in matchset)),
-#                       hyprgraph.nets):
-#         min_val = gap[net]
-#         min_net = net
-#         for v in hyprgraph.gra[net]:
-#             for net2 in filter(lambda net2: not any_of_dep(net2), hyprgraph.gra[v]):
-#                 if min_val > gap[net2]:
-#                     min_val = gap[net2]
-#                     min_net = net2
-#         cover(min_net)
-#         matchset.add(min_net)
-#         total_primal_cost += weight[min_net]
-#         total_dual_cost += min_val
-#         if min_net == net:
-#             continue
-#         gap[net] -= min_val
-#         for v in hyprgraph.gra[net]:
-#             for net2 in hyprgraph.gra[v]:
-#                 # if net2 == net:
-#                 #     continue
-#                 gap[net2] -= min_val
-#     assert total_dual_cost <= total_primal_cost
-#     return total_primal_cost
-
-
-def setup(hyprgraph, cluster_weight, forbid):
+def setup(hyprgraph: Netlist, cluster_weight: MutableMapping, forbid: Optional[Set]
+) -> Tuple[List, List, List]:
     """
     The `setup` function takes in a hypergraph `hyprgraph`, cluster weights `cluster_weight`, and a set of
     forbidden dependencies `forbid`, and returns a tuple containing the clusters, nets, and cell list.
 
     :param hyprgraph: The parameter "hyprgraph" is likely an input graph or hypergraph. It represents the
     connections between cells or nodes in a system
+    :type hyprgraph: Netlist
     :param cluster_weight: The parameter "cluster_weight" represents the weight of each cluster in the
     hypergraph. It is used in the min_maximal_matching function to determine the matching with the
     minimum weight
@@ -157,13 +119,14 @@ def setup(hyprgraph, cluster_weight, forbid):
     return clusters, nets, cell_list
 
 
-def construct_graph(hyprgraph, nets, cell_list, clusters):
+def construct_graph(hyprgraph: Netlist, nets, cell_list, clusters):
     """
     The function constructs a bipartite graph based on a given hypergraph, netlist, cell list, and
     clusters.
 
     :param hyprgraph: The parameter `hyprgraph` is likely an object representing a hypergraph. It is used to access
     the connections between cells and nets
+    :type hyprgraph: Netlist
     :param nets: The `nets` parameter is a list of nets. Each net is represented as a list of cells that
     are connected by the net. For example, if there are two nets, the `nets` parameter could be:
     :param cell_list: The `cell_list` parameter is a list of cells in the circuit. Each cell represents
@@ -191,13 +154,14 @@ def construct_graph(hyprgraph, nets, cell_list, clusters):
     return gra
 
 
-def purge_duplicate_nets(hyprgraph, gra, nets, num_clusters, num_modules):
+def purge_duplicate_nets(hyprgraph: Netlist, gra, nets, num_clusters, num_modules):
     """
     The function `purge_duplicate_nets` removes duplicate nets from a graph and returns the updated net
     weights and list of nets.
 
     :param hyprgraph: The `hyprgraph` parameter is an object that represents a hypergraph. It likely has methods to
     access information about the hypergraph, such as the weight of a net
+    :type hyprgraph: Netlist
     :param gra: The variable `gra` represents a graph where each node represents a cluster and each edge
     represents a net connecting two clusters. The graph `gra` is represented as an adjacency list, where
     `gra[cluster]` returns a list of nets connected to the cluster
@@ -245,12 +209,13 @@ def purge_duplicate_nets(hyprgraph, gra, nets, num_clusters, num_modules):
     return net_weight, updated_nets
 
 
-def reconstruct_graph(hyprgraph, gra, nets, num_clusters, num_modules):
+def reconstruct_graph(hyprgraph: Netlist, gra, nets, num_clusters, num_modules):
     """
     The function reconstructs a new graph by purging duplicate nets and updating net weights.
 
     :param hyprgraph: The `hyprgraph` parameter is a hypergraph representation of the graph. It is a dictionary
     where the keys are the nodes of the graph and the values are the hyperedges that the node belongs to
+    :type hyprgraph: Netlist
     :param gra: gra is a dictionary that represents the connections between modules and nets in the
     original graph. The keys of the dictionary are the module indices, and the values are lists of net
     indices that the module is connected to
