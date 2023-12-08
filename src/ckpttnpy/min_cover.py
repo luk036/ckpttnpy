@@ -127,62 +127,6 @@ def min_maximal_matching(
 #     return total_primal_cost
 
 
-def contract_subgraph(hyprgraph: Netlist, module_weight, forbid: Set):
-    """
-    The `contract_subgraph` function takes a hierarchical netlist, module weights, and a set of
-    forbidden nets as input, and returns a contracted hierarchical netlist with updated module weights.
-
-    :param hyprgraph: The `hyprgraph` parameter is a Netlist object, which represents a hierarchical graph. It
-    contains information about the modules (cells) and their connections (nets) in the graph
-    :type hyprgraph: Netlist
-    :param module_weight: The `module_weight` parameter is a dictionary that assigns a weight to each
-    module in the netlist. The weight represents the importance or size of the module
-    :param forbid: The `forbid` parameter is a set that contains the nets that should not be contracted.
-    These nets will remain as separate entities in the resulting hierarchical netlist
-    :type forbid: Set
-    :return: The function `contract_subgraph` returns a tuple containing the contracted hierarchical
-    netlist (`hgr2`) and the updated module weights (`module_weight2`).
-    """
-    cluster_weight = {
-        net: sum(module_weight[v] for v in hyprgraph.gra[net]) for net in hyprgraph.nets
-    }  # can be done in parallel
-
-    clusters, nets, cell_list = setup(hyprgraph, cluster_weight, forbid)
-    # Construct a graph for the next level's netlist
-    gra = construct_graph(hyprgraph, nets, cell_list, clusters)
-
-    num_modules = len(cell_list) + len(clusters)
-    num_clusters = len(clusters)
-
-    gr2, net_weight2, num_nets = reconstruct_graph(
-        hyprgraph, gra, nets, num_clusters, num_modules
-    )
-
-    nets.clear()  # no more nets
-
-    hgr2 = HierNetlist(
-        gr2, range(num_modules), range(num_modules, num_modules + num_nets)
-    )
-
-    # Update module_weight
-    module_weight2 = [0] * num_modules
-    num_cells = num_modules - num_clusters
-    for v, v2 in enumerate(cell_list):
-        module_weight2[v] = module_weight[v2]
-    for i_v, net in enumerate(clusters):
-        module_weight2[num_cells + i_v] = cluster_weight[net]
-
-    node_down_list = cell_list
-    node_down_list += [next(iter(hyprgraph.gra[net])) for net in clusters]
-
-    hgr2.clusters = clusters
-    hgr2.node_down_list = node_down_list
-    hgr2.module_weight = module_weight2
-    hgr2.net_weight = net_weight2
-    hgr2.parent = hyprgraph
-    return hgr2, module_weight2
-
-
 def setup(hyprgraph, cluster_weight, forbid):
     """
     The `setup` function takes in a hypergraph `hyprgraph`, cluster weights `cluster_weight`, and a set of
@@ -247,45 +191,6 @@ def construct_graph(hyprgraph, nets, cell_list, clusters):
     return gra
 
 
-def reconstruct_graph(hyprgraph, gra, nets, num_clusters, num_modules):
-    """
-    The function reconstructs a new graph by purging duplicate nets and updating net weights.
-
-    :param hyprgraph: The `hyprgraph` parameter is a hypergraph representation of the graph. It is a dictionary
-    where the keys are the nodes of the graph and the values are the hyperedges that the node belongs to
-    :param gra: gra is a dictionary that represents the connections between modules and nets in the
-    original graph. The keys of the dictionary are the module indices, and the values are lists of net
-    indices that the module is connected to
-    :param nets: The `nets` parameter is a list of nets, where each net is represented as a list of
-    nodes. Each node is an integer representing a module in the graph
-    :param num_clusters: The parameter `num_clusters` represents the number of clusters in the graph
-    :param num_modules: The number of modules in the graph
-    :return: three values: `gr2`, `net_weight2`, and `num_nets`.
-    """
-    # Purging duplicate nets
-    net_weight, updated_nets = purge_duplicate_nets(
-        hyprgraph, gra, nets, num_clusters, num_modules
-    )
-    # Reconstruct a new graph with purged nets
-    num_nets = len(updated_nets)
-    gr2 = TinyGraph()
-    gr2.init_nodes(num_modules + num_nets)
-    for i_net, net in enumerate(updated_nets):
-        for v in gra[net]:
-            assert net >= num_modules
-            assert net < num_modules + len(nets)
-            gr2.add_edge(v, num_modules + i_net)
-
-    # Update net weight (@todo: check if it is neccessary)
-    net_weight2 = {}
-    for i_net, net in enumerate(updated_nets):
-        if net not in net_weight:
-            continue
-        net_weight2[i_net] = net_weight[net]
-
-    return gr2, net_weight2, num_nets
-
-
 def purge_duplicate_nets(hyprgraph, gra, nets, num_clusters, num_modules):
     """
     The function `purge_duplicate_nets` removes duplicate nets from a graph and returns the updated net
@@ -338,3 +243,100 @@ def purge_duplicate_nets(hyprgraph, gra, nets, num_clusters, num_modules):
     gr_nets = range(num_modules, num_modules + len(nets))
     updated_nets = [net for net in gr_nets if net not in removelist]
     return net_weight, updated_nets
+
+
+def reconstruct_graph(hyprgraph, gra, nets, num_clusters, num_modules):
+    """
+    The function reconstructs a new graph by purging duplicate nets and updating net weights.
+
+    :param hyprgraph: The `hyprgraph` parameter is a hypergraph representation of the graph. It is a dictionary
+    where the keys are the nodes of the graph and the values are the hyperedges that the node belongs to
+    :param gra: gra is a dictionary that represents the connections between modules and nets in the
+    original graph. The keys of the dictionary are the module indices, and the values are lists of net
+    indices that the module is connected to
+    :param nets: The `nets` parameter is a list of nets, where each net is represented as a list of
+    nodes. Each node is an integer representing a module in the graph
+    :param num_clusters: The parameter `num_clusters` represents the number of clusters in the graph
+    :param num_modules: The number of modules in the graph
+    :return: three values: `gr2`, `net_weight2`, and `num_nets`.
+    """
+    # Purging duplicate nets
+    net_weight, updated_nets = purge_duplicate_nets(
+        hyprgraph, gra, nets, num_clusters, num_modules
+    )
+    # Reconstruct a new graph with purged nets
+    num_nets = len(updated_nets)
+    gr2 = TinyGraph()
+    gr2.init_nodes(num_modules + num_nets)
+    for i_net, net in enumerate(updated_nets):
+        for v in gra[net]:
+            assert net >= num_modules
+            assert net < num_modules + len(nets)
+            gr2.add_edge(v, num_modules + i_net)
+
+    # Update net weight (@todo: check if it is neccessary)
+    net_weight2 = {}
+    for i_net, net in enumerate(updated_nets):
+        if net not in net_weight:
+            continue
+        net_weight2[i_net] = net_weight[net]
+
+    return gr2, net_weight2, num_nets
+
+
+def contract_subgraph(hyprgraph: Netlist, module_weight, forbid: Set):
+    """
+    The `contract_subgraph` function takes a hierarchical netlist, module weights, and a set of
+    forbidden nets as input, and returns a contracted hierarchical netlist with updated module weights.
+
+    :param hyprgraph: The `hyprgraph` parameter is a Netlist object, which represents a hierarchical graph. It
+    contains information about the modules (cells) and their connections (nets) in the graph
+    :type hyprgraph: Netlist
+    :param module_weight: The `module_weight` parameter is a dictionary that assigns a weight to each
+    module in the netlist. The weight represents the importance or size of the module
+    :param forbid: The `forbid` parameter is a set that contains the nets that should not be contracted.
+    These nets will remain as separate entities in the resulting hierarchical netlist
+    :type forbid: Set
+    :return: The function `contract_subgraph` returns a tuple containing the contracted hierarchical
+    netlist (`hgr2`) and the updated module weights (`module_weight2`).
+    """
+    cluster_weight = {
+        net: sum(module_weight[v] for v in hyprgraph.gra[net]) for net in hyprgraph.nets
+    }  # can be done in parallel
+
+    clusters, nets, cell_list = setup(hyprgraph, cluster_weight, forbid)
+    # Construct a graph for the next level's netlist
+    gra = construct_graph(hyprgraph, nets, cell_list, clusters)
+
+    num_modules = len(cell_list) + len(clusters)
+    num_clusters = len(clusters)
+
+    gr2, net_weight2, num_nets = reconstruct_graph(
+        hyprgraph, gra, nets, num_clusters, num_modules
+    )
+
+    nets.clear()  # no more nets
+
+    hgr2 = HierNetlist(
+        gr2, range(num_modules), range(num_modules, num_modules + num_nets)
+    )
+
+    # Update module_weight
+    module_weight2 = [0] * num_modules
+    num_cells = num_modules - num_clusters
+    for v, v2 in enumerate(cell_list):
+        module_weight2[v] = module_weight[v2]
+    for i_v, net in enumerate(clusters):
+        module_weight2[num_cells + i_v] = cluster_weight[net]
+
+    node_down_list = cell_list
+    node_down_list += [next(iter(hyprgraph.gra[net])) for net in clusters]
+
+    hgr2.clusters = clusters
+    hgr2.node_down_list = node_down_list
+    hgr2.module_weight = module_weight2
+    hgr2.net_weight = net_weight2
+    hgr2.parent = hyprgraph
+    return hgr2, module_weight2
+
+
