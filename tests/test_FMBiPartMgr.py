@@ -4,7 +4,7 @@ from ckpttnpy.FMBiConstrMgr import FMBiConstrMgr
 from ckpttnpy.FMBiGainCalc import FMBiGainCalc
 from ckpttnpy.FMBiGainMgr import FMBiGainMgr
 from ckpttnpy.FMPartMgr import FMPartMgr
-from ckpttnpy.netlist import (
+from netlistx.netlist import (
     Netlist,
     create_drawf,
     create_random_hgraph,

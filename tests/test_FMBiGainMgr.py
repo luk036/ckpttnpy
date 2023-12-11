@@ -2,7 +2,7 @@ from typing import Any, Dict, List, Union
 
 from ckpttnpy.FMBiGainCalc import FMBiGainCalc
 from ckpttnpy.FMBiGainMgr import FMBiGainMgr
-from ckpttnpy.netlist import Netlist, create_drawf, create_test_netlist
+from netlistx.netlist import Netlist, create_drawf, create_test_netlist
 
 Part = Union[Dict[Any, int], List[int]]
 

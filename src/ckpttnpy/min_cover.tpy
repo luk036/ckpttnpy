@@ -3,7 +3,7 @@ from typing import List, Set
 import networkx as nx
 
 from .HierNetlist import HierNetlist
-from .netlist import Netlist
+from netlistx.netlist import Netlist
 
 # from .minhash import MinHash
 

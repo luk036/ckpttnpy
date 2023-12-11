@@ -7,8 +7,8 @@ import copy
 from typing import MutableMapping, Optional, Set, Tuple, Union, List
 from typing import TypeVar
 from .HierNetlist import HierNetlist
-from .netlist import Netlist, TinyGraph
-from .netlist_algo import min_maximal_matching
+from netlistx.netlist import Netlist, TinyGraph
+from netlistx.netlist_algo import min_maximal_matching
 
 Node = TypeVar("Node")  # Hashable
 

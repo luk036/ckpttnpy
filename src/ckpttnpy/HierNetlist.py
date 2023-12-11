@@ -2,7 +2,7 @@ from typing import Any, List
 
 import networkx as nx
 
-from .netlist import Netlist
+from netlistx.netlist import Netlist
 
 # from typing import Mapping, MutableMapping
 

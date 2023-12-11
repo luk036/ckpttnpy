@@ -9,7 +9,7 @@ import networkx as nx
 
 from ckpttnpy import __version__
 from ckpttnpy.MLPartMgr import MLBiPartMgr
-from ckpttnpy.netlist import Netlist, read_json
+from netlistx.netlist import Netlist, read_json
 
 __author__ = "Wai-Shing Luk"
 __copyright__ = "Wai-Shing Luk"

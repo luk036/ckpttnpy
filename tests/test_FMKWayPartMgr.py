@@ -4,7 +4,7 @@ from ckpttnpy.FMKWayConstrMgr import FMKWayConstrMgr
 from ckpttnpy.FMKWayGainCalc import FMKWayGainCalc
 from ckpttnpy.FMKWayGainMgr import FMKWayGainMgr
 from ckpttnpy.FMPartMgr import FMPartMgr
-from ckpttnpy.netlist import (
+from netlistx.netlist import (
     Netlist,
     create_drawf,
     create_random_hgraph,

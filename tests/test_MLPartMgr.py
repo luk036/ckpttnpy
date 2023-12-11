@@ -1,7 +1,7 @@
 from random import randint, seed
 
 from ckpttnpy.MLPartMgr import MLBiPartMgr, MLKWayPartMgr
-from ckpttnpy.netlist import Netlist, create_drawf, read_json
+from netlistx.netlist import Netlist, create_drawf, read_json
 
 
 def run_MLBiPartMgr(hyprgraph: Netlist):

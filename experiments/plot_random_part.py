@@ -8,7 +8,7 @@ import networkx as nx
 
 from ckpttnpy import __version__
 from ckpttnpy.MLPartMgr import MLBiPartMgr
-from ckpttnpy.netlist import Netlist, create_random_hgraph
+from netlistx.netlist import Netlist, create_random_hgraph
 
 __author__ = "Wai-Shing Luk"
 __copyright__ = "Wai-Shing Luk"

@@ -14,6 +14,7 @@ Circuit Partitioning Python Code
 ## Dependencies
 
 - [luk036/mywheel](https://github.com/luk036/mywheel)
+- [luk036/netlistx](https://github.com/luk036/netlistx)
 - networkx/networkx
 
 ## Installation and Run
@@ -21,6 +22,7 @@ Circuit Partitioning Python Code
 To setup develop environment:
 
     pip3 install git+https://github.com/luk036/mywheel.git
+    pip3 install git+https://github.com/luk036/netlistx.git
     pip3 install -r ./requirements.txt &&
     python3 setup.py develop
 

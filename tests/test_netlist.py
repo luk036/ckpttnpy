@@ -2,7 +2,7 @@ import json
 
 from networkx.readwrite import json_graph
 
-from ckpttnpy.netlist import create_drawf, create_test_netlist, read_json
+from netlistx.netlist import create_drawf, create_test_netlist, read_json
 
 
 def test_netlist():
