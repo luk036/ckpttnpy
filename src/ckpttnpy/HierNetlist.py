@@ -1,7 +1,6 @@
 from typing import Any, List
 
 import networkx as nx
-
 from netlistx.netlist import Netlist
 
 # from typing import Mapping, MutableMapping

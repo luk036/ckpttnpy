@@ -1,5 +1,6 @@
-from ckpttnpy.min_cover import contract_subgraph
 from netlistx.netlist import create_drawf
+
+from ckpttnpy.min_cover import contract_subgraph
 
 # def test_max_independent_net():
 #     # random_graph(gra,5,20)

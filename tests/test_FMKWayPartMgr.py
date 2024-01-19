@@ -1,9 +1,5 @@
 from typing import Any, Dict, List, Union
 
-from ckpttnpy.FMKWayConstrMgr import FMKWayConstrMgr
-from ckpttnpy.FMKWayGainCalc import FMKWayGainCalc
-from ckpttnpy.FMKWayGainMgr import FMKWayGainMgr
-from ckpttnpy.FMPartMgr import FMPartMgr
 from netlistx.netlist import (
     Netlist,
     create_drawf,
@@ -11,6 +7,11 @@ from netlistx.netlist import (
     create_test_netlist,
     read_json,
 )
+
+from ckpttnpy.FMKWayConstrMgr import FMKWayConstrMgr
+from ckpttnpy.FMKWayGainCalc import FMKWayGainCalc
+from ckpttnpy.FMKWayGainMgr import FMKWayGainMgr
+from ckpttnpy.FMPartMgr import FMPartMgr
 
 Part = Union[Dict[Any, int], List[int]]
 

@@ -6,10 +6,10 @@ from random import randint
 
 import matplotlib.pyplot as plt
 import networkx as nx
+from netlistx.netlist import Netlist, create_random_hgraph
 
 from ckpttnpy import __version__
 from ckpttnpy.MLPartMgr import MLBiPartMgr
-from netlistx.netlist import Netlist, create_random_hgraph
 
 __author__ = "Wai-Shing Luk"
 __copyright__ = "Wai-Shing Luk"
