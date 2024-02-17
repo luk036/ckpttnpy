@@ -3,6 +3,7 @@ Notes:
     module and net should have a unique id because
     they treat the same node in the underlying graph.
 """
+
 from typing import List, MutableMapping, Optional, Set, Tuple, TypeVar
 
 from netlistx.netlist import Netlist, TinyGraph
