@@ -39,20 +39,20 @@ def run_MLKWayPartMgr(hgr: Netlist, bal_tol: float):
 
 
 def plot(hgr: Netlist, part):
-    pos = nx.spring_layout(hgr.gra)
+    pos = nx.spring_layout(hgr.ugraph)
     nx.draw_networkx_nodes(
-        hgr.gra, nodelist=hgr.nets, node_color="k", node_size=10, pos=pos
+        hgr.ugraph, nodelist=hgr.nets, node_color="k", node_size=10, pos=pos
     )
     color = ["g", "r", "b"]
     for k in range(3):
         partk = [i for i in hgr if part[i] == k]
         nx.draw_networkx_nodes(
-            hgr.gra, nodelist=partk, node_color=color[k], node_size=50, pos=pos
+            hgr.ugraph, nodelist=partk, node_color=color[k], node_size=50, pos=pos
         )
     nx.draw_networkx_nodes(
-        hgr.gra, nodelist=hgr.nets, node_color="k", node_size=20, pos=pos
+        hgr.ugraph, nodelist=hgr.nets, node_color="k", node_size=20, pos=pos
     )
-    nx.draw_networkx_edges(hgr.gra, pos=pos, width=1)
+    nx.draw_networkx_edges(hgr.ugraph, pos=pos, width=1)
     plt.show()
 
 

@@ -47,11 +47,11 @@ Node = TypeVar("Node")  # Hashable
 #         dep = set()
 
 #     def cover(net):
-#         for vtx in hyprgraph.gra[net]:
+#         for vtx in hyprgraph.ugraph[net]:
 #             dep.add(vtx)
 
 #     def any_of_dep(net):
-#         return any(vtx in dep for vtx in hyprgraph.gra[net])
+#         return any(vtx in dep for vtx in hyprgraph.ugraph[net])
 
 #     total_primal_cost = 0
 #     total_dual_cost = 0
@@ -65,8 +65,8 @@ Node = TypeVar("Node")  # Hashable
 #             continue
 #         min_val = gap[net]
 #         min_net = net
-#         for vtx in hyprgraph.gra[net]:
-#             for net2 in hyprgraph.gra[vtx]:
+#         for vtx in hyprgraph.ugraph[net]:
+#             for net2 in hyprgraph.ugraph[vtx]:
 #                 if any_of_dep(net2):
 #                     continue
 #                 if min_val > gap[net2]:
@@ -79,8 +79,8 @@ Node = TypeVar("Node")  # Hashable
 #         if min_net == net:
 #             continue
 #         gap[net] -= min_val
-#         for vtx in hyprgraph.gra[net]:
-#             for net2 in hyprgraph.gra[vtx]:
+#         for vtx in hyprgraph.ugraph[net]:
+#             for net2 in hyprgraph.ugraph[vtx]:
 #                 # if net2 == net:
 #                 #     continue
 #                 gap[net2] -= min_val
@@ -114,7 +114,7 @@ def setup(
     for net in hyprgraph.nets:
         if net in s1:
             clusters.append(net)
-            covered.update(v for v in hyprgraph.gra[net])
+            covered.update(v for v in hyprgraph.ugraph[net])
         else:
             nets.append(net)
 
@@ -136,7 +136,7 @@ def construct_graph(hyprgraph: Netlist, nets, cell_list, clusters):
     a component or module in the circuit design
     :param clusters: clusters is a list of clusters, where each cluster is a set of cells that are
     grouped together
-    :return: a bipartite graph (gra) that represents the connections between modules (cell_list and
+    :return: a bipartite graph (ugraph) that represents the connections between modules (cell_list and
     clusters) and nets.
     """
     num_modules = len(cell_list) + len(clusters)
@@ -145,19 +145,19 @@ def construct_graph(hyprgraph: Netlist, nets, cell_list, clusters):
     node_up_map = {
         v: i_v + num_cell
         for i_v, net in enumerate(clusters)
-        for v in hyprgraph.gra[net]
+        for v in hyprgraph.ugraph[net]
     }
     node_up_map.update({v: i_v for i_v, v in enumerate(cell_list)})
-    gra = TinyGraph()  # gra is a bipartite graph
-    gra.init_nodes(num_modules + len(nets))
+    ugraph = TinyGraph()  # ugraph is a bipartite graph
+    ugraph.init_nodes(num_modules + len(nets))
     for i_net, net in enumerate(nets):
-        for v in hyprgraph.gra[net]:
-            gra.add_edge(node_up_map[v], i_net + num_modules)
+        for v in hyprgraph.ugraph[net]:
+            ugraph.add_edge(node_up_map[v], i_net + num_modules)
             # automatically merge the same cell-net
-    return gra
+    return ugraph
 
 
-def purge_duplicate_nets(hyprgraph: Netlist, gra, nets, num_clusters, num_modules):
+def purge_duplicate_nets(hyprgraph: Netlist, ugraph, nets, num_clusters, num_modules):
     """
     The function `purge_duplicate_nets` removes duplicate nets from a graph and returns the updated net
     weights and list of nets.
@@ -165,9 +165,9 @@ def purge_duplicate_nets(hyprgraph: Netlist, gra, nets, num_clusters, num_module
     :param hyprgraph: The `hyprgraph` parameter is an object that represents a hypergraph. It likely has methods to
     access information about the hypergraph, such as the weight of a net
     :type hyprgraph: Netlist
-    :param gra: The variable `gra` represents a graph where each node represents a cluster and each edge
-    represents a net connecting two clusters. The graph `gra` is represented as an adjacency list, where
-    `gra[cluster]` returns a list of nets connected to the cluster
+    :param ugraph: The variable `ugraph` represents a graph where each node represents a cluster and each edge
+    represents a net connecting two clusters. The graph `ugraph` is represented as an adjacency list, where
+    `ugraph[cluster]` returns a list of nets connected to the cluster
     :param nets: The `nets` parameter is a list of nets. A net is a collection of pins that are
     connected together. Each net is represented by a unique identifier
     :param num_clusters: The parameter "num_clusters" represents the number of clusters in the graph
@@ -185,41 +185,41 @@ def purge_duplicate_nets(hyprgraph: Netlist, gra, nets, num_clusters, num_module
 
     removelist = set()
     for cluster in range(num_modules - num_clusters, num_modules):
-        for net1 in gra[cluster]:  # only check the nets of cluster
+        for net1 in ugraph[cluster]:  # only check the nets of cluster
             assert net1 >= num_modules
             assert net1 < num_modules + num_nets
-            if gra.degree(net1) == 1:  # self loop
+            if ugraph.degree(net1) == 1:  # self loop
                 removelist.add(net1)
                 continue
-            for net2 in filter(lambda net2: net2 != net1, gra[cluster]):
-                if gra.degree(net1) != gra.degree(net2):
+            for net2 in filter(lambda net2: net2 != net1, ugraph[cluster]):
+                if ugraph.degree(net1) != ugraph.degree(net2):
                     continue  # no need to check if pins are different
                 same = False
                 # TODO: consider to use MinHash to check for more nets
-                if gra.degree(net1) <= 5:  # magic number!
+                if ugraph.degree(net1) <= 5:  # magic number!
                     # only check for low-pin nets
-                    set1 = set(v for v in gra[net1])
-                    set2 = set(v for v in gra[net2])
+                    set1 = set(v for v in ugraph[net1])
+                    set2 = set(v for v in ugraph[net2])
                     if set1 == set2:  # expensive operation for high-pin nets
                         same = True
                 if same:
                     removelist.add(net2)
                     net_weight[net1] = net_weight.get(net1, 1) + net_weight.get(net2, 1)
-    # gra.remove_nodes_from(removelist)
+    # ugraph.remove_nodes_from(removelist)
     print("removed {} nets".format(len(removelist)))
     gr_nets = range(num_modules, num_modules + len(nets))
     updated_nets = [net for net in gr_nets if net not in removelist]
     return net_weight, updated_nets
 
 
-def reconstruct_graph(hyprgraph: Netlist, gra, nets, num_clusters, num_modules):
+def reconstruct_graph(hyprgraph: Netlist, ugraph, nets, num_clusters, num_modules):
     """
     The function reconstructs a new graph by purging duplicate nets and updating net weights.
 
     :param hyprgraph: The `hyprgraph` parameter is a hypergraph representation of the graph. It is a dictionary
     where the keys are the nodes of the graph and the values are the hyperedges that the node belongs to
     :type hyprgraph: Netlist
-    :param gra: gra is a dictionary that represents the connections between modules and nets in the
+    :param ugraph: ugraph is a dictionary that represents the connections between modules and nets in the
     original graph. The keys of the dictionary are the module indices, and the values are lists of net
     indices that the module is connected to
     :param nets: The `nets` parameter is a list of nets, where each net is represented as a list of
@@ -230,14 +230,14 @@ def reconstruct_graph(hyprgraph: Netlist, gra, nets, num_clusters, num_modules):
     """
     # Purging duplicate nets
     net_weight, updated_nets = purge_duplicate_nets(
-        hyprgraph, gra, nets, num_clusters, num_modules
+        hyprgraph, ugraph, nets, num_clusters, num_modules
     )
     # Reconstruct a new graph with purged nets
     num_nets = len(updated_nets)
     gr2 = TinyGraph()
     gr2.init_nodes(num_modules + num_nets)
     for i_net, net in enumerate(updated_nets):
-        for v in gra[net]:
+        for v in ugraph[net]:
             assert net >= num_modules
             assert net < num_modules + len(nets)
             gr2.add_edge(v, num_modules + i_net)
@@ -269,18 +269,18 @@ def contract_subgraph(hyprgraph: Netlist, module_weight, forbid: Set):
     netlist (`hgr2`) and the updated module weights (`module_weight2`).
     """
     cluster_weight = {
-        net: sum(module_weight[v] for v in hyprgraph.gra[net]) for net in hyprgraph.nets
+        net: sum(module_weight[v] for v in hyprgraph.ugraph[net]) for net in hyprgraph.nets
     }  # can be done in parallel
 
     clusters, nets, cell_list = setup(hyprgraph, cluster_weight, forbid)
     # Construct a graph for the next level's netlist
-    gra = construct_graph(hyprgraph, nets, cell_list, clusters)
+    ugraph = construct_graph(hyprgraph, nets, cell_list, clusters)
 
     num_modules = len(cell_list) + len(clusters)
     num_clusters = len(clusters)
 
     gr2, net_weight2, num_nets = reconstruct_graph(
-        hyprgraph, gra, nets, num_clusters, num_modules
+        hyprgraph, ugraph, nets, num_clusters, num_modules
     )
 
     nets.clear()  # no more nets
@@ -298,7 +298,7 @@ def contract_subgraph(hyprgraph: Netlist, module_weight, forbid: Set):
         module_weight2[num_cells + i_v] = cluster_weight[net]
 
     node_down_list = cell_list
-    node_down_list += [next(iter(hyprgraph.gra[net])) for net in clusters]
+    node_down_list += [next(iter(hyprgraph.ugraph[net])) for net in clusters]
 
     hgr2.clusters = clusters
     hgr2.node_down_list = node_down_list

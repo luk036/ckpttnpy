@@ -17,11 +17,11 @@ def min_maximal_matching(hyprgraph, weight, matchset, dep):
     """
 
     def cover(net):
-        for v in hyprgraph.gra[net]:
+        for v in hyprgraph.ugraph[net]:
             dep.add(v)
 
     def any_of_dep(net):
-        return any(v in dep for v in hyprgraph.gra[net])
+        return any(v in dep for v in hyprgraph.ugraph[net])
 
     gap = weight.copy()
     total_primal_cost = 0
@@ -31,8 +31,8 @@ def min_maximal_matching(hyprgraph, weight, matchset, dep):
     ):
         min_val = gap[net]
         min_net = net
-        for v in hyprgraph.gra[net]:
-            for net2 in filter(lambda net2: not any_of_dep(net2), hyprgraph.gra[v]):
+        for v in hyprgraph.ugraph[net]:
+            for net2 in filter(lambda net2: not any_of_dep(net2), hyprgraph.ugraph[v]):
                 if min_val > gap[net2]:
                     min_val = gap[net2]
                     min_net = net2
@@ -43,8 +43,8 @@ def min_maximal_matching(hyprgraph, weight, matchset, dep):
         if min_net == net:
             continue
         gap[net] -= min_val
-        for v in hyprgraph.gra[net]:
-            for net2 in hyprgraph.gra[v]:
+        for v in hyprgraph.ugraph[net]:
+            for net2 in hyprgraph.ugraph[v]:
                 gap[net2] -= min_val
 
     assert total_dual_cost <= total_primal_cost
@@ -64,9 +64,9 @@ def contract_subgraph(hyprgraph: Netlist, module_weight, forbid: Set) -> HierNet
     # s1, _ = max_independent_net(hyprgraph, hyprgraph.module_weight, forbid)
     # weight = dict()
     # for net in hyprgraph.nets:
-    #     weight[net] = sum(hyprgraph.get_module_weight(v) for v in hyprgraph.gra[net])
+    #     weight[net] = sum(hyprgraph.get_module_weight(v) for v in hyprgraph.ugraph[net])
     weight = {
-        net: sum(module_weight[v] for v in hyprgraph.gra[net]) for net in hyprgraph.nets
+        net: sum(module_weight[v] for v in hyprgraph.ugraph[net]) for net in hyprgraph.nets
     }  # can be done in parallel
     s1 = set()
     min_maximal_matching(hyprgraph, weight, s1, forbid)
@@ -81,12 +81,12 @@ def contract_subgraph(hyprgraph: Netlist, module_weight, forbid: Set) -> HierNet
     # cluster_map = dict()
     for net in hyprgraph.nets:
         if net in s1:
-            # net_cur = iter(hyprgraph.gra[net])
+            # net_cur = iter(hyprgraph.ugraph[net])
             # master = next(net_cur)
             # clusters.append(master)
             clusters.append(net)
-            module_up_map.update({v: net for v in hyprgraph.gra[net]})
-            covered.update(v for v in hyprgraph.gra[net])
+            module_up_map.update({v: net for v in hyprgraph.ugraph[net]})
+            covered.update(v for v in hyprgraph.ugraph[net])
             # cluster_map[master] = net
         else:
             nets.append(net)
@@ -108,18 +108,18 @@ def contract_subgraph(hyprgraph: Netlist, module_weight, forbid: Set) -> HierNet
     #     node_up_map[net] = net_map[net] + num_modules
     # node_up_dict.update(net_up_map)
 
-    gra = nx.Graph()
-    gra.add_nodes_from(n for n in range(num_modules + num_nets))
+    ugraph = nx.Graph()
+    ugraph.add_nodes_from(n for n in range(num_modules + num_nets))
     for v in hyprgraph:
-        for net in filter(lambda net: net not in s1, hyprgraph.gra[v]):
-            gra.add_edge(node_up_dict[v], net_up_map[net])
+        for net in filter(lambda net: net not in s1, hyprgraph.ugraph[v]):
+            ugraph.add_edge(node_up_dict[v], net_up_map[net])
             # automatically merge the same cell-net
 
     updated_nets, net_weight = purge_duplicate_nets(
-        hyprgraph, gra, nets, net_up_map, clusters, module_map, num_modules
+        hyprgraph, ugraph, nets, net_up_map, clusters, module_map, num_modules
     )
 
-    hgr2 = HierNetlist(gra, range(num_modules), updated_nets)
+    hgr2 = HierNetlist(ugraph, range(num_modules), updated_nets)
 
     # node_down_map = {v2: v1 for v1, v2 in node_up_map.items()}
     node_down_map = [0] * num_modules
@@ -129,7 +129,7 @@ def contract_subgraph(hyprgraph: Netlist, module_weight, forbid: Set) -> HierNet
     # cluster_down_map = {node_up_dict[v]: net
     #     for v, net in cluster_map.items()}
     cluster_down_map = {
-        node_up_dict[v]: netk for netk in s1 for v in hyprgraph.gra[netk]
+        node_up_dict[v]: netk for netk in s1 for v in hyprgraph.ugraph[netk]
     }
 
     module_weight2 = [0] * num_modules
@@ -137,9 +137,9 @@ def contract_subgraph(hyprgraph: Netlist, module_weight, forbid: Set) -> HierNet
         if i_v in cluster_down_map:
             net = cluster_down_map[i_v]
             # cluster_weight = 0
-            # for v2 in hyprgraph.gra[net]:
+            # for v2 in hyprgraph.ugraph[net]:
             #     cluster_weight += hyprgraph.get_module_weight(v2)
-            # cluster_weight = sum(hyprgraph.get_module_weight(v) for v in hyprgraph.gra[net])
+            # cluster_weight = sum(hyprgraph.get_module_weight(v) for v in hyprgraph.ugraph[net])
             cluster_weight = weight[net]
             module_weight2[i_v] = cluster_weight
         else:
@@ -168,7 +168,7 @@ def contract_subgraph(hyprgraph: Netlist, module_weight, forbid: Set) -> HierNet
 
 
 def purge_duplicate_nets(
-    hyprgraph, gra, nets, net_up_map, clusters, module_map, num_modules
+    hyprgraph, ugraph, nets, net_up_map, clusters, module_map, num_modules
 ):
     # Purging duplicate nets
     num_nets = len(nets)
@@ -181,32 +181,32 @@ def purge_duplicate_nets(
     removelist = set()
     for net in clusters:
         cluster = module_map[net]
-        for net1 in gra[cluster]:
-            if gra.degree(net1) == 1:  # self loop
+        for net1 in ugraph[cluster]:
+            if ugraph.degree(net1) == 1:  # self loop
                 removelist.add(net1)
                 continue
-            for net2 in filter(lambda net2: net2 != net1, gra[cluster]):
-                if gra.degree(net2) != gra.degree(net1):
+            for net2 in filter(lambda net2: net2 != net1, ugraph[cluster]):
+                if ugraph.degree(net2) != ugraph.degree(net1):
                     continue
                 same = False
-                if gra.degree(net1) <= 3:  # only check for low-fan-out nets
-                    set1 = set(v for v in gra[net1])
-                    set2 = set(v for v in gra[net2])
+                if ugraph.degree(net1) <= 3:  # only check for low-fan-out nets
+                    set1 = set(v for v in ugraph[net1])
+                    set2 = set(v for v in ugraph[net2])
                     if set1 == set2:
                         same = True
                 # else:
                 #     m1 = MinHash(100)
                 #     m2 = MinHash(100)
-                #     for v1 in gra[net1]:
+                #     for v1 in ugraph[net1]:
                 #         m1.add(v1)
-                #     for v2 in gra[net2]:
+                #     for v2 in ugraph[net2]:
                 #         m2.add(v2)
                 #     if m1.jaccard(m2) > 0.99:
                 #         same = True
                 if same:
                     removelist.add(net2)
                     net_weight[net1] = net_weight.get(net1, 1) + net_weight.get(net2, 1)
-    gra.remove_nodes_from(removelist)
+    ugraph.remove_nodes_from(removelist)
     original_net = range(num_modules, num_modules + num_nets)
     updated_nets = [net for net in original_net if net not in removelist]
     return updated_nets, net_weight

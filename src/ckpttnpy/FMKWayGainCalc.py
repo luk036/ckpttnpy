@@ -85,7 +85,7 @@ class FMKWayGainCalc:
         :type part: Part
         :return: nothing.
         """
-        degree = self.hyprgraph.gra.degree[net]
+        degree = self.hyprgraph.ugraph.degree[net]
         if degree < 2:  # unlikely, self-loop, etc.
             return  # does not provide any gain when move
         if degree > 3:
@@ -119,7 +119,7 @@ class FMKWayGainCalc:
         indicates the partition to which the node belongs
         :type part: Part
         """
-        net_cur = iter(self.hyprgraph.gra[net])
+        net_cur = iter(self.hyprgraph.ugraph[net])
         w = next(net_cur)
         v = next(net_cur)
         part_w = part[w]
@@ -144,7 +144,7 @@ class FMKWayGainCalc:
         :type part: Part
         :return: The function does not explicitly return anything.
         """
-        net_cur = iter(self.hyprgraph.gra[net])
+        net_cur = iter(self.hyprgraph.ugraph[net])
         w = next(net_cur)
         v = next(net_cur)
         u = next(net_cur)
@@ -187,7 +187,7 @@ class FMKWayGainCalc:
         :type part: Part
         """
         num = [0] * self.num_parts
-        for w in self.hyprgraph.gra[net]:
+        for w in self.hyprgraph.ugraph[net]:
             num[part[w]] += 1
 
         weight = self.hyprgraph.get_net_weight(net)
@@ -199,11 +199,11 @@ class FMKWayGainCalc:
 
         for k, c in enumerate(num):
             if c == 0:
-                for w in self.hyprgraph.gra[net]:
+                for w in self.hyprgraph.ugraph[net]:
                     self.vertex_list[k][w].data[0] -= weight
             elif c == 1:
-                # for w in self.hyprgraph.gra[net]:
-                cur = iter(self.hyprgraph.gra[net])
+                # for w in self.hyprgraph.ugraph[net]:
+                cur = iter(self.hyprgraph.ugraph[net])
                 w = next(cur)
                 while part[w] != k:
                     w = next(cur)
@@ -227,7 +227,7 @@ class FMKWayGainCalc:
         :return: the value of the variable "w".
         """
         net, v, from_part, to_part = move_info
-        net_cur = iter(self.hyprgraph.gra[net])
+        net_cur = iter(self.hyprgraph.ugraph[net])
         u = next(net_cur)
         w = u if u != v else next(net_cur)
         part_w = part[w]
@@ -247,12 +247,12 @@ class FMKWayGainCalc:
     def init_idx_vec(self, v, net):
         """
         The function `init_idx_vec` initializes the `idx_vec` attribute by creating a list of all elements
-        in `self.hyprgraph.gra[net]` except for `v`.
+        in `self.hyprgraph.ugraph[net]` except for `v`.
 
         :param v: The parameter `v` represents a vertex in the graph `net`
         :param net: The parameter "net" is a variable that represents a network or graph
         """
-        self.idx_vec = [w for w in self.hyprgraph.gra[net] if w != v]
+        self.idx_vec = [w for w in self.hyprgraph.ugraph[net] if w != v]
 
     def update_move_3pin_net(self, part, move_info):
         """Update move for 3-pin net

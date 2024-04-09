@@ -13,19 +13,19 @@ class HierNetlist(Netlist):
 
     parent: Netlist
 
-    def __init__(self, gra: nx.Graph, modules, nets):
+    def __init__(self, ugraph: nx.Graph, modules, nets):
         """
         The function initializes an object with a graph, modules, and nets, and sets some attributes.
 
-        :param gra: gra is a variable of type nx.Graph, which represents a graph. It is used as an argument
+        :param ugraph: ugraph is a variable of type nx.Graph, which represents a graph. It is used as an argument
         in the constructor of the class
-        :type gra: nx.Graph
+        :type ugraph: nx.Graph
         :param modules: The `modules` parameter is either a range or a list that represents the modules in
         the graph. It contains the information about the modules present in the graph
         :param nets: The `nets` parameter is either a range or a list that represents the nets in the graph.
         A net is a collection of interconnected nodes in a circuit or network
         """
-        Netlist.__init__(self, gra, modules, nets)
+        Netlist.__init__(self, ugraph, modules, nets)
         # self.parent = self
         self.node_down_list: List[Any] = []
         self.net_weight: dict = {}
@@ -37,9 +37,9 @@ class HierNetlist(Netlist):
 
         :param v: The parameter `v` represents a vertex in a graph
         :return: The function `get_degree` returns the sum of the values in the `net_weight` dictionary for
-        each element in the `gra[v]` list.
+        each element in the `ugraph[v]` list.
         """
-        return sum(self.net_weight.get(net, 1) for net in self.gra[v])
+        return sum(self.net_weight.get(net, 1) for net in self.ugraph[v])
 
     def get_max_degree(self):
         """
@@ -71,7 +71,7 @@ class HierNetlist(Netlist):
             part_down[v2] = part[v1]
         for i_v, net in enumerate(self.clusters):
             p = part[num_cells + i_v]
-            for v2 in self.parent.gra[net]:
+            for v2 in self.parent.ugraph[net]:
                 part_down[v2] = p
 
     def projection_up(self, part, part_up):

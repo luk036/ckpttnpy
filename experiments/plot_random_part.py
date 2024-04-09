@@ -41,17 +41,17 @@ def run_MLBiPartMgr(hyprgraph: Netlist):
 def plot(hyprgraph: Netlist, part):
     part0 = [i for i in hyprgraph if part[i] == 0]
     part1 = [i for i in hyprgraph if part[i] == 1]
-    pos = nx.spring_layout(hyprgraph.gra)
+    pos = nx.spring_layout(hyprgraph.ugraph)
     nx.draw_networkx_nodes(
-        hyprgraph.gra, nodelist=part0, node_color="g", node_size=50, pos=pos
+        hyprgraph.ugraph, nodelist=part0, node_color="g", node_size=50, pos=pos
     )
     nx.draw_networkx_nodes(
-        hyprgraph.gra, nodelist=part1, node_color="r", node_size=50, pos=pos
+        hyprgraph.ugraph, nodelist=part1, node_color="r", node_size=50, pos=pos
     )
     nx.draw_networkx_nodes(
-        hyprgraph.gra, nodelist=hyprgraph.nets, node_color="k", node_size=20, pos=pos
+        hyprgraph.ugraph, nodelist=hyprgraph.nets, node_color="k", node_size=20, pos=pos
     )
-    nx.draw_networkx_edges(hyprgraph.gra, pos=pos, width=1)
+    nx.draw_networkx_edges(hyprgraph.ugraph, pos=pos, width=1)
     plt.show()
 
 

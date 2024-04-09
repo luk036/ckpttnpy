@@ -107,8 +107,8 @@ class FMGainMgr:
         """
         self.gain_calc.update_move_init()
         v, from_part, to_part = move_info_v
-        for net in self.hyprgraph.gra[v]:
-            degree = self.hyprgraph.gra.degree[net]
+        for net in self.hyprgraph.ugraph[v]:
+            degree = self.hyprgraph.ugraph.degree[net]
             if degree < 2:  # unlikely, self-loop, etc.
                 continue  # does not provide any gain change when move
             move_info = [net, v, from_part, to_part]

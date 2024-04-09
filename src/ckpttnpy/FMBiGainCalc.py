@@ -66,7 +66,7 @@ class FMBiGainCalc:
         :type part: Part
         :return: nothing.
         """
-        degree = self.hyprgraph.gra.degree[net]
+        degree = self.hyprgraph.ugraph.degree[net]
         if degree < 2:  # unlikely, self-loop, etc.
             return  # does not provide any gain when move
         if degree == 3:
@@ -99,7 +99,7 @@ class FMBiGainCalc:
         indicates the partition to which the node belongs
         :type part: Part
         """
-        net_cur = iter(self.hyprgraph.gra[net])
+        net_cur = iter(self.hyprgraph.ugraph[net])
         w = next(net_cur)
         v = next(net_cur)
         weight = self.hyprgraph.get_net_weight(net)
@@ -123,7 +123,7 @@ class FMBiGainCalc:
         :type part: Part
         :return: Nothing is being returned. The function does not have a return statement.
         """
-        net_cur = iter(self.hyprgraph.gra[net])
+        net_cur = iter(self.hyprgraph.ugraph[net])
         w = next(net_cur)
         v = next(net_cur)
         u = next(net_cur)
@@ -153,7 +153,7 @@ class FMBiGainCalc:
         :type part: Part
         """
         num = [0, 0]
-        for w in self.hyprgraph.gra[net]:
+        for w in self.hyprgraph.ugraph[net]:
             num[part[w]] += 1
 
         weight = self.hyprgraph.get_net_weight(net)
@@ -163,10 +163,10 @@ class FMBiGainCalc:
 
         for k in [0, 1]:
             if num[k] == 0:
-                for w in self.hyprgraph.gra[net]:
+                for w in self.hyprgraph.ugraph[net]:
                     self._modify_gain(w, -weight)
             elif num[k] == 1:
-                cur = iter(self.hyprgraph.gra[net])
+                cur = iter(self.hyprgraph.ugraph[net])
                 w = next(cur)
                 while part[w] != k:
                     w = next(cur)
@@ -191,7 +191,7 @@ class FMBiGainCalc:
         :return: the value of the variable "w".
         """
         net, v, from_part, _ = move_info
-        net_cur = iter(self.hyprgraph.gra[net])
+        net_cur = iter(self.hyprgraph.ugraph[net])
         u = next(net_cur)
         w = u if u != v else next(net_cur)
         weight = self.hyprgraph.get_net_weight(net)
@@ -202,12 +202,12 @@ class FMBiGainCalc:
     def init_idx_vec(self, v, net) -> None:
         """
         The function `init_idx_vec` initializes the `idx_vec` attribute by filtering out the vertex `v` from
-        the `gra[net]` list.
+        the `ugraph[net]` list.
 
         :param v: The parameter `v` represents a vertex in the graph
         :param net: The `net` parameter represents a network or graph
         """
-        self.idx_vec = [w for w in self.hyprgraph.gra[net] if w != v]
+        self.idx_vec = [w for w in self.hyprgraph.ugraph[net] if w != v]
 
     def update_move_3pin_net(self, part, move_info):
         """
