@@ -269,7 +269,8 @@ def contract_subgraph(hyprgraph: Netlist, module_weight, forbid: Set):
     netlist (`hgr2`) and the updated module weights (`module_weight2`).
     """
     cluster_weight = {
-        net: sum(module_weight[v] for v in hyprgraph.ugraph[net]) for net in hyprgraph.nets
+        net: sum(module_weight[v] for v in hyprgraph.ugraph[net])
+        for net in hyprgraph.nets
     }  # can be done in parallel
 
     clusters, nets, cell_list = setup(hyprgraph, cluster_weight, forbid)
