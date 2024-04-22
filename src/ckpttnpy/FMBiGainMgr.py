@@ -38,7 +38,7 @@ class FMBiGainMgr(FMGainMgr):
         for v in self.hyprgraph:
             vlink = self.gain_calc.vertex_list[v]
             to_part = part[v] ^ 1  # toggle 0 or 1
-            self.gainbucket[to_part].append_direct(vlink)
+            self.gainbucket[to_part].appendleft_direct(vlink)
         for v in self.hyprgraph.module_fixed:
             self.lock_all(part[v], v)
         return totalcost
