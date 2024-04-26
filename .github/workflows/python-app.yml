@@ -42,6 +42,6 @@ jobs:
         uses: codecov/codecov-action@v1.5.2
         with:
           # Repository upload token - get it from codecov.io. Required only for private repositories
-          token: 2312d33e-5dd7-440d-9219-b4e46465e208
+          token: ${{ secrets.CODECOV_TOKEN }}
           # Comma-separated list of files to upload
           fail_ci_if_error: true

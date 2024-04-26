@@ -17,7 +17,7 @@ Circuit Partitioning Python Code
 - [luk036/netlistx](https://github.com/luk036/netlistx)
 - networkx/networkx
 
-## Installation and Run
+## 🛠️ Installation and Run
 
 To setup develop environment:
 
