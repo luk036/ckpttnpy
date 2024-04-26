@@ -29,7 +29,7 @@ To run unit tests:
 
 ## 👀 See also
 
-[ckpttn-cpp](https://github.com/luk036/ckpttn-cpp)
+- [ckpttn-cpp](https://github.com/luk036/ckpttn-cpp)
 
 ## 👉 Note
 
