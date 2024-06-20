@@ -273,38 +273,38 @@ class FMKWayGainCalc:
 
         weight = self.hyprgraph.get_net_weight(net)
 
-        l, u = from_part, to_part
+        fp, tp = from_part, to_part
 
         part_w = part[self.idx_vec[0]]
         part_u = part[self.idx_vec[1]]
 
         if part_w == part_u:
             for _ in [0, 1]:
-                if part_w != l:
-                    delta_gain[0][l] -= weight
-                    delta_gain[1][l] -= weight
-                    if part_w == u:
+                if part_w != fp:
+                    delta_gain[0][fp] -= weight
+                    delta_gain[1][fp] -= weight
+                    if part_w == tp:
                         for k in range(self.num_parts):
                             self.delta_gain_v[k] -= weight
                 weight = -weight
-                l, u = u, l
+                fp, tp = tp, fp
             return delta_gain
 
         for _ in [0, 1]:
-            if part_w == l:
+            if part_w == fp:
                 for k in range(self.num_parts):
                     delta_gain[0][k] += weight
-            elif part_u == l:
+            elif part_u == fp:
                 for k in range(self.num_parts):
                     delta_gain[1][k] += weight
             else:
-                delta_gain[0][l] -= weight
-                delta_gain[1][l] -= weight
-                if part_w == u or part_u == u:
+                delta_gain[0][fp] -= weight
+                delta_gain[1][fp] -= weight
+                if part_w == tp or part_u == tp:
                     for k in range(self.num_parts):
                         self.delta_gain_v[k] -= weight
             weight = -weight
-            l, u = u, l
+            fp, tp = tp, fp
 
         return delta_gain
 
@@ -331,21 +331,21 @@ class FMKWayGainCalc:
 
         weight = self.hyprgraph.get_net_weight(net)
 
-        l, u = from_part, to_part
+        fp, tp = from_part, to_part
         for _ in [0, 1]:
-            if num[l] == 0:
+            if num[fp] == 0:
                 for index in range(degree):
-                    delta_gain[index][l] -= weight
-                if num[u] > 0:
+                    delta_gain[index][fp] -= weight
+                if num[tp] > 0:
                     for k in range(self.num_parts):
                         self.delta_gain_v[k] -= weight
-            elif num[l] == 1:
+            elif num[fp] == 1:
                 index = 0
-                while part[self.idx_vec[index]] != l:
+                while part[self.idx_vec[index]] != fp:
                     index += 1
                 for k in range(self.num_parts):
                     delta_gain[index][k] += weight
             weight = -weight
-            l, u = u, l
+            fp, tp = tp, fp
 
         return delta_gain

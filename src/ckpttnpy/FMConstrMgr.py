@@ -3,7 +3,10 @@ This file contains the class `FMConstrMgr`.
 """
 
 from enum import Enum
-from typing import Any, Dict, List, Union
+from typing import TypeVar, Generic, Any, Dict, List, Union
+
+# Define a generic type for the hypergraph nodes
+Gnl = TypeVar("Gnl")
 
 Part = Union[Dict[Any, int], List[int]]
 
@@ -24,12 +27,18 @@ class LegalCheck(Enum):
     AllSatisfied = 2
 
 
-class FMConstrMgr:
-    """_summary_
+class FMConstrMgr(Generic[Gnl]):
+    """
+    FMConstrMgr manages constraints for a given hypergraph.
 
-    The FMConstrMgr class represents a manager for constructing a finite element model, with various
-    attributes related to weight, tolerance, module weight, number of parts, difference, total weight,
-    and lower bound.
+    Attributes:
+        hyprgraph (Gnl): The hypergraph instance.
+        bal_tol (float): Balance tolerance.
+        total_weight (int): Total weight of the hypergraph.
+        weight_cache (int): Cached weight value.
+        diff (List[int]): Difference array per partition.
+        lowerbound (int): Lower bound threshold.
+        num_parts (int): Number of partitions.
     """
 
     __slots__ = (
@@ -43,7 +52,9 @@ class FMConstrMgr:
         "lowerbound",
     )
 
-    def __init__(self, hyprgraph, bal_tol, module_weight, num_parts=2) -> None:
+    def __init__(
+        self, hyprgraph: Gnl, bal_tol: float, module_weight, num_parts: int = 2
+    ):
         """
         The function initializes the attributes of an object and calculates a lower bound value.
 
@@ -79,16 +90,16 @@ class FMConstrMgr:
         for v in self.hyprgraph:
             self.diff[part[v]] += self.get_module_weight(v)
 
-    def get_module_weight(self, v) -> int:
+    def get_module_weight(self, node_index: int) -> int:
         """
         The function `get_module_weight` returns the weight of a module, given its index.
 
-        :param v: The parameter `v` is of type `size_t` and it represents the index or key used to access
+        :param node_index: The parameter `node_index` is of type `int` and it represents the index or key used to access
         the `module_weight` dictionary
         :return: the value of `1` if `self.module_weight` is `None`, otherwise it is returning the value of
         `self.module_weight[v]`.
         """
-        return 1 if self.module_weight is None else self.module_weight[v]
+        return 1 if self.module_weight is None else self.module_weight[node_index]
 
     def check_legal(self, move_info_v) -> LegalCheck:
         """[summary]
