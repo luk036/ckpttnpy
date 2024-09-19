@@ -22,11 +22,11 @@ class FMKWayGainMgr(FMGainMgr):
         initialization method.
 
         :param GainCalc: The `GainCalc` parameter is a type or class that is used for calculating the gain
-        of a netlist. It is likely a separate class that has methods or functions for calculating the gain
-        based on certain criteria or algorithms
+            of a netlist. It is likely a separate class that has methods or functions for calculating the gain
+            based on certain criteria or algorithms
         :param hyprgraph: The `hyprgraph` parameter is of type `Netlist` and it represents a description of the netlist
         :param num_parts: The `num_parts` parameter is an integer that represents the number of partitions.
-        It is of type `int`
+            It is of type `int`
         :type num_parts: int
         """
         FMGainMgr.__init__(self, GainCalc, hyprgraph, num_parts)
@@ -38,7 +38,7 @@ class FMKWayGainMgr(FMGainMgr):
         given `part` argument.
 
         :param part: The `part` parameter is a list that represents the parts in the system. Each element in
-        the list corresponds to a part, and the index of the element represents the part number
+            the list corresponds to a part, and the index of the element represents the part number
         :type part: Part
         :return: The variable `totalcost` is being returned.
         """
@@ -78,8 +78,8 @@ class FMKWayGainMgr(FMGainMgr):
         setting its `next` attribute to itself.
 
         :param _: The underscore (_) is a convention in Python to indicate that a parameter is not going to
-        be used in the function. It is often used as a placeholder when the function signature requires a
-        certain number of parameters, but the function does not actually need to use all of them
+            be used in the function. It is often used as a placeholder when the function signature requires a
+            certain number of parameters, but the function does not actually need to use all of them
         :param v: The parameter `v` represents the vertex that needs to be locked
         """
         for vlist, bckt in zip(self.gain_calc.vertex_list, self.gainbucket):
@@ -92,8 +92,7 @@ class FMKWayGainMgr(FMGainMgr):
         The function `update_move_v` updates the gain for a moving cell in a specific partition.
 
         :param move_info_v: A tuple containing three elements: v, from_part, and to_part
-        :param gain: The `gain` parameter represents the gain value that needs to be updated for the moving
-        cell
+        :param gain: The `gain` parameter represents the gain value that needs to be updated for the moving cell
         """
         v, from_part, to_part = move_info_v
         for k in filter(lambda k: k != to_part, self.rr.exclude(from_part)):
@@ -108,10 +107,10 @@ class FMKWayGainMgr(FMGainMgr):
         The function `modify_key` modifies the key of a specific element in a dictionary.
 
         :param w: The parameter `w` is a variable of type that is not specified in the code snippet. It is
-        used as an argument in the `modify_key` method
+            used as an argument in the `modify_key` method
         :param part_w: The parameter `part_w` is not defined in the code snippet you provided. It seems to
-        be missing or defined elsewhere in your code. Please provide more information or the definition of
-        `part_w` so that I can assist you further
+            be missing or defined elsewhere in your code. Please provide more information or the definition of
+            `part_w` so that I can assist you further
         :param key: The `key` parameter is a dictionary that contains keys and their corresponding values
         """
         for k in self.rr.exclude(part_w):
@@ -124,11 +123,11 @@ class FMKWayGainMgr(FMGainMgr):
         The `_set_key` function sets a key value for a specific part and vertex in a gainbucket.
 
         :param whichPart: whichPart is a variable of type uint8_t. It is used to specify which part of the
-        gainbucket to set the key for
+            gainbucket to set the key for
         :param v: The parameter `v` is of type `node_t` and represents a node in the `vertex_list` of the
-        `gain_calc` object
+            `gain_calc` object
         :param key: The `key` parameter is an integer value that is used to set the key for a specific node
-        in the `gainbucket` list
+            in the `gainbucket` list
         """
         self.gainbucket[whichPart].set_key(
             self.gain_calc.vertex_list[whichPart][v], key

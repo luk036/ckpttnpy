@@ -23,7 +23,7 @@ class FMPartMgr(PartMgrBase):
         The `take_snapshot` function takes a `Part` object as input and returns a copy of it.
 
         :param part: The "part" parameter is of type "Part" and it represents the part that you want to take
-        a snapshot of
+            a snapshot of
         :type part: Part
         :return: a copy of the "part" object.
         """
@@ -35,7 +35,7 @@ class FMPartMgr(PartMgrBase):
         based on the snapshot.
 
         :param snapshot: The `snapshot` parameter is a variable that represents the data that needs to be
-        restored. It can be either a list, a dictionary, or an object of type `Lict`
+            restored. It can be either a list, a dictionary, or an object of type `Lict`
         :param part: The `part` parameter is an instance of the `Part` class
         :type part: Part
         """

@@ -36,8 +36,7 @@ class FMKWayConstrMgr(FMConstrMgr):
         The `init` function initializes the `illegal` attribute by checking if each element in `self.diff`
         is less than `self.lowerbound`.
 
-        :param part: The `part` parameter is of type `Part` and it represents some part of an object or
-        system
+        :param part: The `part` parameter is of type `Part` and it represents some part of an object or system
         :type part: Part
         """
         FMConstrMgr.init(self, part)
@@ -55,12 +54,10 @@ class FMKWayConstrMgr(FMConstrMgr):
         The function `check_legal` checks if a move is legal and returns the status of the move.
 
         :param move_info_v: The `move_info_v` parameter is a tuple containing three elements. The first
-        element is not used in this function. The second element, `from_part`, represents the part from
-        which the move is being made. The third element, `to_part`, represents the part to which the move is
-        being
+            element is not used in this function. The second element, `from_part`, represents the part from
+            which the move is being made. The third element, `to_part`, represents the part to which the move is being
         :return: the value of the variable "status". If "status" is not equal to "LegalCheck.AllSatisfied",
-        then the function will return the value of "status". Otherwise, it will return
-        "LegalCheck.AllSatisfied".
+            then the function will return the value of "status". Otherwise, it will return "LegalCheck.AllSatisfied".
         """
         status = FMConstrMgr.check_legal(self, move_info_v)
         if status != LegalCheck.AllSatisfied:

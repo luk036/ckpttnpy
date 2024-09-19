@@ -21,10 +21,10 @@ class FMBiGainCalc:
         creates a vertex list based on the type of modules in the Netlist.
 
         :param hyprgraph: The `hyprgraph` parameter is of type `Netlist` and represents a description of a netlist. It
-        is used to initialize the `self.hyprgraph` attribute of the class
+            is used to initialize the `self.hyprgraph` attribute of the class
         :param _: The parameter "_" is a placeholder variable that is not used in the code. It is common to
-        use "_" as a variable name when you want to indicate that the value is not important or not used in
-        the code. In this case, it is used as a placeholder for the second argument of the "__, defaults to 2
+            use "_" as a variable name when you want to indicate that the value is not important or not used in
+            the code. In this case, it is used as a placeholder for the second argument of the "__, defaults to 2
         :type _: int (optional)
         """
         self.hyprgraph = hyprgraph
@@ -41,8 +41,8 @@ class FMBiGainCalc:
         `part` in a graph.
 
         :param part: The `part` parameter is of type `Part`. It is used as an argument to the `init` method.
-        The purpose of this parameter is not clear from the provided code snippet. It is likely that the
-        `Part` class is defined elsewhere in the code and is used to represent some part
+            The purpose of this parameter is not clear from the provided code snippet. It is likely that the
+            `Part` class is defined elsewhere in the code and is used to represent some part
         :type part: Part
         :return: an integer value, which is the total cost.
         """
@@ -62,7 +62,7 @@ class FMBiGainCalc:
 
         :param net: The `net` parameter represents a node in a graph. It is of type `node_t`
         :param part: The `part` parameter is a list that represents a partition of nodes in the network. It
-        is used to determine the gain of moving a node from one partition to another
+            is used to determine the gain of moving a node from one partition to another
         :type part: Part
         :return: nothing.
         """
@@ -78,12 +78,10 @@ class FMBiGainCalc:
 
     def _modify_gain(self, w, weight):
         """
-        The function `_modify_gain` modifies the gain of a vertex by adding a weight to its data.
-
-        :param w: The parameter `w` represents a node in the graph. It is used to access a specific vertex
-        in the `vertex_list` attribute of the class
-        :param weight: The `weight` parameter is an integer that represents the weight to be added to the
-        first element of the `data` attribute of the `w`-th element in the `vertex_list` list
+        Modifies the gain of a vertex by adding a weight to its data.
+        
+        :param w: The node in the graph whose gain is to be modified.
+        :param weight: The weight to be added to the first element of the data attribute of the w-th element in the vertex_list.
         """
         self.vertex_list[w].data[0] += weight
 
@@ -92,11 +90,10 @@ class FMBiGainCalc:
 
         The function initializes the gain for a 2-pin net in a graph.
 
-        :param net: The `net` parameter is a node in the graph representing a net. It is of type
-        `node_t`
+        :param net: The `net` parameter is a node in the graph representing a net. It is of type `node_t`
         :param part: The `part` parameter is a list that represents the partitioning of the nodes in the
-        graph. Each element in the list corresponds to a node in the graph, and the value of the element
-        indicates the partition to which the node belongs
+            graph. Each element in the list corresponds to a node in the graph, and the value of the element
+            indicates the partition to which the node belongs
         :type part: Part
         """
         net_cur = iter(self.hyprgraph.ugraph[net])
@@ -116,10 +113,10 @@ class FMBiGainCalc:
         The function initializes the gain for a 3-pin net based on the parts assigned to each pin.
 
         :param net: The `net` parameter is a `node_t` object, which represents a net in a circuit. It is
-        used to identify a specific net in the circuit
+            used to identify a specific net in the circuit
         :param part: The `part` parameter is a list that represents the partitioning of nodes in the graph.
-        Each element in the list corresponds to a node in the graph, and the value of the element indicates
-        the partition to which the node belongs
+            Each element in the list corresponds to a node in the graph, and the value of the element indicates
+            the partition to which the node belongs
         :type part: Part
         :return: Nothing is being returned. The function does not have a return statement.
         """
@@ -145,11 +142,10 @@ class FMBiGainCalc:
         The function `_init_gain_general_net` initializes the gain for a general net based on the number of
         connections to each partition.
 
-        :param net: The `net` parameter is a node in a graph. It represents a general net in the context of
-        the code
+        :param net: The `net` parameter is a node in a graph. It represents a general net in the context of the code
         :param part: The `part` parameter is a list that represents the partitioning of nodes in the
-        network. Each element in the list corresponds to a node in the network, and the value of the element
-        indicates which partition the node belongs to. For example, if `part = [0, 1,
+            network. Each element in the list corresponds to a node in the network, and the value of the element
+            indicates which partition the node belongs to. For example, if `part = [0, 1,
         :type part: Part
         """
         num = [0, 0]
@@ -184,10 +180,10 @@ class FMBiGainCalc:
         delta gain.
 
         :param part: The `part` parameter is a list that represents the partitioning of the net. Each
-        element in the list corresponds to a vertex in the net, and the value of the element indicates the
-        partition to which the vertex belongs
+            element in the list corresponds to a vertex in the net, and the value of the element indicates the
+            partition to which the vertex belongs
         :param move_info: The `move_info` parameter is an instance of the `MoveInfoV` class. It contains
-        information about the move being made for a 2-pin net. The attributes of the `MoveInfoV` class are:
+            information about the move being made for a 2-pin net. The attributes of the `MoveInfoV` class are:
         :return: the value of the variable "w".
         """
         net, v, from_part, _ = move_info
@@ -215,9 +211,9 @@ class FMBiGainCalc:
         based on the current part assignment and the move information.
 
         :param part: A list that represents the partition of the net. It contains the indices of the parts
-        that the net is currently connected to
+            that the net is currently connected to
         :param move_info: The `move_info` parameter is a tuple containing information about the move. It has
-        the following structure:
+            the following structure:
         :return: a list of two elements, `delta_gain`.
         """
         net, _, from_part, _ = move_info
@@ -254,9 +250,9 @@ class FMBiGainCalc:
         given move information.
 
         :param part: A list that represents the partition of nodes in the network. Each element in the list
-        corresponds to a node in the network and indicates which partition that node belongs to
+            corresponds to a node in the network and indicates which partition that node belongs to
         :param move_info: The `move_info` parameter is an instance of the `MoveInfoV` class. It contains
-        information about the move being made in the general net
+            information about the move being made in the general net
         :return: a list of delta gains.
         """
         net, _, from_part, to_part = move_info

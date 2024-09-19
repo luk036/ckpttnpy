@@ -18,13 +18,13 @@ class FMGainMgr:
         gains.
 
         :param GainCalc: The `GainCalc` parameter is a type or class that is used for calculating the gain
-        of a partition in the code. It is passed as an argument to the `__init__` method and stored as an
-        instance variable `self.gain_calc`
+            of a partition in the code. It is passed as an argument to the `__init__` method and stored as an
+            instance variable `self.gain_calc`
         :param hyprgraph: The `hyprgraph` parameter is an object of type `Netlist`. It represents a netlist, which is a
-        description of the connections between components in a circuit or system
+            description of the connections between components in a circuit or system
         :param num_parts: The `num_parts` parameter is an integer that represents the number of partitions.
-        It determines how many partitions the algorithm will divide the `hyprgraph` (Netlist) into, defaults to 2
-        (optional)
+            It determines how many partitions the algorithm will divide the `hyprgraph` (Netlist) into, defaults to 2
+            (optional)
         """
         self.hyprgraph = hyprgraph
         self.num_parts = num_parts
@@ -67,8 +67,8 @@ class FMGainMgr:
         information and the maximum gain.
 
         :param part: The `part` parameter is a list that represents the current assignment of vertices to
-        parts. Each element in the list corresponds to a vertex, and its value represents the part to which
-        the vertex is currently assigned
+            parts. Each element in the list corresponds to a vertex, and its value represents the part to which
+            the vertex is currently assigned
         :return: a tuple containing the move_info_v and maxk values.
         """
         to_part = max(range(self.num_parts), key=lambda k: self.gainbucket[k].get_max())
@@ -100,10 +100,10 @@ class FMGainMgr:
         information.
 
         :param part: A list that represents the partition of the graph. Each element in the list corresponds
-        to a vertex in the graph and indicates which partition the vertex belongs to. For example, if part =
-        [0, 1, 0, 1], it means that vertex 0 and vertex 2 belong
+            to a vertex in the graph and indicates which partition the vertex belongs to. For example, if part =
+            [0, 1, 0, 1], it means that vertex 0 and vertex 2 belong
         :param move_info_v: The `move_info_v` parameter is a tuple that contains information about a move.
-        It has the following structure:
+            It has the following structure:
         """
         self.gain_calc.update_move_init()
         v, from_part, to_part = move_info_v
@@ -128,10 +128,10 @@ class FMGainMgr:
         `key`) and does not return anything.
 
         :param w: A node_t object. It is a parameter of the modify_key method and is used in the
-        implementation of the method
+            implementation of the method
         :param part_w: The parameter `part_w` is of type `node_t`
         :param key: The `key` parameter is of type `int` or `int[]`. It represents a key that will be
-        modified in some way
+            modified in some way
         """
 
     # private:
@@ -141,9 +141,9 @@ class FMGainMgr:
         The function `_update_move_2pin_net` updates the move for a 2-pin net in a partition solution.
 
         :param part: A list representing the partition solution. Each element in the list represents a node
-        and its corresponding partition (0 or 1)
+            and its corresponding partition (0 or 1)
         :param move_info: The `move_info` parameter is a variable of type `type`. It is not clear what
-        specific information is passed in this variable without further context
+            specific information is passed in this variable without further context
         """
         w = self.gain_calc.update_move_2pin_net(part, move_info)
         self.modify_key(w, part[w], self.gain_calc.delta_gain_w)
@@ -153,9 +153,9 @@ class FMGainMgr:
         The function `_update_move_3pin_net` updates the move for a 3-pin net in a partition solution.
 
         :param part: A list representing the partition solution. Each element in the list represents a node
-        and its corresponding partition (0 or 1)
+            and its corresponding partition (0 or 1)
         :param move_info: The `move_info` parameter is a variable of type `type`. It is not clear what
-        specific information is passed in this variable without further context
+            specific information is passed in this variable without further context
         """
         delta_gain = self.gain_calc.update_move_3pin_net(part, move_info)
         for dGw, w in zip(delta_gain, self.gain_calc.idx_vec):
@@ -166,9 +166,9 @@ class FMGainMgr:
         The function `_update_move_general_net` updates the move for a general net in a partition solution.
 
         :param part: A list representing the partition solution. Each element in the list represents a node
-        and its corresponding partition (0 or 1)
+            and its corresponding partition (0 or 1)
         :param move_info: The `move_info` parameter is a variable of type `type`. It is not clear what
-        specific information is passed in this variable without further context
+            specific information is passed in this variable without further context
         """
         delta_gain = self.gain_calc.update_move_general_net(part, move_info)
         for dGw, w in zip(delta_gain, self.gain_calc.idx_vec):

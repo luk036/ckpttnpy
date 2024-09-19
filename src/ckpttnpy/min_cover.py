@@ -97,14 +97,14 @@ def setup(
     forbidden dependencies `forbid`, and returns a tuple containing the clusters, nets, and cell list.
 
     :param hyprgraph: The parameter "hyprgraph" is likely an input graph or hypergraph. It represents the
-    connections between cells or nodes in a system
+        connections between cells or nodes in a system
     :type hyprgraph: Netlist
     :param cluster_weight: The parameter "cluster_weight" represents the weight of each cluster in the
-    hypergraph. It is used in the min_maximal_matching function to determine the matching with the
-    minimum weight
+        hypergraph. It is used in the min_maximal_matching function to determine the matching with the
+        minimum weight
     :param forbid: The `forbid` parameter is used to specify a set of vertices that should not be
-    included in the matching. It is used in the `min_maximal_matching` function to ensure that the
-    matching does not include certain vertices
+        included in the matching. It is used in the `min_maximal_matching` function to ensure that the
+        matching does not include certain vertices
     :return: three values: clusters, nets, and cell_list.
     """
     s1, _ = min_maximal_matching(hyprgraph, cluster_weight, dep=forbid)
@@ -128,16 +128,16 @@ def construct_graph(hyprgraph: Netlist, nets, cell_list, clusters):
     clusters.
 
     :param hyprgraph: The parameter `hyprgraph` is likely an object representing a hypergraph. It is used to access
-    the connections between cells and nets
+        the connections between cells and nets
     :type hyprgraph: Netlist
     :param nets: The `nets` parameter is a list of nets. Each net is represented as a list of cells that
-    are connected by the net. For example, if there are two nets, the `nets` parameter could be:
+        are connected by the net. For example, if there are two nets, the `nets` parameter could be:
     :param cell_list: The `cell_list` parameter is a list of cells in the circuit. Each cell represents
-    a component or module in the circuit design
+        a component or module in the circuit design
     :param clusters: clusters is a list of clusters, where each cluster is a set of cells that are
-    grouped together
+        grouped together
     :return: a bipartite graph (ugraph) that represents the connections between modules (cell_list and
-    clusters) and nets.
+        clusters) and nets.
     """
     num_modules = len(cell_list) + len(clusters)
     # Construct a graph for the next level's netlist
@@ -163,13 +163,13 @@ def purge_duplicate_nets(hyprgraph: Netlist, ugraph, nets, num_clusters, num_mod
     weights and list of nets.
 
     :param hyprgraph: The `hyprgraph` parameter is an object that represents a hypergraph. It likely has methods to
-    access information about the hypergraph, such as the weight of a net
+        access information about the hypergraph, such as the weight of a net
     :type hyprgraph: Netlist
     :param ugraph: The variable `ugraph` represents a graph where each node represents a cluster and each edge
-    represents a net connecting two clusters. The graph `ugraph` is represented as an adjacency list, where
-    `ugraph[cluster]` returns a list of nets connected to the cluster
+        represents a net connecting two clusters. The graph `ugraph` is represented as an adjacency list, where
+        `ugraph[cluster]` returns a list of nets connected to the cluster
     :param nets: The `nets` parameter is a list of nets. A net is a collection of pins that are
-    connected together. Each net is represented by a unique identifier
+        connected together. Each net is represented by a unique identifier
     :param num_clusters: The parameter "num_clusters" represents the number of clusters in the graph
     :param num_modules: The number of modules in the graph
     :return: The function `purge_duplicate_nets` returns two values: `net_weight` and `updated_nets`.
@@ -217,13 +217,13 @@ def reconstruct_graph(hyprgraph: Netlist, ugraph, nets, num_clusters, num_module
     The function reconstructs a new graph by purging duplicate nets and updating net weights.
 
     :param hyprgraph: The `hyprgraph` parameter is a hypergraph representation of the graph. It is a dictionary
-    where the keys are the nodes of the graph and the values are the hyperedges that the node belongs to
+        where the keys are the nodes of the graph and the values are the hyperedges that the node belongs to
     :type hyprgraph: Netlist
     :param ugraph: ugraph is a dictionary that represents the connections between modules and nets in the
-    original graph. The keys of the dictionary are the module indices, and the values are lists of net
-    indices that the module is connected to
+        original graph. The keys of the dictionary are the module indices, and the values are lists of net
+        indices that the module is connected to
     :param nets: The `nets` parameter is a list of nets, where each net is represented as a list of
-    nodes. Each node is an integer representing a module in the graph
+        nodes. Each node is an integer representing a module in the graph
     :param num_clusters: The parameter `num_clusters` represents the number of clusters in the graph
     :param num_modules: The number of modules in the graph
     :return: three values: `gr2`, `net_weight2`, and `num_nets`.
@@ -258,15 +258,15 @@ def contract_subgraph(hyprgraph: Netlist, module_weight, forbid: Set):
     forbidden nets as input, and returns a contracted hierarchical netlist with updated module weights.
 
     :param hyprgraph: The `hyprgraph` parameter is a Netlist object, which represents a hierarchical graph. It
-    contains information about the modules (cells) and their connections (nets) in the graph
+        contains information about the modules (cells) and their connections (nets) in the graph
     :type hyprgraph: Netlist
     :param module_weight: The `module_weight` parameter is a dictionary that assigns a weight to each
-    module in the netlist. The weight represents the importance or size of the module
+        module in the netlist. The weight represents the importance or size of the module
     :param forbid: The `forbid` parameter is a set that contains the nets that should not be contracted.
-    These nets will remain as separate entities in the resulting hierarchical netlist
+        These nets will remain as separate entities in the resulting hierarchical netlist
     :type forbid: Set
     :return: The function `contract_subgraph` returns a tuple containing the contracted hierarchical
-    netlist (`hgr2`) and the updated module weights (`module_weight2`).
+        netlist (`hgr2`) and the updated module weights (`module_weight2`).
     """
     cluster_weight = {
         net: sum(module_weight[v] for v in hyprgraph.ugraph[net])

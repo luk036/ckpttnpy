@@ -22,11 +22,11 @@ class PartMgrBase:
         object.
 
         :param hyprgraph: The `hyprgraph` parameter is an object of type `hyprgraph` which is used for some purpose in the
-        class. The specific purpose is not mentioned in the code snippet provided
+            class. The specific purpose is not mentioned in the code snippet provided
         :param gain_mgr: The `gain_mgr` parameter is an object of type `gain_mgr`. It is used to manage the
-        gains of the system
+            gains of the system
         :param constr_mgr: The `constr_mgr` parameter is an object of type `constr_mgr`. It is used to
-        manage constraints in the code
+            manage constraints in the code
         """
         self.hyprgraph = hyprgraph
         self.gain_mgr = gain_mgr
@@ -51,7 +51,7 @@ class PartMgrBase:
         The `legalize` function is used to perform a legalization process on a given part in a graph.
 
         :param part: The `part` parameter represents the current partitioning of the modules. It is a data
-        structure that assigns each module to a specific partition
+            structure that assigns each module to a specific partition
         :type part: Part
         :return: The function `legalize` returns the value of the variable `legalcheck`.
         """
@@ -97,7 +97,7 @@ class PartMgrBase:
         can be made.
 
         :param part: The "part" parameter is an object of type "Part". It is used as input for the
-        optimization process
+            optimization process
         :type part: Part
         """
         while True:
@@ -114,8 +114,8 @@ class PartMgrBase:
         gain and updating the placement accordingly.
 
         :param part: The `part` parameter represents a specific partition or group of elements. It is used
-        in the context of a partitioning algorithm where elements are divided into different groups or
-        partitions based on certain criteria
+            in the context of a partitioning algorithm where elements are divided into different groups or
+            partitions based on certain criteria
         :type part: Part
         """
         totalgain = 0
@@ -166,7 +166,7 @@ class PartMgrBase:
         returns a value.
 
         :param part: The "part" parameter is of type "Part" and is used to specify the part of the system
-        for which a snapshot needs to be taken
+            for which a snapshot needs to be taken
         :type part: Part
         """
 
@@ -176,8 +176,8 @@ class PartMgrBase:
         The function `restore_part_info` restores the information of a specific part from a given snapshot.
 
         :param snapshot: A snapshot of the part's information that needs to be restored. This could be a
-        dictionary, object, or any other data structure that contains the necessary information to restore
-        the part
+            dictionary, object, or any other data structure that contains the necessary information to restore
+            the part
         :param part: The "part" parameter is of type "Part"
         :type part: Part
         """

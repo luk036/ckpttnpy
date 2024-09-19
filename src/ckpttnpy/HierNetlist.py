@@ -18,12 +18,12 @@ class HierNetlist(Netlist):
         The function initializes an object with a graph, modules, and nets, and sets some attributes.
 
         :param ugraph: ugraph is a variable of type nx.Graph, which represents a graph. It is used as an argument
-        in the constructor of the class
+            in the constructor of the class
         :type ugraph: nx.Graph
         :param modules: The `modules` parameter is either a range or a list that represents the modules in
-        the graph. It contains the information about the modules present in the graph
+            the graph. It contains the information about the modules present in the graph
         :param nets: The `nets` parameter is either a range or a list that represents the nets in the graph.
-        A net is a collection of interconnected nodes in a circuit or network
+            A net is a collection of interconnected nodes in a circuit or network
         """
         Netlist.__init__(self, ugraph, modules, nets)
         # self.parent = self
@@ -37,7 +37,7 @@ class HierNetlist(Netlist):
 
         :param v: The parameter `v` represents a vertex in a graph
         :return: The function `get_degree` returns the sum of the values in the `net_weight` dictionary for
-        each element in the `ugraph[v]` list.
+            each element in the `ugraph[v]` list.
         """
         return sum(self.net_weight.get(net, 1) for net in self.ugraph[v])
 
@@ -61,10 +61,10 @@ class HierNetlist(Netlist):
         10  13  12
 
         :param part: The `part` parameter is either a dictionary or a list of integers. It represents the
-        partitioning of nodes in a graph
+            partitioning of nodes in a graph
         :param part_down: The `part_down` parameter is either a dictionary or a list of integers. It
-        represents the mapping of nodes in the `self.node_down_list` to their corresponding clusters in the
-        `part` parameter
+            represents the mapping of nodes in the `self.node_down_list` to their corresponding clusters in the
+            `part` parameter
         """
         num_cells = len(self.node_down_list) - len(self.clusters)
         for v1, v2 in enumerate(self.node_down_list[:num_cells]):
@@ -91,8 +91,8 @@ class HierNetlist(Netlist):
         the net weight is not found.
 
         :param net: The parameter "net" in the get_net_weight method is the key used to retrieve the value
-        from the net_weight dictionary
+            from the net_weight dictionary
         :return: the value associated with the key 'net' in the dictionary 'self.net_weight'. If the key is
-        not found in the dictionary, it will return 1.
+            not found in the dictionary, it will return 1.
         """
         return self.net_weight.get(net, 1)

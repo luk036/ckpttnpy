@@ -30,15 +30,6 @@ class LegalCheck(Enum):
 class FMConstrMgr(Generic[Gnl]):
     """
     FMConstrMgr manages constraints for a given hypergraph.
-
-    Attributes:
-        hyprgraph (Gnl): The hypergraph instance.
-        bal_tol (float): Balance tolerance.
-        total_weight (int): Total weight of the hypergraph.
-        weight_cache (int): Cached weight value.
-        diff (List[int]): Difference array per partition.
-        lowerbound (int): Lower bound threshold.
-        num_parts (int): Number of partitions.
     """
 
     __slots__ = (
@@ -59,14 +50,14 @@ class FMConstrMgr(Generic[Gnl]):
         The function initializes the attributes of an object and calculates a lower bound value.
 
         :param hyprgraph: The `hyprgraph` parameter represents a list of values. It is not clear what these values
-        represent without further context
+            represent without further context
         :param bal_tol: The `bal_tol` parameter represents the balance tolerance. It is a value that
-        determines how balanced the weights of the parts should be. The lower the value, the more balanced
-        the weights should be
+            determines how balanced the weights of the parts should be. The lower the value, the more balanced
+            the weights should be
         :param module_weight: The `module_weight` parameter represents the weight of each module
         :param num_parts: The `num_parts` parameter represents the number of parts or modules that the
-        system is divided into. It is an optional parameter with a default value of 2, defaults to 2
-        (optional)
+            system is divided into. It is an optional parameter with a default value of 2, defaults to 2
+            (optional)
         """
         self.hyprgraph = hyprgraph
         self.bal_tol = bal_tol
@@ -83,7 +74,7 @@ class FMConstrMgr(Generic[Gnl]):
         vertices.
 
         :param part: The `part` parameter is of type `Part` and it represents a partition of the nodes in a
-        graph. Each node is assigned to a part, and the `part` parameter stores this assignment information
+            graph. Each node is assigned to a part, and the `part` parameter stores this assignment information
         :type part: Part
         """
         self.diff = [0] * self.num_parts
@@ -95,9 +86,9 @@ class FMConstrMgr(Generic[Gnl]):
         The function `get_module_weight` returns the weight of a module, given its index.
 
         :param node_index: The parameter `node_index` is of type `int` and it represents the index or key used to access
-        the `module_weight` dictionary
+            the `module_weight` dictionary
         :return: the value of `1` if `self.module_weight` is `None`, otherwise it is returning the value of
-        `self.module_weight[v]`.
+            `self.module_weight[v]`.
         """
         return 1 if self.module_weight is None else self.module_weight[node_index]
 
@@ -139,8 +130,8 @@ class FMConstrMgr(Generic[Gnl]):
         and subtracting the weight from the `from_part` key.
 
         :param move_info_v: The `move_info_v` parameter is a tuple containing three elements. The first
-        element is not used in this method, so it is ignored. The second element, `from_part`, represents
-        the part from which the move is being made. The third element, `to_part`, represents the part to
+            element is not used in this method, so it is ignored. The second element, `from_part`, represents
+            the part from which the move is being made. The third element, `to_part`, represents the part to
         """
         _, from_part, to_part = move_info_v
         self.diff[to_part] += self.weight

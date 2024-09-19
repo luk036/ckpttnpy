@@ -32,9 +32,9 @@ class FMKWayGainCalc:
         for a graph partitioning algorithm.
 
         :param hyprgraph: The `hyprgraph` parameter is of type `Netlist` and represents a description of a netlist. It
-        is used to store information about the modules and their connections in the netlist
+            is used to store information about the modules and their connections in the netlist
         :param num_parts: The `num_parts` parameter is an integer that represents the number of partitions.
-        It specifies how many partitions the algorithm should divide the given `hyprgraph` (Netlist) into
+            It specifies how many partitions the algorithm should divide the given `hyprgraph` (Netlist) into
         :type num_parts: int
         """
         self.delta_gain_v = list()
@@ -62,8 +62,8 @@ class FMKWayGainCalc:
         then initializes the gain for each net.
 
         :param part: The "part" parameter is a list that represents the partitioning of the graph. Each
-        element in the list corresponds to a vertex in the graph, and the value of the element indicates
-        which partition the vertex belongs to
+            element in the list corresponds to a vertex in the graph, and the value of the element indicates
+            which partition the vertex belongs to
         :type part: Part
         :return: The method is returning the value of the `totalcost` variable.
         """
@@ -81,7 +81,7 @@ class FMKWayGainCalc:
 
         :param net: The `net` parameter represents a node in a graph. It is of type `node_t`
         :param part: The `part` parameter is a list that represents a partition of nodes in the network. It
-        is used to determine the gain of moving a particular node to a different partition
+            is used to determine the gain of moving a particular node to a different partition
         :type part: Part
         :return: nothing.
         """
@@ -100,10 +100,10 @@ class FMKWayGainCalc:
         The function `_modify_gain` modifies the gain of a node in a graph by adding a weight to it.
 
         :param v: The parameter `v` is of type `node_t` and represents a node in a graph. It is used as an
-        argument in the function `_modify_gain`
+            argument in the function `_modify_gain`
         :param pv: pv is a node that is being excluded from the rr (round-robin) list
         :param weight: The weight parameter is an integer that represents the weight to be added to the data
-        of each vertex in the vertex list
+            of each vertex in the vertex list
         """
         for k in self.rr.exclude(pv):
             self.vertex_list[k][v].data[0] += weight
@@ -113,10 +113,10 @@ class FMKWayGainCalc:
         The function `_init_gain_2pin_net` initializes the gain for a 2-pin net in a graph.
 
         :param net: The `net` parameter is a `node_t` object, which represents a net in a graph. It is used
-        to identify a specific net in the graph
+            to identify a specific net in the graph
         :param part: The `part` parameter is a list that represents the partitioning of the nodes in the
-        graph. Each element in the list corresponds to a node in the graph, and the value of the element
-        indicates the partition to which the node belongs
+            graph. Each element in the list corresponds to a node in the graph, and the value of the element
+            indicates the partition to which the node belongs
         :type part: Part
         """
         net_cur = iter(self.hyprgraph.ugraph[net])
@@ -139,8 +139,8 @@ class FMKWayGainCalc:
 
         :param net: The `net` parameter represents a node in a graph. It is of type `node_t`
         :param part: The `part` parameter is a list that represents the partitioning of nodes in the graph.
-        Each element in the list corresponds to a node in the graph, and the value of the element represents
-        the partition that the node belongs to
+            Each element in the list corresponds to a node in the graph, and the value of the element represents
+            the partition that the node belongs to
         :type part: Part
         :return: The function does not explicitly return anything.
         """
@@ -180,10 +180,10 @@ class FMKWayGainCalc:
         connections to each partition.
 
         :param net: The `net` parameter is a node in a graph. It represents a general net in the context of
-        the code
+            the code
         :param part: The `part` parameter is a list that represents the partitioning of nodes in the
-        network. Each element in the list corresponds to a node in the network, and the value of the element
-        represents the partition to which the node belongs
+            network. Each element in the list corresponds to a node in the network, and the value of the element
+            represents the partition to which the node belongs
         :type part: Part
         """
         num = [0] * self.num_parts
@@ -221,9 +221,9 @@ class FMKWayGainCalc:
         The function `update_move_2pin_net` updates the move for a 2-pin net in a graph.
 
         :param part: A list that represents the partitioning of the circuit. Each element in the list
-        corresponds to a vertex in the circuit graph and indicates which partition the vertex belongs to
+            corresponds to a vertex in the circuit graph and indicates which partition the vertex belongs to
         :param move_info: The `move_info` parameter is a tuple containing four elements: `net`, `v`,
-        `from_part`, and `to_part`
+            `from_part`, and `to_part`
         :return: the value of the variable "w".
         """
         net, v, from_part, to_part = move_info
@@ -260,9 +260,9 @@ class FMKWayGainCalc:
         The function `update_move_3pin_net` updates the move for a 3-pin net in a graph.
 
         :param part: A list representing the partition of the net. Each element in the list corresponds to a
-        pin in the net and indicates which part of the partition the pin belongs to
+            pin in the net and indicates which part of the partition the pin belongs to
         :param move_info: The `move_info` parameter is a tuple containing information about the move. It has
-        the following structure:
+            the following structure:
         :return: the variable `delta_gain`, which is a list of lists.
         """
         net, _, from_part, to_part = move_info
@@ -315,10 +315,10 @@ class FMKWayGainCalc:
         algorithm.
 
         :param part: A list that represents the partition of the nodes in the network. Each element in the
-        list corresponds to a node and indicates which part of the network the node belongs to
+            list corresponds to a node and indicates which part of the network the node belongs to
         :param move_info: The `move_info` parameter is an instance of the `MoveInfoV` class. It contains
-        information about the move being made in the general net. The `move_info` object has the following
-        attributes:
+            information about the move being made in the general net. The `move_info` object has the following
+            attributes:
         :return: the variable "delta_gain", which is a list of lists.
         """
         net, _, from_part, to_part = move_info

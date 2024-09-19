@@ -29,17 +29,17 @@ class MLPartMgr:
         The function initializes an object with various attributes and assigns values to them.
 
         :param GainCalc: A class or function that calculates the gain. It is not specified what type it is,
-        so it could be any type of object that performs gain calculations
+            so it could be any type of object that performs gain calculations
         :param GainMgr: The `GainMgr` parameter is an object that manages the calculation and management of
-        gains. It likely contains methods and attributes related to gain calculations and management
+            gains. It likely contains methods and attributes related to gain calculations and management
         :param ConstrMgr: A manager class that handles constraints for the optimization problem
         :param PartMgr: The `PartMgr` parameter is an object that manages the parts in the system. It likely
-        has methods for adding, removing, and retrieving parts, as well as other operations related to
-        managing parts
+            has methods for adding, removing, and retrieving parts, as well as other operations related to
+            managing parts
         :param bal_tol: The `bal_tol` parameter is a tolerance value used for balancing calculations. It is
-        used to determine if the calculated gains are within an acceptable range of balance
+            used to determine if the calculated gains are within an acceptable range of balance
         :param num_parts: The number of parts in the system. It is an optional parameter with a default
-        value of 2, defaults to 2 (optional)
+            value of 2, defaults to 2 (optional)
         """
         self.GainCalc = GainCalc
         self.GainMgr = GainMgr
@@ -64,7 +64,7 @@ class MLPartMgr:
         The above function is a setter method that sets the value of the "_limitsize" attribute in a class.
 
         :param limit: The `limit` parameter is the value that will be assigned to the `_limitsize` attribute
-        of the object
+            of the object
         """
         self._limitsize = limit
 
@@ -74,13 +74,13 @@ class MLPartMgr:
         partitioning based on module weights and balancing constraints.
 
         :param hyprgraph: The "hyprgraph" parameter represents a hypergraph, which is a mathematical structure used to
-        model relationships between objects. It is not clear what specific properties or data the hypergraph
-        in this code represents without further context
+            model relationships between objects. It is not clear what specific properties or data the hypergraph
+            in this code represents without further context
         :param module_weight: The `module_weight` parameter represents the weight of each module in the
-        hypergraph. It is used in the optimization process to calculate the cost of each partition
+            hypergraph. It is used in the optimization process to calculate the cost of each partition
         :param part: The `part` parameter is a list that represents the current partitioning of the modules
-        in the hypergraph `hyprgraph`. Each element in the list corresponds to a module and contains an integer
-        value representing the partition number to which the module belongs
+            in the hypergraph `hyprgraph`. Each element in the list corresponds to a module and contains an integer
+            value representing the partition number to which the module belongs
         :return: The function `run_FMPartition` returns the value of `legalcheck`.
         """
 
@@ -140,8 +140,8 @@ class MLBiPartMgr(MLPartMgr):
         `__init__` function of the parent class `MLPartMgr` with specific arguments.
 
         :param bal_tol: The `bal_tol` parameter is the balance tolerance. It represents the maximum allowed
-        imbalance between partitions in a multi-level partitioning algorithm. It is used to control the
-        balance of the partitions, ensuring that they are as evenly distributed as possible
+            imbalance between partitions in a multi-level partitioning algorithm. It is used to control the
+            balance of the partitions, ensuring that they are as evenly distributed as possible
         """
         MLPartMgr.__init__(
             self, FMBiGainCalc, FMBiGainMgr, FMBiConstrMgr, FMPartMgr, bal_tol
@@ -157,10 +157,10 @@ class MLKWayPartMgr(MLPartMgr):
         constructor of a parent class.
 
         :param bal_tol: The `bal_tol` parameter represents the balance tolerance for the partitioning
-        algorithm. It is a measure of how evenly the workload is distributed among the partitions. A lower
-        value indicates a stricter balance requirement, while a higher value allows for more imbalance
+            algorithm. It is a measure of how evenly the workload is distributed among the partitions. A lower
+            value indicates a stricter balance requirement, while a higher value allows for more imbalance
         :param num_parts: The `num_parts` parameter represents the number of parts or partitions that will
-        be created in the system
+            be created in the system
         """
         MLPartMgr.__init__(
             self,

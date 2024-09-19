@@ -26,8 +26,8 @@ class FMBiGainMgr(FMGainMgr):
         input `part`.
 
         :param part: The "part" parameter is a list that represents the partitioning of the vertices in the
-        graph. Each element in the list corresponds to a vertex in the graph and indicates which partition
-        the vertex belongs to (0 or 1)
+            graph. Each element in the list corresponds to a vertex in the graph and indicates which partition
+            the vertex belongs to (0 or 1)
         :type part: Part
         :return: the value of the variable "totalcost".
         """
@@ -49,7 +49,7 @@ class FMBiGainMgr(FMGainMgr):
         to itself.
 
         :param whichPart: whichPart is a variable of type uint8_t. It is used to specify which part of the
-        code to lock
+            code to lock
         :param v: The parameter `v` is of type `node_t` and represents a node in the graph
         """
         vlink = self.gain_calc.vertex_list[v]
@@ -61,14 +61,8 @@ class FMBiGainMgr(FMGainMgr):
         The function "lock_all" locks a specific part and its corresponding opposite part.
 
         :param from_part: The `from_part` parameter is of type `uint8_t` and is used to determine which part
-        to lock
+            to lock
         :param v: The parameter "v" is of type "node_t"
-        """
-        """Lock
-
-        Arguments:
-            whichPart (uint8_t):  description
-            v (node_t):  description
         """
         self.lock(from_part ^ 1, v)
 
@@ -78,7 +72,7 @@ class FMBiGainMgr(FMGainMgr):
 
         :param w: The variable `w` represents the moving cell
         :param part_w: The `part_w` parameter represents a part or partition of a graph. It is used to
-        determine which gainbucket to modify
+            determine which gainbucket to modify
         :param key: The `key` parameter is the new value for the gain of the moving cell
         """
         self.gainbucket[part_w ^ 1].modify_key(self.gain_calc.vertex_list[w], key)
@@ -89,7 +83,7 @@ class FMBiGainMgr(FMGainMgr):
 
         :param move_info_v: A tuple containing three elements: v, from_part, and an underscore variable
         :param gain: The `gain` parameter represents the amount of gain or loss in value that is associated
-        with the move
+            with the move
         """
         v, from_part, _ = move_info_v
         self._set_key(from_part, v, -gain)
@@ -101,7 +95,7 @@ class FMBiGainMgr(FMGainMgr):
         The `_set_key` function sets a key for a specific part and vertex in a gainbucket.
 
         :param whichPart: whichPart is a variable of type uint8_t, which represents a part or section of the
-        gainbucket
+            gainbucket
         :param v: The parameter "v" is of type "node_t"
         :param key: The key parameter is an integer value that represents a key value
         """
