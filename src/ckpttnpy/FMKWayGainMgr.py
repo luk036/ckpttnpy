@@ -1,8 +1,32 @@
-# -*- coding: utf-8 -*-
+"""
+FMKWayGainMgr.py
+
+This code defines a class called FMKWayGainMgr, which is designed to manage gains in a K-way partitioned netlist. A netlist is a representation of connections between components in an electronic circuit, and partitioning is the process of dividing these components into groups. The purpose of this code is to help optimize the partitioning process by managing and calculating gains, which represent the benefit of moving a component from one partition to another.
+
+The FMKWayGainMgr class takes three inputs when initialized: a GainCalc object (which calculates gains), a hypergraph (representing the netlist), and the number of partitions. It uses these inputs to set up data structures for managing gains and partitions.
+
+The main outputs of this class are not directly visible in the code, but it provides methods to initialize, update, and manage gains for different components in the partitions. These gains can be used by other parts of a larger system to make decisions about how to optimize the partitioning.
+
+The class achieves its purpose through several key methods:
+
+1. init: This method initializes or reinitializes the gain management system based on a given partition. It sets up gain buckets for each partition and calculates initial gains for each component.
+
+2. lock and lock_all: These methods "lock" a component in a partition, preventing it from being moved. This is useful when certain components need to stay in place.
+
+3. update_move_v: This method updates the gains when a component is moved from one partition to another.
+
+4. modify_key: This method allows for modifying the gain values for a component across different partitions.
+
+The logic flow in this code revolves around maintaining and updating gain values for components in different partitions. It uses data structures like gainbuckets to efficiently manage these values. The class also employs a round-robin approach (using the Robin class) to cycle through partitions when performing operations.
+
+An important aspect of the code is how it handles the gain calculations. While the actual calculations are done by the GainCalc object, this class manages when and how these calculations are applied, and how the results are stored and used.
+
+Overall, this code provides a framework for managing the complex task of optimizing K-way partitions in a netlist, which is a common problem in electronic design automation. It abstracts away many of the details, providing a higher-level interface for working with partitions and their associated gains.
+"""
 
 from typing import Any, Dict, List, Union
 
-from mywheel.robin import Robin
+from mywheel.robin import Robin  # for round-robin the partitions
 
 from .FMGainMgr import FMGainMgr
 
@@ -10,8 +34,9 @@ Part = Union[Dict[Any, int], List[int]]
 
 
 class FMKWayGainMgr(FMGainMgr):
-    """The `FMKWayGainMgr` class is a subclass of `FMGainMgr` that initializes with a `GainCalc` object, a
-    `Netlist` object, and a number of partitions, and also has a `Robin` object.
+    """
+    The `FMBiGainMgr` class is a subclass of `FMGainMgr` (Fiduccia-Mattheyses Gain Manager) that provides methods for initialization and
+    reinitialization of a K-way partitioned netlist.
     """
 
     # public:

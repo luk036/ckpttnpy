@@ -1,3 +1,27 @@
+"""
+FMBiGainCalc.py
+
+This code defines a class called FMBiGainCalc, which is used for calculating the bipartition gain in the Fiduccia-Mattheyses partitioning algorithm. This algorithm is used in graph theory and circuit design to divide a graph or circuit into two parts while minimizing the connections between them.
+
+The main purpose of this code is to provide methods for initializing, calculating, and updating the gains associated with moving vertices between two partitions of a graph. It takes as input a hypergraph (a graph where edges can connect more than two vertices) and a partition of the vertices. The output is primarily the calculated gains for moving vertices between partitions.
+
+The class starts by initializing with a hypergraph. It creates a list or dictionary of vertices, each associated with a Dllink object that stores the gain and vertex information. The init method calculates the initial total cost and gains for each vertex based on the given partition.
+
+The code handles different types of nets (connections between vertices) separately:
+
+1. 2-pin nets (connecting two vertices)
+2. 3-pin nets (connecting three vertices)
+3. General nets (connecting more than three vertices)
+
+For each type of net, there are methods to initialize the gains and update them when a vertex is moved from one partition to another. The gain calculations are based on how moving a vertex affects the number of connections between the two partitions.
+
+The update_move methods are particularly important. They recalculate the gains when a vertex is moved, considering how this affects the balance of connections in each net the vertex is part of. For 2-pin and 3-pin nets, this is done directly. For general nets, it involves counting the number of vertices in each partition and adjusting gains accordingly.
+
+The code uses simple arithmetic operations to calculate gains, adding or subtracting weights based on whether moving a vertex increases or decreases the connections between partitions. It keeps track of the total cost, which represents the overall quality of the partition (lower is better).
+
+In summary, this code provides the core calculations for an algorithm that tries to find the best way to split a graph into two parts, minimizing the connections between them. It's a crucial component in various applications like circuit design, where minimizing connections between different parts of a circuit is important for efficiency and manufacturability.
+"""
+
 from typing import Any, Dict, List, Union
 
 from mywheel.dllist import Dllink
@@ -9,7 +33,7 @@ Part = Union[Dict[Any, int], List[int]]
 
 
 class FMBiGainCalc:
-    """The FMBiGainCalc class is used for calculating the bipartition gain."""
+    """The FMBiGainCalc class is used for calculating the bipartition gain in Fiduccia-Mattheyses partitioning algorithm."""
 
     __slots__ = ("totalcost", "hyprgraph", "vertex_list", "idx_vec", "delta_gain_w")
 
@@ -79,7 +103,7 @@ class FMBiGainCalc:
     def _modify_gain(self, w, weight):
         """
         Modifies the gain of a vertex by adding a weight to its data.
-        
+
         :param w: The node in the graph whose gain is to be modified.
         :param weight: The weight to be added to the first element of the data attribute of the w-th element in the vertex_list.
         """

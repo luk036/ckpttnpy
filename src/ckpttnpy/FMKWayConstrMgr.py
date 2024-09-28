@@ -1,4 +1,20 @@
-# -*- coding: utf-8 -*-
+"""
+FMKWayConstrMgr.py
+
+This code defines a class called FMKWayConstrMgr, which is designed to manage constraints in a partitioning problem. The purpose of this code is to help determine if certain moves in a partitioning algorithm are legal or not, based on specific constraints.
+
+The class takes several inputs when initialized: a hypergraph (which represents the structure being partitioned), a balance tolerance (which sets limits on how unbalanced the partitions can be), a module weight (which represents the weight of individual elements), and the number of parts (which is how many partitions are being created).
+
+The main output of this class is the determination of whether a proposed move in the partitioning algorithm is legal or not. It does this through its check_legal method, which returns different status codes depending on whether the move is completely legal, improves the situation but doesn't fully satisfy all constraints, or is illegal.
+
+The class achieves its purpose by maintaining information about the current state of the partitioning. It keeps track of which parts are currently "illegal" (meaning they violate some constraint) and updates this information as moves are proposed and made. The class also calculates and maintains information about the difference between the current weight of each part and the ideal weight.
+
+An important logic flow in this code is how it determines if a move is legal. First, it checks if the move satisfies basic constraints (handled by the parent class). If it does, it then updates its internal state to reflect the proposed move. If any parts are still illegal after the move, it considers the move as "getting better" but not fully satisfying all constraints. Only if all parts become legal does it consider the move as fully satisfying all constraints.
+
+The code also includes a method to select which part should be the destination for a move (select_togo), which simply chooses the part with the smallest current weight difference from the ideal.
+
+Overall, this class serves as a crucial component in a larger partitioning algorithm, helping to ensure that the algorithm maintains certain balance and legality constraints as it operates.
+"""
 
 from typing import Any, Dict, List, Union
 
@@ -9,7 +25,7 @@ Part = Union[Dict[Any, int], List[int]]
 
 
 class FMKWayConstrMgr(FMConstrMgr):
-    """The `FMKWayConstrMgr` class is a subclass of `FMConstrMgr` that initializes with a list of illegal
+    """The `FMKWayConstrMgr` class is a subclass of `FMConstrMgr` (Fiduccia-Mattheyses Constraint Manager) that initializes with a list of illegal
     parts.
     """
 

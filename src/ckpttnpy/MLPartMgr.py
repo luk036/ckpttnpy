@@ -1,9 +1,33 @@
+"""
+MLPartMgr.py
+
+This code defines a system for managing multi-level partitioning, which is a technique used to divide a large problem into smaller, more manageable parts. The main purpose of this code is to provide a framework for partitioning a hypergraph (a type of graph where edges can connect more than two vertices) into multiple parts while maintaining certain balance and optimization criteria.
+
+The code defines three main classes: MLPartMgr, MLBiPartMgr, and MLKWayPartMgr. MLPartMgr is the base class, while the other two are specialized versions for different types of partitioning.
+
+The main input for this system is a hypergraph, module weights (which represent the importance or size of each module in the graph), and an initial partitioning of the modules. The output is an optimized partitioning of the modules that satisfies certain balance constraints and minimizes the total cost of the partitioning.
+
+The core of the algorithm is in the run_FMPartition method of the MLPartMgr class. This method takes the hypergraph, module weights, and initial partitioning as input. It first checks if the initial partitioning is legal (satisfies the balance constraints). If it's not legal, it returns without making changes. If it is legal, it proceeds to optimize the partitioning.
+
+The optimization process involves two main steps:
+
+1. If the hypergraph is large enough (determined by the limitsize property), it first contracts the hypergraph into a smaller one. This is a way of simplifying the problem. It then recursively calls itself on this smaller hypergraph.
+
+2. After the recursive call (or if the hypergraph was small enough to begin with), it calls an optimize function that attempts to improve the partitioning.
+
+The algorithm uses several helper classes (GainCalc, GainMgr, ConstrMgr, PartMgr) to manage different aspects of the partitioning process. These classes handle things like calculating the gain of moving a module from one partition to another, managing the constraints of the partitioning, and performing the actual optimization.
+
+An important concept in this code is the idea of "gain". The gain represents how much the overall cost of the partitioning would improve if a particular change was made. The algorithm tries to make changes that have positive gain, improving the overall quality of the partitioning.
+
+The code also includes a mechanism for taking "snapshots" of the partitioning when a move results in a negative gain. This allows the algorithm to potentially backtrack if a series of moves ends up being unfavorable overall.
+
+In summary, this code provides a flexible framework for solving complex partitioning problems, with the ability to handle different types of partitioning (binary or k-way) and to work on problems of different sizes through its multi-level approach.
+"""
 # type: ignore
 
 # from ckpttnpy.min_cover import contract_subgraph
 from ckpttnpy.FMPartMgr import FMPartMgr
 
-# **Special code for two-pin nets**
 from .FMBiConstrMgr import FMBiConstrMgr
 from .FMBiGainCalc import FMBiGainCalc
 from .FMBiGainMgr import FMBiGainMgr
@@ -18,9 +42,7 @@ from .min_cover import contract_subgraph
 
 
 class MLPartMgr:
-    """The `MLPartMgr` class is a manager for machine learning parts, with functionality for calculating
-    gains, managing gains, managing constraints, managing parts, and tracking total cost.
-    """
+    """The `MLPartMgr` class is a manager for Multi-level Partitioning."""
 
     def __init__(
         self, GainCalc, GainMgr, ConstrMgr, PartMgr, bal_tol, num_parts=2

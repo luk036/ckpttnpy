@@ -1,3 +1,26 @@
+"""
+HierNetlist.py
+
+This code defines a class called HierNetlist, which is designed to represent and manage a hierarchical netlist. A netlist is a description of how components in an electronic circuit are connected. The hierarchical aspect means it can handle nested or grouped components.
+
+The HierNetlist class is built on top of a more basic Netlist class and adds functionality specific to hierarchical structures. It takes three main inputs when creating a new HierNetlist object: a graph representing the connections between components, a list of modules (which are the components), and a list of nets (which are the connections).
+
+The class doesn't produce a specific output on its own, but it provides methods that can be used to manipulate and analyze the hierarchical netlist. These methods can be used by other parts of a program to perform various operations on the netlist.
+
+The HierNetlist class achieves its purpose by storing additional information about the netlist structure. It keeps track of clusters (groups of components), weights of nets (importance or strength of connections), and a mapping between different levels of the hierarchy (node_down_list).
+
+Some important functionalities provided by the class include:
+
+1. Calculating the degree (number of connections) of a component, taking into account the weights of the connections.
+2. Finding the maximum degree among all components in the netlist.
+3. Projecting partitions (ways of dividing components) up and down the hierarchy. This allows for analyzing the netlist at different levels of detail.
+4. Retrieving the weight of a specific net (connection).
+
+The class uses data structures like lists and dictionaries to store and manage the hierarchical information. For example, the net_weight dictionary keeps track of the importance of each connection, while the clusters list stores information about grouped components.
+
+Overall, this code provides a foundation for working with complex, hierarchical netlists in electronic design. It allows for operations that consider both the detailed connections between individual components and higher-level groupings of these components. This can be useful in tasks like circuit analysis, optimization, or layout planning in electronic design automation.
+"""
+
 from typing import Any, List
 
 import networkx as nx

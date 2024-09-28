@@ -1,5 +1,27 @@
 """
-This file is part of the FMBiGainMgr package.
+FMBiGainMgr.py
+
+This code defines a class called FMBiGainMgr, which is designed to manage gains in a graph partitioning algorithm. The purpose of this code is to help optimize the process of dividing a graph into two parts while minimizing the number of connections between those parts.
+
+The FMBiGainMgr class takes input in the form of a graph (represented by the 'hyprgraph' variable) and a partitioning of that graph (represented by the 'part' parameter in the 'init' method). The graph is made up of vertices (or nodes) and edges connecting them. The partitioning assigns each vertex to one of two parts (0 or 1).
+
+The main output of this code is not explicitly stated, but it helps maintain and update the state of the partitioning process. It keeps track of the "gains" associated with moving vertices between parts. A gain represents how much the partitioning would improve if a particular vertex was moved to the other part.
+
+The class achieves its purpose through several methods that manage the partitioning process:
+
+1. The 'init' method sets up the initial state. It clears existing data structures and then assigns each vertex to a "gain bucket" based on which part it's in and what its potential gain would be if moved.
+
+2. The 'lock' and 'lock_all' methods are used to prevent certain vertices from being moved between parts. This is useful for fixing some vertices in place during the partitioning process.
+
+3. The 'modify_key' method updates the gain value for a specific vertex when the partitioning changes.
+
+4. The 'update_move_v' method adjusts the gain value after a vertex has been moved between parts.
+
+The main data structure used is the 'gainbucket', which organizes vertices based on their potential gains. Vertices with higher gains (those that would improve the partitioning more if moved) are given priority.
+
+The logic flow generally involves initializing the state, then repeatedly selecting high-gain vertices to move between parts, updating the gains of affected vertices after each move. This process continues until no more beneficial moves can be made.
+
+In simple terms, this code acts like a manager for a complex puzzle-solving process. It keeps track of which moves would be most beneficial, helps make those moves, and then updates its information to prepare for the next move. This helps the overall algorithm find a good solution to the graph partitioning problem more efficiently than trying moves at random.
 """
 
 from typing import Any, Dict, List, Union
@@ -11,8 +33,8 @@ Part = Union[Dict[Any, int], List[int]]
 
 class FMBiGainMgr(FMGainMgr):
     """
-    The `FMBiGainMgr` class is a subclass of `FMGainMgr` that provides methods for initialization and
-    reinitialization of a partitioned netlist.
+    The `FMBiGainMgr` class is a subclass of `FMGainMgr` (Fiduccia-Mattheyses Gain Manager) that provides methods for initialization and
+    reinitialization of a bi-partitioned netlist.
     """
 
     # public:

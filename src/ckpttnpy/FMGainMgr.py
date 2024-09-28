@@ -1,3 +1,27 @@
+"""
+FMGainMgr.py
+
+This code defines a class called FMGainMgr (Fiduccia-Mattheyses Gain Manager) which is used in graph partitioning algorithms. The purpose of this code is to manage and calculate gains when moving nodes between different partitions of a graph or hypergraph.
+
+The FMGainMgr class takes three main inputs: a GainCalc object (which calculates gains), a hypergraph (representing the connections between nodes), and the number of partitions (defaulting to 2). It uses these inputs to set up data structures for managing gains and node movements.
+
+The class doesn't produce a direct output, but it provides methods that can be used in a larger algorithm to select nodes for movement between partitions and update gains after moves. The main outputs of these methods are move information (which node to move and where) and gain values.
+
+The class achieves its purpose through several key methods:
+
+1. init: Initializes the gain calculations for a given partition.
+2. select: Chooses the best node to move based on maximum gain.
+3. update_move: Updates the gains after a node has been moved.
+
+The logic flow typically involves initializing the gains, repeatedly selecting nodes to move based on the highest gain, and then updating the gains after each move. This process continues until no more beneficial moves can be made.
+
+An important data transformation happening in this code is the management of a "gain bucket". This is a data structure that keeps track of nodes and their associated gains. Nodes are added to or removed from this bucket as their gains change due to moves in the partitioning process.
+
+The code also handles different types of connections (nets) between nodes, with special methods for 2-pin and 3-pin nets, and a general method for nets with more connections. This allows for efficient gain calculations in different scenarios.
+
+Overall, this code provides a framework for managing the complex process of calculating and updating gains in graph partitioning, which is a crucial part of algorithms used in various fields like circuit design and network analysis.
+"""
+
 from abc import abstractmethod
 from typing import List
 
@@ -8,6 +32,8 @@ Item = Dllink[List[int]]
 
 
 class FMGainMgr:
+    """The `FMGainMgr` class is a base class for managing gains in Fiduccia-Mattheyses partitioning algorithm."""
+
     waitinglist = Dllist[List[int]]([0, 3734])
 
     # public:
