@@ -25,23 +25,21 @@ Part = Union[Dict[Any, int], List[int]]
 
 
 class FMKWayConstrMgr(FMConstrMgr):
-    """The `FMKWayConstrMgr` class is a subclass of `FMConstrMgr` (Fiduccia-Mattheyses Constraint Manager) that initializes with a list of illegal
-    parts.
-    """
+    """The `FMKWayConstrMgr` class is a subclass of `FMConstrMgr` (Fiduccia-Mattheyses Constraint Manager) that initializes with a list of illegal parts."""
 
     def __init__(self, hyprgraph, bal_tol, module_weight, num_parts: int):
-        """
+        r"""
         The function initializes an object with certain parameters and sets all elements of the "illegal"
         list to True.
 
         :param hyprgraph: The `hyprgraph` parameter is a type that is not specified in the code snippet. It is likely a
-        custom type or a reference to another class or module
+            custom type or a reference to another class or module
         :param bal_tol: The `bal_tol` parameter is used to specify the balance tolerance for the module. It
-        represents the maximum allowable difference in weight between the heaviest and lightest parts in the
-        module
+            represents the maximum allowable difference in weight between the heaviest and lightest parts in the
+            module
         :param module_weight: The `module_weight` parameter represents the weight of a single module
         :param num_parts: The `num_parts` parameter is an integer that represents the number of parts in the
-        system
+            system
         :type num_parts: int
         """
         FMConstrMgr.__init__(self, hyprgraph, bal_tol, module_weight, num_parts)

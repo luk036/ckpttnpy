@@ -15,7 +15,7 @@ The class achieves its purpose through several key methods:
 
 The logic flow typically involves initializing the gains, repeatedly selecting nodes to move based on the highest gain, and then updating the gains after each move. This process continues until no more beneficial moves can be made.
 
-An important data transformation happening in this code is the management of a "gain bucket". This is a data structure that keeps track of nodes and their associated gains. Nodes are added to or removed from this bucket as their gains change due to moves in the partitioning process.
+An important data transformation happening in this code is the management of a 'gain bucket'. This is a data structure that keeps track of nodes and their associated gains. Nodes are added to or removed from this bucket as their gains change due to moves in the partitioning process.
 
 The code also handles different types of connections (nets) between nodes, with special methods for 2-pin and 3-pin nets, and a general method for nets with more connections. This allows for efficient gain calculations in different scenarios.
 
@@ -68,17 +68,6 @@ class FMGainMgr:
         totalcost = self.gain_calc.init(part)
         self.waitinglist.clear()
         return totalcost
-
-    # def is_empty_togo(self, to_part) -> bool:
-    #     """
-    #     The function `is_empty_togo` checks if a specific part in a gainbucket is empty.
-    #
-    #     :param to_part: The `to_part` parameter is of type `uint8_t`, which typically represents an unsigned
-    #     8-bit integer
-    #     :return: a boolean value, which indicates whether the gainbucket at the specified to_part index is
-    #     empty or not.
-    #     """
-    #     return self.gainbucket[to_part]._max == 0  # is_empty()
 
     def is_empty(self) -> bool:
         """

@@ -17,9 +17,9 @@ The optimization process involves two main steps:
 
 The algorithm uses several helper classes (GainCalc, GainMgr, ConstrMgr, PartMgr) to manage different aspects of the partitioning process. These classes handle things like calculating the gain of moving a module from one partition to another, managing the constraints of the partitioning, and performing the actual optimization.
 
-An important concept in this code is the idea of "gain". The gain represents how much the overall cost of the partitioning would improve if a particular change was made. The algorithm tries to make changes that have positive gain, improving the overall quality of the partitioning.
+An important concept in this code is the idea of 'gain'. The gain represents how much the overall cost of the partitioning would improve if a particular change was made. The algorithm tries to make changes that have positive gain, improving the overall quality of the partitioning.
 
-The code also includes a mechanism for taking "snapshots" of the partitioning when a move results in a negative gain. This allows the algorithm to potentially backtrack if a series of moves ends up being unfavorable overall.
+The code also includes a mechanism for taking 'snapshots' of the partitioning when a move results in a negative gain. This allows the algorithm to potentially backtrack if a series of moves ends up being unfavorable overall.
 
 In summary, this code provides a flexible framework for solving complex partitioning problems, with the ability to handle different types of partitioning (binary or k-way) and to work on problems of different sizes through its multi-level approach.
 """
@@ -110,6 +110,7 @@ class MLPartMgr:
             """
             The function `legalcheck_fn` creates instances of various managers and uses them to perform a legal
             check on a given part, returning the result and the total cost.
+
             :return: two values: `legalcheck` and `part_mgr.totalcost`.
             """
             gain_mgr = self.GainMgr(self.GainCalc, hyprgraph, self.num_parts)
@@ -124,6 +125,7 @@ class MLPartMgr:
             """
             The function `optimize_fn` optimizes a given part by calculating the total cost using various
             managers and returns the result.
+
             :return: the total cost calculated by the `part_mgr.optimize()` method.
             """
             gain_mgr = self.GainMgr(self.GainCalc, hyprgraph, self.num_parts)
