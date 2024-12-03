@@ -1,4 +1,4 @@
-# 🔪 ckpttnpy
+# ✂️ ckpttnpy
 
 > Circuit Partitioning Python Code
 
@@ -6,7 +6,6 @@
 [![codecov](https://codecov.io/gh/luk036/ckpttnpy/branch/master/graph/badge.svg)](https://codecov.io/gh/luk036/ckpttnpy)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/1c8b47586d12409e95c7c143b1fec7e8)](https://app.codacy.com/app/luk036/ckpttnpy?utm_source=github.com&utm_medium=referral&utm_content=luk036/ckpttnpy&utm_campaign=Badge_Grade_Dashboard)
 [![CodeFactor](https://www.codefactor.io/repository/github/luk036/ckpttnpy/badge)](https://www.codefactor.io/repository/github/luk036/ckpttnpy)
-[![Maintainability](https://api.codeclimate.com/v1/badges/2551a7289b83520b6cac/maintainability)](https://codeclimate.com/github/luk036/ckpttnpy/maintainability)
 
 This library defines a system for the management of multi-level partitioning, which is a technique used to divide a complex problem into smaller, more manageable parts. The primary objective of this library is to provide a framework for partitioning a hypergraph (a type of graph where edges can connect more than two vertices) into multiple parts while maintaining specific balance and optimization criteria.
 
