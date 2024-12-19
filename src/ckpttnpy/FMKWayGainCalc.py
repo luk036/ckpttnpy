@@ -17,6 +17,7 @@ The code uses data structures like lists and dictionaries to keep track of nodes
 
 Overall, this code provides the core calculations needed for the FM algorithm to make decisions about how to partition a graph effectively. It's a crucial component in graph partitioning problems, which have applications in areas like circuit design, load balancing, and network analysis.
 """
+
 # type: ignore
 
 from itertools import permutations
