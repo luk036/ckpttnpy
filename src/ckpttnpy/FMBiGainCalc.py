@@ -25,7 +25,7 @@ In summary, this code provides the core calculations for an algorithm that tries
 from typing import Any, Dict, List, Union
 
 from mywheel.dllist import Dllink
-from mywheel.lict import Lict
+from mywheel.map_adapter import MapAdapter
 
 # from collections import Mapping
 
@@ -53,7 +53,7 @@ class FMBiGainCalc:
         """
         self.hyprgraph = hyprgraph
         if isinstance(self.hyprgraph.modules, range):
-            self.vertex_list = Lict([Dllink([0, i]) for i in self.hyprgraph])
+            self.vertex_list = MapAdapter([Dllink([0, i]) for i in self.hyprgraph])
         elif isinstance(self.hyprgraph.modules, list):
             self.vertex_list = {v: Dllink([0, v]) for v in self.hyprgraph}
         else:

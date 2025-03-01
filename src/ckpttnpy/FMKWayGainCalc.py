@@ -24,7 +24,7 @@ from itertools import permutations
 from typing import Any, Dict, List, Union
 
 from mywheel.dllist import Dllink
-from mywheel.lict import Lict
+from mywheel.map_adapter import MapAdapter
 from mywheel.robin import Robin
 
 Part = Union[Dict[Any, int], List[int]]
@@ -67,7 +67,8 @@ class FMKWayGainCalc:
 
         if isinstance(self.hyprgraph.modules, range):
             self.vertex_list = [
-                Lict([Dllink([0, i]) for i in self.hyprgraph]) for _ in range(num_parts)
+                MapAdapter([Dllink([0, i]) for i in self.hyprgraph])
+                for _ in range(num_parts)
             ]
         elif isinstance(self.hyprgraph.modules, list):
             self.vertex_list = [
