@@ -39,87 +39,18 @@ from .HierNetlist import HierNetlist
 Node = TypeVar("Node")  # Hashable
 
 
-# def min_maximal_matching(
-#     hyprgraph: Netlist,
-#     weight: MutableMapping,
-#     matchset: Optional[Set] = None,
-#     dep: Optional[Set] = None,
-# ) -> Tuple[Set, Union[int, float]]:
-#     """
-#     The `min_maximal_matching` function performs a minimum weighted maximal matching using a primal-dual
-#     approximation algorithm.
-
-#     :param hyprgraph: The `hyprgraph` parameter is an object representing a hypergraph. It likely contains
-#     information about the vertices and edges of the hypergraph
-#     :type hyprgraph: Netlist
-#     :param weight: The `weight` parameter is a mutable mapping that represents the weight of each net in
-#     the hypergraph. It is used to determine the cost of each net in the matching
-#     :type weight: MutableMapping
-#     :param matchset: The `matchset` parameter is a set that represents the initial matching. It contains
-#     the nets (networks) that are already matched
-#     :type matchset: Optional[Set]
-#     :param dep: The `dep` parameter is a set that keeps track of the vertices that have been covered by
-#     the matching. It is initially set to an empty set, and is updated by the `cover` function. The
-#     `cover` function takes a net as input and adds all the vertices connected to that net
-#     :type dep: Optional[Set]
-#     :return: The function `min_maximal_matching` returns a tuple containing the matchset (a set of
-#     matched elements) and the total primal cost (an integer or float representing the total weight of
-#     the matching).
-#     """
-#     if matchset is None:
-#         matchset = set()
-#     if dep is None:
-#         dep = set()
-
-#     def cover(net):
-#         for vtx in hyprgraph.ugraph[net]:
-#             dep.add(vtx)
-
-#     def any_of_dep(net):
-#         return any(vtx in dep for vtx in hyprgraph.ugraph[net])
-
-#     total_primal_cost = 0
-#     total_dual_cost = 0
-
-#     gap = copy.copy(weight)
-#     for net in hyprgraph.nets:
-#         if any_of_dep(net):
-#             continue
-#         if net in matchset:  # pre-define matching
-#             # cover(net)
-#             continue
-#         min_val = gap[net]
-#         min_net = net
-#         for vtx in hyprgraph.ugraph[net]:
-#             for net2 in hyprgraph.ugraph[vtx]:
-#                 if any_of_dep(net2):
-#                     continue
-#                 if min_val > gap[net2]:
-#                     min_val = gap[net2]
-#                     min_net = net2
-#         cover(min_net)
-#         matchset.add(min_net)
-#         total_primal_cost += weight[min_net]
-#         total_dual_cost += min_val
-#         if min_net == net:
-#             continue
-#         gap[net] -= min_val
-#         for vtx in hyprgraph.ugraph[net]:
-#             for net2 in hyprgraph.ugraph[vtx]:
-#                 # if net2 == net:
-#                 #     continue
-#                 gap[net2] -= min_val
-
-#     assert total_dual_cost <= total_primal_cost
-#     return matchset, total_primal_cost
-
-
 def setup(
     hyprgraph: Netlist, cluster_weight: MutableMapping, forbid: Optional[Set]
 ) -> Tuple[List, List, List]:
     """
     The `setup` function takes in a hypergraph `hyprgraph`, cluster weights `cluster_weight`, and a set of
     forbidden dependencies `forbid`, and returns a tuple containing the clusters, nets, and cell list.
+
+    This function performs the initial setup for clustering by:
+    1. Finding a minimum maximal matching in the hypergraph
+    2. Creating clusters from the matched nets
+    3. Separating remaining nets that weren't clustered
+    4. Collecting cells that weren't included in any clusters
 
     :param hyprgraph: The parameter "hyprgraph" is likely an input graph or hypergraph. It represents the
         connections between cells or nodes in a system
@@ -151,6 +82,11 @@ def construct_graph(hyprgraph: Netlist, nets, cell_list, clusters):
     """
     The function constructs a bipartite graph based on a given hypergraph, netlist, cell list, and
     clusters.
+
+    This function creates a new graph representation where:
+    - Modules (both individual cells and clusters) are on one side
+    - Nets are on the other side
+    - Edges connect modules to the nets they participate in
 
     :param hyprgraph: The parameter `hyprgraph` is likely an object representing a hypergraph. It is used to access
         the connections between cells and nets
@@ -186,6 +122,11 @@ def purge_duplicate_nets(hyprgraph: Netlist, ugraph, nets, num_clusters, num_mod
     """
     The function `purge_duplicate_nets` removes duplicate nets from a graph and returns the updated net
     weights and list of nets.
+
+    This function identifies and removes duplicate nets by:
+    1. Checking for nets that connect exactly the same set of modules
+    2. For low-pin nets (<= 5 connections), it does exact set comparison
+    3. Combining weights of duplicate nets into a single representative net
 
     :param hyprgraph: The `hyprgraph` parameter is an object that represents a hypergraph. It likely has methods to
         access information about the hypergraph, such as the weight of a net
@@ -241,6 +182,11 @@ def reconstruct_graph(hyprgraph: Netlist, ugraph, nets, num_clusters, num_module
     """
     The function reconstructs a new graph by purging duplicate nets and updating net weights.
 
+    This function:
+    1. Calls purge_duplicate_nets to identify and remove duplicate connections
+    2. Creates a new graph with only the unique nets
+    3. Preserves the weights of the remaining nets
+
     :param hyprgraph: The `hyprgraph` parameter is a hypergraph representation of the graph. It is a dictionary
         where the keys are the nodes of the graph and the values are the hyperedges that the node belongs to
     :type hyprgraph: Netlist
@@ -281,6 +227,13 @@ def contract_subgraph(hyprgraph: Netlist, module_weight, forbid: Set):
     """
     The `contract_subgraph` function takes a hierarchical netlist, module weights, and a set of
     forbidden nets as input, and returns a contracted hierarchical netlist with updated module weights.
+
+    This is the main function that orchestrates the entire clustering process by:
+    1. Calculating initial cluster weights
+    2. Setting up initial clusters and nets
+    3. Constructing the intermediate graph
+    4. Purging duplicates and reconstructing the final graph
+    5. Creating the hierarchical netlist structure with updated weights
 
     :param hyprgraph: The `hyprgraph` parameter is a Netlist object, which represents a hierarchical graph. It
         contains information about the modules (cells) and their connections (nets) in the graph
