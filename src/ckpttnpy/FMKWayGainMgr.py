@@ -39,8 +39,6 @@ class FMKWayGainMgr(FMGainMgr):
     reinitialization of a K-way partitioned netlist.
     """
 
-    # public:
-
     def __init__(self, GainCalc, hyprgraph, num_parts: int):
         """
         The function initializes an object with the given parameters and calls the parent class's
@@ -120,7 +118,7 @@ class FMKWayGainMgr(FMGainMgr):
         :param gain: The `gain` parameter represents the gain value that needs to be updated for the moving cell
         """
         v, from_part, to_part = move_info_v
-        for k in filter(lambda k: k != to_part, self.rr.exclude(from_part)):
+        for k in [k for k in self.rr.exclude(from_part) if k != to_part]:
             self.gainbucket[k].modify_key(
                 self.gain_calc.vertex_list[k][v], self.gain_calc.delta_gain_v[k]
             )

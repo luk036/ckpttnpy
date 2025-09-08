@@ -26,8 +26,6 @@ from typing import Any, List
 import networkx as nx
 from netlistx.netlist import Netlist
 
-# from typing import Mapping, MutableMapping
-
 
 class HierNetlist(Netlist):
     """The `HierNetlist` class is a subclass of `Netlist` that represents a hierarchical netlist and
@@ -49,7 +47,7 @@ class HierNetlist(Netlist):
             A net is a collection of interconnected nodes in a circuit or network
         """
         Netlist.__init__(self, ugraph, modules, nets)
-        # self.parent = self
+
         self.node_down_list: List[Any] = []
         self.net_weight: dict = {}
         self.clusters: List[Any] = []

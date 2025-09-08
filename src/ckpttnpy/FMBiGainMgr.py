@@ -37,11 +37,6 @@ class FMBiGainMgr(FMGainMgr):
     reinitialization of a bi-partitioned netlist.
     """
 
-    # public:
-
-    # def __init__(self, GainCalc, hyprgraph, num_parts=2):
-    #     FMGainMgr.__init__(self, GainCalc, hyprgraph)
-
     def init(self, part: Part) -> None:
         """
         The `init` function initializes the state of an object and performs some calculations based on the

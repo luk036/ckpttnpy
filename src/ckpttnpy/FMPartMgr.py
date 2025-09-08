@@ -24,10 +24,6 @@ from .PartMgrBase import PartMgrBase
 
 Part = Union[Dict[Any, int], List[int]]
 
-# **Special code for two-pin nets**
-# Take a snapshot when a move make **negative** gain.
-# Snapshot in the form of "interface"???
-
 
 class FMPartMgr(PartMgrBase):
     """Fiduccia-Mattheyses Partitioning Manager
