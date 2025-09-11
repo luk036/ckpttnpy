@@ -1,4 +1,5 @@
 import unittest
+
 from ckpttnpy.FMConstrMgr import FMConstrMgr, LegalCheck
 
 

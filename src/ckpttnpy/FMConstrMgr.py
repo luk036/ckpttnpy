@@ -17,7 +17,7 @@ Overall, this code provides a way to manage the constraints in a graph partition
 """
 
 from enum import Enum
-from typing import TypeVar, Generic, Any, Dict, List, Union
+from typing import Any, Dict, Generic, List, TypeVar, Union
 
 # Define a generic type for the hypergraph nodes
 Gnl = TypeVar("Gnl")

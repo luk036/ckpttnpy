@@ -30,11 +30,19 @@ Notes:
 """
 
 import copy
-import networkx as nx
+from typing import (
+    Any,
+    Iterator,
+    List,
+    MutableMapping,
+    Optional,
+    Set,
+    Tuple,
+    TypeVar,
+    Union,
+)
 
-from typing import List, MutableMapping, Optional, Set, Tuple, TypeVar, Union
-from typing import Any
-from typing import Iterator
+import networkx as nx
 
 T = TypeVar("T")
 

@@ -30,6 +30,7 @@ Overall, this code provides a flexible framework for implementing partition opti
 # Snapshot in the form of "interface"???
 from abc import abstractmethod
 from typing import Any, Dict, List, Union
+
 from .FMConstrMgr import LegalCheck
 
 Part = Union[Dict[Any, int], List[int]]
