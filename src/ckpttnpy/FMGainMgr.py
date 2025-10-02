@@ -128,13 +128,13 @@ class FMGainMgr:
                 continue  # does not provide any gain change when move
             move_info = [net, v, from_part, to_part]
             if degree == 2:
-                self._update_move_2pin_net(part, move_info)
+                self._update_move_net(part, move_info, self.gain_calc.update_move_2pin_net)
             else:
                 self.gain_calc.init_idx_vec(v, net)
                 if degree == 3:
-                    self._update_move_3pin_net(part, move_info)
+                    self._update_move_net(part, move_info, self.gain_calc.update_move_3pin_net)
                 else:
-                    self._update_move_general_net(part, move_info)
+                    self._update_move_net(part, move_info, self.gain_calc.update_move_general_net)
 
     @abstractmethod
     def modify_key(self, w, part_w, key) -> None:
@@ -151,40 +151,19 @@ class FMGainMgr:
 
     # private:
 
-    def _update_move_2pin_net(self, part, move_info):
+    def _update_move_net(self, part, move_info, gain_calc_method):
         """
-        The function `_update_move_2pin_net` updates the move for a 2-pin net in a partition solution.
+        The function `_update_move_net` updates the move for a net in a partition solution.
 
         :param part: A list representing the partition solution. Each element in the list represents a node
             and its corresponding partition (0 or 1)
         :param move_info: The `move_info` parameter is a variable of type `type`. It is not clear what
             specific information is passed in this variable without further context
+        :param gain_calc_method: The method to call on the gain_calc object.
         """
-        w = self.gain_calc.update_move_2pin_net(part, move_info)
-        self.modify_key(w, part[w], self.gain_calc.delta_gain_w)
-
-    def _update_move_3pin_net(self, part, move_info):
-        """
-        The function `_update_move_3pin_net` updates the move for a 3-pin net in a partition solution.
-
-        :param part: A list representing the partition solution. Each element in the list represents a node
-            and its corresponding partition (0 or 1)
-        :param move_info: The `move_info` parameter is a variable of type `type`. It is not clear what
-            specific information is passed in this variable without further context
-        """
-        delta_gain = self.gain_calc.update_move_3pin_net(part, move_info)
-        for dGw, w in zip(delta_gain, self.gain_calc.idx_vec):
-            self.modify_key(w, part[w], dGw)
-
-    def _update_move_general_net(self, part, move_info):
-        """
-        The function `_update_move_general_net` updates the move for a general net in a partition solution.
-
-        :param part: A list representing the partition solution. Each element in the list represents a node
-            and its corresponding partition (0 or 1)
-        :param move_info: The `move_info` parameter is a variable of type `type`. It is not clear what
-            specific information is passed in this variable without further context
-        """
-        delta_gain = self.gain_calc.update_move_general_net(part, move_info)
-        for dGw, w in zip(delta_gain, self.gain_calc.idx_vec):
-            self.modify_key(w, part[w], dGw)
+        delta_gain = gain_calc_method(part, move_info)
+        if isinstance(delta_gain, (list, tuple)):
+            for dGw, w in zip(delta_gain, self.gain_calc.idx_vec):
+                self.modify_key(w, part[w], dGw)
+        else:
+            self.modify_key(delta_gain, part[delta_gain], self.gain_calc.delta_gain_w)

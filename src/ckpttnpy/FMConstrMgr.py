@@ -137,6 +137,16 @@ class FMConstrMgr(Generic[Gnl]):
         """
         return 1 if self.module_weight is None else self.module_weight[node_index]
 
+    def _get_diff_from(self, move_info_v) -> int:
+        """Calculate the difference in weight of the partition from which a module is moved.
+
+        :param move_info_v: A tuple containing the module to be moved, the partition it is moved from, and the partition it is moved to.
+        :return: The difference in weight of the partition from which a module is moved.
+        """
+        v, from_part, _ = move_info_v
+        self.weight = self.get_module_weight(v)
+        return self.diff[from_part] - self.weight
+
     def check_legal(self, move_info_v) -> LegalCheck:
         """[summary]
 
@@ -147,11 +157,11 @@ class FMConstrMgr(Generic[Gnl]):
         Returns:
             dtype:  description
         """
-        v, from_part, to_part = move_info_v
-        self.weight = self.get_module_weight(v)
-        diffFrom = self.diff[from_part] - self.weight
+        diffFrom = self._get_diff_from(move_info_v)
         if diffFrom < self.lowerbound:
             return LegalCheck.NotSatisfied  # not ok, don't move
+
+        _, _, to_part = move_info_v
         diffTo = self.diff[to_part] + self.weight
         if diffTo < self.lowerbound:
             return LegalCheck.GetBetter  # get better, but still illegal
@@ -164,9 +174,7 @@ class FMConstrMgr(Generic[Gnl]):
         :param move_info_v: A tuple containing three elements: v, from_part, and an underscore
         :return: a boolean value.
         """
-        v, from_part, _ = move_info_v
-        self.weight = self.get_module_weight(v)
-        diffFrom = self.diff[from_part] - self.weight
+        diffFrom = self._get_diff_from(move_info_v)
         return diffFrom >= self.lowerbound
 
     def update_move(self, move_info_v) -> None:

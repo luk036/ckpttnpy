@@ -71,7 +71,7 @@ class MLPartMgr:
         self.bal_tol = bal_tol
         self.num_parts = num_parts
         self.totalcost = 0
-        self._limitsize = 7  # magic number
+        self.LIMIT_SIZE = 7  # magic number
 
     @property
     def limitsize(self):
@@ -79,7 +79,7 @@ class MLPartMgr:
         The `limitsize` function is a property that returns the value of the `_limitsize` attribute.
         :return: The `limitsize` property is returning the value of the `_limitsize` attribute.
         """
-        return self._limitsize
+        return self.LIMIT_SIZE
 
     @limitsize.setter
     def limitsize(self, limit):
@@ -89,11 +89,12 @@ class MLPartMgr:
         :param limit: The `limit` parameter is the value that will be assigned to the `_limitsize` attribute
             of the object
         """
-        self._limitsize = limit
+        self.LIMIT_SIZE = limit
 
     def run_FMPartition(self, hyprgraph, module_weight, part):
-        """
-        The `run_FMPartition` function performs a partitioning algorithm on a hypergraph, optimizing the
+        """Run Fiduccia-Mattheyses Partitioning
+
+        This function performs a partitioning algorithm on a hypergraph, optimizing the
         partitioning based on module weights and balancing constraints.
 
         :param hyprgraph: The "hyprgraph" parameter represents a hypergraph, which is a mathematical structure used to

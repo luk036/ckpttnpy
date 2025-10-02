@@ -39,7 +39,11 @@ Part = Union[Dict[Any, int], List[int]]
 # The `PartMgrBase` class is a base class that manages parts, including their hierarchy, gain, and
 # constraints.
 class PartMgrBase:
-    """Base class manager of Fiduccia-Mattheyses Partitioning"""
+    """Base class for Fiduccia-Mattheyses Partitioning Manager
+
+    The `PartMgrBase` class is a base class that manages parts, including their hierarchy, gain, and
+    constraints.
+    """
 
     def __init__(self, hyprgraph, gain_mgr, constr_mgr):
         """

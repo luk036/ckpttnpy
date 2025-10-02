@@ -36,6 +36,7 @@ from netlistx.netlist_algo import min_maximal_matching
 
 from .HierNetlist import HierNetlist
 
+LOW_PIN_NET_THRESHOLD = 5
 Node = TypeVar("Node")  # Hashable
 
 
@@ -162,7 +163,7 @@ def purge_duplicate_nets(hyprgraph: Netlist, ugraph, nets, num_clusters, num_mod
                     continue  # no need to check if pins are different
                 same = False
                 # TODO: consider to use MinHash to check for more nets
-                if ugraph.degree(net1) <= 5:  # magic number!
+                if ugraph.degree(net1) <= LOW_PIN_NET_THRESHOLD:
                     # only check for low-pin nets
                     set1 = set(v for v in ugraph[net1])
                     set2 = set(v for v in ugraph[net2])
