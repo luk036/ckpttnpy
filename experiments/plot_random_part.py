@@ -1,5 +1,6 @@
 import argparse
 import logging
+import math
 import sys
 from random import randint
 
@@ -19,7 +20,7 @@ _logger = logging.getLogger(__name__)
 
 def run_MLBiPartMgr(hyprgraph: Netlist):
     part_mgr = MLBiPartMgr(0.4)
-    mincost = 100000000000
+    mincost = math.inf
     minpart = []
     for _ in range(10):
         randseq = [randint(0, 1) for _ in hyprgraph]
