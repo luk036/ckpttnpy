@@ -65,7 +65,7 @@ def setup(
     :return: three values: clusters, nets, and cell_list.
     """
     s1, _ = min_maximal_matching(hyprgraph, cluster_weight, dep=forbid)
-    covered = set()
+    covered: Set[int] = set()
     nets = list()
     clusters = list()
     for net in hyprgraph.nets:

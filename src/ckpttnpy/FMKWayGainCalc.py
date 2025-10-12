@@ -57,7 +57,7 @@ class FMKWayGainCalc:
             It specifies how many partitions the algorithm should divide the given `hyprgraph` (Netlist) into
         :type num_parts: int
         """
-        self.delta_gain_v = list()
+        self.delta_gain_v: List[int] = list()
 
         self.hyprgraph = hyprgraph
         self.num_parts = num_parts
@@ -77,7 +77,7 @@ class FMKWayGainCalc:
         else:
             raise NotImplementedError
 
-    def init(self, part: Part) -> None:
+    def init(self, part: Part) -> int:
         """
         The `init` function initializes the total cost and resets the data values for each vertex link, and
         then initializes the gain for each net.

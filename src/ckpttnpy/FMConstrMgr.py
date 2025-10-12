@@ -41,10 +41,10 @@ Fiduccia-Mattheyses algorithm for graph partitioning.
 """
 
 from enum import Enum
-from typing import Any, Dict, Generic, List, TypeVar, Union
+from typing import Any, Dict, Generic, Iterable, List, TypeVar, Union
 
 # Define a generic type for the hypergraph nodes
-Gnl = TypeVar("Gnl")
+Gnl = TypeVar("Gnl", bound=Iterable[int])
 
 Part = Union[Dict[Any, int], List[int]]
 

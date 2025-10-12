@@ -64,7 +64,7 @@ class FMBiGainMgr(FMGainMgr):
     bi-partitioned netlist.
     """
 
-    def init(self, part: Part) -> None:
+    def init(self, part: Part) -> int:
         """
         The `init` function initializes the state of an object and performs some
         calculations based on the input `part`.
