@@ -1,5 +1,6 @@
 from typing import Any, Dict, List, Union
 
+import pytest
 from netlistx.netlist import (
     Netlist,
     create_drawf,
@@ -40,34 +41,22 @@ def run_FMKWayPartMgr(hyprgraph: Netlist, gain_mgr, num_parts, part: Part):
     # print(part_mgr.snapshot)
 
 
-def test_FMKWayPartMgr():
-    hyprgraph = create_drawf()
-    gain_mgr = FMKWayGainMgr(FMKWayGainCalc, hyprgraph, 3)
-    hyprgraph.module_fixed = {"p1"}
-    part = {v: 0 for v in hyprgraph}
-    run_FMKWayPartMgr(hyprgraph, gain_mgr, 3, part)
-
-
-def test_FMKWayPartMgr2():
-    hyprgraph = create_test_netlist()
-    gain_mgr = FMKWayGainMgr(FMKWayGainCalc, hyprgraph, 3)
-    part = {v: 0 for v in hyprgraph}
-    run_FMKWayPartMgr(hyprgraph, gain_mgr, 3, part)
-
-
-def test_FMKWayPartMgr3():
-    hyprgraph = create_random_hgraph()
-    gain_mgr = FMKWayGainMgr(FMKWayGainCalc, hyprgraph, 3)
-    part = [0 for _ in hyprgraph]
-    run_FMKWayPartMgr(hyprgraph, gain_mgr, 3, part)
-
-
-def test_FMKWayPartMgr4():
-    hyprgraph = read_json("testcases/p1.json")
-    gain_mgr = FMKWayGainMgr(FMKWayGainCalc, hyprgraph, 5)
-    part = [0 for _ in hyprgraph]
-    run_FMKWayPartMgr(hyprgraph, gain_mgr, 5, part)
-
-
-# if __name__ == "__main__":
-#     test_FMKWayPartMgr2()
+@pytest.mark.parametrize(
+    "create_netlist, num_parts, part_type",
+    [
+        (create_drawf, 3, dict),
+        (create_test_netlist, 3, dict),
+        (create_random_hgraph, 3, list),
+        (lambda: read_json("testcases/p1.json"), 5, list),
+    ],
+)
+def test_FMKWayPartMgr(create_netlist, num_parts, part_type):
+    hyprgraph = create_netlist()
+    gain_mgr = FMKWayGainMgr(FMKWayGainCalc, hyprgraph, num_parts)
+    if create_netlist == create_drawf:
+        hyprgraph.module_fixed = {"p1"}
+    if part_type is dict:
+        part = {v: 0 for v in hyprgraph}
+    else:
+        part = [0 for _ in hyprgraph]
+    run_FMKWayPartMgr(hyprgraph, gain_mgr, num_parts, part)

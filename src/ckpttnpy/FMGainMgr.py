@@ -128,13 +128,19 @@ class FMGainMgr:
                 continue  # does not provide any gain change when move
             move_info = [net, v, from_part, to_part]
             if degree == 2:
-                self._update_move_net(part, move_info, self.gain_calc.update_move_2pin_net)
+                self._update_move_net(
+                    part, move_info, self.gain_calc.update_move_2pin_net
+                )
             else:
                 self.gain_calc.init_idx_vec(v, net)
                 if degree == 3:
-                    self._update_move_net(part, move_info, self.gain_calc.update_move_3pin_net)
+                    self._update_move_net(
+                        part, move_info, self.gain_calc.update_move_3pin_net
+                    )
                 else:
-                    self._update_move_net(part, move_info, self.gain_calc.update_move_general_net)
+                    self._update_move_net(
+                        part, move_info, self.gain_calc.update_move_general_net
+                    )
 
     @abstractmethod
     def modify_key(self, w, part_w, key) -> None:

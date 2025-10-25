@@ -1,5 +1,6 @@
 from typing import Any, Dict, List, Union
 
+import pytest
 from netlistx.netlist import (
     Netlist,
     create_drawf,
@@ -31,26 +32,23 @@ def run_FMBiPartMgr(hyprgraph: Netlist, part: Part):
     assert part_mgr.totalcost == totalcostbefore
 
 
-def test_FMBiPartMgr():
-    hyprgraph = create_drawf()
-    part = {v: 0 for v in hyprgraph}
-    hyprgraph.module_fixed = {"p1"}
-    run_FMBiPartMgr(hyprgraph, part)
+@pytest.mark.parametrize(
+    "create_netlist, part_type",
+    [
+        (create_drawf, dict),
+        (create_test_netlist, dict),
+        (create_random_hgraph, list),
+        (lambda: read_json("testcases/p1.json"), list),
+    ],
+)
+def test_FMBiPartMgr(create_netlist, part_type):
+    hyprgraph = create_netlist()
+    if part_type is dict:
+        part = {v: 0 for v in hyprgraph}
+    else:
+        part = [0 for _ in hyprgraph]
 
+    if create_netlist == create_drawf:
+        hyprgraph.module_fixed = {"p1"}
 
-def test_FMBiPartMgr2():
-    hyprgraph = create_test_netlist()
-    part = {v: 0 for v in hyprgraph}
-    run_FMBiPartMgr(hyprgraph, part)
-
-
-def test_FMBiPartMgr3():
-    hyprgraph = create_random_hgraph()
-    part = [0 for _ in hyprgraph]
-    run_FMBiPartMgr(hyprgraph, part)
-
-
-def test_FMBiPartMgr4():
-    hyprgraph = read_json("testcases/p1.json")
-    part = [0 for _ in hyprgraph]
     run_FMBiPartMgr(hyprgraph, part)

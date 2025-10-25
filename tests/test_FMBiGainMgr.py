@@ -1,5 +1,6 @@
 from typing import Any, Dict, List, Union
 
+import pytest
 from netlistx.netlist import Netlist, create_drawf, create_test_netlist
 
 from ckpttnpy.FMBiGainCalc import FMBiGainCalc
@@ -23,15 +24,9 @@ def run_FMBiGainMgr(hyprgraph: Netlist, part: Part):
         # assert v >= 0
 
 
-def test_FMBiGainMgr():
-    hyprgraph = create_test_netlist()
-    part = {v: 0 for v in hyprgraph}
-    part["a1"] = 1
-    run_FMBiGainMgr(hyprgraph, part)
-
-
-def test_FMBiGainMgr2():
-    hyprgraph = create_drawf()
+@pytest.mark.parametrize("create_netlist", [create_test_netlist, create_drawf])
+def test_FMBiGainMgr(create_netlist):
+    hyprgraph = create_netlist()
     part = {v: 0 for v in hyprgraph}
     part["a1"] = 1
     run_FMBiGainMgr(hyprgraph, part)

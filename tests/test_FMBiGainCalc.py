@@ -1,5 +1,4 @@
-import unittest
-
+import pytest
 from ckpttnpy.FMBiGainCalc import FMBiGainCalc
 
 
@@ -26,59 +25,30 @@ class MockHyprgraph:
         return self.net_weights[net]
 
 
-class TestFMBiGainCalc(unittest.TestCase):
-    def setUp(self):
-        self.hyprgraph = MockHyprgraph()
-        self.gain_calc = FMBiGainCalc(self.hyprgraph)
-
-    def test_init_gain_2pin_net(self):
-        part = [0, 0, 0, 0]
-        self.hyprgraph.nets = ["n1"]
-        self.gain_calc.init(part)
-        self.assertEqual(self.gain_calc.totalcost, 0)
-        self.assertEqual(self.gain_calc.vertex_list[0].data[0], -2)
-        self.assertEqual(self.gain_calc.vertex_list[1].data[0], -2)
-
-        part = [0, 1, 0, 0]
-        self.gain_calc.init(part)
-        self.assertEqual(self.gain_calc.totalcost, 2)
-        self.assertEqual(self.gain_calc.vertex_list[0].data[0], 2)
-        self.assertEqual(self.gain_calc.vertex_list[1].data[0], 2)
-
-    def test_init_gain_3pin_net(self):
-        part = [0, 0, 0, 0]
-        self.hyprgraph.nets = ["n2"]
-        self.gain_calc.init(part)
-        self.assertEqual(self.gain_calc.totalcost, 0)
-        self.assertEqual(self.gain_calc.vertex_list[0].data[0], -3)
-        self.assertEqual(self.gain_calc.vertex_list[1].data[0], -3)
-        self.assertEqual(self.gain_calc.vertex_list[2].data[0], -3)
-
-        part = [0, 0, 1, 0]
-        self.gain_calc.init(part)
-        self.assertEqual(self.gain_calc.totalcost, 3)
-        self.assertEqual(self.gain_calc.vertex_list[0].data[0], 0)
-        self.assertEqual(self.gain_calc.vertex_list[1].data[0], 0)
-        self.assertEqual(self.gain_calc.vertex_list[2].data[0], 3)
-
-    def test_init_gain_general_net(self):
-        part = [0, 0, 0, 0]
-        self.hyprgraph.nets = ["n3"]
-        self.gain_calc.init(part)
-        self.assertEqual(self.gain_calc.totalcost, 0)
-        self.assertEqual(self.gain_calc.vertex_list[0].data[0], -4)
-        self.assertEqual(self.gain_calc.vertex_list[1].data[0], -4)
-        self.assertEqual(self.gain_calc.vertex_list[2].data[0], -4)
-        self.assertEqual(self.gain_calc.vertex_list[3].data[0], -4)
-
-        part = [0, 0, 1, 1]
-        self.gain_calc.init(part)
-        self.assertEqual(self.gain_calc.totalcost, 4)
-        self.assertEqual(self.gain_calc.vertex_list[0].data[0], 0)
-        self.assertEqual(self.gain_calc.vertex_list[1].data[0], 0)
-        self.assertEqual(self.gain_calc.vertex_list[2].data[0], 0)
-        self.assertEqual(self.gain_calc.vertex_list[3].data[0], 0)
+@pytest.fixture
+def hyprgraph():
+    return MockHyprgraph()
 
 
-if __name__ == "__main__":
-    unittest.main()
+@pytest.fixture
+def gain_calc(hyprgraph):
+    return FMBiGainCalc(hyprgraph)
+
+
+@pytest.mark.parametrize(
+    "net, part, totalcost, expected_gains",
+    [
+        ("n1", [0, 0, 0, 0], 0, {0: -2, 1: -2}),
+        ("n1", [0, 1, 0, 0], 2, {0: 2, 1: 2}),
+        ("n2", [0, 0, 0, 0], 0, {0: -3, 1: -3, 2: -3}),
+        ("n2", [0, 0, 1, 0], 3, {0: 0, 1: 0, 2: 3}),
+        ("n3", [0, 0, 0, 0], 0, {0: -4, 1: -4, 2: -4, 3: -4}),
+        ("n3", [0, 0, 1, 1], 4, {0: 0, 1: 0, 2: 0, 3: 0}),
+    ],
+)
+def test_init_gain(gain_calc, hyprgraph, net, part, totalcost, expected_gains):
+    hyprgraph.nets = [net]
+    gain_calc.init(part)
+    assert gain_calc.totalcost == totalcost
+    for v, gain in expected_gains.items():
+        assert gain_calc.vertex_list[v].data[0] == gain
