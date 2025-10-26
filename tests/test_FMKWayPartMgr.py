@@ -1,5 +1,3 @@
-from typing import Any, Dict, List, Union
-
 import pytest
 from netlistx.netlist import (
     Netlist,
@@ -14,10 +12,10 @@ from ckpttnpy.FMKWayGainCalc import FMKWayGainCalc
 from ckpttnpy.FMKWayGainMgr import FMKWayGainMgr
 from ckpttnpy.FMPartMgr import FMPartMgr
 
-Part = Union[Dict[Any, int], List[int]]
+from tests.mocks import Part
 
 
-def run_FMKWayPartMgr(hyprgraph: Netlist, gain_mgr, num_parts, part: Part):
+def _run_FMKWayPartMgr(hyprgraph: Netlist, gain_mgr, num_parts, part: Part):
     """[summary]
 
     Arguments:
@@ -59,4 +57,4 @@ def test_FMKWayPartMgr(create_netlist, num_parts, part_type):
         part = {v: 0 for v in hyprgraph}
     else:
         part = [0 for _ in hyprgraph]
-    run_FMKWayPartMgr(hyprgraph, gain_mgr, num_parts, part)
+    _run_FMKWayPartMgr(hyprgraph, gain_mgr, num_parts, part)

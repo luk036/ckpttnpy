@@ -1,5 +1,3 @@
-from typing import Any, Dict, List, Union
-
 import pytest
 from netlistx.netlist import (
     Netlist,
@@ -14,10 +12,10 @@ from ckpttnpy.FMBiGainCalc import FMBiGainCalc
 from ckpttnpy.FMBiGainMgr import FMBiGainMgr
 from ckpttnpy.FMPartMgr import FMPartMgr
 
-Part = Union[Dict[Any, int], List[int]]
+from tests.mocks import Part
 
 
-def run_FMBiPartMgr(hyprgraph: Netlist, part: Part):
+def _run_FMBiPartMgr(hyprgraph: Netlist, part: Part):
     gain_mgr = FMBiGainMgr(FMBiGainCalc, hyprgraph)
     constr_mgr = FMBiConstrMgr(hyprgraph, 0.3, hyprgraph.module_weight)
     part_mgr = FMPartMgr(hyprgraph, gain_mgr, constr_mgr)
@@ -51,4 +49,4 @@ def test_FMBiPartMgr(create_netlist, part_type):
     if create_netlist == create_drawf:
         hyprgraph.module_fixed = {"p1"}
 
-    run_FMBiPartMgr(hyprgraph, part)
+    _run_FMBiPartMgr(hyprgraph, part)

@@ -1,15 +1,13 @@
-from typing import Any, Dict, List, Union
-
 import pytest
 from netlistx.netlist import Netlist, create_drawf, create_test_netlist
 
 from ckpttnpy.FMBiGainCalc import FMBiGainCalc
 from ckpttnpy.FMBiGainMgr import FMBiGainMgr
 
-Part = Union[Dict[Any, int], List[int]]
+from tests.mocks import Part
 
 
-def run_FMBiGainMgr(hyprgraph: Netlist, part: Part):
+def _run_FMBiGainMgr(hyprgraph: Netlist, part: Part):
     mgr = FMBiGainMgr(FMBiGainCalc, hyprgraph)
     mgr.init(part)
     while not mgr.is_empty():
@@ -29,4 +27,4 @@ def test_FMBiGainMgr(create_netlist):
     hyprgraph = create_netlist()
     part = {v: 0 for v in hyprgraph}
     part["a1"] = 1
-    run_FMBiGainMgr(hyprgraph, part)
+    _run_FMBiGainMgr(hyprgraph, part)

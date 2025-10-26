@@ -5,7 +5,7 @@ from netlistx.netlist import Netlist, create_drawf, read_json
 from ckpttnpy.MLPartMgr import MLBiPartMgr, MLKWayPartMgr
 
 
-def run_MLBiPartMgr(hyprgraph: Netlist):
+def _run_MLBiPartMgr(hyprgraph: Netlist):
     part_mgr = MLBiPartMgr(0.4)
     # try: part_mgr.limitsize = 2000
     part_mgr.limitsize = 7
@@ -24,19 +24,19 @@ def run_MLBiPartMgr(hyprgraph: Netlist):
 
 def test_MLBiPartMgr():
     hyprgraph = create_drawf()
-    run_MLBiPartMgr(hyprgraph)
+    _run_MLBiPartMgr(hyprgraph)
 
 
 def test_MLBiPartMgr2():
     hyprgraph = read_json("testcases/p1.json")
-    totalcost = run_MLBiPartMgr(hyprgraph)
+    totalcost = _run_MLBiPartMgr(hyprgraph)
     assert totalcost >= 43
     assert totalcost <= 105
 
 
-def run_MLKWayPartMgr(hyprgraph: Netlist, num_parts: int):
+def _run_MLKWayPartMgr(hyprgraph: Netlist, num_parts: int):
     """
-    The function `run_MLKWayPartMgr` takes a hypergraph and the number of partitions as input, and
+    The function `_run_MLKWayPartMgr` takes a hypergraph and the number of partitions as input, and
     returns the total cost of the partitioning.
 
     :param hyprgraph: The `hyprgraph` parameter is a Netlist object, which represents a hypergraph. It
@@ -45,7 +45,7 @@ def run_MLKWayPartMgr(hyprgraph: Netlist, num_parts: int):
     :param num_parts: The `num_parts` parameter represents the number of partitions or parts that the
     hypergraph should be divided into
     :type num_parts: int
-    :return: The function `run_MLKWayPartMgr` returns the total cost of the partitioning performed by
+    :return: The function `_run_MLKWayPartMgr` returns the total cost of the partitioning performed by
     the `MLKWayPartMgr` object.
     """
     part_mgr = MLKWayPartMgr(0.4, num_parts)
@@ -66,7 +66,7 @@ def run_MLKWayPartMgr(hyprgraph: Netlist, num_parts: int):
 def test_MLKWayPartMgr():
     seed(1234)
     hyprgraph = read_json("testcases/p1.json")
-    totalcost = run_MLKWayPartMgr(hyprgraph, 3)
+    totalcost = _run_MLKWayPartMgr(hyprgraph, 3)
     assert totalcost >= 77
     assert totalcost <= 197
 
