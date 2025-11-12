@@ -297,19 +297,35 @@ class FMBiGainCalc:
             gain = -gain
 
         if part_w == part[self.idx_vec[1]]:
-            # from: [w, x, v] | []
-            # to: [w, x] | [v]
+            # .. svgbob::
+            #
+            #     "from"       "to"
+            #   +----------+----------+
+            #   | [w,x,v]|[]| [w,x]|[v]|
+            #   +----------+----------+
+            #
             # or (gain < 0)
-            # from: [w, x] | [v]
-            # to: [w, x, v] | []
+            #
+            #     "from"       "to"
+            #   +----------+----------+
+            #   | [w,x]|[v]| [w,x,v]|[]|
+            #   +----------+----------+
             delta_gain[0] += gain
             delta_gain[1] += gain
         else:
-            # from: [w, v] | [x]
-            # to: [w] | [v, x]
+            # .. svgbob::
+            #
+            #     "from"         "to"
+            #   +------------+------------+
+            #   | [w,v]|[x]  | [w]|[v,x]  |
+            #   +------------+------------+
+            #
             # or (gain < 0)
-            # from: [w] | [v, x]
-            # to: [w, v] | [x]
+            #
+            #     "from"         "to"
+            #   +------------+------------+
+            #   | [w]|[v,x]  | [w,v]|[x]  |
+            #   +------------+------------+
             delta_gain[0] += gain
             delta_gain[1] -= gain
 
@@ -338,14 +354,24 @@ class FMBiGainCalc:
 
         for l_part in [from_part, to_part]:
             if num[l_part] == 0:
-                # from: [w1, w2, w3 ..., v] | []
-                # to: [w1, w2, w3 ... ] | [v]
+                # .. svgbob::
+                #
+                #     "from"                "to"
+                #   +-------------------+-----------------+
+                #   | [w1,w2,...,v]|[] | [w1,w2,...]|[v] |
+                #   +-------------------+-----------------+
+                #
                 for index in range(degree):
                     delta_gain[index] -= gain
                 return delta_gain  # no need for further check
             elif num[l_part] == 1:
-                # from: [w1, w2, w3 ..., v] | [w]
-                # to: [w1, w2, w3 ... ] | [v, w]
+                # .. svgbob::
+                #
+                #     "from"                   "to"
+                #   +----------------------+--------------------+
+                #   | [w1,w2,...,v]|[w]   | [w1,w2,...]|[v,w]  |
+                #   +----------------------+--------------------+
+                #
                 index = 0
                 while part[self.idx_vec[index]] != l_part:
                     index += 1

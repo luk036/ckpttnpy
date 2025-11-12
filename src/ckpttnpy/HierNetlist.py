@@ -74,12 +74,20 @@ class HierNetlist(Netlist):
         The `projection_down` function assigns values from the `part` list to the `part_down` list based on
         the mapping defined by the `self.node_down_list` and `self.clusters` lists.
 
-        3 3 3 2 0 2 3 4 3 1     self
-        0 1 2 3 4 5 6 7 8 9,    parent
+        .. svgbob::
 
-        cluster_down_map
-        2   3   4
-        10  13  12
+            "self"       "parent"
+          +--------+-----------------+
+          | 3 3 3 2| 0 2 3 4 3 1     |
+          | 0 1 2 3| 4 5 6 7 8 9,    |
+          +--------+-----------------+
+
+              "cluster_down_map"
+            +-----+-----+-----+
+            |  2  |  3  |  4  |
+            +-----+-----+-----+
+            | 10  | 13  | 12  |
+            +-----+-----+-----+
 
         :param part: The `part` parameter is either a dictionary or a list of integers. It represents the
             partitioning of nodes in a graph
