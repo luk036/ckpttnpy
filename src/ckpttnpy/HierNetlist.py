@@ -123,5 +123,19 @@ class HierNetlist(Netlist):
             from the net_weight dictionary
         :return: the value associated with the key 'net' in the dictionary 'self.net_weight'. If the key is
             not found in the dictionary, it will return 1.
+
+        Examples:
+            >>> import networkx as nx
+            >>> G = nx.Graph()
+            >>> modules = ['a1', 'a2', 'a3']
+            >>> nets = ['n1', 'n2']
+            >>> G.add_nodes_from(modules, bipartite=0)
+            >>> G.add_nodes_from(nets, bipartite=1)
+            >>> hgr = HierNetlist(G, modules, nets)
+            >>> hgr.net_weight['n1'] = 2
+            >>> hgr.get_net_weight('n1')
+            2
+            >>> hgr.get_net_weight('n2')
+            1
         """
         return self.net_weight.get(net, 1)

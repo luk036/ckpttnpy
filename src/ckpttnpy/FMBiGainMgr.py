@@ -120,6 +120,25 @@ class FMBiGainMgr(FMGainMgr):
         :param part_w: The `part_w` parameter represents a part or partition of a graph. It is used to
             determine which gainbucket to modify
         :param key: The `key` parameter is the new value for the gain of the moving cell
+
+        Examples:
+            >>> from ckpttnpy.FMBiGainCalc import FMBiGainCalc
+            >>> from netlistx.netlist import Netlist
+            >>> import networkx as nx
+            >>> modules = ['a1', 'a2', 'a3', 'a4']
+            >>> nets = ['n1', 'n2', 'n3']
+            >>> G = nx.Graph()
+            >>> G.add_nodes_from(modules, bipartite=0)
+            >>> G.add_nodes_from(nets, bipartite=1)
+            >>> G.add_edges_from([('a1', 'n1'), ('a1', 'n2'), ('a1', 'n3')])
+            >>> hyprgraph = Netlist(G, modules, nets)
+            >>> mgr = FMBiGainMgr(FMBiGainCalc, hyprgraph)
+            >>> part = {v: 0 for v in hyprgraph}
+            >>> part['a1'] = 1
+            >>> _ = mgr.init(part)
+            >>> mgr.modify_key('a1', 1, 3)
+            >>> mgr.gainbucket[0].get_max()
+            3
         """
         self.gainbucket[part_w ^ 1].modify_key(self.gain_calc.vertex_list[w], key)
 

@@ -156,6 +156,16 @@ class FMConstrMgr(Generic[Gnl]):
 
         Returns:
             dtype:  description
+
+        Examples:
+            >>> hyprgraph = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+            >>> module_weight = [1, 1, 1, 1, 1, 1, 1, 1, 1]
+            >>> mgr = FMConstrMgr(hyprgraph, 0.1, module_weight, 3)
+            >>> part = [0, 0, 0, 1, 1, 1, 2, 2, 2]
+            >>> mgr.init(part)
+            >>> move_info_v = (0, 0, 1)
+            >>> mgr.check_legal(move_info_v)
+            <LegalCheck.AllSatisfied: 2>
         """
         diffFrom = self._get_diff_from(move_info_v)
         if diffFrom < self.lowerbound:
