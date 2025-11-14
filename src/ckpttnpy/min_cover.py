@@ -43,7 +43,7 @@ Node = TypeVar("Node")  # Hashable
 def setup(
     hyprgraph: Netlist, cluster_weight: MutableMapping, forbid: Optional[Set]
 ) -> Tuple[List, List, List]:
-    """
+    r"""
     The `setup` function takes in a hypergraph `hyprgraph`, cluster weights `cluster_weight`, and a set of
     forbidden dependencies `forbid`, and returns a tuple containing the clusters, nets, and cell list.
 
@@ -52,6 +52,21 @@ def setup(
     2. Creating clusters from the matched nets
     3. Separating remaining nets that weren't clustered
     4. Collecting cells that weren't included in any clusters
+
+    The example below can be visualized as follows:
+
+    .. svgbob::
+
+          /---\
+         |     |
+         |     |
+          \---/
+           | |
+           | |
+          /---\
+         |     |
+         |     |
+          \---/
 
     :param hyprgraph: The parameter "hyprgraph" is likely an input graph or hypergraph. It represents the
         connections between cells or nodes in a system
@@ -80,7 +95,7 @@ def setup(
 
 
 def construct_graph(hyprgraph: Netlist, nets, cell_list, clusters):
-    """
+    r"""
     The function constructs a bipartite graph based on a given hypergraph, netlist, cell list, and
     clusters.
 
@@ -88,6 +103,15 @@ def construct_graph(hyprgraph: Netlist, nets, cell_list, clusters):
     - Modules (both individual cells and clusters) are on one side
     - Nets are on the other side
     - Edges connect modules to the nets they participate in
+
+    The example below can be visualized as follows:
+
+    .. svgbob::
+
+        *-->*-->*
+        ^   ^   ^
+        |   |   |
+        *<--*<--*
 
     :param hyprgraph: The parameter `hyprgraph` is likely an object representing a hypergraph. It is used to access
         the connections between cells and nets
@@ -120,7 +144,7 @@ def construct_graph(hyprgraph: Netlist, nets, cell_list, clusters):
 
 
 def purge_duplicate_nets(hyprgraph: Netlist, ugraph, nets, num_clusters, num_modules):
-    """
+    r"""
     The function `purge_duplicate_nets` removes duplicate nets from a graph and returns the updated net
     weights and list of nets.
 
@@ -128,6 +152,22 @@ def purge_duplicate_nets(hyprgraph: Netlist, ugraph, nets, num_clusters, num_mod
     1. Checking for nets that connect exactly the same set of modules
     2. For low-pin nets (<= 5 connections), it does exact set comparison
     3. Combining weights of duplicate nets into a single representative net
+
+    The example below can be visualized as follows:
+
+    .. svgbob::
+
+           .---.
+          /     \
+         |       |
+          \     /
+           '---'
+             |
+           .---.
+          /     \
+         |       |
+          \     /
+           '---'
 
     :param hyprgraph: The `hyprgraph` parameter is an object that represents a hypergraph. It likely has methods to
         access information about the hypergraph, such as the weight of a net
@@ -180,13 +220,26 @@ def purge_duplicate_nets(hyprgraph: Netlist, ugraph, nets, num_clusters, num_mod
 
 
 def reconstruct_graph(hyprgraph: Netlist, ugraph, nets, num_clusters, num_modules):
-    """
+    r"""
     The function reconstructs a new graph by purging duplicate nets and updating net weights.
 
     This function:
     1. Calls purge_duplicate_nets to identify and remove duplicate connections
     2. Creates a new graph with only the unique nets
     3. Preserves the weights of the remaining nets
+
+    The example below can be visualized as follows:
+
+    .. svgbob::
+
+        ."".    ."".
+       (   ).  (   ).
+        `**'    `**'
+          "      "
+         .------.
+        /        \
+        \        /
+         '------'
 
     :param hyprgraph: The `hyprgraph` parameter is a hypergraph representation of the graph. It is a dictionary
         where the keys are the nodes of the graph and the values are the hyperedges that the node belongs to
@@ -225,7 +278,7 @@ def reconstruct_graph(hyprgraph: Netlist, ugraph, nets, num_clusters, num_module
 
 
 def contract_subgraph(hyprgraph: Netlist, module_weight, forbid: Set):
-    """
+    r"""
     The `contract_subgraph` function takes a hierarchical netlist, module weights, and a set of
     forbidden nets as input, and returns a contracted hierarchical netlist with updated module weights.
 
@@ -235,6 +288,16 @@ def contract_subgraph(hyprgraph: Netlist, module_weight, forbid: Set):
     3. Constructing the intermediate graph
     4. Purging duplicates and reconstructing the final graph
     5. Creating the hierarchical netlist structure with updated weights
+
+    The example below can be visualized as follows:
+
+    .. svgbob::
+
+           a  b  c
+         / |  |  | \
+        *--+--*--+--*
+           |  |  |
+           d  e  f
 
     :param hyprgraph: The `hyprgraph` parameter is a Netlist object, which represents a hierarchical graph. It
         contains information about the modules (cells) and their connections (nets) in the graph
