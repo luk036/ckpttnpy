@@ -27,7 +27,9 @@ Part = Union[Dict[Any, int], List[int]]
 class FMKWayConstrMgr(FMConstrMgr):
     """The `FMKWayConstrMgr` class is a subclass of `FMConstrMgr` (Fiduccia-Mattheyses Constraint Manager) that initializes with a list of illegal parts."""
 
-    def __init__(self, hyprgraph: Any, bal_tol: float, module_weight: Any, num_parts: int) -> None:
+    def __init__(
+        self, hyprgraph: Any, bal_tol: float, module_weight: Any, num_parts: int
+    ) -> None:
         r"""
         The function initializes an object with certain parameters and sets all elements of the "illegal"
         list to True.
