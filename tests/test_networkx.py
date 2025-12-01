@@ -1,8 +1,9 @@
 import networkx as nx
+from networkx import Graph
 
 
 def test_Graph() -> None:
-    ugraph = nx.Graph()
+    ugraph: Graph = nx.Graph()
     ugraph.add_nodes_from([0, 1, 2, 3])
     ugraph.add_edge(0, 1)
     ugraph.add_edge(0, 1)

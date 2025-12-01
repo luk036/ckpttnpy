@@ -1,23 +1,25 @@
+from typing import Any
+
 import pytest
 from ckpttnpy.FMConstrMgr import FMConstrMgr, LegalCheck
 
 
 class MockHyprgraph:
-    def __init__(self, num_modules):
+    def __init__(self, num_modules: int) -> None:
         self.modules = range(num_modules)
 
-    def __iter__(self):
+    def __iter__(self) -> Any:
         return iter(self.modules)
 
 
 @pytest.fixture
-def mgr():
+def mgr() -> Any:
     hyprgraph = MockHyprgraph(4)
     module_weight = [1, 1, 1, 1]
     return FMConstrMgr(hyprgraph, 0.25, module_weight)
 
 
-def test_check_legal(mgr) -> None:
+def test_check_legal(mgr: Any) -> None:
     part = [0, 0, 1, 1]
     mgr.init(part)
     # mgr.diff is [2, 2]
@@ -35,7 +37,7 @@ def test_check_legal(mgr) -> None:
     assert mgr.check_legal(move_info_v) == LegalCheck.AllSatisfied
 
 
-def test_check_constraints(mgr) -> None:
+def test_check_constraints(mgr: Any) -> None:
     part = [0, 0, 1, 1]
     mgr.init(part)
     # mgr.diff is [2, 2]
@@ -50,7 +52,7 @@ def test_check_constraints(mgr) -> None:
     assert not mgr.check_constraints(move_info_v)
 
 
-def test_update_move(mgr) -> None:
+def test_update_move(mgr: Any) -> None:
     part = [0, 0, 1, 1]
     mgr.init(part)
     # mgr.diff is [2, 2]

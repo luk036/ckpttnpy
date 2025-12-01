@@ -5,14 +5,16 @@ from netlistx.netlist import Netlist, create_drawf, read_json
 from ckpttnpy.MLPartMgr import MLBiPartMgr, MLKWayPartMgr
 
 
-def _run_MLBiPartMgr(hyprgraph: Netlist) -> None:
+from typing import Union
+
+def _run_MLBiPartMgr(hyprgraph: Netlist) -> int:
     part_mgr = MLBiPartMgr(0.4)
     # try: part_mgr.limitsize = 2000
     part_mgr.limitsize = 7
     randseq = [randint(0, 1) for _ in hyprgraph]
 
     if isinstance(hyprgraph.modules, range):
-        part = randseq
+        part: Union[list[int], dict[int, int]] = randseq
     elif isinstance(hyprgraph.modules, list):
         part = {v: k for v, k in zip(hyprgraph.modules, randseq)}
     else:
@@ -34,7 +36,7 @@ def test_MLBiPartMgr2() -> None:
     assert totalcost <= 105
 
 
-def _run_MLKWayPartMgr(hyprgraph: Netlist, num_parts: int) -> None:
+def _run_MLKWayPartMgr(hyprgraph: Netlist, num_parts: int) -> int:
     """
     The function `_run_MLKWayPartMgr` takes a hypergraph and the number of partitions as input, and
     returns the total cost of the partitioning.
@@ -53,7 +55,7 @@ def _run_MLKWayPartMgr(hyprgraph: Netlist, num_parts: int) -> None:
     randseq = [randint(0, num_parts - 1) for _ in hyprgraph]
 
     if isinstance(hyprgraph.modules, range):
-        part = randseq
+        part: Union[list[int], dict[int, int]] = randseq
     elif isinstance(hyprgraph.modules, list):
         part = {v: k for v, k in zip(hyprgraph.modules, randseq)}
     else:
