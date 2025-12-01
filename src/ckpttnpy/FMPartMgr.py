@@ -32,7 +32,7 @@ class FMPartMgr(PartMgrBase):
     parts and restoring part information from a snapshot.
     """
 
-    def take_snapshot(self, part: Part):
+    def take_snapshot(self, part: Part) -> Any:
         """
         The `take_snapshot` function takes a `Part` object as input and returns a copy of it.
 
@@ -43,7 +43,7 @@ class FMPartMgr(PartMgrBase):
         """
         return part.copy()
 
-    def restore_part_info(self, snapshot, part: Part):
+    def restore_part_info(self, snapshot: Any, part: Part) -> None:
         """
 
         The function `restore_part_info` takes a snapshot and updates the attributes of a `Part` object
