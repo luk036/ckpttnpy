@@ -1,3 +1,5 @@
+from typing import Any
+
 import pytest
 from netlistx.netlist import (
     Netlist,
@@ -38,8 +40,6 @@ def _run_FMKWayPartMgr(hyprgraph: Netlist, gain_mgr: Any, num_parts: int, part: 
     assert part_mgr.totalcost == totalcostbefore
     # print(part_mgr.snapshot)
 
-
-from typing import Any
 
 @pytest.mark.parametrize(
     "create_netlist, num_parts, part_type",
