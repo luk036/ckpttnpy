@@ -15,7 +15,7 @@ from ckpttnpy.FMPartMgr import FMPartMgr
 from tests.mocks import Part
 
 
-def _run_FMKWayPartMgr(hyprgraph: Netlist, gain_mgr, num_parts, part: Part):
+def _run_FMKWayPartMgr(hyprgraph: Netlist, gain_mgr, num_parts, part: Part) -> None:
     """[summary]
 
     Arguments:
@@ -48,7 +48,7 @@ def _run_FMKWayPartMgr(hyprgraph: Netlist, gain_mgr, num_parts, part: Part):
         (lambda: read_json("testcases/p1.json"), 5, list),
     ],
 )
-def test_FMKWayPartMgr(create_netlist, num_parts, part_type):
+def test_FMKWayPartMgr(create_netlist, num_parts, part_type) -> None:
     hyprgraph = create_netlist()
     gain_mgr = FMKWayGainMgr(FMKWayGainCalc, hyprgraph, num_parts)
     if create_netlist == create_drawf:
