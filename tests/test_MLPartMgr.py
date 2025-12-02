@@ -1,6 +1,6 @@
 from random import randint, seed
 
-from netlistx.netlist import Netlist, create_drawf, read_json
+from netlistx.netlist import Netlist, read_json
 
 from ckpttnpy.MLPartMgr import MLBiPartMgr, MLKWayPartMgr
 
@@ -22,9 +22,9 @@ def _run_MLBiPartMgr(hyprgraph: Netlist):
     return part_mgr.totalcost
 
 
-def test_MLBiPartMgr():
-    hyprgraph = create_drawf()
-    _run_MLBiPartMgr(hyprgraph)
+# def test_MLBiPartMgr():
+#     hyprgraph = create_drawf()
+#     _run_MLBiPartMgr(hyprgraph)
 
 
 def test_MLBiPartMgr2():

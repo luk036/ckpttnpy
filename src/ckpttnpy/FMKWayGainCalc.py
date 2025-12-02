@@ -196,7 +196,7 @@ class FMKWayGainCalc:
         self.totalcost += weight
 
     def _init_gain_general_net(self, net, part: Part):
-        """
+        r"""
 
         The function `_init_gain_general_net` initializes the gain for a general net based on the number of
 
@@ -370,7 +370,7 @@ class FMKWayGainCalc:
         return delta_gain
 
     def update_move_general_net(self, part, move_info):
-        """Update move for general net
+        r"""Update move for general net
 
 
 
