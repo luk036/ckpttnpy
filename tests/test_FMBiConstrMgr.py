@@ -4,7 +4,6 @@ from ckpttnpy.FMBiConstrMgr import FMBiConstrMgr
 
 from typing import Any
 
-
 @pytest.mark.parametrize(
     "diff, expected", [([10, 20], 0), ([20, 10], 1), ([10, 10], 1)]
 )

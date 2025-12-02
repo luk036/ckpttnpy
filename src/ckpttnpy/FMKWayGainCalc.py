@@ -295,11 +295,7 @@ class FMKWayGainCalc:
 
         pv, pt = from_part, to_part
 
-        w = (
-            self.hyprgraph.ugraph[net][0]
-            if self.hyprgraph.ugraph[net][0] != v
-            else self.hyprgraph.ugraph[net][1]
-        )
+        w = self.hyprgraph.ugraph[net][0] if self.hyprgraph.ugraph[net][0] != v else self.hyprgraph.ugraph[net][1]
         pw = part[w]
 
         self.delta_gain_w = [0] * self.num_parts

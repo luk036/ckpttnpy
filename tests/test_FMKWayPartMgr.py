@@ -1,25 +1,22 @@
 from typing import Any
 
-# import pytest
+import pytest
 from netlistx.netlist import (
     Netlist,
-    # create_drawf,
-    # create_random_hgraph,
-    # read_json,
+    create_drawf,
+    create_random_hgraph,
+    read_json,
 )
 
 from ckpttnpy.FMKWayConstrMgr import FMKWayConstrMgr
-
-# from ckpttnpy.FMKWayGainCalc import FMKWayGainCalc
-# from ckpttnpy.FMKWayGainMgr import FMKWayGainMgr
+from ckpttnpy.FMKWayGainCalc import FMKWayGainCalc
+from ckpttnpy.FMKWayGainMgr import FMKWayGainMgr
 from ckpttnpy.FMPartMgr import FMPartMgr
 
 from tests.mocks import Part
 
 
-def _run_FMKWayPartMgr(
-    hyprgraph: Netlist, gain_mgr: Any, num_parts: int, part: Part
-) -> None:
+def _run_FMKWayPartMgr(hyprgraph: Netlist, gain_mgr: Any, num_parts: int, part: Part) -> None:
     """[summary]
 
     Arguments:
@@ -43,20 +40,20 @@ def _run_FMKWayPartMgr(
     # print(part_mgr.snapshot)
 
 
-# @pytest.mark.parametrize(
-#     "create_netlist, num_parts, part_type",
-#     [
-#         (create_random_hgraph, 3, list),
-#         (lambda: read_json("testcases/p1.json"), 5, list),
-#     ],
-# )
-# def test_FMKWayPartMgr(create_netlist: Any, num_parts: Any, part_type: Any) -> None:
-#     hyprgraph = create_netlist()
-#     gain_mgr = FMKWayGainMgr(FMKWayGainCalc, hyprgraph, num_parts)
-#     if create_netlist == create_drawf:
-#         hyprgraph.module_fixed = {"p1"}  # type: ignore
-#     if part_type is dict:
-#         part: Part = {v: 0 for v in hyprgraph}
-#     else:
-#         part = [0 for _ in hyprgraph]
-#     _run_FMKWayPartMgr(hyprgraph, gain_mgr, num_parts, part)
+@pytest.mark.parametrize(
+    "create_netlist, num_parts, part_type",
+    [
+        (create_random_hgraph, 3, list),
+        (lambda: read_json("testcases/p1.json"), 5, list),
+    ],
+)
+def test_FMKWayPartMgr(create_netlist: Any, num_parts: Any, part_type: Any) -> None:
+    hyprgraph = create_netlist()
+    gain_mgr = FMKWayGainMgr(FMKWayGainCalc, hyprgraph, num_parts)
+    if create_netlist == create_drawf:
+        hyprgraph.module_fixed = {"p1"}  # type: ignore
+    if part_type is dict:
+        part: Part = {v: 0 for v in hyprgraph}
+    else:
+        part = [0 for _ in hyprgraph]
+    _run_FMKWayPartMgr(hyprgraph, gain_mgr, num_parts, part)

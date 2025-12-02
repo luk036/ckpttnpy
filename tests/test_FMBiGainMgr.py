@@ -1,5 +1,3 @@
-from typing import Any
-
 import pytest
 from netlistx.netlist import Netlist, create_drawf, create_test_netlist
 
@@ -23,6 +21,8 @@ def _run_FMBiGainMgr(hyprgraph: Netlist, part: Part) -> None:
         part[v] = to_part
         # assert v >= 0
 
+
+from typing import Any
 
 @pytest.mark.parametrize("create_netlist", [create_test_netlist, create_drawf])
 def test_FMBiGainMgr(create_netlist: Any) -> None:

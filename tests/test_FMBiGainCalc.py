@@ -26,14 +26,7 @@ def gain_calc(hyprgraph: Any) -> Any:
         ("n3", [0, 0, 1, 1], 4, {0: 0, 1: 0, 2: 0, 3: 0}),
     ],
 )
-def test_init_gain(
-    gain_calc: Any,
-    hyprgraph: Any,
-    net: Any,
-    part: Any,
-    totalcost: Any,
-    expected_gains: Any,
-) -> None:
+def test_init_gain(gain_calc: Any, hyprgraph: Any, net: Any, part: Any, totalcost: Any, expected_gains: Any) -> None:
     hyprgraph.nets = [net]
     gain_calc.init(part)
     assert gain_calc.totalcost == totalcost
