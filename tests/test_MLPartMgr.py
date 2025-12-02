@@ -5,7 +5,7 @@ from netlistx.netlist import Netlist, create_drawf, read_json
 from ckpttnpy.MLPartMgr import MLBiPartMgr, MLKWayPartMgr
 
 
-def _run_MLBiPartMgr(hyprgraph: Netlist) -> None:
+def _run_MLBiPartMgr(hyprgraph: Netlist):
     part_mgr = MLBiPartMgr(0.4)
     # try: part_mgr.limitsize = 2000
     part_mgr.limitsize = 7
@@ -22,19 +22,19 @@ def _run_MLBiPartMgr(hyprgraph: Netlist) -> None:
     return part_mgr.totalcost
 
 
-def test_MLBiPartMgr() -> None:
+def test_MLBiPartMgr():
     hyprgraph = create_drawf()
     _run_MLBiPartMgr(hyprgraph)
 
 
-def test_MLBiPartMgr2() -> None:
+def test_MLBiPartMgr2():
     hyprgraph = read_json("testcases/p1.json")
     totalcost = _run_MLBiPartMgr(hyprgraph)
     assert totalcost >= 43
     assert totalcost <= 105
 
 
-def _run_MLKWayPartMgr(hyprgraph: Netlist, num_parts: int) -> None:
+def _run_MLKWayPartMgr(hyprgraph: Netlist, num_parts: int):
     """
     The function `_run_MLKWayPartMgr` takes a hypergraph and the number of partitions as input, and
     returns the total cost of the partitioning.
@@ -63,7 +63,7 @@ def _run_MLKWayPartMgr(hyprgraph: Netlist, num_parts: int) -> None:
     return part_mgr.totalcost
 
 
-def test_MLKWayPartMgr() -> None:
+def test_MLKWayPartMgr():
     seed(1234)
     hyprgraph = read_json("testcases/p1.json")
     totalcost = _run_MLKWayPartMgr(hyprgraph, 3)

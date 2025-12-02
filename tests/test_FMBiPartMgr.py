@@ -15,7 +15,7 @@ from ckpttnpy.FMPartMgr import FMPartMgr
 from tests.mocks import Part
 
 
-def _run_FMBiPartMgr(hyprgraph: Netlist, part: Part) -> None:
+def _run_FMBiPartMgr(hyprgraph: Netlist, part: Part):
     gain_mgr = FMBiGainMgr(FMBiGainCalc, hyprgraph)
     constr_mgr = FMBiConstrMgr(hyprgraph, 0.3, hyprgraph.module_weight)
     part_mgr = FMPartMgr(hyprgraph, gain_mgr, constr_mgr)
@@ -39,7 +39,7 @@ def _run_FMBiPartMgr(hyprgraph: Netlist, part: Part) -> None:
         (lambda: read_json("testcases/p1.json"), list),
     ],
 )
-def test_FMBiPartMgr(create_netlist, part_type) -> None:
+def test_FMBiPartMgr(create_netlist, part_type):
     hyprgraph = create_netlist()
     if part_type is dict:
         part = {v: 0 for v in hyprgraph}

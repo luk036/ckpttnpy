@@ -7,7 +7,7 @@ from ckpttnpy.FMBiGainMgr import FMBiGainMgr
 from tests.mocks import Part
 
 
-def _run_FMBiGainMgr(hyprgraph: Netlist, part: Part) -> None:
+def _run_FMBiGainMgr(hyprgraph: Netlist, part: Part):
     mgr = FMBiGainMgr(FMBiGainCalc, hyprgraph)
     mgr.init(part)
     while not mgr.is_empty():
@@ -23,7 +23,7 @@ def _run_FMBiGainMgr(hyprgraph: Netlist, part: Part) -> None:
 
 
 @pytest.mark.parametrize("create_netlist", [create_test_netlist, create_drawf])
-def test_FMBiGainMgr(create_netlist) -> None:
+def test_FMBiGainMgr(create_netlist):
     hyprgraph = create_netlist()
     part = {v: 0 for v in hyprgraph}
     part["a1"] = 1

@@ -17,7 +17,7 @@ def mgr():
     return FMConstrMgr(hyprgraph, 0.25, module_weight)
 
 
-def test_check_legal(mgr) -> None:
+def test_check_legal(mgr):
     part = [0, 0, 1, 1]
     mgr.init(part)
     # mgr.diff is [2, 2]
@@ -35,7 +35,7 @@ def test_check_legal(mgr) -> None:
     assert mgr.check_legal(move_info_v) == LegalCheck.AllSatisfied
 
 
-def test_check_constraints(mgr) -> None:
+def test_check_constraints(mgr):
     part = [0, 0, 1, 1]
     mgr.init(part)
     # mgr.diff is [2, 2]
@@ -50,7 +50,7 @@ def test_check_constraints(mgr) -> None:
     assert not mgr.check_constraints(move_info_v)
 
 
-def test_update_move(mgr) -> None:
+def test_update_move(mgr):
     part = [0, 0, 1, 1]
     mgr.init(part)
     # mgr.diff is [2, 2]

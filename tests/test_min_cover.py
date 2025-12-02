@@ -2,14 +2,14 @@ from netlistx.netlist import create_drawf
 
 from ckpttnpy.min_cover import contract_subgraph
 
-# def test_max_independent_net() -> None:
+# def test_max_independent_net():
 #     # random_graph(ugraph,5,20)
 #     hyprgraph = create_drawf()
 #     _, cost1 = max_independent_net(hyprgraph, hyprgraph.module_weight, set())
 #     assert cost1 == 3
 
 
-def test_contract_subgraph() -> None:
+def test_contract_subgraph():
     hyprgraph = create_drawf()
     hgr2, module_weight2 = contract_subgraph(hyprgraph, hyprgraph.module_weight, set())
     contract_subgraph(hgr2, module_weight2, set())
