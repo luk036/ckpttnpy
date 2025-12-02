@@ -45,7 +45,7 @@ class PartMgrBase:
     constraints.
     """
 
-    def __init__(self, hyprgraph: Any, gain_mgr: Any, constr_mgr: Any) -> None:
+    def __init__(self, hyprgraph, gain_mgr, constr_mgr):
         """
         The function initializes an object with three arguments and sets their values as attributes of the
         object.
@@ -63,7 +63,7 @@ class PartMgrBase:
         self.num_parts = gain_mgr.num_parts
         self.totalcost = 0
 
-    def init(self, part: Part) -> None:
+    def init(self, part: Part):
         """
 
         The `init` function initializes the `totalcost` attribute and calls the `init` method of the
@@ -104,7 +104,7 @@ class PartMgrBase:
 
         self.validator.init(part)
 
-    def legalize(self, part: Part) -> Any:
+    def legalize(self, part: Part):
         """
 
         The `legalize` function is used to perform a legalization process on a given part in a graph.
@@ -197,7 +197,7 @@ class PartMgrBase:
 
         return legalcheck
 
-    def optimize(self, part: Part) -> None:
+    def optimize(self, part: Part):
         """
         The `optimize` function iteratively optimizes the cost of a given part until no further improvement
         can be made.
@@ -214,118 +214,7 @@ class PartMgrBase:
             if self.totalcost == totalcostbefore:
                 break
 
-    def _optimize_1pass(self, part: Part) -> None:
-        """
-
-        The `_optimize_1pass` function optimizes the placement of parts by selecting moves with the maximum
-
-        gain and updating the placement accordingly.
-
-
-
-        :param part: The `part` parameter represents a specific partition or group of elements. It is used
-
-            in the context of a partitioning algorithm where elements are divided into different groups or
-
-            partitions based on certain criteria
-
-        :type part: Part
-
-
-
-        .. svgbob::
-
-
-
-            "Optimization Pass with Backtracking"
-
-          +--------------------------+--------------------------+
-
-          | Initial: gain=0          | Best: gain=+15           |
-
-          | [A,A,B,B,C,C]            | [A,B,B,B,C,C]            |
-
-          | Cost: 100                | Cost: 85                 |
-
-          +--------------------------+--------------------------+
-
-          | Exploring: gain=+5,-10   | Backtrack to best        |
-
-          | [A,B,B,B,C,C] -> [A,B,C,B,C,C]  | gain=+15 preserved |
-
-          +--------------------------+--------------------------+
-
-
-
-          Algorithm explores moves, tracks best solution, and backtracks if needed
-
-        """
-
-        totalgain = 0
-
-        deferredsnapshot = False
-
-        snapshot = None
-
-        besttotalgain = 0
-
-        while not self.gain_mgr.is_empty():
-            # Take the gainmax with v from gainbucket
-
-            move_info_v, gainmax = self.gain_mgr.select(part)
-
-            # Check if the move of v can satisfied or NotSatisfied
-
-            satisfiedOK = self.validator.check_constraints(move_info_v)
-
-            if not satisfiedOK:
-                continue
-
-            if gainmax < 0:
-                # become down turn
-
-                if (not deferredsnapshot) or (totalgain > besttotalgain):
-                    # Take a snapshot before move
-
-                    snapshot = self.take_snapshot(part)
-
-                    besttotalgain = totalgain
-
-                deferredsnapshot = True
-
-            elif totalgain + gainmax >= besttotalgain:
-                besttotalgain = totalgain + gainmax
-
-                deferredsnapshot = False
-
-            # Update v and its neigbours (even they are in waitinglist)
-
-            # Put neigbours to bucket
-
-            v, _, to_part = move_info_v
-
-            self.gain_mgr.lock(to_part, v)
-
-            self.gain_mgr.update_move(part, move_info_v)
-
-            self.gain_mgr.update_move_v(move_info_v, gainmax)
-
-            self.validator.update_move(move_info_v)
-
-            totalgain += gainmax
-
-            part[v] = to_part
-
-        if deferredsnapshot:
-            # restore previous best solution
-
-            self.restore_part_info(snapshot, part)
-
-            totalgain = besttotalgain
-
-        self.totalcost -= totalgain
-
-    def _optimize_1pass(self, part: Part) -> None:
+    def _optimize_1pass(self, part: Part):
         """
 
         The `_optimize_1pass` function optimizes the placement of parts by selecting moves with the maximum
@@ -437,7 +326,7 @@ class PartMgrBase:
         self.totalcost -= totalgain
 
     @abstractmethod
-    def take_snapshot(self, part: Part) -> Any:
+    def take_snapshot(self, part: Part):
         """
         The `take_snapshot` function is an abstract method that takes a `Part` object as an argument and
         returns a value.
@@ -448,7 +337,7 @@ class PartMgrBase:
         """
 
     @abstractmethod
-    def restore_part_info(self, snapshot: Any, part: Part) -> None:
+    def restore_part_info(self, snapshot, part: Part):
         """
         The function `restore_part_info` restores the information of a specific part from a given snapshot.
 

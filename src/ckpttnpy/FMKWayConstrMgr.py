@@ -27,7 +27,7 @@ Part = Union[Dict[Any, int], List[int]]
 class FMKWayConstrMgr(FMConstrMgr):
     """The `FMKWayConstrMgr` class is a subclass of `FMConstrMgr` (Fiduccia-Mattheyses Constraint Manager) that initializes with a list of illegal parts."""
 
-    def __init__(self, hyprgraph: Any, bal_tol: float, module_weight: Any, num_parts: int) -> None:
+    def __init__(self, hyprgraph, bal_tol, module_weight, num_parts: int):
         r"""
         The function initializes an object with certain parameters and sets all elements of the "illegal"
         list to True.
@@ -45,7 +45,7 @@ class FMKWayConstrMgr(FMConstrMgr):
         FMConstrMgr.__init__(self, hyprgraph, bal_tol, module_weight, num_parts)
         self.illegal = [True] * num_parts
 
-    def init(self, part: Part) -> None:
+    def init(self, part: Part):
         """
         The `init` function initializes the `illegal` attribute by checking if each element in `self.diff`
         is less than `self.lowerbound`.
@@ -56,14 +56,14 @@ class FMKWayConstrMgr(FMConstrMgr):
         FMConstrMgr.init(self, part)
         self.illegal = [d < self.lowerbound for d in self.diff]
 
-    def select_togo(self) -> int:
+    def select_togo(self):
         """
         The function `select_togo` returns the index of the minimum value in the `diff` list.
         :return: The index of the minimum value in the list `self.diff`.
         """
         return min(range(self.num_parts), key=lambda k: self.diff[k])
 
-    def check_legal(self, move_info_v: Any) -> LegalCheck:
+    def check_legal(self, move_info_v):
         """
 
         The function `check_legal` checks if a move is legal and returns the status of the move.

@@ -40,7 +40,7 @@ _logger = logging.getLogger(__name__)
 # when using this Python module as a library.
 
 
-def fib(n: int) -> int:
+def fib(n):
     """Fibonacci example function
 
     Args:
@@ -62,7 +62,7 @@ def fib(n: int) -> int:
 # executable/script.
 
 
-def parse_args(args: list[str]) -> argparse.Namespace:
+def parse_args(args):
     """Parse command line parameters
 
     Args:
@@ -98,7 +98,7 @@ def parse_args(args: list[str]) -> argparse.Namespace:
     return parser.parse_args(args)
 
 
-def setup_logging(loglevel: int) -> None:
+def setup_logging(loglevel):
     """Setup basic logging
 
     Args:
@@ -113,7 +113,7 @@ def setup_logging(loglevel: int) -> None:
     )
 
 
-def main(args: list[str]) -> None:
+def main(args):
     """Wrapper allowing :func:`fib` to be called with string arguments in a CLI fashion
 
     Instead of returning the value from :func:`fib`, it prints the result to the
@@ -130,7 +130,7 @@ def main(args: list[str]) -> None:
     _logger.info("Script ends here")
 
 
-def run() -> None:
+def run():
     """Calls :func:`main` passing the CLI arguments extracted from :obj:`sys.argv`
 
     This function can be used as entry point to create console scripts with setuptools.

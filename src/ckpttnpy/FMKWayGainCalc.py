@@ -96,7 +96,7 @@ class FMKWayGainCalc:
             self._init_gain(net, part)
         return self.totalcost
 
-    def _init_gain(self, net: Any, part: Part) -> None:
+    def _init_gain(self, net, part: Part):
         """
         The function `_init_gain` initializes the gain for a given network based on its degree.
 
@@ -116,7 +116,7 @@ class FMKWayGainCalc:
         else:  # degree == 2
             self._init_gain_2pin_net(net, part)
 
-    def _modify_gain(self, v: Any, pv: int, weight: int) -> None:
+    def _modify_gain(self, v, pv, weight):
         """
         The function `_modify_gain` modifies the gain of a node in a graph by adding a weight to it.
 
@@ -129,7 +129,7 @@ class FMKWayGainCalc:
         for k in self.rr.exclude(pv):
             self.vertex_list[k][v].data[0] += weight
 
-    def _init_gain_2pin_net(self, net: Any, part: Part) -> None:
+    def _init_gain_2pin_net(self, net, part: Part):
         """
         The function `_init_gain_2pin_net` initializes the gain for a 2-pin net in a graph.
 
@@ -148,12 +148,13 @@ class FMKWayGainCalc:
         weight = self.hyprgraph.get_net_weight(net)
         if part_v == part_w:
             for a in [w, v]:
-                self.vertex_list[part_v][a].data[0] -= weight
-        else:  # part_v != part_w
-            self.vertex_list[part_w][v].data[0] += weight
+                self._modify_gain(a, part_v, -weight)
+        else:
+            self.totalcost += weight
             self.vertex_list[part_v][w].data[0] += weight
+            self.vertex_list[part_w][v].data[0] += weight
 
-    def _init_gain_3pin_net(self, net: Any, part: Part) -> None:
+    def _init_gain_3pin_net(self, net, part: Part):
         """
         The function `_init_gain_3pin_net` initializes the gain for a 3-pin net in a graph.
 
@@ -194,7 +195,7 @@ class FMKWayGainCalc:
             self.vertex_list[part[a]][e].data[0] += weight
         self.totalcost += weight
 
-    def _init_gain_general_net(self, net: Any, part: Part) -> None:
+    def _init_gain_general_net(self, net, part: Part):
         r"""
 
         The function `_init_gain_general_net` initializes the gain for a general net based on the number of
@@ -269,13 +270,13 @@ class FMKWayGainCalc:
                     w = next(cur)
                 self._modify_gain(w, part[w], weight)
 
-    def update_move_init(self) -> None:
+    def update_move_init(self):
         """
         The function "update_move_init" initializes a list called "delta_gain_v" with zeros.
         """
         self.delta_gain_v = [0] * self.num_parts
 
-    def update_move_2pin_net(self, part: Part, move_info: Any) -> list[list[int]]:
+    def update_move_2pin_net(self, part, move_info):
         """Update move for 2-pin net
 
         The function `update_move_2pin_net` updates the move for a 2-pin net in a graph.
@@ -283,39 +284,28 @@ class FMKWayGainCalc:
         :param part: A list that represents the partitioning of the circuit. Each element in the list
             corresponds to a vertex in the circuit graph and indicates which partition the vertex belongs to
         :param move_info: The `move_info` parameter is a tuple containing four elements: `net`, `v`,
-            `from_part`, and `to_part`. These elements represent the information needed to update the move for a
-            2-pin net
-        :return: a list of lists called `delta_gain`.
+            `from_part`, and `to_part`
+        :return: the value of the variable "w".
         """
         net, v, from_part, to_part = move_info
-
-        delta_gain = list([0] * self.num_parts for _ in range(1))
-
+        net_cur = iter(self.hyprgraph.ugraph[net])
+        u = next(net_cur)
+        w = u if u != v else next(net_cur)
+        part_w = part[w]
         weight = self.hyprgraph.get_net_weight(net)
-
-        pv, pt = from_part, to_part
-
-        w = self.hyprgraph.ugraph[net][0] if self.hyprgraph.ugraph[net][0] != v else self.hyprgraph.ugraph[net][1]
-        pw = part[w]
-
         self.delta_gain_w = [0] * self.num_parts
 
-        for _ in [0, 1]:
-            if pw == pv:
-                delta_gain[0][pv] -= weight
-                self.delta_gain_w[pv] -= weight
-                if pw != pt:
-                    for k in range(self.num_parts):
-                        self.delta_gain_v[k] -= weight
-            else:  # pw != pv
-                delta_gain[0][pw] += weight
-                self.delta_gain_w[pw] += weight
+        for l_part in [from_part, to_part]:
+            if part_w == l_part:
+                for k in range(self.num_parts):  # cannot use zip here
+                    self.delta_gain_w[k] += weight
+                    self.delta_gain_v[k] += weight
+            self.delta_gain_w[l_part] -= weight
             weight = -weight
-            pv, pt = pt, pv
 
-        return delta_gain
+        return w
 
-    def init_idx_vec(self, v: Any, net: Any) -> None:
+    def init_idx_vec(self, v, net):
         """
         The function `init_idx_vec` initializes the `idx_vec` attribute by creating a list of all elements
         in `self.hyprgraph.ugraph[net]` except for `v`.

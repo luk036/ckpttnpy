@@ -83,8 +83,8 @@ class FMConstrMgr(Generic[Gnl]):
     )
 
     def __init__(
-        self, hyprgraph: Gnl, bal_tol: float, module_weight: Any, num_parts: int = 2
-    ) -> None:
+        self, hyprgraph: Gnl, bal_tol: float, module_weight, num_parts: int = 2
+    ):
         """
         The function initializes the attributes of an object and calculates a lower
         bound value.
@@ -137,7 +137,7 @@ class FMConstrMgr(Generic[Gnl]):
         """
         return 1 if self.module_weight is None else self.module_weight[node_index]
 
-    def _get_diff_from(self, move_info_v: Any) -> int:
+    def _get_diff_from(self, move_info_v) -> int:
         """Calculate the difference in weight of the partition from which a module is moved.
 
         :param move_info_v: A tuple containing the module to be moved, the partition it is moved from, and the partition it is moved to.
@@ -147,7 +147,7 @@ class FMConstrMgr(Generic[Gnl]):
         self.weight = self.get_module_weight(v)
         return self.diff[from_part] - self.weight
 
-    def check_legal(self, move_info_v: Any) -> LegalCheck:
+    def check_legal(self, move_info_v) -> LegalCheck:
         """[summary]
 
         Arguments:
@@ -200,7 +200,7 @@ class FMConstrMgr(Generic[Gnl]):
 
         return LegalCheck.AllSatisfied  # all satisfied
 
-    def check_constraints(self, move_info_v: Any) -> bool:
+    def check_constraints(self, move_info_v) -> bool:
         """
         The function `check_constraints` checks if a given move satisfies certain constraints.
 
@@ -210,7 +210,7 @@ class FMConstrMgr(Generic[Gnl]):
         diffFrom = self._get_diff_from(move_info_v)
         return diffFrom >= self.lowerbound
 
-    def update_move(self, move_info_v: Any) -> None:
+    def update_move(self, move_info_v) -> None:
         """
         The `update_move` function updates the `diff` dictionary by adding the
         weight to the `to_part` key and subtracting the weight from the

@@ -24,9 +24,9 @@ def _run_MLBiPartMgr(hyprgraph: Netlist) -> int:
     return part_mgr.totalcost
 
 
-# def test_MLBiPartMgr() -> None:
-#     hyprgraph = create_drawf()
-#     _run_MLBiPartMgr(hyprgraph)
+def test_MLBiPartMgr() -> None:
+    hyprgraph = create_drawf()
+    _run_MLBiPartMgr(hyprgraph)
 
 
 def test_MLBiPartMgr2() -> None:
