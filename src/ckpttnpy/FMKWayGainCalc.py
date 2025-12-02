@@ -197,55 +197,15 @@ class FMKWayGainCalc:
 
     def _init_gain_general_net(self, net, part: Part):
         """
-
         The function `_init_gain_general_net` initializes the gain for a general net based on the number of
-
         connections to each partition.
 
-
-
         :param net: The `net` parameter is a node in a graph. It represents a general net in the context of
-
             the code
-
         :param part: The `part` parameter is a list that represents the partitioning of nodes in the
-
             network. Each element in the list corresponds to a node in the network, and the value of the element
-
             represents the partition to which the node belongs
-
         :type part: Part
-
-
-
-        .. svgbob::
-
-
-
-            "General Net Gain Initialization"
-
-          +------------------------+
-
-          |        Net w=10        |
-
-          |      +--------+        |
-
-          |   ,--+   10   +--,     |
-
-          |  /   +--------+   \    |
-
-          | v1    v2    v3    v4   |
-
-          | A(1)  B(1)  A(1)  C(1) |
-
-          +------------------------+
-
-
-
-          Gain for moving v1: -10 (if moves from A to different partition)
-
-          Gain for moving v2: +10 (if moves to A or C, -10 if to B)
-
         """
         num = [0] * self.num_parts
         for w in self.hyprgraph.ugraph[net]:
@@ -372,60 +332,15 @@ class FMKWayGainCalc:
     def update_move_general_net(self, part, move_info):
         """Update move for general net
 
-
-
         The function `update_move_general_net` updates the move for a general net in a graph partitioning
-
         algorithm.
 
-
-
         :param part: A list that represents the partition of the nodes in the network. Each element in the
-
             list corresponds to a node and indicates which part of the network the node belongs to
-
         :param move_info: The `move_info` parameter is an instance of the `MoveInfoV` class. It contains
-
             information about the move being made in the general net. The `move_info` object has the following
-
             attributes:
-
         :return: the variable "delta_gain", which is a list of lists.
-
-
-
-        .. svgbob::
-
-
-
-            "General Net Move Update"
-
-          +--------------------------+--------------------------+
-
-          |  Before Move             |  After Move              |
-
-          |                          |                          |
-
-          |    Net                   |    Net                   |
-
-          |   +-----+                |   +-----+                |
-
-          |   |  5  |<--- Module v   |   |  5  |                |
-
-          |   +-----+     (move)     |   +-----+<--- Module v   |
-
-          |  /   |   \               |  /   |   \     (moved)   |
-
-          | v1   v2   v3            | v1   v2   v3            |
-
-          | A(2) B(1) C(1)          | A(1) B(1) C(1)          |
-
-          +--------------------------+--------------------------+
-
-
-
-          Update gains for all affected modules when v moves from A to C
-
         """
         net, _, from_part, to_part = move_info
         num = [0] * self.num_parts

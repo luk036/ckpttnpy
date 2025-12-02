@@ -150,88 +150,31 @@ class FMConstrMgr(Generic[Gnl]):
     def check_legal(self, move_info_v) -> LegalCheck:
         """[summary]
 
-
-
         Arguments:
-
             from_part (type):  description
-
             v (type):  description
 
-
-
         Returns:
-
             dtype:  description
 
-
-
         Examples:
-
             >>> hyprgraph = [0, 1, 2, 3, 4, 5, 6, 7, 8]
-
             >>> module_weight = [1, 1, 1, 1, 1, 1, 1, 1, 1]
-
             >>> mgr = FMConstrMgr(hyprgraph, 0.1, module_weight, 3)
-
             >>> part = [0, 0, 0, 1, 1, 1, 2, 2, 2]
-
             >>> mgr.init(part)
-
             >>> move_info_v = (0, 0, 1)
-
             >>> mgr.check_legal(move_info_v)
-
             <LegalCheck.AllSatisfied: 2>
-
-
-
-        .. svgbob::
-
-
-
-            "Constraint Checking for Module Move"
-
-          +-------------------+-------------------+
-
-          | Before Move       | After Move        |
-
-          |                   |                   |
-
-          | From Part: w=35   | From Part: w=25   |
-
-          | [v1, v2, v3, v]   | [v1, v2, v3]      |
-
-          | Lowerbound: w=30  | Lowerbound: w=30  |
-
-          |                   |                   |
-
-          | To Part: w=20     | To Part: w=30     |
-
-          | [v4, v5]          | [v4, v5, v]       |
-
-          | Lowerbound: w=30  | Lowerbound: w=30  |
-
-          +-------------------+-------------------+
-
-
-
-          Move is legal if both partitions meet lowerbound after move
-
         """
-
         diffFrom = self._get_diff_from(move_info_v)
-
         if diffFrom < self.lowerbound:
             return LegalCheck.NotSatisfied  # not ok, don't move
 
         _, _, to_part = move_info_v
-
         diffTo = self.diff[to_part] + self.weight
-
         if diffTo < self.lowerbound:
             return LegalCheck.GetBetter  # get better, but still illegal
-
         return LegalCheck.AllSatisfied  # all satisfied
 
     def check_constraints(self, move_info_v) -> bool:
