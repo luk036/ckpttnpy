@@ -22,10 +22,8 @@ def _run_FMBiGainMgr(hyprgraph: Netlist, part: Part) -> None:
         # assert v >= 0
 
 
-from typing import Any
-
 @pytest.mark.parametrize("create_netlist", [create_test_netlist, create_drawf])
-def test_FMBiGainMgr(create_netlist: Any) -> None:
+def test_FMBiGainMgr(create_netlist) -> None:
     hyprgraph = create_netlist()
     part = {v: 0 for v in hyprgraph}
     part["a1"] = 1

@@ -30,8 +30,6 @@ def _run_FMBiPartMgr(hyprgraph: Netlist, part: Part) -> None:
     assert part_mgr.totalcost == totalcostbefore
 
 
-from typing import Any
-
 @pytest.mark.parametrize(
     "create_netlist, part_type",
     [
@@ -41,14 +39,14 @@ from typing import Any
         (lambda: read_json("testcases/p1.json"), list),
     ],
 )
-def test_FMBiPartMgr(create_netlist: Any, part_type: Any) -> None:
+def test_FMBiPartMgr(create_netlist, part_type) -> None:
     hyprgraph = create_netlist()
     if part_type is dict:
-        part: Part = {v: 0 for v in hyprgraph}
+        part = {v: 0 for v in hyprgraph}
     else:
         part = [0 for _ in hyprgraph]
 
     if create_netlist == create_drawf:
-        hyprgraph.module_fixed = {"p1"}  # type: ignore
+        hyprgraph.module_fixed = {"p1"}
 
     _run_FMBiPartMgr(hyprgraph, part)

@@ -1,17 +1,15 @@
-from typing import Any
-
 import pytest
 from ckpttnpy.FMBiGainCalc import FMBiGainCalc
 from tests.mocks import MockHyprgraph
 
 
 @pytest.fixture
-def hyprgraph() -> Any:
+def hyprgraph():
     return MockHyprgraph()
 
 
 @pytest.fixture
-def gain_calc(hyprgraph: Any) -> Any:
+def gain_calc(hyprgraph):
     return FMBiGainCalc(hyprgraph)
 
 
@@ -26,7 +24,7 @@ def gain_calc(hyprgraph: Any) -> Any:
         ("n3", [0, 0, 1, 1], 4, {0: 0, 1: 0, 2: 0, 3: 0}),
     ],
 )
-def test_init_gain(gain_calc: Any, hyprgraph: Any, net: Any, part: Any, totalcost: Any, expected_gains: Any) -> None:
+def test_init_gain(gain_calc, hyprgraph, net, part, totalcost, expected_gains) -> None:
     hyprgraph.nets = [net]
     gain_calc.init(part)
     assert gain_calc.totalcost == totalcost
