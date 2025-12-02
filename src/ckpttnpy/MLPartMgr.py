@@ -96,18 +96,64 @@ class MLPartMgr:
     def run_FMPartition(self, hyprgraph, module_weight, part):
         """Run Fiduccia-Mattheyses Partitioning
 
+
+
         This function performs a partitioning algorithm on a hypergraph, optimizing the
+
         partitioning based on module weights and balancing constraints.
 
+
+
         :param hyprgraph: The "hyprgraph" parameter represents a hypergraph, which is a mathematical structure used to
+
             model relationships between objects. It is not clear what specific properties or data the hypergraph
+
             in this code represents without further context
+
         :param module_weight: The `module_weight` parameter represents the weight of each module in the
+
             hypergraph. It is used in the optimization process to calculate the cost of each partition
+
         :param part: The `part` parameter is a list that represents the current partitioning of the modules
+
             in the hypergraph `hyprgraph`. Each element in the list corresponds to a module and contains an integer
+
             value representing the partition number to which the module belongs
+
         :return: The function `run_FMPartition` returns the value of `legalcheck`.
+
+
+
+        .. svgbob::
+
+
+
+            "Multi-Level Partitioning Process"
+
+          +------------------------------------------+
+
+          |  Coarse Graph (Fewer Modules)            |
+
+          |  [A, A, B, B, C, C]                     |
+
+          |  (Recursive Call)                        |
+
+          +------------------|-----------------------+
+
+                             |
+
+                             v
+
+          +------------------V-----------------------+
+
+          |  Fine Graph (More Modules)               |
+
+          |  [A, A, A, B, B, B, C, C, C]           |
+
+          |  (Detailed Optimization)                 |
+
+          +------------------------------------------+
+
         """
 
         def legalcheck_fn():

@@ -79,7 +79,23 @@ templates_path = ["_templates"]
 
 
 # Enable markdown
+
 extensions.append("myst_parser")
+
+
+# Enable svgbob
+
+try:
+    import sphinxcontrib.svgbob
+
+    extensions.append("sphinxcontrib.svgbob")
+
+except ImportError:
+    print(
+        "sphinxcontrib.svgbob not found. Install it with 'pip install sphinxcontrib-svgbob'"
+    )
+
+    pass
 
 # Configure MyST-Parser
 myst_enable_extensions = [
