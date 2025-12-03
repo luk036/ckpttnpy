@@ -184,7 +184,6 @@ class FMConstrMgr(Generic[Gnl]):
           +-------------------+-------------------+
 
           Move is legal if both partitions meet lowerbound after move
-
         """
 
         diffFrom = self._get_diff_from(move_info_v)

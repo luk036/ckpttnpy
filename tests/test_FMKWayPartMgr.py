@@ -3,7 +3,7 @@ from netlistx.netlist import (
     Netlist,
     create_drawf,
     create_random_hgraph,
-    # create_test_netlist,
+    create_test_netlist,
     read_json,
 )
 
@@ -42,8 +42,8 @@ def _run_FMKWayPartMgr(hyprgraph: Netlist, gain_mgr, num_parts, part: Part):
 @pytest.mark.parametrize(
     "create_netlist, num_parts, part_type",
     [
-        # (create_drawf, 3, dict),
-        # (create_test_netlist, 3, dict),
+        (create_drawf, 3, dict),
+        (create_test_netlist, 3, dict),
         (create_random_hgraph, 3, list),
         (lambda: read_json("testcases/p1.json"), 5, list),
     ],
