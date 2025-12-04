@@ -63,6 +63,19 @@ class PartMgrBase:
         self.num_parts = gain_mgr.num_parts
         self.totalcost = 0
 
+    def get_module_weight(self, v: Any) -> int:
+        """Get module weight for a given module.
+
+        Args:
+            v (Any): module name
+
+        Returns:
+            int: module weight
+        """
+        if isinstance(self.hyprgraph.module_weight, dict):
+            return self.hyprgraph.module_weight.get(v, 1)
+        return self.hyprgraph.get_module_weight(v)
+
     def init(self, part: Part):
         """
 
@@ -146,7 +159,7 @@ class PartMgrBase:
         # Zero-weighted modules does not contribute legalization
 
         for v in filter(
-            lambda v: self.hyprgraph.get_module_weight(v) == 0
+            lambda v: self.get_module_weight(v) == 0
             and self.hyprgraph.module_fixed is False,
             self.hyprgraph,
         ):

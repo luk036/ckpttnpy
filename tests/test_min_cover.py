@@ -19,7 +19,7 @@ def test_contract_subgraph():
     assert hgr2.get_max_degree() <= 3
     # assert hgr2.get_max_net_degree() <= 3
     # assert not hyprgraph.has_fixed_modules
-    assert hyprgraph.get_module_weight("a1") == 3
+    assert hyprgraph.module_weight["a1"] == 3
 
 
 # if __name__ == "__main__":
