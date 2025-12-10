@@ -14,3 +14,6 @@ except PackageNotFoundError:  # pragma: no cover
     __version__ = "unknown"
 finally:
     del version, PackageNotFoundError
+
+# Import MultiFPGAPartMgr to make it available at package level
+from .MultiFPGAPartMgr import MultiFPGAPartMgr, MultiFPGAGainCalc

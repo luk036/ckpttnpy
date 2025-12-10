@@ -22,12 +22,12 @@ def _run_MLBiPartMgr(hyprgraph: Netlist):
     return part_mgr.totalcost
 
 
-def test_MLBiPartMgr():
+def test_MLBiPartMgr() -> None:
     hyprgraph = create_drawf()
     _run_MLBiPartMgr(hyprgraph)
 
 
-def test_MLBiPartMgr2():
+def test_MLBiPartMgr2() -> None:
     hyprgraph = read_json("testcases/p1.json")
     totalcost = _run_MLBiPartMgr(hyprgraph)
     assert totalcost >= 43
@@ -63,7 +63,7 @@ def _run_MLKWayPartMgr(hyprgraph: Netlist, num_parts: int):
     return part_mgr.totalcost
 
 
-def test_MLKWayPartMgr():
+def test_MLKWayPartMgr() -> None:
     seed(1234)
     hyprgraph = read_json("testcases/p1.json")
     totalcost = _run_MLKWayPartMgr(hyprgraph, 3)

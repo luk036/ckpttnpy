@@ -39,7 +39,7 @@ def _run_FMBiPartMgr(hyprgraph: Netlist, part: Part):
         (lambda: read_json("testcases/p1.json"), list),
     ],
 )
-def test_FMBiPartMgr(create_netlist, part_type):
+def test_FMBiPartMgr(create_netlist, part_type) -> None:
     hyprgraph = create_netlist()
     if part_type is dict:
         part = {v: 0 for v in hyprgraph}
