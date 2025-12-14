@@ -18,7 +18,7 @@ Multi-FPGA
 
 - Balanced partitioning
   NPO-hard (non-approximatable)
-- Balanced tolerance factor: 3%, 10% 
+- Balanced tolerance factor: 3%, 10%
 
 - Fixed cell
 
@@ -45,6 +45,6 @@ Local search + Multi-level
 
 Jason Cong - UCLA - MLPart
 Andrew Kahng - UCLA -> UCSD OpenRoad
-Martin Wong 
+Martin Wong
 
 
