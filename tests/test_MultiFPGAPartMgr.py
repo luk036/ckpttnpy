@@ -47,12 +47,6 @@ def test_partition_design_basic() -> None:
         {"lut": 180, "ff": 360, "bram": 12},
     ]
 
-    num_fpgas = 2  # Use 2 for simpler test
-    fpga_resources = [
-        {"lut": 1000, "ff": 2000, "bram": 100},
-        {"lut": 1000, "ff": 2000, "bram": 100},
-    ]
-
     # For this test, we'll test the resource calculation part only
     total_module_weights = []
     for module_weight in module_weights:
@@ -60,7 +54,7 @@ def test_partition_design_basic() -> None:
         total_module_weights.append(total_weight)
 
     # Initialize partition assignment
-    initial_part = [0] * len(module_weights)
+    [0] * len(module_weights)
 
     # Verify the resource calculation works correctly
     assert len(total_module_weights) == len(module_weights)
@@ -111,7 +105,12 @@ def test_validate_partition_invalid_case() -> None:
 
     # Mock hypergraph and data
     hyprgraph = Mock()
-    partition = [0, 0, 1, 1]  # Assign first 2 modules to FPGA 0, which will exceed capacity
+    partition = [
+        0,
+        0,
+        1,
+        1,
+    ]  # Assign first 2 modules to FPGA 0, which will exceed capacity
 
     module_weights = [
         {"lut": 200, "ff": 400},
@@ -122,7 +121,9 @@ def test_validate_partition_invalid_case() -> None:
 
     is_valid, details = mgr.validate_partition(hyprgraph, partition, module_weights)
 
-    assert not is_valid, "Partition validation should have failed due to resource violation"
+    assert not is_valid, (
+        "Partition validation should have failed due to resource violation"
+    )
     assert "error" in details
     assert "exceeds" in details["error"]
 

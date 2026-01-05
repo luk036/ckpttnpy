@@ -16,11 +16,8 @@ partitioned design can be successfully implemented across multiple FPGAs while m
 resource constraints.
 """
 
-from .MLPartMgr import MLPartMgr, MLKWayPartMgr
-from .FMKWayConstrMgr import FMKWayConstrMgr
+from .MLPartMgr import MLKWayPartMgr
 from .FMKWayGainCalc import FMKWayGainCalc
-from .FMKWayGainMgr import FMKWayGainMgr
-from .FMPartMgr import FMPartMgr
 
 from typing import Dict, List, Any
 
@@ -33,7 +30,10 @@ class MultiFPGAPartMgr:
     """
 
     def __init__(
-        self, num_fpgas: int, fpga_resources: List[Dict[str, float]], bal_tol: float = 0.1
+        self,
+        num_fpgas: int,
+        fpga_resources: List[Dict[str, float]],
+        bal_tol: float = 0.1,
     ):
         """
         Initializes the MultiFPGAPartMgr with the number of FPGAs and their resources.
@@ -70,7 +70,9 @@ class MultiFPGAPartMgr:
         )
 
         if legalcheck.name != "AllSatisfied":
-            print(f"Warning: Partitioning constraints not fully satisfied: {legalcheck}")
+            print(
+                f"Warning: Partitioning constraints not fully satisfied: {legalcheck}"
+            )
 
         return initial_part
 
@@ -87,7 +89,12 @@ class MultiFPGAPartMgr:
         # this would include algorithms to reduce cross-FPGA communication
         return partition
 
-    def validate_partition(self, hyprgraph: Any, partition: List[int], module_weights: List[Dict[str, float]]):
+    def validate_partition(
+        self,
+        hyprgraph: Any,
+        partition: List[int],
+        module_weights: List[Dict[str, float]],
+    ):
         """
         Validates that the partition meets all FPGA resource constraints and other requirements.
 
@@ -105,7 +112,9 @@ class MultiFPGAPartMgr:
         # Calculate resource usage for each FPGA
         for module_idx, fpga_idx in enumerate(partition):
             if fpga_idx >= self.num_fpgas:
-                return False, {"error": f"Module {module_idx} assigned to non-existent FPGA {fpga_idx}"}
+                return False, {
+                    "error": f"Module {module_idx} assigned to non-existent FPGA {fpga_idx}"
+                }
 
             module_resource_weights = module_weights[module_idx]
             for resource, weight in module_resource_weights.items():
@@ -122,7 +131,10 @@ class MultiFPGAPartMgr:
                     }
 
         # If we reach here, the partition is valid
-        return True, {"resource_usage": fpga_resource_usage, "total_cost": self.partitioner.totalcost}
+        return True, {
+            "resource_usage": fpga_resource_usage,
+            "total_cost": self.partitioner.totalcost,
+        }
 
 
 class MultiFPGAGainCalc(FMKWayGainCalc):
@@ -151,4 +163,6 @@ class MultiFPGAGainCalc(FMKWayGainCalc):
             # Increase the cost based on the inter-FPGA communication weight
             weight = self.hyprgraph.get_net_weight(net) * self.inter_fpga_cost_weight
             for w in self.hyprgraph.ugraph[net]:
-                self._modify_gain(w, -weight)  # Negative gain for inter-FPGA connections
+                self._modify_gain(
+                    w, -weight
+                )  # Negative gain for inter-FPGA connections

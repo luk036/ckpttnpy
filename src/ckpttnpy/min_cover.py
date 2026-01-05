@@ -79,7 +79,7 @@ def setup(
         matching does not include certain vertices
     :return: three values: clusters, nets, and cell_list.
     """
-    s1, _ = min_maximal_matching(hyprgraph, cluster_weight, dep=forbid)
+    s1, _ = min_maximal_matching(hyprgraph, cluster_weight, dependents=forbid)
     covered: Set[int] = set()
     nets = list()
     clusters = list()
