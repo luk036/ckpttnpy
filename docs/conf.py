@@ -10,6 +10,7 @@
 import os
 import sys
 import shutil
+import importlib
 
 # -- Path setup --------------------------------------------------------------
 
@@ -85,12 +86,9 @@ extensions.append("myst_parser")
 
 # Enable svgbob
 
-try:
-    import sphinxcontrib.svgbob
-
+if importlib.util.find_spec("sphinxcontrib.svgbob"):
     extensions.append("sphinxcontrib.svgbob")
-
-except ImportError:
+else:
     print(
         "sphinxcontrib.svgbob not found. Install it with 'pip install sphinxcontrib-svgbob'"
     )
