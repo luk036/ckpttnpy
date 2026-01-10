@@ -11,7 +11,6 @@ from ckpttnpy.FMKWayConstrMgr import FMKWayConstrMgr
 from ckpttnpy.FMKWayGainCalc import FMKWayGainCalc
 from ckpttnpy.FMKWayGainMgr import FMKWayGainMgr
 from ckpttnpy.FMPartMgr import FMPartMgr
-
 from tests.mocks import Part
 
 

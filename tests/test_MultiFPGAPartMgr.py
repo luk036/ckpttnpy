@@ -10,8 +10,9 @@ functionality of the MultiFPGAPartMgr class and help ensure its reliability in m
 design partitioning tasks.
 """
 
-import pytest
 from unittest.mock import Mock
+
+import pytest
 
 # Adjust import to match the actual module structure
 from ckpttnpy.MultiFPGAPartMgr import MultiFPGAPartMgr

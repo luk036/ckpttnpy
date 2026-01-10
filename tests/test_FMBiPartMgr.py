@@ -11,7 +11,6 @@ from ckpttnpy.FMBiConstrMgr import FMBiConstrMgr
 from ckpttnpy.FMBiGainCalc import FMBiGainCalc
 from ckpttnpy.FMBiGainMgr import FMBiGainMgr
 from ckpttnpy.FMPartMgr import FMPartMgr
-
 from tests.mocks import Part
 
 

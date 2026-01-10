@@ -46,5 +46,3 @@ Local search + Multi-level
 Jason Cong - UCLA - MLPart
 Andrew Kahng - UCLA -> UCSD OpenRoad
 Martin Wong
-
-

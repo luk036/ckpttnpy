@@ -1,4 +1,5 @@
 import pytest
+
 from ckpttnpy.FMConstrMgr import FMConstrMgr, LegalCheck
 
 

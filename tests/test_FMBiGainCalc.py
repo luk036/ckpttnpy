@@ -1,4 +1,5 @@
 import pytest
+
 from ckpttnpy.FMBiGainCalc import FMBiGainCalc
 from tests.mocks import MockHyprgraph
 

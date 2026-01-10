@@ -16,10 +16,10 @@ partitioned design can be successfully implemented across multiple FPGAs while m
 resource constraints.
 """
 
-from .MLPartMgr import MLKWayPartMgr
-from .FMKWayGainCalc import FMKWayGainCalc
+from typing import Any, Dict, List
 
-from typing import Dict, List, Any
+from .FMKWayGainCalc import FMKWayGainCalc
+from .MLPartMgr import MLKWayPartMgr
 
 
 class MultiFPGAPartMgr:

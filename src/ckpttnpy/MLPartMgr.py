@@ -26,6 +26,8 @@ In summary, this code provides a flexible framework for solving complex partitio
 
 # type: ignore
 
+import gc
+
 # from ckpttnpy.min_cover import contract_subgraph
 from ckpttnpy.FMPartMgr import FMPartMgr
 
@@ -40,8 +42,6 @@ from .FMKWayGainMgr import FMKWayGainMgr
 # Take a snapshot when a move make **negative** gain.
 # Snapshot in the form of "interface"???
 from .min_cover import contract_subgraph
-
-import gc
 
 
 class MLPartMgr:
