@@ -16,5 +16,6 @@ finally:
     del version, PackageNotFoundError
 
 # Import MultiFPGAPartMgr to make it available at package level
-from .MultiFPGAPartMgr import MultiFPGAGainCalc as MultiFPGAGainCalc
-from .MultiFPGAPartMgr import MultiFPGAPartMgr as MultiFPGAPartMgr
+from .MultiFPGAPartMgr import MultiFPGAGainCalc, MultiFPGAPartMgr
+
+__all__ = ["MultiFPGAGainCalc", "MultiFPGAPartMgr"]

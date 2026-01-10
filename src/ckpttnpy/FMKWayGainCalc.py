@@ -1,21 +1,36 @@
 """
 FMKWayGainCalc.py
 
-This code defines a class called FMKWayGainCalc, which is used for calculating gain values in the Fiduccia-Mattheyses (FM) partitioning algorithm. The FM algorithm is used to divide a graph or network into multiple parts while minimizing the connections between these parts.
+This code defines a class called FMKWayGainCalc, which is used for calculating gain values in the
+Fiduccia-Mattheyses (FM) partitioning algorithm. The FM algorithm is used to divide a graph or
+network into multiple parts while minimizing the connections between these parts.
 
-The main purpose of this code is to help calculate and update the gains (benefits) of moving nodes between different partitions in a graph. It takes as input a hypergraph (a special type of graph where edges can connect more than two nodes) and the number of partitions desired. The output it produces are gain values for different potential moves of nodes between partitions.
+The main purpose of this code is to help calculate and update the gains (benefits) of moving nodes
+between different partitions in a graph. It takes as input a hypergraph (a special type of graph where
+edges can connect more than two nodes) and the number of partitions desired. The output it produces
+are gain values for different potential moves of nodes between partitions.
 
-The class initializes with the hypergraph and number of partitions. It sets up data structures to keep track of nodes, their connections, and their current partitions. The main logic of the code revolves around initializing gains for different types of connections (2-pin, 3-pin, and general nets) and updating these gains when nodes are moved between partitions.
+The class initializes with the hypergraph and number of partitions. It sets up data structures to keep
+track of nodes, their connections, and their current partitions. The main logic of the code revolves
+around initializing gains for different types of connections (2-pin, 3-pin, and general nets) and
+updating these gains when nodes are moved between partitions.
 
-For initializing gains, the code has different methods for 2-pin nets (connections between two nodes), 3-pin nets (connections between three nodes), and general nets (connections between any number of nodes). These methods calculate the initial gain values based on the current partition of the nodes and the weight of the connection.
+For initializing gains, the code has different methods for 2-pin nets (connections between two nodes),
+3-pin nets (connections between three nodes), and general nets (connections between any number of
+nodes). These methods calculate the initial gain values based on the current partition of the nodes
+and the weight of the connection.
 
-The update methods (like update_move_2pin_net, update_move_3pin_net, and update_move_general_net) are used to recalculate gains when a node is moved from one partition to another. These methods consider how the move affects the connections and update the gain values accordingly.
+The update methods (like update_move_2pin_net, update_move_3pin_net, and update_move_general_net)
+are used to recalculate gains when a node is moved from one partition to another. These methods
+consider how the move affects the connections and update the gain values accordingly.
 
 An important part of the logic is how it handles different types of nets differently for efficiency. For example, 2-pin and 3-pin nets have specialized methods because they're common and can be calculated more efficiently than general nets.
 
 The code uses data structures like lists and dictionaries to keep track of nodes, their connections, and their gain values. It also uses iterators and list comprehensions for efficient processing of the graph data.
 
-Overall, this code provides the core calculations needed for the FM algorithm to make decisions about how to partition a graph effectively. It's a crucial component in graph partitioning problems, which have applications in areas like circuit design, load balancing, and network analysis.
+Overall, this code provides the core calculations needed for the FM algorithm to make decisions about
+how to partition a graph effectively. It's a crucial component in graph partitioning problems, which
+have applications in areas like circuit design, load balancing, and network analysis.
 """
 
 # type: ignore

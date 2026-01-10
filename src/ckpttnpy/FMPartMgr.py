@@ -1,19 +1,36 @@
 """
 FMPartMgr.py
 
-This code defines a class called FMPartMgr (Fiduccia-Mattheyses Partitioning Manager) that helps manage partitions in a graph or network. The main purpose of this code is to provide methods for taking snapshots of partitions and restoring partition information from those snapshots.
+This code defines a class called FMPartMgr (Fiduccia-Mattheyses Partitioning Manager) that helps
+manage partitions in a graph or network. The main purpose of this code is to provide methods for
+taking snapshots of partitions and restoring partition information from those snapshots.
 
-The FMPartMgr class is designed to work with "parts," which can be either dictionaries or lists containing integer values. These parts likely represent different sections or groups within a larger system or network.
+The FMPartMgr class is designed to work with "parts," which can be either dictionaries or lists
+containing integer values. These parts likely represent different sections or groups within a
+larger system or network.
 
-The class has two main methods: take_snapshot and restore_part_info. The take_snapshot method simply creates a copy of the current partition state. This is useful for saving the current state of the partition before making changes, allowing you to revert to this state if needed later.
+The class has two main methods: take_snapshot and restore_part_info. The take_snapshot method simply
+creates a copy of the current partition state. This is useful for saving the current state of the
+partition before making changes, allowing you to revert to this state if needed later.
 
-The restore_part_info method does the opposite - it takes a previously saved snapshot and uses it to update the current partition. This method can handle snapshots in different formats (list or dictionary), and it updates the partition by assigning values from the snapshot to the corresponding elements in the current partition.
+The restore_part_info method does the opposite - it takes a previously saved snapshot and uses it
+to update the current partition. This method can handle snapshots in different formats (list or
+dictionary), and it updates the partition by assigning values from the snapshot to the corresponding
+elements in the current partition.
 
-The code achieves its purpose through simple copy and assignment operations. For taking a snapshot, it uses the copy method to create a duplicate of the current partition. For restoring, it iterates through the snapshot data and assigns each value to the corresponding position in the current partition.
+The code achieves its purpose through simple copy and assignment operations. For taking a snapshot, it
+uses the copy method to create a duplicate of the current partition. For restoring, it iterates
+through the snapshot data and assigns each value to the corresponding position in the current
+partition.
 
-An important aspect of the logic is the flexibility in handling different data types. The restore_part_info method checks whether the snapshot is a list, a dictionary, or a special type called MapAdapter (likely a custom data structure). Depending on the type, it uses different methods to iterate through the data and update the partition.
+An important aspect of the logic is the flexibility in handling different data types. The
+restore_part_info method checks whether the snapshot is a list, a dictionary, or a special type
+called MapAdapter (likely a custom data structure). Depending on the type, it uses different
+methods to iterate through the data and update the partition.
 
-Overall, this code provides a simple way to save and restore the state of partitions in a graph or network, which can be useful in algorithms that involve iterative improvements or need to backtrack to previous states.
+Overall, this code provides a simple way to save and restore the state of partitions in a graph or
+network, which can be useful in algorithms that involve iterative improvements or need to backtrack
+to previous states.
 """
 
 from typing import Any, Dict, List, Union

@@ -1,9 +1,14 @@
 """
 Clustering Algorithm
 
-This code implements a clustering algorithm for graph contraction, which is used in circuit design and optimization. The main purpose of this code is to simplify a complex graph (called a hypergraph) by grouping together certain nodes (called modules) into clusters. This process helps in reducing the complexity of the graph while maintaining its essential structure.
+This code implements a clustering algorithm for graph contraction, which is used in circuit design
+and optimization. The main purpose of this code is to simplify a complex graph (called a hypergraph)
+by grouping together certain nodes (called modules) into clusters. This process helps in reducing the
+complexity of the graph while maintaining its essential structure.
 
-The code takes as input a hypergraph (represented by the Netlist class), weights for modules and clusters, and a set of forbidden nets (connections that should not be grouped). It produces as output a new, simplified graph (called a hierarchical netlist) with updated weights for the modules.
+The code takes as input a hypergraph (represented by the Netlist class), weights for modules and
+clusters, and a set of forbidden nets (connections that should not be grouped). It produces as
+output a new, simplified graph (called a hierarchical netlist) with updated weights for the modules.
 
 The algorithm works through several steps to achieve its purpose:
 
@@ -21,9 +26,14 @@ The algorithm works through several steps to achieve its purpose:
 
 Throughout this process, the code keeps track of weights for modules and nets, updating them as nodes are combined into clusters. This is important because the weights represent the importance or size of each module or connection in the graph.
 
-The main logic flow involves transforming the original complex graph into a simpler one by grouping connected nodes, removing redundant connections, and updating the weights accordingly. This is achieved through a series of graph operations and data structure manipulations.
+The main logic flow involves transforming the original complex graph into a simpler one by grouping
+connected nodes, removing redundant connections, and updating the weights accordingly. This is
+achieved through a series of graph operations and data structure manipulations.
 
-For a beginner programmer, it's important to understand that this code is dealing with graph theory concepts, which are used to represent complex relationships between objects. The algorithm is trying to simplify these relationships while preserving the most important information. This kind of algorithm is useful in many fields, including circuit design, network analysis, and data compression.
+For a beginner programmer, it's important to understand that this code is dealing with graph theory
+concepts, which are used to represent complex relationships between objects. The algorithm is trying
+to simplify these relationships while preserving the most important information. This kind of
+algorithm is useful in many fields, including circuit design, network analysis, and data compression.
 
 Notes:
     module and net should have a unique id because they treat the same node in the underlying graph.
