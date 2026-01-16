@@ -35,7 +35,10 @@ def test_json() -> None:
     #     json.dump(data, fw, indent=1)
     with open("testcases/drawf.json", "r") as fr:
         data2 = json.load(fr)
-    ugraph = json_graph.node_link_graph(data2, edges="links")
+    # Convert 'links' to 'edges' for NetworkX compatibility
+    if "links" in data2 and "edges" not in data2:
+        data2["edges"] = data2.pop("links")
+    ugraph = json_graph.node_link_graph(data2)
     assert ugraph.number_of_nodes() == 13
     assert ugraph.graph["num_modules"] == 7
     assert ugraph.graph["num_nets"] == 6
@@ -45,7 +48,10 @@ def test_json() -> None:
 def test_json2() -> None:
     with open("testcases/p1.json", "r") as fr:
         data = json.load(fr)
-    ugraph = json_graph.node_link_graph(data, edges="links")
+    # Convert 'links' to 'edges' for NetworkX compatibility
+    if "links" in data and "edges" not in data:
+        data["edges"] = data.pop("links")
+    ugraph = json_graph.node_link_graph(data)
     assert ugraph.number_of_nodes() == 1735
     assert ugraph.graph["num_modules"] == 833
     assert ugraph.graph["num_nets"] == 902
