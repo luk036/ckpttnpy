@@ -38,7 +38,7 @@ def test_json() -> None:
     # Convert 'links' to 'edges' for NetworkX compatibility
     # if "links" in data2 and "edges" not in data2:
     #     data2["edges"] = data2.pop("links")
-    ugraph = json_graph.node_link_graph(data2)
+    ugraph = json_graph.node_link_graph(data2, edges="edges")
     assert ugraph.number_of_nodes() == 13
     assert ugraph.graph["num_modules"] == 7
     assert ugraph.graph["num_nets"] == 6
@@ -51,7 +51,7 @@ def test_json2() -> None:
     # Convert 'links' to 'edges' for NetworkX compatibility
     # if "links" in data and "edges" not in data:
     #     data["edges"] = data.pop("links")
-    ugraph = json_graph.node_link_graph(data)
+    ugraph = json_graph.node_link_graph(data, edges="edges")
     assert ugraph.number_of_nodes() == 1735
     assert ugraph.graph["num_modules"] == 833
     assert ugraph.graph["num_nets"] == 902
