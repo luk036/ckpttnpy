@@ -48,6 +48,7 @@ jobs:
           pip install git+https://github.com/luk036/mywheel.git
           pip install git+https://github.com/luk036/netlistx.git
           pip install -r requirements/test.txt
+          python setup.py develop
       - name: Run tests
         run: pytest --cov=ckpttnpy --cov-report=xml --cov-report=term-missing
       - name: Upload coverage
