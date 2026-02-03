@@ -1,4 +1,4 @@
-# =============================================================================
+# ==============================================================================
 # DEPRECATION WARNING:
 #
 # The file `requirements.txt` does not influence the package dependencies and
@@ -6,7 +6,7 @@
 #
 # Please have look at the docs for better alternatives
 # (`Dependency Management` section).
-# =============================================================================
+# ==============================================================================
 #
 # Add your pinned requirements so that they can be easily installed with:
 # pip install -r requirements.txt

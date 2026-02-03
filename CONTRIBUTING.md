@@ -216,8 +216,38 @@ conda activate ckpttnpy
 
    (after having installed [tox] with `pip install tox` or `pipx`).
 
-   You can also use [tox] to run several other pre-configured tasks in the
-   repository. Try `tox -av` to see a list of the available checks.
+    You can also use [tox] to run several other pre-configured tasks in the
+    repository. Try `tox -av` to see a list of the available checks.
+
+### Additional Testing Tools
+
+This project includes additional testing frameworks for comprehensive quality assurance:
+
+#### Type Checking with mypy
+
+Run static type checking to catch type errors before runtime:
+
+```bash
+mypy src/ckpttnpy
+```
+
+#### Property-Based Testing with Hypothesis
+
+Run property-based tests that verify algorithmic invariants:
+
+```bash
+pytest tests/test_properties.py
+```
+
+#### Performance Benchmarking
+
+Track performance over time with pytest-benchmark:
+
+```bash
+pytest tests/test_benchmarks.py
+```
+
+These tools help ensure code correctness and catch regressions early in development.
 
 ### Submit your contribution
 
