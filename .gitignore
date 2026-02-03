@@ -176,3 +176,6 @@ MANIFEST
 
 # my stuffs
 .hypothesis
+
+.gemini/
+gha-creds-*.json
