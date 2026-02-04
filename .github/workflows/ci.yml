@@ -47,7 +47,8 @@ jobs:
           python -m pip install --upgrade pip
           pip install git+https://github.com/luk036/mywheel.git
           pip install git+https://github.com/luk036/netlistx.git
-          pip install -r requirements/test.txt
+          pip install -r requirements.txt
+          pip install setuptools
           python setup.py develop
       - name: Run tests
         run: pytest --cov=ckpttnpy --cov-report=xml --cov-report=term-missing
