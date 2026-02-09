@@ -39,8 +39,6 @@ The code also includes a mechanism for taking 'snapshots' of the partitioning wh
 In summary, this code provides a flexible framework for solving complex partitioning problems, with the ability to handle different types of partitioning (binary or k-way) and to work on problems of different sizes through its multi-level approach.
 """
 
-# type: ignore
-
 import gc
 
 # from ckpttnpy.min_cover import contract_subgraph

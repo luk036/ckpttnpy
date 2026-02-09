@@ -33,8 +33,6 @@ how to partition a graph effectively. It's a crucial component in graph partitio
 have applications in areas like circuit design, load balancing, and network analysis.
 """
 
-# type: ignore
-
 from itertools import permutations
 from typing import Any, Dict, List, Union
 
@@ -77,8 +75,7 @@ class FMKWayGainCalc:
         self.hyprgraph = hyprgraph
         self.num_parts = num_parts
         self.rr = Robin(num_parts)
-
-        self.vertex_list = []
+        self.vertex_list: Any = None  # Will be set below
 
         if isinstance(self.hyprgraph.modules, range):
             self.vertex_list = [

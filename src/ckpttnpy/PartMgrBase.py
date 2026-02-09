@@ -91,8 +91,12 @@ class PartMgrBase:
             int: module weight
         """
         if isinstance(self.hyprgraph.module_weight, dict):
-            return self.hyprgraph.module_weight.get(v, 1)
-        return self.hyprgraph.get_module_weight(v)
+            weight = self.hyprgraph.module_weight.get(v, 1)
+            assert isinstance(weight, int), f"Expected int, got {type(weight)}"
+            return weight
+        weight = self.hyprgraph.get_module_weight(v)
+        assert isinstance(weight, int), f"Expected int, got {type(weight)}"
+        return weight
 
     def init(self, part: Part):
         """

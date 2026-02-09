@@ -137,7 +137,7 @@ class FMConstrMgr(Generic[Gnl]):
         """
         return 1 if self.module_weight is None else self.module_weight[node_index]
 
-    def _get_diff_from(self, move_info_v) -> int:
+    def _get_diff_from(self, move_info_v: tuple) -> int:
         """Calculate the difference in weight of the partition from which a module is moved.
 
         :param move_info_v: A tuple containing the module to be moved, the partition it is moved from, and the partition it is moved to.
@@ -145,7 +145,9 @@ class FMConstrMgr(Generic[Gnl]):
         """
         v, from_part, _ = move_info_v
         self.weight = self.get_module_weight(v)
-        return self.diff[from_part] - self.weight
+        diff_val = self.diff[from_part] - self.weight
+        assert isinstance(diff_val, int)
+        return diff_val
 
     def check_legal(self, move_info_v) -> LegalCheck:
         """[summary]

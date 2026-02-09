@@ -35,10 +35,12 @@ circuit design and network analysis.
 """
 
 from abc import abstractmethod
-from typing import List
+from typing import Any, Dict, List, Union
 
 from mywheel.bpqueue import BPQueue
 from mywheel.dllist import Dllink, Dllist
+
+Part = Union[Dict[Any, int], List[int]]
 
 Item = Dllink[List[int]]
 
@@ -79,6 +81,7 @@ class FMGainMgr:
         """
         totalcost = self.gain_calc.init(part)
         self.waitinglist.clear()
+        assert isinstance(totalcost, int)
         return totalcost
 
     def is_empty(self) -> bool:
@@ -88,7 +91,7 @@ class FMGainMgr:
         """
         return all(bckt._max == 0 for bckt in self.gainbucket)
 
-    def select(self, part):
+    def select(self, part: Part) -> tuple[tuple[Any, int, int], int]:
         """
         The `select` function selects the best candidate based on the maximum gain and returns the move
         information and the maximum gain.

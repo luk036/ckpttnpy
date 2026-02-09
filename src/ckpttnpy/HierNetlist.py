@@ -129,7 +129,7 @@ class HierNetlist(Netlist):
         for v1, v2 in enumerate(self.node_down_list):
             part_up[v1] = part[v2]
 
-    def get_net_weight(self, net) -> int:
+    def get_net_weight(self, net: Any) -> int:
         """
         The function `get_net_weight` returns the net weight of a given net, with a default value of 1 if
         the net weight is not found.
@@ -153,4 +153,6 @@ class HierNetlist(Netlist):
             >>> hgr.get_net_weight('n2')
             1
         """
-        return self.net_weight.get(net, 1)
+        weight = self.net_weight.get(net, 1)
+        assert isinstance(weight, int), f"Expected int, got {type(weight)}"
+        return weight

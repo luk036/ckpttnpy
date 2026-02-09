@@ -148,7 +148,7 @@ class MultiFPGAGainCalc(FMKWayGainCalc):
         """Set the weight for inter-FPGA communication costs in gain calculations"""
         self.inter_fpga_cost_weight = weight
 
-    def _init_gain_general_net(self, net, part: List[int]):
+    def _init_gain_general_net(self, net, part):
         """Initialize gain for general net, considering inter-FPGA communication costs"""
         # Call parent implementation first
         super()._init_gain_general_net(net, part)
@@ -161,8 +161,8 @@ class MultiFPGAGainCalc(FMKWayGainCalc):
 
         if len(connected_fpgas) > 1:  # Net spans multiple FPGAs
             # Increase the cost based on the inter-FPGA communication weight
-            weight = self.hyprgraph.get_net_weight(net) * self.inter_fpga_cost_weight
+            net_weight = self.hyprgraph.get_net_weight(net) * self.inter_fpga_cost_weight
             for w in self.hyprgraph.ugraph[net]:
                 self._modify_gain(
-                    w, -weight
+                    w, part[w], -net_weight
                 )  # Negative gain for inter-FPGA connections

@@ -82,6 +82,7 @@ class FMBiGainCalc:
         :type _: int (optional)
         """
         self.hyprgraph = hyprgraph
+        self.vertex_list: Any = None  # Will be set below
         if isinstance(self.hyprgraph.modules, range):
             self.vertex_list = MapAdapter([Dllink([0, i]) for i in self.hyprgraph])
         elif isinstance(self.hyprgraph.modules, list):
