@@ -161,7 +161,9 @@ class MultiFPGAGainCalc(FMKWayGainCalc):
 
         if len(connected_fpgas) > 1:  # Net spans multiple FPGAs
             # Increase the cost based on the inter-FPGA communication weight
-            net_weight = self.hyprgraph.get_net_weight(net) * self.inter_fpga_cost_weight
+            net_weight = (
+                self.hyprgraph.get_net_weight(net) * self.inter_fpga_cost_weight
+            )
             for w in self.hyprgraph.ugraph[net]:
                 self._modify_gain(
                     w, part[w], -net_weight
