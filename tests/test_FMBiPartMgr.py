@@ -40,6 +40,7 @@ def _run_FMBiPartMgr(hyprgraph: Netlist, part: Part):
 )
 def test_FMBiPartMgr(create_netlist, part_type) -> None:
     hyprgraph = create_netlist()
+    part: Part
     if part_type is dict:
         part = {v: 0 for v in hyprgraph}
     else:

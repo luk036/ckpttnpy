@@ -181,8 +181,9 @@ class PartMgrBase:
         # Zero-weighted modules does not contribute legalization
 
         for v in filter(
-            lambda v: self.get_module_weight(v) == 0
-            and self.hyprgraph.module_fixed is False,
+            lambda v: (
+                self.get_module_weight(v) == 0 and self.hyprgraph.module_fixed is False
+            ),
             self.hyprgraph,
         ):
             self.gain_mgr.lock_all(part[v], v)

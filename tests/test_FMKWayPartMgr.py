@@ -52,6 +52,7 @@ def test_FMKWayPartMgr(create_netlist, num_parts, part_type) -> None:
     gain_mgr = FMKWayGainMgr(FMKWayGainCalc, hyprgraph, num_parts)
     if create_netlist == create_drawf:
         hyprgraph.module_fixed = {"p1"}
+    part: Part
     if part_type is dict:
         part = {v: 0 for v in hyprgraph}
     else:

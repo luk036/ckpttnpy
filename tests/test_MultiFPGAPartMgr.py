@@ -24,9 +24,9 @@ def test_multifpga_partmgr_initialization() -> None:
     """Test initialization of MultiFPGAPartMgr with various parameters"""
     num_fpgas = 3
     fpga_resources = [
-        {"lut": 1000, "ff": 2000, "bram": 100},
-        {"lut": 1200, "ff": 2400, "bram": 120},
-        {"lut": 800, "ff": 1600, "bram": 80},
+        {"lut": 1000.0, "ff": 2000.0, "bram": 100.0},
+        {"lut": 1200.0, "ff": 2400.0, "bram": 120.0},
+        {"lut": 800.0, "ff": 1600.0, "bram": 80.0},
     ]
     bal_tol = 0.1
 
@@ -41,12 +41,12 @@ def test_partition_design_basic() -> None:
     """Test basic functionality of partition_design method"""
     # Create mock hypergraph and module weights
     module_weights = [
-        {"lut": 200, "ff": 400, "bram": 10},
-        {"lut": 150, "ff": 300, "bram": 5},
-        {"lut": 300, "ff": 600, "bram": 20},
-        {"lut": 250, "ff": 500, "bram": 15},
-        {"lut": 100, "ff": 200, "bram": 8},
-        {"lut": 180, "ff": 360, "bram": 12},
+        {"lut": 200.0, "ff": 400.0, "bram": 10.0},
+        {"lut": 150.0, "ff": 300.0, "bram": 5.0},
+        {"lut": 300.0, "ff": 600.0, "bram": 20.0},
+        {"lut": 250.0, "ff": 500.0, "bram": 15.0},
+        {"lut": 100.0, "ff": 200.0, "bram": 8.0},
+        {"lut": 180.0, "ff": 360.0, "bram": 12.0},
     ]
 
     # For this test, we'll test the resource calculation part only
@@ -60,16 +60,16 @@ def test_partition_design_basic() -> None:
 
     # Verify the resource calculation works correctly
     assert len(total_module_weights) == len(module_weights)
-    assert total_module_weights[0] == 610  # 200 + 400 + 10
-    assert total_module_weights[1] == 455  # 150 + 300 + 5
+    assert total_module_weights[0] == 610.0  # 200 + 400 + 10
+    assert total_module_weights[1] == 455.0  # 150 + 300 + 5
 
 
 def test_validate_partition_valid_case() -> None:
     """Test validate_partition with a valid partition assignment"""
     num_fpgas = 2
     fpga_resources = [
-        {"lut": 500, "ff": 1000},
-        {"lut": 500, "ff": 1000},
+        {"lut": 500.0, "ff": 1000.0},
+        {"lut": 500.0, "ff": 1000.0},
     ]
 
     mgr = MultiFPGAPartMgr(num_fpgas, fpga_resources)
@@ -79,28 +79,28 @@ def test_validate_partition_valid_case() -> None:
     partition = [0, 0, 1, 1]  # Assign first 2 modules to FPGA 0, last 2 to FPGA 1
 
     module_weights = [
-        {"lut": 200, "ff": 400},
-        {"lut": 150, "ff": 300},
-        {"lut": 300, "ff": 600},
-        {"lut": 100, "ff": 200},
+        {"lut": 200.0, "ff": 400.0},
+        {"lut": 150.0, "ff": 300.0},
+        {"lut": 300.0, "ff": 600.0},
+        {"lut": 100.0, "ff": 200.0},
     ]
 
     is_valid, details = mgr.validate_partition(hyprgraph, partition, module_weights)
 
     assert is_valid, f"Partition validation failed: {details}"
     assert "resource_usage" in details
-    assert details["resource_usage"][0]["lut"] == 350  # 200 + 150
-    assert details["resource_usage"][0]["ff"] == 700  # 400 + 300
-    assert details["resource_usage"][1]["lut"] == 400  # 300 + 100
-    assert details["resource_usage"][1]["ff"] == 800  # 600 + 200
+    assert details["resource_usage"][0]["lut"] == 350.0  # 200 + 150
+    assert details["resource_usage"][0]["ff"] == 700.0  # 400 + 300
+    assert details["resource_usage"][1]["lut"] == 400.0  # 300 + 100
+    assert details["resource_usage"][1]["ff"] == 800.0  # 600 + 200
 
 
 def test_validate_partition_invalid_case() -> None:
     """Test validate_partition with an invalid partition assignment that exceeds resources"""
     num_fpgas = 2
     fpga_resources = [
-        {"lut": 300, "ff": 600},  # Small capacity to trigger violation
-        {"lut": 500, "ff": 1000},
+        {"lut": 300.0, "ff": 600.0},  # Small capacity to trigger violation
+        {"lut": 500.0, "ff": 1000.0},
     ]
 
     mgr = MultiFPGAPartMgr(num_fpgas, fpga_resources)
@@ -115,17 +115,20 @@ def test_validate_partition_invalid_case() -> None:
     ]  # Assign first 2 modules to FPGA 0, which will exceed capacity
 
     module_weights = [
-        {"lut": 200, "ff": 400},
-        {"lut": 150, "ff": 300},  # Total: 350 LUTs, 700 FFs (exceeds FPGA 0's capacity)
-        {"lut": 300, "ff": 600},
-        {"lut": 100, "ff": 200},
+        {"lut": 200.0, "ff": 400.0},
+        {
+            "lut": 150.0,
+            "ff": 300.0,
+        },  # Total: 350 LUTs, 700 FFs (exceeds FPGA 0's capacity)
+        {"lut": 300.0, "ff": 600.0},
+        {"lut": 100.0, "ff": 200.0},
     ]
 
     is_valid, details = mgr.validate_partition(hyprgraph, partition, module_weights)
 
-    assert (
-        not is_valid
-    ), "Partition validation should have failed due to resource violation"
+    assert not is_valid, (
+        "Partition validation should have failed due to resource violation"
+    )
     assert "error" in details
     assert "exceeds" in details["error"]
 
@@ -134,9 +137,9 @@ def test_optimize_inter_fpga_connections() -> None:
     """Test the inter-FPGA connection optimization"""
     num_fpgas = 3
     fpga_resources = [
-        {"lut": 1000, "ff": 2000},
-        {"lut": 1000, "ff": 2000},
-        {"lut": 1000, "ff": 2000},
+        {"lut": 1000.0, "ff": 2000.0},
+        {"lut": 1000.0, "ff": 2000.0},
+        {"lut": 1000.0, "ff": 2000.0},
     ]
 
     mgr = MultiFPGAPartMgr(num_fpgas, fpga_resources)

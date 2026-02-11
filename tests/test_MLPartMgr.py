@@ -3,6 +3,7 @@ from random import randint, seed
 from netlistx.netlist import Netlist, create_drawf, read_json
 
 from ckpttnpy.MLPartMgr import MLBiPartMgr, MLKWayPartMgr
+from tests.mocks import Part
 
 
 def _run_MLBiPartMgr(hyprgraph: Netlist):
@@ -11,6 +12,7 @@ def _run_MLBiPartMgr(hyprgraph: Netlist):
     part_mgr.limitsize = 7
     randseq = [randint(0, 1) for _ in hyprgraph]
 
+    part: Part
     if isinstance(hyprgraph.modules, range):
         part = randseq
     elif isinstance(hyprgraph.modules, list):
@@ -52,6 +54,7 @@ def _run_MLKWayPartMgr(hyprgraph: Netlist, num_parts: int):
     # try: part_mgr.limitsize = 2000
     randseq = [randint(0, num_parts - 1) for _ in hyprgraph]
 
+    part: Part
     if isinstance(hyprgraph.modules, range):
         part = randseq
     elif isinstance(hyprgraph.modules, list):
