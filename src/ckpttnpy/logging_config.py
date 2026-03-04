@@ -26,9 +26,10 @@ def setup_logging(
         Configured root logger instance
 
     Example:
-        >>> setup_logging(logging.DEBUG)
+        >>> _ = setup_logging(logging.DEBUG)  # doctest: +ELLIPSIS
         >>> logger = logging.getLogger(__name__)
-        >>> logger.debug("Debug message")
+        >>> logger.debug("Debug message")  # doctest: +ELLIPSIS
+        [...] DEBUG:ckpttnpy.logging_config:<module>:Debug message
     """
     if format_string is None:
         format_string = "[%(asctime)s] %(levelname)s:%(name)s:%(funcName)s:%(message)s"
