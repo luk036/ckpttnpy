@@ -150,14 +150,13 @@ class FMConstrMgr(Generic[Gnl]):
         return diff_val
 
     def check_legal(self, move_info_v) -> LegalCheck:
-        """[summary]
+        """Check if a move is legal under balance constraints.
 
-        Arguments:
-            from_part (type):  description
-            v (type):  description
+        Args:
+            move_info_v: Tuple of (vertex, from_part, to_part)
 
         Returns:
-            dtype:  description
+            LegalCheck: NotSatisfied, GetBetter, or AllSatisfied
 
         Examples:
             >>> hyprgraph = [0, 1, 2, 3, 4, 5, 6, 7, 8]
