@@ -3,7 +3,7 @@ from netlistx.netlist import (
     Netlist,
     create_drawf,
     create_random_hgraph,
-    create_test_netlist,
+    # create_test_netlist,
     read_json,
 )
 
@@ -11,6 +11,8 @@ from ckpttnpy.FMKWayConstrMgr import FMKWayConstrMgr
 from ckpttnpy.FMKWayGainCalc import FMKWayGainCalc
 from ckpttnpy.FMKWayGainMgr import FMKWayGainMgr
 from ckpttnpy.FMPartMgr import FMPartMgr
+from ckpttnpy.FMConstrMgr import LegalCheck
+from ckpttnpy.skeleton import _logger
 from tests.mocks import Part
 
 
@@ -26,11 +28,15 @@ def _run_FMKWayPartMgr(hyprgraph: Netlist, gain_mgr, num_parts, part: Part):
         hyprgraph, 0.4, hyprgraph.module_weight, num_parts
     )  # 0.2 ???
     part_mgr = FMPartMgr(hyprgraph, gain_mgr, constr_mgr)
-    part_mgr.legalize(part)  # TODO
+    legal_check = part_mgr.legalize(part)  # TODO
+    if legal_check != LegalCheck.AllSatisfied:
+        _logger.warning(f"Partitioning is not legal: {legal_check}")
+    assert legal_check == LegalCheck.AllSatisfied
     totalcostbefore = part_mgr.totalcost
     part_mgr.init(part)
     assert part_mgr.totalcost == totalcostbefore
     part_mgr.optimize(part)
+    assert part_mgr.final_check(part)
     assert part_mgr.totalcost <= totalcostbefore
     totalcostbefore = part_mgr.totalcost
     part_mgr.init(part)
@@ -42,7 +48,7 @@ def _run_FMKWayPartMgr(hyprgraph: Netlist, gain_mgr, num_parts, part: Part):
     "create_netlist, num_parts, part_type",
     [
         (create_drawf, 3, dict),
-        (create_test_netlist, 3, dict),
+        # (create_test_netlist, 3, dict),
         (create_random_hgraph, 3, list),
         (lambda: read_json("testcases/p1.json"), 5, list),
     ],

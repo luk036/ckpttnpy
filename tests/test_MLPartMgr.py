@@ -2,12 +2,16 @@ from random import randint, seed
 
 from netlistx.netlist import Netlist, create_drawf, read_json
 
+from ckpttnpy.FMBiConstrMgr import FMBiConstrMgr
+from ckpttnpy.FMKWayConstrMgr import FMKWayConstrMgr
 from ckpttnpy.MLPartMgr import MLBiPartMgr, MLKWayPartMgr
+from ckpttnpy.FMConstrMgr import LegalCheck
 from tests.mocks import Part
 
 
 def _run_MLBiPartMgr(hyprgraph: Netlist):
-    part_mgr = MLBiPartMgr(0.4)
+    bal_tol = 0.4
+    part_mgr = MLBiPartMgr(bal_tol)
     # try: part_mgr.limitsize = 2000
     part_mgr.limitsize = 7
     randseq = [randint(0, 1) for _ in hyprgraph]
@@ -20,7 +24,11 @@ def _run_MLBiPartMgr(hyprgraph: Netlist):
     else:
         raise NotImplementedError
 
-    part_mgr.run_FMPartition(hyprgraph, hyprgraph.module_weight, part)
+    legal_check = part_mgr.run_FMPartition(hyprgraph, hyprgraph.module_weight, part)
+    assert legal_check == LegalCheck.AllSatisfied
+
+    constr_mgr = FMBiConstrMgr(hyprgraph, bal_tol, hyprgraph.module_weight, 2)
+    assert constr_mgr.final_check(part)
     return part_mgr.totalcost
 
 
@@ -50,7 +58,8 @@ def _run_MLKWayPartMgr(hyprgraph: Netlist, num_parts: int):
     :return: The function `_run_MLKWayPartMgr` returns the total cost of the partitioning performed by
     the `MLKWayPartMgr` object.
     """
-    part_mgr = MLKWayPartMgr(0.4, num_parts)
+    bal_tol = 0.4
+    part_mgr = MLKWayPartMgr(bal_tol, num_parts)
     # try: part_mgr.limitsize = 2000
     randseq = [randint(0, num_parts - 1) for _ in hyprgraph]
 
@@ -62,7 +71,12 @@ def _run_MLKWayPartMgr(hyprgraph: Netlist, num_parts: int):
     else:
         raise NotImplementedError
 
-    part_mgr.run_FMPartition(hyprgraph, hyprgraph.module_weight, part)
+    legal_check = part_mgr.run_FMPartition(hyprgraph, hyprgraph.module_weight, part)
+    assert legal_check == LegalCheck.AllSatisfied
+
+    constr_mgr = FMKWayConstrMgr(hyprgraph, bal_tol, hyprgraph.module_weight, num_parts)
+    assert constr_mgr.final_check(part)
+
     return part_mgr.totalcost
 
 

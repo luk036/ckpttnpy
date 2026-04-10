@@ -226,3 +226,17 @@ class FMConstrMgr(Generic[Gnl]):
         _, from_part, to_part = move_info_v
         self.diff[to_part] += self.weight
         self.diff[from_part] -= self.weight
+
+    def final_check(self, part: Part) -> bool:
+        """
+        The `final_check` function checks if the final partitioning of the graph
+        satisfies the balance constraints.
+
+        :param part: The `part` parameter is of type `Part` and it represents a
+            partition of the nodes in a graph. Each node is assigned to a part,
+            and the `part` parameter stores this assignment information
+        :type part: Part
+        :return: a boolean value indicating whether the final partitioning of the graph satisfies the balance constraints.
+        """
+        self.init(part)
+        return all(diff >= self.lowerbound for diff in self.diff)
