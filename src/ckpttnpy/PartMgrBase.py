@@ -275,7 +275,7 @@ class PartMgrBase:
             partitioning of the graph is legal according to the constraints defined in the validator.
         """
         return self.validator.final_check(part)
-    
+
     @abstractmethod
     def take_snapshot(self, part: Part) -> Part:
         """

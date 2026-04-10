@@ -33,7 +33,6 @@ network, which can be useful in algorithms that involve iterative improvements o
 to previous states.
 """
 
-
 from mywheel.map_adapter import MapAdapter
 
 from .PartMgrBase import PartMgrBase, Part
