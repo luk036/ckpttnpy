@@ -3,9 +3,9 @@ from random import randint, seed
 from netlistx.netlist import Netlist, create_drawf, read_json
 
 from ckpttnpy.FMBiConstrMgr import FMBiConstrMgr
+from ckpttnpy.FMConstrMgr import LegalCheck
 from ckpttnpy.FMKWayConstrMgr import FMKWayConstrMgr
 from ckpttnpy.MLPartMgr import MLBiPartMgr, MLKWayPartMgr
-from ckpttnpy.FMConstrMgr import LegalCheck
 from tests.mocks import Part
 
 

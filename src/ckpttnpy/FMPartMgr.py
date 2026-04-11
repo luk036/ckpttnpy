@@ -35,7 +35,7 @@ to previous states.
 
 from mywheel.map_adapter import MapAdapter
 
-from .PartMgrBase import PartMgrBase, Part
+from .PartMgrBase import Part, PartMgrBase
 
 
 class FMPartMgr(PartMgrBase):

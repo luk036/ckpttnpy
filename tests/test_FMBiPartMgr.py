@@ -1,17 +1,16 @@
 import pytest
-from netlistx.netlist import (
+from netlistx.netlist import (  # create_test_netlist,
     Netlist,
     create_drawf,
     create_random_hgraph,
-    # create_test_netlist,
     read_json,
 )
 
 from ckpttnpy.FMBiConstrMgr import FMBiConstrMgr
 from ckpttnpy.FMBiGainCalc import FMBiGainCalc
 from ckpttnpy.FMBiGainMgr import FMBiGainMgr
-from ckpttnpy.FMPartMgr import FMPartMgr
 from ckpttnpy.FMConstrMgr import LegalCheck
+from ckpttnpy.FMPartMgr import FMPartMgr
 from ckpttnpy.skeleton import _logger
 from tests.mocks import Part
 
