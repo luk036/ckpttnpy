@@ -6,8 +6,8 @@ from pathlib import Path
 import pytest
 
 from ckpttnpy.cli import (
-    PRESET_CHOICES,
     OBJECTIVE_CHOICES,
+    PRESET_CHOICES,
     read_hypergraph,
     read_hypergraph_dimacs,
     read_hypergraph_hmetis,
