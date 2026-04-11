@@ -352,8 +352,9 @@ Examples:
         print(f"Running partitioning (preset: {args.preset})...", file=sys.stderr)
 
     try:
-        from ckpttnpy.MLPartMgr import MLBiPartMgr
         from netlistx.netlist import Netlist
+
+        from ckpttnpy.MLPartMgr import MLBiPartMgr
 
         modules = [n for n in graph.nodes() if graph.nodes[n].get("bipartite") == 0]
         nets = [n for n in graph.nodes() if graph.nodes[n].get("bipartite") == 1]

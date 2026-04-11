@@ -218,20 +218,20 @@ graph LR
     C --> D[⚙️ Multi-Level<br/>Partitioning]
     D --> E[📝 FM<br/>Refinement]
     E --> F[📤 Output<br/>Partition]
-    
+
     subgraph Coarsening
     C --> C1[Contract<br/>Graph]
     C1 --> C2[Smaller<br/>Graph]
     C2 --> C1
     end
-    
+
     subgraph Uncoarsening
     E --> U1[Initial<br/>Partition]
     U1 --> U2[Refine<br/>at Level]
     U2 --> U3[Project<br/>Up]
     U3 --> U2
     end
-    
+
     style A fill:#e1f5fe
     style F fill:#e8f5e8
 ```
@@ -349,7 +349,7 @@ graph TD
     E --> F[⚡ FM<br/>Refinement]
     F --> B
     B -->|No| G[✅ Final<br/>Partition]
-    
+
     style A fill:#fff3e0
     style G fill:#e8f5e8
     style F fill:#e3f2fd
