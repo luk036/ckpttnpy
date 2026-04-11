@@ -126,9 +126,9 @@ def test_validate_partition_invalid_case() -> None:
 
     is_valid, details = mgr.validate_partition(hyprgraph, partition, module_weights)
 
-    assert not is_valid, (
-        "Partition validation should have failed due to resource violation"
-    )
+    assert (
+        not is_valid
+    ), "Partition validation should have failed due to resource violation"
     assert "error" in details
     assert "exceeds" in details["error"]
 
