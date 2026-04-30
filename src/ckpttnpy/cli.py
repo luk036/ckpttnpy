@@ -21,10 +21,10 @@ def read_hypergraph_hmetis(filename: str) -> Tuple[nx.Graph, List[int]]:
     for line in lines:
         line = line.strip()
         if line and not line.startswith("%"):
-            parts = line.split()
-            num_nets = int(parts[0])
-            num_vertices = int(parts[1])
-            fmt = int(parts[2]) if len(parts) > 2 else 0
+            header_parts = line.split()
+            num_nets = int(header_parts[0])
+            num_vertices = int(header_parts[1])
+            fmt = int(header_parts[2]) if len(header_parts) > 2 else 0
             break
 
     module_weights = [1] * num_vertices
@@ -43,8 +43,7 @@ def read_hypergraph_hmetis(filename: str) -> Tuple[nx.Graph, List[int]]:
         net_lines = net_lines[:num_nets]
 
     for net_idx, net_line in enumerate(net_lines[:num_nets]):
-        parts = net_line.split()
-        parts = [int(v) for v in parts]
+        parts: List[int] = [int(v) for v in net_line.split()]
 
         global_net_idx = num_vertices + net_idx
         for vidx in parts:

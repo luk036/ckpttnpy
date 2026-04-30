@@ -274,7 +274,7 @@ class PartMgrBase:
         :return: The function `final_check` returns a boolean value indicating whether the final
             partitioning of the graph is legal according to the constraints defined in the validator.
         """
-        return self.validator.final_check(part)
+        return bool(self.validator.final_check(part))
 
     @abstractmethod
     def take_snapshot(self, part: Part) -> Part:
