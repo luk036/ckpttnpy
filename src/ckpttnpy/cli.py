@@ -4,7 +4,7 @@ import argparse
 import json
 import sys
 from pathlib import Path
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
 import networkx as nx
 
@@ -156,7 +156,7 @@ def read_hypergraph_dimacs(filename: str) -> Tuple[nx.Graph, List[int]]:
 
 
 def read_hypergraph(
-    filename: str, input_format: str | None = None
+    filename: str, input_format: Optional[str] = None
 ) -> Tuple[nx.Graph, List[int]]:
     """Read hypergraph from file, auto-detecting format if not specified."""
     path = Path(filename)
@@ -175,7 +175,7 @@ def read_hypergraph(
 
 
 def write_partition(
-    part: List[int], filename: str | None = None, output_format: str | None = None
+    part: List[int], filename: Optional[str] = None, output_format: Optional[str] = None
 ) -> None:
     """Write partition to file."""
     if output_format == "json":
