@@ -1,8 +1,6 @@
 from netlistx.netlist import create_drawf
 
 from ckpttnpy.min_cover import (
-    MINHASH_SIG_SIZE,
-    MINHASH_SIMILARITY,
     _jaccard_similarity,
     _minhash_signature,
     contract_subgraph,
@@ -38,7 +36,7 @@ def test_minhash_empty_set() -> None:
     """Empty sets trivially match (both empty = same set)."""
     sig = _minhash_signature([])
     assert _jaccard_similarity(sig, sig) == 1.0
-    
+
     # One empty, one non-empty
     sig2 = _minhash_signature([1, 2, 3])
     assert _jaccard_similarity(sig, sig2) == 0.0

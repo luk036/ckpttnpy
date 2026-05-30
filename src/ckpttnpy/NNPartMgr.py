@@ -46,7 +46,6 @@ Overall, this code provides a flexible framework for implementing partition opti
 
 # Take a snapshot when a move make **negative** gain.
 # Snapshot in the form of "interface"???
-from abc import abstractmethod
 from typing import Any, Dict, List, Union
 
 from .FMConstrMgr import LegalCheck
@@ -216,7 +215,6 @@ class NNPartMgr:
 
         self.totalcost -= totalgain
         assert self.totalcost <= totalcostbefore
-
 
     def final_check(self, part: Part) -> bool:
         """

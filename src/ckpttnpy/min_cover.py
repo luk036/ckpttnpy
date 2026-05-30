@@ -48,8 +48,8 @@ from netlistx.netlist_algo import min_maximal_matching
 from .HierNetlist import HierNetlist
 
 LOW_PIN_NET_THRESHOLD = 5
-MINHASH_SIG_SIZE = 64       # Number of hash functions in minHash signature
-MINHASH_SIMILARITY = 0.8    # Similarity threshold for duplicate detection
+MINHASH_SIG_SIZE = 64  # Number of hash functions in minHash signature
+MINHASH_SIMILARITY = 0.8  # Similarity threshold for duplicate detection
 
 Node = TypeVar("Node")  # Hashable
 
