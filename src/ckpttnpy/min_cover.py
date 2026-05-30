@@ -30,15 +30,16 @@ The main logic flow involves transforming the original complex graph into a simp
 connected nodes, removing redundant connections, and updating the weights accordingly. This is
 achieved through a series of graph operations and data structure manipulations.
 
-For a beginner programmer, it's important to understand that this code is dealing with graph theory
-concepts, which are used to represent complex relationships between objects. The algorithm is trying
-to simplify these relationships while preserving the most important information. This kind of
-algorithm is useful in many fields, including circuit design, network analysis, and data compression.
+Duplicate net detection uses exact set comparison for low-pin nets (<= 5 pins).
+For high-pin nets, a minHash probabilistic approach is used to estimate set similarity
+in O(k) time where k is the signature size (default 64), providing a tunable
+accuracy vs. performance trade-off.
 
 Notes:
     module and net should have a unique id because they treat the same node in the underlying graph.
 """
 
+import hashlib
 from typing import List, MutableMapping, Optional, Set, Tuple, TypeVar
 
 from netlistx.netlist import Netlist, TinyGraph
@@ -47,7 +48,46 @@ from netlistx.netlist_algo import min_maximal_matching
 from .HierNetlist import HierNetlist
 
 LOW_PIN_NET_THRESHOLD = 5
+MINHASH_SIG_SIZE = 64       # Number of hash functions in minHash signature
+MINHASH_SIMILARITY = 0.8    # Similarity threshold for duplicate detection
+
 Node = TypeVar("Node")  # Hashable
+
+
+def _minhash_signature(items, k: int = MINHASH_SIG_SIZE):
+    """Compute minHash signature for a set of items.
+
+    Uses k independent hash functions (md5 with different suffixes)
+    to produce a fixed-size signature.  The Jaccard similarity of two
+    sets can be estimated by comparing their signatures.
+
+    :param items: Iterable of hashable items
+    :param k: Number of hash functions (signature size)
+    :returns: List of k minimum hash values
+    """
+    sig = [float("inf")] * k
+    for item in items:
+        item_bytes = str(item).encode()
+        for i in range(k):
+            h = hashlib.md5(item_bytes + str(i).encode()).hexdigest()
+            h_int = int(h[:16], 16)
+            if h_int < sig[i]:
+                sig[i] = h_int
+    return sig
+
+
+def _jaccard_similarity(sig1, sig2):
+    """Estimate Jaccard similarity from two minHash signatures.
+
+    :param sig1: First minHash signature (list of ints)
+    :param sig2: Second minHash signature (list of ints)
+    :returns: Estimated Jaccard similarity in [0.0, 1.0]
+    """
+    if not sig1 or not sig2:
+        return 0.0
+    n = min(len(sig1), len(sig2))
+    matches = sum(1 for a, b in zip(sig1, sig2) if a == b)
+    return matches / n
 
 
 def setup(
@@ -201,6 +241,7 @@ def purge_duplicate_nets(hyprgraph: Netlist, ugraph, nets, num_clusters, num_mod
             net_weight[num_modules + i_net] = wt
 
     removelist = set()
+    sig_cache = {}  # cache minHash signatures for high-pin nets
     for cluster in range(num_modules - num_clusters, num_modules):
         for net1 in ugraph[cluster]:  # only check the nets of cluster
             assert net1 >= num_modules
@@ -212,13 +253,26 @@ def purge_duplicate_nets(hyprgraph: Netlist, ugraph, nets, num_clusters, num_mod
                 if ugraph.degree(net1) != ugraph.degree(net2):
                     continue  # no need to check if pins are different
                 same = False
-                # TODO: consider to use MinHash to check for more nets
-                if ugraph.degree(net1) <= LOW_PIN_NET_THRESHOLD:
-                    # only check for low-pin nets
+                deg = ugraph.degree(net1)
+                if deg <= LOW_PIN_NET_THRESHOLD:
+                    # Exact set comparison for low-pin nets
                     set1 = set(v for v in ugraph[net1])
                     set2 = set(v for v in ugraph[net2])
-                    if set1 == set2:  # expensive operation for high-pin nets
+                    if set1 == set2:
                         same = True
+                elif deg <= 200:
+                    # MinHash pre-filter: skip exact comparison unless likely duplicate
+                    if net1 not in sig_cache:
+                        sig_cache[net1] = _minhash_signature(ugraph[net1])
+                    if net2 not in sig_cache:
+                        sig_cache[net2] = _minhash_signature(ugraph[net2])
+                    sim = _jaccard_similarity(sig_cache[net1], sig_cache[net2])
+                    if sim >= MINHASH_SIMILARITY:
+                        # Confirm with exact comparison to avoid false positives
+                        set1 = set(v for v in ugraph[net1])
+                        set2 = set(v for v in ugraph[net2])
+                        if set1 == set2:
+                            same = True
                 if same:
                     removelist.add(net2)
                     net_weight[net1] = net_weight.get(net1, 1) + net_weight.get(net2, 1)
