@@ -321,8 +321,12 @@ def run_one_partition(
             from ckpttnpy.NNPartMgr import NNPartMgr
 
             part_mgr = MLPartMgr(
-                FMBiGainCalc, FMBiGainMgr, FMBiConstrMgr,
-                NNPartMgr, bal_tol, 2,
+                FMBiGainCalc,
+                FMBiGainMgr,
+                FMBiConstrMgr,
+                NNPartMgr,
+                bal_tol,
+                2,
             )
     else:
         if use_recursive:
@@ -337,8 +341,12 @@ def run_one_partition(
             from ckpttnpy.NNPartMgr import NNPartMgr
 
             part_mgr = MLPartMgr(
-                FMKWayGainCalc, FMKWayGainMgr, FMKWayConstrMgr,
-                NNPartMgr, bal_tol, k,
+                FMKWayGainCalc,
+                FMKWayGainMgr,
+                FMKWayConstrMgr,
+                NNPartMgr,
+                bal_tol,
+                k,
             )
 
     part_mgr.run_Partition(netlist, module_weights, init_part)
@@ -371,12 +379,14 @@ Examples:
 
     g_input = parser.add_argument_group("Input options")
     g_input.add_argument(
-        "-i", "--input-format",
+        "-i",
+        "--input-format",
         choices=["hmetis", "json", "yosys", "dimacs"],
         help="Input format (auto-detected from extension if not specified)",
     )
     g_input.add_argument(
-        "-f", "--fixed",
+        "-f",
+        "--fixed",
         help="File with pre-assigned vertices (hMetis fix file: one ID per line)",
     )
 
@@ -385,7 +395,9 @@ Examples:
         "-o", "--output", help="Output partition file (default: stdout)"
     )
     g_output.add_argument(
-        "--output-format", choices=["hmetis", "json"], default="hmetis",
+        "--output-format",
+        choices=["hmetis", "json"],
+        default="hmetis",
         help="Output format (default: hmetis)",
     )
     g_output.add_argument(
@@ -394,29 +406,41 @@ Examples:
 
     g_algo = parser.add_argument_group("Algorithm options")
     g_algo.add_argument(
-        "-p", "--preset", choices=PRESET_CHOICES, default="default",
+        "-p",
+        "--preset",
+        choices=PRESET_CHOICES,
+        default="default",
         help="Preset config (default: default)",
     )
     g_algo.add_argument(
-        "--objective", choices=OBJECTIVE_CHOICES, help="Objective function",
+        "--objective",
+        choices=OBJECTIVE_CHOICES,
+        help="Objective function",
     )
     g_algo.add_argument(
-        "-m", "--mode", choices=["direct", "recursive"], default="recursive",
+        "-m",
+        "--mode",
+        choices=["direct", "recursive"],
+        default="recursive",
         help="Mode: recursive=FMPartMgr, direct=NNPartMgr (default: recursive)",
     )
     g_algo.add_argument(
-        "-t", "--threads", type=int, default=1,
+        "-t",
+        "--threads",
+        type=int,
+        default=1,
         help="Number of starts for multi-start (default: 1)",
     )
 
     g_other = parser.add_argument_group("Other options")
     g_other.add_argument(
-        "-s", "--seed", type=int, default=0,
+        "-s",
+        "--seed",
+        type=int,
+        default=0,
         help="Random seed (0=random device, non-zero=deterministic)",
     )
-    g_other.add_argument(
-        "-v", "--verbose", action="store_true", help="Verbose output"
-    )
+    g_other.add_argument("-v", "--verbose", action="store_true", help="Verbose output")
     g_other.add_argument("--time-limit", type=int, help="Time limit in seconds")
     g_other.add_argument("--max-quality", type=int, help="Maximum quality (iterations)")
 
@@ -464,14 +488,10 @@ Examples:
     num_modules = len(
         [n for n in graph.nodes() if graph.nodes[n].get("bipartite") == 0]
     )
-    num_nets = len(
-        [n for n in graph.nodes() if graph.nodes[n].get("bipartite") == 1]
-    )
+    num_nets = len([n for n in graph.nodes() if graph.nodes[n].get("bipartite") == 1])
 
     if not quiet:
-        print(
-            f"Hypergraph: {num_modules} vertices, {num_nets} nets", file=sys.stderr
-        )
+        print(f"Hypergraph: {num_modules} vertices, {num_nets} nets", file=sys.stderr)
         print(f"K={k}, epsilon={epsilon_val}, preset={args.preset}", file=sys.stderr)
 
     num_starts = max(args.threads, 1)
@@ -481,16 +501,19 @@ Examples:
     if num_starts == 1:
         rng = random.Random(args.seed if args.seed != 0 else None)
         best_part, best_cost = run_one_partition(
-            graph, module_weights, module_fixed,
-            epsilon_val, k, use_recursive, rng,
+            graph,
+            module_weights,
+            module_fixed,
+            epsilon_val,
+            k,
+            use_recursive,
+            rng,
         )
         if not quiet:
             print(f"Partitioning cost: {best_cost}", file=sys.stderr)
     else:
         if not quiet:
-            base_msg = (
-                f"Base seed: {args.seed}" if args.seed != 0 else "Random seeds"
-            )
+            base_msg = f"Base seed: {args.seed}" if args.seed != 0 else "Random seeds"
             print(f"{base_msg}, starts: {num_starts}", file=sys.stderr)
             print(
                 f"Running partitioning (preset: {args.preset}, "
@@ -501,14 +524,17 @@ Examples:
         with ThreadPoolExecutor(max_workers=num_starts) as executor:
             futures = {}
             for start in range(num_starts):
-                start_seed = (
-                    args.seed + start * 104729 if args.seed != 0 else None
-                )
+                start_seed = args.seed + start * 104729 if args.seed != 0 else None
                 rng = random.Random(start_seed)
                 fut = executor.submit(
                     run_one_partition,
-                    graph, module_weights, module_fixed,
-                    epsilon_val, k, use_recursive, rng,
+                    graph,
+                    module_weights,
+                    module_fixed,
+                    epsilon_val,
+                    k,
+                    use_recursive,
+                    rng,
                 )
                 futures[fut] = start + 1
 
@@ -530,9 +556,7 @@ Examples:
     write_partition(best_part, args.output, args.output_format)
 
     if not quiet:
-        print(
-            f"Partition written to {args.output or 'stdout'}", file=sys.stderr
-        )
+        print(f"Partition written to {args.output or 'stdout'}", file=sys.stderr)
 
     return 0
 

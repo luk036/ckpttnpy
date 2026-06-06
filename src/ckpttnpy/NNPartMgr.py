@@ -2,7 +2,7 @@
 NNPartMgr.py
 
 This code defines a base class called NNPartMgr that manages partitioning in a graph-like structure.
-The purpose of this code is to provide a foundation for implementing the simple local search 
+The purpose of this code is to provide a foundation for implementing the simple local search
 partitioning algorithm, which is used to divide elements (like modules in a circuit) into different
 groups while optimizing certain criteria.
 
