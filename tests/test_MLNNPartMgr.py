@@ -5,13 +5,13 @@ from netlistx.netlist import Netlist, create_drawf, read_json
 from ckpttnpy.FMBiConstrMgr import FMBiConstrMgr
 from ckpttnpy.FMConstrMgr import LegalCheck
 from ckpttnpy.FMKWayConstrMgr import FMKWayConstrMgr
-from ckpttnpy.MLPartMgr import MLBiPartMgr, MLKWayPartMgr
+from ckpttnpy.MLPartMgr import MLBiNNPartMgr, MLKWayNNPartMgr
 from tests.mocks import Part
 
 
 def _run_MLBiPartMgr(hyprgraph: Netlist):
     bal_tol = 0.4
-    part_mgr = MLBiPartMgr(bal_tol)
+    part_mgr = MLBiNNPartMgr(bal_tol)
     # try: part_mgr.limitsize = 2000
     part_mgr.limitsize = 7
     randseq = [randint(0, 1) for _ in hyprgraph]
@@ -59,7 +59,7 @@ def _run_MLKWayPartMgr(hyprgraph: Netlist, num_parts: int):
     the `MLKWayPartMgr` object.
     """
     bal_tol = 0.4
-    part_mgr = MLKWayPartMgr(bal_tol, num_parts)
+    part_mgr = MLKWayNNPartMgr(bal_tol, num_parts)
     # try: part_mgr.limitsize = 2000
     randseq = [randint(0, num_parts - 1) for _ in hyprgraph]
 

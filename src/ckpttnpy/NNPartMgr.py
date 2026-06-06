@@ -2,7 +2,7 @@
 NNPartMgr.py
 
 This code defines a base class called NNPartMgr that manages partitioning in a graph-like structure.
-The purpose of this code is to provide a foundation for implementing the Fiduccia-Mattheyses
+The purpose of this code is to provide a foundation for implementing the simple local search 
 partitioning algorithm, which is used to divide elements (like modules in a circuit) into different
 groups while optimizing certain criteria.
 
@@ -44,8 +44,6 @@ The code uses abstract methods (take_snapshot and restore_part_info) which are m
 Overall, this code provides a flexible framework for implementing partition optimization algorithms, allowing for different strategies in managing gains, constraints, and the underlying graph structure.
 """
 
-# Take a snapshot when a move make **negative** gain.
-# Snapshot in the form of "interface"???
 from typing import Any, Dict, List, Union
 
 from .FMConstrMgr import LegalCheck
@@ -185,8 +183,28 @@ class NNPartMgr:
             optimization process
         :type part: Part
         """
-        self.init(part)
-        totalcostbefore = self.totalcost
+        # legalcheck = LegalCheck.NotSatisfied
+        while True:
+            self.init(part)
+            totalcostbefore = self.totalcost
+            self._optimize_1pass(part)
+            assert self.totalcost <= totalcostbefore
+            if self.totalcost == totalcostbefore:
+                break
+        # return legalcheck
+        assert self.totalcost <= totalcostbefore
+
+    def _optimize_1pass(self, part: Part):
+        """
+        The `optimize` function iteratively optimizes the cost of a given part until no further improvement
+        can be made.
+
+        :param part: The "part" parameter is an object of type "Part". It is used as input for the
+            optimization process
+        :type part: Part
+        """
+        # self.init(part)
+        # totalcostbefore = self.totalcost
 
         totalgain = 0
         # legalcheck = LegalCheck.NotSatisfied
@@ -214,7 +232,6 @@ class NNPartMgr:
             part[v] = to_part
 
         self.totalcost -= totalgain
-        assert self.totalcost <= totalcostbefore
 
     def final_check(self, part: Part) -> bool:
         """

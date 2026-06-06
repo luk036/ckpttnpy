@@ -14,7 +14,7 @@ size of each module in the graph), and an initial partitioning of the modules. T
 optimized partitioning of the modules that satisfies certain balance constraints and minimizes the
 total cost of the partitioning.
 
-The core of the algorithm is in the run_FMPartition method of the MLPartMgr class. This method
+The core of the algorithm is in the run_Partition method of the MLPartMgr class. This method
 takes the hypergraph, module weights, and initial partitioning as input. It first checks if the
 initial partitioning is legal (satisfies the balance constraints). If it's not legal, it returns
 without making changes. If it is legal, it proceeds to optimize the partitioning.
@@ -43,6 +43,7 @@ import gc
 
 # from ckpttnpy.min_cover import contract_subgraph
 from ckpttnpy.FMPartMgr import FMPartMgr
+from ckpttnpy.NNPartMgr import NNPartMgr
 
 from .FMBiConstrMgr import FMBiConstrMgr
 from .FMBiGainCalc import FMBiGainCalc
@@ -86,7 +87,7 @@ class MLPartMgr:
         self.bal_tol = bal_tol
         self.num_parts = num_parts
         self.totalcost = 0
-        self.LIMIT_SIZE = 7  # magic number
+        self.LIMIT_SIZE = 50
 
     @property
     def limitsize(self):
@@ -106,7 +107,7 @@ class MLPartMgr:
         """
         self.LIMIT_SIZE = limit
 
-    def run_FMPartition(self, hyprgraph, module_weight, part):
+    def run_Partition(self, hyprgraph, module_weight, part):
         """Run Fiduccia-Mattheyses Partitioning
 
         This function performs a partitioning algorithm on a hypergraph, optimizing the
@@ -120,7 +121,7 @@ class MLPartMgr:
         :param part: The `part` parameter is a list that represents the current partitioning of the modules
             in the hypergraph `hyprgraph`. Each element in the list corresponds to a module and contains an integer
             value representing the partition number to which the module belongs
-        :return: The function `run_FMPartition` returns the value of `legalcheck`.
+        :return: The function `run_Partition` returns the value of `legalcheck`.
         """
 
         def legalcheck_fn():
@@ -166,7 +167,7 @@ class MLPartMgr:
                 # try: if 3 * hgr2.number_of_modules() <= 2 * hyprgraph.number_of_modules():
                 part2 = [0] * hgr2.number_of_modules()
                 hgr2.projection_up(part, part2)
-                legalcheck_recur = self.run_FMPartition(hgr2, module_weight2, part2)
+                legalcheck_recur = self.run_Partition(hgr2, module_weight2, part2)
                 if legalcheck_recur == LegalCheck.AllSatisfied:
                     hgr2.projection_down(part2, part)
             except MemoryError:
@@ -215,6 +216,47 @@ class MLKWayPartMgr(MLPartMgr):
             FMKWayGainMgr,
             FMKWayConstrMgr,
             FMPartMgr,
+            bal_tol,
+            num_parts,
+        )
+
+# The MLBiPartMgr class is a subclass of MLPartMgr that initializes with specific parameters for
+# balancing tolerance.
+class MLBiNNPartMgr(MLPartMgr):
+    def __init__(self, bal_tol):
+        """
+        The `__init__` function initializes an object with the given balance tolerance and calls the
+        `__init__` function of the parent class `MLPartMgr` with specific arguments.
+
+        :param bal_tol: The `bal_tol` parameter is the balance tolerance. It represents the maximum allowed
+            imbalance between partitions in a multi-level partitioning algorithm. It is used to control the
+            balance of the partitions, ensuring that they are as evenly distributed as possible
+        """
+        MLPartMgr.__init__(
+            self, FMBiGainCalc, FMBiGainMgr, FMBiConstrMgr, NNPartMgr, bal_tol
+        )
+
+
+# The MLKWayPartMgr class is a subclass of MLPartMgr that initializes with specific parameters and
+# inherits methods from various other classes.
+class MLKWayNNPartMgr(MLPartMgr):
+    def __init__(self, bal_tol, num_parts):
+        """
+        The function is a constructor that initializes an object with certain parameters and calls the
+        constructor of a parent class.
+
+        :param bal_tol: The `bal_tol` parameter represents the balance tolerance for the partitioning
+            algorithm. It is a measure of how evenly the workload is distributed among the partitions. A lower
+            value indicates a stricter balance requirement, while a higher value allows for more imbalance
+        :param num_parts: The `num_parts` parameter represents the number of parts or partitions that will
+            be created in the system
+        """
+        MLPartMgr.__init__(
+            self,
+            FMKWayGainCalc,
+            FMKWayGainMgr,
+            FMKWayConstrMgr,
+            NNPartMgr,
             bal_tol,
             num_parts,
         )

@@ -32,7 +32,7 @@ def run_MLBiPartMgr(hyprgraph: Netlist):
         else:
             raise NotImplementedError
 
-        part_mgr.run_FMPartition(hyprgraph, hyprgraph.module_weight, part)
+        part_mgr.run_Partition(hyprgraph, hyprgraph.module_weight, part)
         if mincost > part_mgr.totalcost:
             mincost = part_mgr.totalcost
             minpart = part.copy()

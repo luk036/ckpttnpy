@@ -137,7 +137,7 @@ class TestAutoDetect:
         json_file = tmp_path / "test.json"
         json_file.write_text("[[0, 1], [1, 2]]")
 
-        graph, weights = read_hypergraph(str(json_file))
+        graph, weights, _fixed = read_hypergraph(str(json_file))
 
         assert graph.number_of_nodes() == 5
 
@@ -145,7 +145,7 @@ class TestAutoDetect:
         hgr = tmp_path / "test.hgr"
         hgr.write_text("2 3\n0 1\n1 2\n")
 
-        graph, weights = read_hypergraph(str(hgr))
+        graph, weights, _fixed = read_hypergraph(str(hgr))
 
         assert graph.number_of_nodes() == 5
 
@@ -153,7 +153,7 @@ class TestAutoDetect:
         hgr = tmp_path / "test.txt"
         hgr.write_text("2 3\n0 1\n1 2\n")
 
-        graph, weights = read_hypergraph(str(hgr), input_format="hmetis")
+        graph, weights, _fixed = read_hypergraph(str(hgr), input_format="hmetis")
 
         assert graph.number_of_nodes() == 5
 

@@ -65,7 +65,7 @@ class MultiFPGAPartMgr:
         initial_part = [0] * hyprgraph.number_of_modules()
 
         # Run the multi-level K-way partitioning algorithm
-        legalcheck = self.partitioner.run_FMPartition(
+        legalcheck = self.partitioner.run_Partition(
             hyprgraph, total_module_weights, initial_part
         )
 
