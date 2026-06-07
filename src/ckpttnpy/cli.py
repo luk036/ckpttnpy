@@ -10,6 +10,8 @@ from typing import List, Optional, Set, Tuple
 
 import networkx as nx
 
+from netlistx.readwrite import read_are, read_netd
+
 
 def read_hypergraph_hmetis(filename: str) -> Tuple[nx.Graph, List[int]]:
     """Read hypergraph from hMetis format file."""
@@ -218,6 +220,8 @@ def read_hypergraph(
 
     if input_format == "yosys":
         graph, module_weights, module_fixed = read_yosys_json(filename)
+    elif input_format == "ibm":
+        graph, module_weights, module_fixed = read_hypergraph_ibm(filename)
     elif fmt in (".json", ".jsn"):
         graph, module_weights = read_hypergraph_json(filename)
     elif fmt in (".dimacs", ".hgr") and path.stem in ("hypergraph", "hgr"):
@@ -225,6 +229,28 @@ def read_hypergraph(
     else:
         graph, module_weights = read_hypergraph_hmetis(filename)
 
+    return graph, module_weights, module_fixed
+
+
+def read_hypergraph_ibm(
+    filename: str,
+) -> Tuple[nx.Graph, List[int], Set[int]]:
+    """Read an IBM .net/.are pair and return (graph, module_weights, module_fixed).
+
+    The companion .are file is located by replacing the .net suffix.
+    """
+    path = Path(filename)
+    are_file = path.with_suffix(".are")
+
+    hyprgraph = read_netd(filename)
+    if are_file.exists():
+        read_are(hyprgraph, str(are_file))
+
+    graph = hyprgraph.ugraph
+    module_weights = hyprgraph.module_weight
+    module_fixed: Set[int] = (
+        hyprgraph.module_fixed if isinstance(hyprgraph.module_fixed, set) else set()
+    )
     return graph, module_weights, module_fixed
 
 
@@ -366,8 +392,9 @@ Examples:
   %(prog)s circuit.hgr 2 5 -f fix.txt
   %(prog)s circuit.hgr 2 5 -s 42
   %(prog)s circuit.hgr 2 5 -t 8 -s 42
-  %(prog)s circuit.json 2 5 -i yosys --verbose
-  %(prog)s circuit.hgr 2 5 --mode direct --verbose
+   %(prog)s circuit.json 2 5 -i yosys --verbose
+   %(prog)s circuit.hgr 2 5 --mode direct --verbose
+   %(prog)s ibm01.net 2 5 -i ibm --verbose
         """,
     )
 
@@ -381,7 +408,7 @@ Examples:
     g_input.add_argument(
         "-i",
         "--input-format",
-        choices=["hmetis", "json", "yosys", "dimacs"],
+        choices=["hmetis", "json", "yosys", "dimacs", "ibm"],
         help="Input format (auto-detected from extension if not specified)",
     )
     g_input.add_argument(
@@ -552,6 +579,21 @@ Examples:
 
         if not quiet:
             print(f"Partitioning cost: {best_cost}", file=sys.stderr)
+
+    modules = [n for n in graph.nodes() if graph.nodes[n].get("bipartite") == 0]
+    if k == 2:
+        from ckpttnpy.FMBiConstrMgr import FMBiConstrMgr
+
+        constr_mgr = FMBiConstrMgr(modules, epsilon_val, module_weights, k)
+    else:
+        from ckpttnpy.FMKWayConstrMgr import FMKWayConstrMgr
+
+        constr_mgr = FMKWayConstrMgr(modules, epsilon_val, module_weights, k)
+    if not constr_mgr.final_check(best_part):
+        print(
+            "Warning: final partition does not satisfy the balance constraint",
+            file=sys.stderr,
+        )
 
     write_partition(best_part, args.output, args.output_format)
 
