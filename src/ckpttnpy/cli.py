@@ -9,7 +9,6 @@ from pathlib import Path
 from typing import List, Optional, Set, Tuple
 
 import networkx as nx
-
 from netlistx.readwrite import read_are, read_netd
 
 

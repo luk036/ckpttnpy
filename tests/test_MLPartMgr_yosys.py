@@ -35,14 +35,10 @@ def _run_MLBiPartMgr_yosys(hyprgraph):
     # Yosys netlists always use list-based modules → dict part
     part: Part = {v: k for v, k in zip(hyprgraph.modules, randseq)}
 
-    legal_check = part_mgr.run_Partition(
-        hyprgraph, hyprgraph.module_weight, part
-    )
+    legal_check = part_mgr.run_Partition(hyprgraph, hyprgraph.module_weight, part)
     assert legal_check == LegalCheck.AllSatisfied
 
-    constr_mgr = FMBiConstrMgr(
-        hyprgraph, bal_tol, hyprgraph.module_weight, 2
-    )
+    constr_mgr = FMBiConstrMgr(hyprgraph, bal_tol, hyprgraph.module_weight, 2)
     assert constr_mgr.final_check(part)
 
     return part_mgr.totalcost
@@ -65,14 +61,10 @@ def _run_MLKWayPartMgr_yosys(hyprgraph, num_parts: int):
     # Yosys netlists always use list-based modules → dict part
     part: Part = {v: k for v, k in zip(hyprgraph.modules, randseq)}
 
-    legal_check = part_mgr.run_Partition(
-        hyprgraph, hyprgraph.module_weight, part
-    )
+    legal_check = part_mgr.run_Partition(hyprgraph, hyprgraph.module_weight, part)
     assert legal_check == LegalCheck.AllSatisfied
 
-    constr_mgr = FMKWayConstrMgr(
-        hyprgraph, bal_tol, hyprgraph.module_weight, num_parts
-    )
+    constr_mgr = FMKWayConstrMgr(hyprgraph, bal_tol, hyprgraph.module_weight, num_parts)
     assert constr_mgr.final_check(part)
 
     return part_mgr.totalcost
