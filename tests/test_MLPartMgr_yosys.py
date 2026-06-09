@@ -27,7 +27,7 @@ def _run_MLBiPartMgr_yosys(hyprgraph):
     Returns:
         Total cost of the partitioning.
     """
-    bal_tol = 0.4
+    bal_tol = 0.45
     part_mgr = MLBiPartMgr(bal_tol)
     part_mgr.limitsize = 7
     randseq = [randint(0, 1) for _ in hyprgraph]
@@ -54,7 +54,7 @@ def _run_MLKWayPartMgr_yosys(hyprgraph, num_parts: int):
     Returns:
         Total cost of the partitioning.
     """
-    bal_tol = 0.4
+    bal_tol = 0.45
     part_mgr = MLKWayPartMgr(bal_tol, num_parts)
     randseq = [randint(0, num_parts - 1) for _ in hyprgraph]
 

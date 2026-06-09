@@ -19,7 +19,7 @@ _logger = logging.getLogger(__name__)
 
 
 def run_MLBiPartMgr(hyprgraph: Netlist):
-    part_mgr = MLBiPartMgr(0.4)
+    part_mgr = MLBiPartMgr(0.45)
     mincost = math.inf
     minpart = []
     for _ in range(10):

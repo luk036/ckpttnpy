@@ -25,9 +25,9 @@ def _load_ibm01():
 
 
 def _run_MLBiPartMgr_ibm(hyprgraph):
-    bal_tol = 0.4
+    bal_tol = 0.45
     part_mgr = MLBiPartMgr(bal_tol)
-    part_mgr.limitsize = 2000
+    part_mgr.limitsize = 10
     randseq = [randint(0, 1) for _ in hyprgraph]
     part: Part = {v: k for v, k in zip(hyprgraph.modules, randseq)}
 
@@ -41,9 +41,9 @@ def _run_MLBiPartMgr_ibm(hyprgraph):
 
 
 def _run_MLKWayPartMgr_ibm(hyprgraph, num_parts: int):
-    bal_tol = 0.4
+    bal_tol = 0.45
     part_mgr = MLKWayPartMgr(bal_tol, num_parts)
-    part_mgr.limitsize = 2000
+    part_mgr.limitsize = 10
     randseq = [randint(0, num_parts - 1) for _ in hyprgraph]
     part: Part = {v: k for v, k in zip(hyprgraph.modules, randseq)}
 

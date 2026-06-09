@@ -17,7 +17,7 @@ from tests.mocks import Part
 
 def _run_FMBiPartMgr(hyprgraph: Netlist, part: Part):
     gain_mgr = FMBiGainMgr(FMBiGainCalc, hyprgraph)
-    constr_mgr = FMBiConstrMgr(hyprgraph, 0.4, hyprgraph.module_weight)
+    constr_mgr = FMBiConstrMgr(hyprgraph, 0.45, hyprgraph.module_weight)
     part_mgr = FMPartMgr(hyprgraph, gain_mgr, constr_mgr)
     legal_check = part_mgr.legalize(part)
     if legal_check != LegalCheck.AllSatisfied:

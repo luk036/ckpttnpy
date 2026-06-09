@@ -10,7 +10,7 @@ from tests.mocks import Part
 
 
 def _run_MLBiPartMgr(hyprgraph: Netlist):
-    bal_tol = 0.4
+    bal_tol = 0.45
     part_mgr = MLBiNNPartMgr(bal_tol)
     # try: part_mgr.limitsize = 2000
     part_mgr.limitsize = 7
@@ -58,7 +58,7 @@ def _run_MLKWayPartMgr(hyprgraph: Netlist, num_parts: int):
     :return: The function `_run_MLKWayPartMgr` returns the total cost of the partitioning performed by
     the `MLKWayPartMgr` object.
     """
-    bal_tol = 0.4
+    bal_tol = 0.45
     part_mgr = MLKWayNNPartMgr(bal_tol, num_parts)
     # try: part_mgr.limitsize = 2000
     randseq = [randint(0, num_parts - 1) for _ in hyprgraph]
