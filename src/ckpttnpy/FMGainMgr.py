@@ -70,7 +70,8 @@ class FMGainMgr:
         self.num_parts = num_parts
         self.gain_calc = GainCalc(hyprgraph, num_parts)
         self.pmax = self.hyprgraph.get_max_degree()
-        self.gainbucket = [BPQueue(-self.pmax, self.pmax) for _ in range(num_parts)]
+        bound = self.pmax * (num_parts - 1)
+        self.gainbucket = [BPQueue(-bound, bound) for _ in range(num_parts)]
 
     def init(self, part) -> int:
         """
