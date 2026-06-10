@@ -23,3 +23,19 @@ def test_main(capsys) -> None:
     main(["7"])
     captured = capsys.readouterr()
     assert "The 7-th Fibonacci number is 13" in captured.out
+
+
+def test_run(capsys) -> None:
+    """Test run() entry point which calls main(sys.argv[1:])."""
+    import sys
+    from ckpttnpy.skeleton import run
+
+    # Monkey-patch sys.argv
+    original_argv = sys.argv
+    try:
+        sys.argv = ["skeleton.py", "7"]
+        run()
+        captured = capsys.readouterr()
+        assert "The 7-th Fibonacci number is 13" in captured.out
+    finally:
+        sys.argv = original_argv

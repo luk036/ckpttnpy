@@ -15,6 +15,8 @@ from unittest.mock import Mock
 import pytest
 
 # Adjust import to match the actual module structure
+from netlistx.netlist import create_drawf
+
 from ckpttnpy.MultiFPGAPartMgr import MultiFPGAPartMgr
 
 # We'll create a minimal mock for testing without requiring HierNetlist directly
@@ -153,6 +155,50 @@ def test_optimize_inter_fpga_connections() -> None:
     # For now, the optimization method returns the partition unchanged
     # In a full implementation, this would potentially modify the partition
     assert optimized_partition == partition
+
+
+# ── MultiFPGAGainCalc tests ────────────────────────────────────────
+
+
+def test_multifpga_gain_calc_initialization() -> None:
+    """Test initialization of MultiFPGAGainCalc."""
+    from ckpttnpy.MultiFPGAPartMgr import MultiFPGAGainCalc
+
+    hyprgraph = create_drawf()
+    calc = MultiFPGAGainCalc(hyprgraph, num_parts=3)
+    assert calc.num_parts == 3
+    assert calc.inter_fpga_cost_weight == 1.0
+
+
+def test_multifpga_gain_calc_set_weight() -> None:
+    """Test set_inter_fpga_cost_weight method."""
+    from ckpttnpy.MultiFPGAPartMgr import MultiFPGAGainCalc
+
+    hyprgraph = create_drawf()
+    calc = MultiFPGAGainCalc(hyprgraph, num_parts=2)
+    calc.set_inter_fpga_cost_weight(2.5)
+    assert calc.inter_fpga_cost_weight == 2.5
+
+
+def test_validate_partition_non_existent_fpga() -> None:
+    """Test validate_partition with module assigned to non-existent FPGA."""
+    num_fpgas = 2
+    fpga_resources = [
+        {"lut": 500.0, "ff": 1000.0},
+        {"lut": 500.0, "ff": 1000.0},
+    ]
+
+    mgr = MultiFPGAPartMgr(num_fpgas, fpga_resources)
+    hyprgraph = Mock()
+    partition = [0, 5]  # FPGA 5 doesn't exist
+    module_weights = [
+        {"lut": 200.0, "ff": 400.0},
+        {"lut": 150.0, "ff": 300.0},
+    ]
+
+    is_valid, details = mgr.validate_partition(hyprgraph, partition, module_weights)
+    assert not is_valid
+    assert "non-existent FPGA" in details["error"]
 
 
 if __name__ == "__main__":

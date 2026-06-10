@@ -187,7 +187,7 @@ class PartMgrBase:
         :type part: Part
         """
         # legalcheck = LegalCheck.NotSatisfied
-        while True:
+        for _ in range(100):  # max_passes
             self.init(part)
             totalcostbefore = self.totalcost
             self._optimize_1pass(part)
