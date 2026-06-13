@@ -117,11 +117,16 @@ def test_contract_subgraph_with_weights() -> None:
     nets = [4, 5, 6]
     G.add_nodes_from(modules, bipartite=0)
     G.add_nodes_from(nets, bipartite=1)
-    G.add_edges_from([
-        (4, 0), (4, 1), (4, 2),  # net 4 connects 3 modules
-        (5, 1), (5, 3),          # net 5 connects 2 modules
-        (6, 3),                  # net 6 connects 1 module (self-loop after contract)
-    ])
+    G.add_edges_from(
+        [
+            (4, 0),
+            (4, 1),
+            (4, 2),  # net 4 connects 3 modules
+            (5, 1),
+            (5, 3),  # net 5 connects 2 modules
+            (6, 3),  # net 6 connects 1 module (self-loop after contract)
+        ]
+    )
 
     hyprgraph = Netlist(G, modules, nets)
     module_weight = [1, 1, 1, 1]

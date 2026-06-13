@@ -111,14 +111,18 @@ def run_benchmark(hyprgraph, name, num_parts):
 
     if fm_costs:
         avg_fm = sum(fm_costs) / len(fm_costs)
-        print(f"    FM-only:  cost={avg_fm:>8.1f}  time={sum(fm_times)/len(fm_times):.4f}s")
+        print(
+            f"    FM-only:  cost={avg_fm:>8.1f}  time={sum(fm_times)/len(fm_times):.4f}s"
+        )
     else:
         print("    FM-only:  FAILED")
         avg_fm = None
 
     if ml_costs:
         avg_ml = sum(ml_costs) / len(ml_costs)
-        print(f"    ML:       cost={avg_ml:>8.1f}  time={sum(ml_times)/len(ml_times):.4f}s")
+        print(
+            f"    ML:       cost={avg_ml:>8.1f}  time={sum(ml_times)/len(ml_times):.4f}s"
+        )
     else:
         print("    ML:       FAILED")
         avg_ml = None
@@ -141,8 +145,10 @@ def main():
         print(f"Testcase: {name}")
         print(f"{'=' * 70}")
         hyprgraph = loader()
-        print(f"  Modules: {hyprgraph.number_of_modules()}, "
-              f"Nets: {hyprgraph.number_of_nets()}")
+        print(
+            f"  Modules: {hyprgraph.number_of_modules()}, "
+            f"Nets: {hyprgraph.number_of_nets()}"
+        )
         for num_parts in K_VALUES:
             run_benchmark(hyprgraph, name, num_parts)
 

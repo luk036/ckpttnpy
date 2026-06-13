@@ -30,17 +30,13 @@ class TestSetupLogging:
 
     def test_setup_logging_custom_format(self) -> None:
         custom_fmt = "%(name)s - %(levelname)s - %(message)s"
-        logger = setup_logging(
-            log_level=logging.ERROR, format_string=custom_fmt
-        )
+        logger = setup_logging(log_level=logging.ERROR, format_string=custom_fmt)
         assert isinstance(logger, logging.Logger)
 
     def test_setup_logging_with_file(self) -> None:
         log_path = tempfile.mktemp(suffix=".log")
         try:
-            logger = setup_logging(
-                log_level=logging.DEBUG, log_file=log_path
-            )
+            logger = setup_logging(log_level=logging.DEBUG, log_file=log_path)
             test_msg = "test_file_logging_message_12345"
             logger.info(test_msg)
             for h in logger.handlers:

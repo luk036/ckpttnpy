@@ -34,9 +34,7 @@ class NNGainMgrConcrete(NNGainMgr):
     def modify_key(self, w: Any, part_w: int, key) -> None:
         if isinstance(key, (list, tuple)):
             for k in range(self.num_parts):
-                self.gainbucket[k].modify_key(
-                    self.gain_calc.vertex_list[k][w], key[k]
-                )
+                self.gainbucket[k].modify_key(self.gain_calc.vertex_list[k][w], key[k])
         else:
             self.gainbucket[part_w].modify_key(
                 self.gain_calc.vertex_list[part_w][w], key
@@ -151,7 +149,7 @@ class TestNNGainMgrFullRun:
         hyprgraph = create_netlist()
         part = {v: 0 for v in hyprgraph}
         part["a1"] = 1
-        mgr = _run_gain_mgr(hyprgraph, part)
+        _run_gain_mgr(hyprgraph, part)
         assert all(v in part for v in hyprgraph)
 
 
@@ -175,7 +173,7 @@ class TestNNGainMgrUpdateMove:
         part["a1"] = 1
         mgr = NNGainMgrConcrete(FMKWayGainCalc, hyprgraph)
         mgr.init(part)
-        initial_max = mgr.gainbucket[0].get_max()
+        mgr.gainbucket[0].get_max()
         move_info_v, _ = mgr.select(part)
         mgr.update_move(part, move_info_v)
         v, from_part, to_part = move_info_v

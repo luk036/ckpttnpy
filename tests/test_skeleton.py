@@ -28,6 +28,7 @@ def test_main(capsys) -> None:
 def test_run(capsys) -> None:
     """Test run() entry point which calls main(sys.argv[1:])."""
     import sys
+
     from ckpttnpy.skeleton import run
 
     # Monkey-patch sys.argv
