@@ -1,36 +1,8 @@
-"""
-FMKWayGainCalc.py
+"""Gain calculator for FM k-way partitioning.
 
-This code defines a class called FMKWayGainCalc, which is used for calculating gain values in the
-Fiduccia-Mattheyses (FM) partitioning algorithm. The FM algorithm is used to divide a graph or
-network into multiple parts while minimizing the connections between these parts.
-
-The main purpose of this code is to help calculate and update the gains (benefits) of moving nodes
-between different partitions in a graph. It takes as input a hypergraph (a special type of graph where
-edges can connect more than two nodes) and the number of partitions desired. The output it produces
-are gain values for different potential moves of nodes between partitions.
-
-The class initializes with the hypergraph and number of partitions. It sets up data structures to keep
-track of nodes, their connections, and their current partitions. The main logic of the code revolves
-around initializing gains for different types of connections (2-pin, 3-pin, and general nets) and
-updating these gains when nodes are moved between partitions.
-
-For initializing gains, the code has different methods for 2-pin nets (connections between two nodes),
-3-pin nets (connections between three nodes), and general nets (connections between any number of
-nodes). These methods calculate the initial gain values based on the current partition of the nodes
-and the weight of the connection.
-
-The update methods (like update_move_2pin_net, update_move_3pin_net, and update_move_general_net)
-are used to recalculate gains when a node is moved from one partition to another. These methods
-consider how the move affects the connections and update the gain values accordingly.
-
-An important part of the logic is how it handles different types of nets differently for efficiency. For example, 2-pin and 3-pin nets have specialized methods because they're common and can be calculated more efficiently than general nets.
-
-The code uses data structures like lists and dictionaries to keep track of nodes, their connections, and their gain values. It also uses iterators and list comprehensions for efficient processing of the graph data.
-
-Overall, this code provides the core calculations needed for the FM algorithm to make decisions about
-how to partition a graph effectively. It's a crucial component in graph partitioning problems, which
-have applications in areas like circuit design, load balancing, and network analysis.
+FMKWayGainCalc computes per-partition gains for moving vertices in k-way
+partitioning. Maintains a separate vertex list per partition and provides
+specialized init/update for 2-pin, 3-pin, and general nets.
 """
 
 from itertools import permutations
@@ -208,54 +180,29 @@ class FMKWayGainCalc:
         self.totalcost += weight
 
     def _init_gain_general_net(self, net, part: Part):
-        r"""
+        r"""Initialize gain for a general net based on per-partition counts.
 
-        The function `_init_gain_general_net` initializes the gain for a general net based on the number of
+        Counts vertices in each partition for the given net and assigns gains.
+        For partitions with 0 vertices, all connected vertices get negative gain.
+        For partitions with 1 vertex, that vertex gets positive gain.
 
-        connections to each partition.
-
-
-
-        :param net: The `net` parameter is a node in a graph. It represents a general net in the context of
-
-            the code
-
-        :param part: The `part` parameter is a list that represents the partitioning of nodes in the
-
-            network. Each element in the list corresponds to a node in the network, and the value of the element
-
-            represents the partition to which the node belongs
-
+        :param net: Net node in the hypergraph
+        :param part: Partition assignment for each vertex
         :type part: Part
-
-
 
         .. svgbob::
 
-
-
             "General Net Gain Initialization"
-
           +------------------------+
-
           |        Net w=10        |
-
           |      +--------+        |
-
           |   ,--+   10   +--,     |
-
           |  /   +--------+   \    |
-
           | v1    v2    v3    v4   |
-
           | A(1)  B(1)  A(1)  C(1) |
-
           +------------------------+
-
-
 
           Gain for moving v1: -10 (if moves from A to different partition)
-
           Gain for moving v2: +10 (if moves to A or C, -10 if to B)
 
         """
@@ -289,15 +236,11 @@ class FMKWayGainCalc:
         self.delta_gain_v = [0] * self.num_parts
 
     def update_move_2pin_net(self, part, move_info):
-        """Update move for 2-pin net
+        """Update gains for a 2-pin net after a vertex move.
 
-        The function `update_move_2pin_net` updates the move for a 2-pin net in a graph.
-
-        :param part: A list that represents the partitioning of the circuit. Each element in the list
-            corresponds to a vertex in the circuit graph and indicates which partition the vertex belongs to
-        :param move_info: The `move_info` parameter is a tuple containing four elements: `net`, `v`,
-            `from_part`, and `to_part`
-        :return: the value of the variable "w".
+        :param part: Current partition assignment for each vertex
+        :param move_info: Tuple (net, v, from_part, to_part) for the moved vertex
+        :return: The other vertex w connected to v via this net
         """
         net, v, from_part, to_part = move_info
         net_cur = iter(self.hyprgraph.ugraph[net])
@@ -328,15 +271,11 @@ class FMKWayGainCalc:
         self.idx_vec = [w for w in self.hyprgraph.ugraph[net] if w != v]
 
     def update_move_3pin_net(self, part, move_info):
-        """Update move for 3-pin net
+        """Update gains for a 3-pin net after a vertex move.
 
-        The function `update_move_3pin_net` updates the move for a 3-pin net in a graph.
-
-        :param part: A list representing the partition of the net. Each element in the list corresponds to a
-            pin in the net and indicates which part of the partition the pin belongs to
-        :param move_info: The `move_info` parameter is a tuple containing information about the move. It has
-            the following structure:
-        :return: the variable `delta_gain`, which is a list of lists.
+        :param part: Current partition assignment for each vertex
+        :param move_info: Tuple (net, v, from_part, to_part) for the moved vertex
+        :return: delta_gain list (one per remaining vertex, each a list of per-partition gains)
         """
         net, _, from_part, to_part = move_info
 
@@ -382,27 +321,15 @@ class FMKWayGainCalc:
         return delta_gain
 
     def update_move_general_net(self, part, move_info):
-        r"""Update move for general net
+        r"""Update gains for a general net after a vertex move.
 
 
 
-        The function `update_move_general_net` updates the move for a general net in a graph partitioning
+        :param part: Current partition assignment for each vertex
 
-        algorithm.
+        :param move_info: Tuple (net, v, from_part, to_part) for the moved vertex
 
-
-
-        :param part: A list that represents the partition of the nodes in the network. Each element in the
-
-            list corresponds to a node and indicates which part of the network the node belongs to
-
-        :param move_info: The `move_info` parameter is an instance of the `MoveInfoV` class. It contains
-
-            information about the move being made in the general net. The `move_info` object has the following
-
-            attributes:
-
-        :return: the variable "delta_gain", which is a list of lists.
+        :return: delta_gain list (one entry per vertex in idx_vec, each a list of per-partition gains)
 
 
 

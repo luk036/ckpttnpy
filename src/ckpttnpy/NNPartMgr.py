@@ -1,47 +1,8 @@
-"""
-NNPartMgr.py
+"""No-Nonsense Partition Manager.
 
-This code defines a base class called NNPartMgr that manages partitioning in a graph-like structure.
-The purpose of this code is to provide a foundation for implementing the simple local search
-partitioning algorithm, which is used to divide elements (like modules in a circuit) into different
-groups while optimizing certain criteria.
-
-The class takes three main inputs when initialized: a hypergraph (which represents the structure to
-be partitioned), a gain manager (which handles the gains associated with moving elements between
-partitions), and a constraint manager (which ensures the partitioning follows certain rules).
-
-While the code doesn't directly produce an output, it modifies the input partitioning (represented
-by the part parameter in various methods) to improve it according to the algorithm's criteria.
-The main goal is to reduce the total cost of the partitioning while maintaining legal constraints.
-
-The class achieves its purpose through several key methods:
-
-1. init: This method initializes the partitioning process by setting up the initial total cost and
-   preparing the gain manager and constraint validator.
-
-2. legalize: This method attempts to make an illegal partitioning legal by moving elements between
-   partitions. It repeatedly selects the best move (with the highest gain) that improves the legality
-   of the partition until no more improvements can be made or all constraints are satisfied.
-
-3. optimize: This method repeatedly calls _optimize_1pass to improve the partitioning until no
-   further improvements can be made.
-
-4. _optimize_1pass: This is the core optimization method. It iteratively selects the best move
-   (with the highest gain) and applies it to the partitioning. It also keeps track of the best
-   solution seen so far and can revert to that solution if the optimization starts to worsen the result.
-
-The algorithm works by maintaining a list of possible moves, each with an associated gain
-(improvement in the total cost). It repeatedly selects and applies the best move, updating the
-gains of affected elements after each move. This process continues until no more beneficial moves
-are available.
-
-An important aspect of the algorithm is its ability to make some temporarily unfavorable moves
-(with negative gain) in hopes of finding a better overall solution later. This is achieved by taking
-"snapshots" of good solutions and potentially reverting to them if the optimization doesn't pan out.
-
-The code uses abstract methods (take_snapshot and restore_part_info) which are meant to be implemented in derived classes to handle the specifics of how partitioning information is saved and restored.
-
-Overall, this code provides a flexible framework for implementing partition optimization algorithms, allowing for different strategies in managing gains, constraints, and the underlying graph structure.
+NNPartMgr implements a simplified FM-style partition optimization without
+backtracking (no snapshot/restore). Unlike PartMgrBase, _optimize_1pass
+only accepts positive-gain moves and stops at the first non-improving move.
 """
 
 from typing import Any, Dict, List, Union
@@ -196,11 +157,10 @@ class NNPartMgr:
 
     def _optimize_1pass(self, part: Part):
         """
-        The `optimize` function iteratively optimizes the cost of a given part until no further improvement
-        can be made.
+        Performs one pass of optimization, selecting positive-gain moves
+        until no further improvement is possible (stops at first non-positive gain).
 
-        :param part: The "part" parameter is an object of type "Part". It is used as input for the
-            optimization process
+        :param part: The partition assignment to optimize
         :type part: Part
         """
         # self.init(part)

@@ -1,50 +1,8 @@
-"""
-FMBiGainCalc.py
+"""Gain calculator for FM bipartitioning.
 
-This code defines a class called FMBiGainCalc, which is used for calculating the
-bipartition gain in the Fiduccia-Mattheyses partitioning algorithm. This algorithm
-is used in graph theory and circuit design to divide a graph or circuit into two
-parts while minimizing the connections between them.
-
-The main purpose of this code is to provide methods for initializing, calculating,
-and updating the gains associated with moving vertices between two partitions of a
-graph. It takes as input a hypergraph (a graph where edges can connect more than
-two vertices) and a partition of the vertices. The output is primarily the
-calculated gains for moving vertices between partitions.
-
-The class starts by initializing with a hypergraph. It creates a list or
-dictionary of vertices, each associated with a Dllink object that stores the gain
-and vertex information. The init method calculates the initial total cost and
-gains for each vertex based on the given partition.
-
-The code handles different types of nets (connections between vertices)
-separately:
-
-1. 2-pin nets (connecting two vertices)
-2. 3-pin nets (connecting three vertices)
-3. General nets (connecting more than three vertices)
-
-For each type of net, there are methods to initialize the gains and update them
-when a vertex is moved from one partition to another. The gain calculations are
-based on how moving a vertex affects the number of connections between the two
-partitions.
-
-The update_move methods are particularly important. They recalculate the gains when
-a vertex is moved, considering how this affects the balance of connections in each
-net the vertex is part of. For 2-pin and 3-pin nets, this is done directly. For
-general nets, it involves counting the number of vertices in each partition and
-adjusting gains accordingly.
-
-The code uses simple arithmetic operations to calculate gains, adding or
-subtracting weights based on whether moving a vertex increases or decreases the
-connections between partitions. It keeps track of the total cost, which represents
-the overall quality of the partition (lower is better).
-
-In summary, this code provides the core calculations for an algorithm that tries
-to find the best way to split a graph into two parts, minimizing the connections
-between them. It's a crucial component in various applications like circuit
-design, where minimizing connections between different parts of a circuit is
-important for efficiency and manufacturability.
+FMBiGainCalc computes gains for moving vertices between two partitions (0/1).
+Provides specialized initialization and update methods for 2-pin, 3-pin, and
+general nets, tracking total cut cost.
 """
 
 from typing import Any, Dict, List, Union
@@ -245,17 +203,11 @@ class FMBiGainCalc:
 
     def update_move_2pin_net(self, part, move_info):
         """
-        The function `update_move_2pin_net` updates the move for a 2-pin net by
-        calculating the weight and delta gain.
+        Updates the gain for a 2-pin net after a vertex move.
 
-        :param part: The `part` parameter is a list that represents the
-            partitioning of the net. Each element in the list corresponds to a
-            vertex in the net, and the value of the element indicates the
-            partition to which the vertex belongs
-        :param move_info: The `move_info` parameter is an instance of the
-            `MoveInfoV` class. It contains information about the move being made
-            for a 2-pin net. The attributes of the `MoveInfoV` class are:
-        :return: the value of the variable "w".
+        :param part: Partition assignment for each vertex
+        :param move_info: Tuple (net, v, from_part, to_part) for the moved vertex
+        :return: The other vertex w connected to v via this net
         """
         net, v, from_part, _ = move_info
         net_cur = iter(self.hyprgraph.ugraph[net])

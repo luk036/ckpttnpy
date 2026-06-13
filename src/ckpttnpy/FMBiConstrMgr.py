@@ -1,3 +1,9 @@
+"""Bipartition constraint manager for FM algorithm.
+
+FMBiConstrMgr extends FMConstrMgr with a bipartition-specific select_togo
+that picks the partition with smaller current weight (index 0 vs 1).
+"""
+
 from .FMConstrMgr import FMConstrMgr
 
 

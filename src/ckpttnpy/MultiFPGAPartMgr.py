@@ -1,19 +1,7 @@
-"""
-MultiFPGAPartMgr.py
+"""Multi-FPGA partitioning manager.
 
-This module implements a partitioning manager specifically designed for multi-FPGA systems. It extends the
-existing partitioning algorithms in the ckpttnpy project to handle the unique challenges of distributing
-a design across multiple FPGAs, including resource constraints, inter-FPGA communication optimization,
-and timing considerations. The main purpose is to provide methods for partitioning a hypergraph
-representing a circuit design into multiple parts that can be mapped to different FPGAs while optimizing
-for resource utilization and minimizing cross-FPGA connections. The implementation builds upon the
-existing MLPartMgr, FMPartMgr, and related classes to provide a solution tailored for multi-FPGA
-partitioning requirements. The algorithm addresses the challenges of multi-FPGA partitioning by
-incorporating FPGA-specific resource constraints and communication cost optimization into the existing
-partitioning framework. This code provides a framework for solving complex multi-FPGA partitioning
-problems using a multi-level approach combined with Fiduccia-Mattheyses optimization, ensuring that the
-partitioned design can be successfully implemented across multiple FPGAs while meeting performance and
-resource constraints.
+Extends the k-way partitioning framework for multi-FPGA designs with
+resource-aware validation and inter-FPGA communication cost optimization.
 """
 
 from typing import Any, Dict, List
