@@ -31,7 +31,7 @@ class FMKWayGainCalc:
 
     # public:
 
-    def __init__(self, hyprgraph, num_parts: int) -> None:
+    def __init__(self, hyprgraph: Any, num_parts: int) -> None:
         """
         The above function is an initialization function that sets up various variables and data structures
         for a graph partitioning algorithm.
@@ -80,7 +80,7 @@ class FMKWayGainCalc:
             self._init_gain(net, part)
         return self.totalcost
 
-    def _init_gain(self, net, part: Part):
+    def _init_gain(self, net: Any, part: Part) -> None:
         """
         The function `_init_gain` initializes the gain for a given network based on its degree.
 
@@ -100,7 +100,7 @@ class FMKWayGainCalc:
         else:  # degree == 2
             self._init_gain_2pin_net(net, part)
 
-    def _modify_gain(self, v, pv, weight):
+    def _modify_gain(self, v: Any, pv: int, weight: int) -> None:
         """
         The function `_modify_gain` modifies the gain of a node in a graph by adding a weight to it.
 
@@ -113,7 +113,7 @@ class FMKWayGainCalc:
         for k in self.rr.exclude(pv):
             self.vertex_list[k][v].data[0] += weight
 
-    def _init_gain_2pin_net(self, net, part: Part):
+    def _init_gain_2pin_net(self, net: Any, part: Part) -> None:
         """
         The function `_init_gain_2pin_net` initializes the gain for a 2-pin net in a graph.
 
@@ -138,7 +138,7 @@ class FMKWayGainCalc:
             self.vertex_list[part_v][w].data[0] += weight
             self.vertex_list[part_w][v].data[0] += weight
 
-    def _init_gain_3pin_net(self, net, part: Part):
+    def _init_gain_3pin_net(self, net: Any, part: Part) -> None:
         """
         The function `_init_gain_3pin_net` initializes the gain for a 3-pin net in a graph.
 
@@ -179,7 +179,7 @@ class FMKWayGainCalc:
             self.vertex_list[part[a]][e].data[0] += weight
         self.totalcost += weight
 
-    def _init_gain_general_net(self, net, part: Part):
+    def _init_gain_general_net(self, net: Any, part: Part) -> None:
         r"""Initialize gain for a general net based on per-partition counts.
 
         Counts vertices in each partition for the given net and assigns gains.
@@ -229,13 +229,13 @@ class FMKWayGainCalc:
                     w = next(cur)
                 self._modify_gain(w, part[w], weight)
 
-    def update_move_init(self):
+    def update_move_init(self) -> None:
         """
         The function "update_move_init" initializes a list called "delta_gain_v" with zeros.
         """
         self.delta_gain_v = [0] * self.num_parts
 
-    def update_move_2pin_net(self, part, move_info):
+    def update_move_2pin_net(self, part: Part, move_info: list) -> Any:
         """Update gains for a 2-pin net after a vertex move.
 
         :param part: Current partition assignment for each vertex
@@ -260,7 +260,7 @@ class FMKWayGainCalc:
 
         return w
 
-    def init_idx_vec(self, v, net):
+    def init_idx_vec(self, v: Any, net: Any) -> None:
         """
         The function `init_idx_vec` initializes the `idx_vec` attribute by creating a list of all elements
         in `self.hyprgraph.ugraph[net]` except for `v`.
@@ -270,7 +270,7 @@ class FMKWayGainCalc:
         """
         self.idx_vec = [w for w in self.hyprgraph.ugraph[net] if w != v]
 
-    def update_move_3pin_net(self, part, move_info):
+    def update_move_3pin_net(self, part: Part, move_info: list) -> List[List[int]]:
         """Update gains for a 3-pin net after a vertex move.
 
         :param part: Current partition assignment for each vertex
@@ -320,7 +320,7 @@ class FMKWayGainCalc:
 
         return delta_gain
 
-    def update_move_general_net(self, part, move_info):
+    def update_move_general_net(self, part: Part, move_info: list) -> List[List[int]]:
         r"""Update gains for a general net after a vertex move.
 
 

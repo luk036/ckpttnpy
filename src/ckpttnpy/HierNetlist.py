@@ -5,7 +5,7 @@ and projection methods (up/down) for multi-level graph coarsening
 and uncoarsening.
 """
 
-from typing import Any, List
+from typing import Any, List, Union
 
 import networkx as nx
 from netlistx.netlist import Netlist
@@ -18,7 +18,7 @@ class HierNetlist(Netlist):
 
     parent: Netlist
 
-    def __init__(self, ugraph: nx.Graph, modules, nets):
+    def __init__(self, ugraph: nx.Graph, modules: Any, nets: Any):
         """
         The function initializes an object with a graph, modules, and nets, and sets some attributes.
 
@@ -36,7 +36,7 @@ class HierNetlist(Netlist):
         self.net_weight: dict = {}
         self.clusters: List[Any] = []
 
-    def get_degree(self, v):
+    def get_degree(self, v: Any) -> int:
         """
         The function `get_degree` returns the sum of the weights of all edges connected to a given vertex.
 
@@ -46,14 +46,14 @@ class HierNetlist(Netlist):
         """
         return sum(self.net_weight.get(net, 1) for net in self.ugraph[v])
 
-    def get_max_degree(self):
+    def get_max_degree(self) -> int:
         """
         The function `get_max_degree` returns the maximum degree of all the modules in a graph.
         :return: the maximum degree of all the modules in the graph.
         """
         return max(self.get_degree(v) for v in self.modules)
 
-    def projection_down(self, part, part_down):
+    def projection_down(self, part: Union[dict, list], part_down: Union[dict, list]) -> None:
         """
         The `projection_down` function assigns values from the `part` list to the `part_down` list based on
         the mapping defined by the `self.node_down_list` and `self.clusters` lists.
@@ -87,7 +87,7 @@ class HierNetlist(Netlist):
             for v2 in self.parent.ugraph[net]:
                 part_down[v2] = p
 
-    def projection_up(self, part, part_up):
+    def projection_up(self, part: Union[dict, list], part_up: Union[dict, list]) -> None:
         """
         The `projection_up` function maps values from `part` to `part_up` based on the indices in
         `self.node_down_list`.

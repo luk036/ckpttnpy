@@ -4,7 +4,7 @@ Extends the k-way partitioning framework for multi-FPGA designs with
 resource-aware validation and inter-FPGA communication cost optimization.
 """
 
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Tuple
 
 from .FMKWayGainCalc import FMKWayGainCalc
 from .MLPartMgr import MLKWayPartMgr
@@ -35,7 +35,7 @@ class MultiFPGAPartMgr:
         self.bal_tol = bal_tol
         self.partitioner = MLKWayPartMgr(bal_tol, num_fpgas)
 
-    def partition_design(self, hyprgraph: Any, module_weights: List[Dict[str, float]]):
+    def partition_design(self, hyprgraph: Any, module_weights: List[Dict[str, float]]) -> List[int]:
         """
         Partitions the design represented by the hypergraph across multiple FPGAs.
 
@@ -64,7 +64,7 @@ class MultiFPGAPartMgr:
 
         return initial_part
 
-    def optimize_inter_fpga_connections(self, hyprgraph: Any, partition: List[int]):
+    def optimize_inter_fpga_connections(self, hyprgraph: Any, partition: List[int]) -> List[int]:
         """
         Optimizes the partition to minimize inter-FPGA connections and communication costs.
 
@@ -82,7 +82,7 @@ class MultiFPGAPartMgr:
         hyprgraph: Any,
         partition: List[int],
         module_weights: List[Dict[str, float]],
-    ):
+    ) -> Tuple[bool, Dict[str, Any]]:
         """
         Validates that the partition meets all FPGA resource constraints and other requirements.
 
@@ -128,15 +128,15 @@ class MultiFPGAPartMgr:
 class MultiFPGAGainCalc(FMKWayGainCalc):
     """Extended gain calculator that considers inter-FPGA communication costs"""
 
-    def __init__(self, hyprgraph, num_parts: int = 2):
+    def __init__(self, hyprgraph: Any, num_parts: int = 2):
         super().__init__(hyprgraph, num_parts)
         self.inter_fpga_cost_weight = 1.0  # Weight for inter-FPGA communication cost
 
-    def set_inter_fpga_cost_weight(self, weight: float):
+    def set_inter_fpga_cost_weight(self, weight: float) -> None:
         """Set the weight for inter-FPGA communication costs in gain calculations"""
         self.inter_fpga_cost_weight = weight
 
-    def _init_gain_general_net(self, net, part):
+    def _init_gain_general_net(self, net: Any, part: Any) -> None:
         """Initialize gain for general net, considering inter-FPGA communication costs"""
         # Call parent implementation first
         super()._init_gain_general_net(net, part)

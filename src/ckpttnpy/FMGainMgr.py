@@ -23,7 +23,7 @@ class FMGainMgr:
 
     # public:
 
-    def __init__(self, GainCalc, hyprgraph, num_parts=2) -> None:
+    def __init__(self, GainCalc: Any, hyprgraph: Any, num_parts: int = 2) -> None:
         """
         The function initializes an object with the given parameters and sets up variables for calculating
         gains.
@@ -44,7 +44,7 @@ class FMGainMgr:
         bound = self.pmax * (num_parts - 1)
         self.gainbucket = [BPQueue(-bound, bound) for _ in range(num_parts)]
 
-    def init(self, part) -> int:
+    def init(self, part: Part) -> int:
         """
         The `init` function initializes the object and calculates the total cost based on the given part.
 
@@ -83,7 +83,7 @@ class FMGainMgr:
         move_info_v = v, from_part, to_part
         return move_info_v, maxk
 
-    def select_togo(self, to_part):
+    def select_togo(self, to_part: int) -> tuple[Any, int]:
         """
         The function `select_togo` selects the best candidate to go based on the given `to_part` argument.
 
@@ -96,7 +96,7 @@ class FMGainMgr:
         v = vlink.data[1]
         return v, gainmax
 
-    def update_move(self, part, move_info_v):
+    def update_move(self, part: Part, move_info_v: tuple[Any, int, int]) -> None:
         """
         The function `update_move` updates the gain of a move in a graph based on the given move
         information.
@@ -130,7 +130,7 @@ class FMGainMgr:
                     )
 
     @abstractmethod
-    def modify_key(self, w, part_w, key) -> None:
+    def modify_key(self, w: Any, part_w: int, key: Any) -> None:
         """
         The `modify_key` function is an abstract method that takes in three arguments (`w`, `part_w`, and
         `key`) and does not return anything.
@@ -144,7 +144,7 @@ class FMGainMgr:
 
     # private:
 
-    def _update_move_net(self, part, move_info, gain_calc_method):
+    def _update_move_net(self, part: Part, move_info: list, gain_calc_method: Any) -> None:
         """
         The function `_update_move_net` updates the move for a net in a partition solution.
 

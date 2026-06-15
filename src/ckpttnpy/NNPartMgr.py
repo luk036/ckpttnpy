@@ -21,7 +21,7 @@ class NNPartMgr:
     constraints.
     """
 
-    def __init__(self, hyprgraph, gain_mgr, constr_mgr):
+    def __init__(self, hyprgraph: Any, gain_mgr: Any, constr_mgr: Any):
         """
         The function initializes an object with three arguments and sets their values as attributes of the
         object.
@@ -56,7 +56,7 @@ class NNPartMgr:
         assert isinstance(weight, int), f"Expected int, got {type(weight)}"
         return weight
 
-    def init(self, part: Part):
+    def init(self, part: Part) -> None:
         """
         The `init` function initializes the `totalcost` attribute and calls the `init` method of the
         `gain_mgr` and `validator` objects.
@@ -78,7 +78,7 @@ class NNPartMgr:
         assert self.totalcost >= 0
         self.validator.init(part)
 
-    def legalize(self, part: Part):
+    def legalize(self, part: Part) -> LegalCheck:
         """
         The `legalize` function is used to perform a legalization process on a given part in a graph.
 
@@ -135,7 +135,7 @@ class NNPartMgr:
             assert self.totalcost >= 0
         return legalcheck
 
-    def optimize(self, part: Part):
+    def optimize(self, part: Part) -> None:
         """
         The `optimize` function iteratively optimizes the cost of a given part until no further improvement
         can be made.
@@ -155,7 +155,7 @@ class NNPartMgr:
         # return legalcheck
         assert self.totalcost <= totalcostbefore
 
-    def _optimize_1pass(self, part: Part):
+    def _optimize_1pass(self, part: Part) -> None:
         """
         Performs one pass of optimization, selecting positive-gain moves
         until no further improvement is possible (stops at first non-positive gain).

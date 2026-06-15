@@ -13,7 +13,7 @@ Note:
 """
 
 import hashlib
-from typing import List, MutableMapping, Optional, Set, Tuple, TypeVar
+from typing import Any, Dict, List, MutableMapping, Optional, Set, Tuple, TypeVar
 
 from netlistx.netlist import Netlist, TinyGraph
 from netlistx.netlist_algo import min_maximal_matching
@@ -27,7 +27,7 @@ MINHASH_SIMILARITY = 0.8  # Similarity threshold for duplicate detection
 Node = TypeVar("Node")  # Hashable
 
 
-def _minhash_signature(items, k: int = MINHASH_SIG_SIZE):
+def _minhash_signature(items: Any, k: int = MINHASH_SIG_SIZE) -> List[float]:
     """Compute minHash signature for a set of items.
 
     Uses k independent hash functions (md5 with different suffixes)
@@ -49,7 +49,7 @@ def _minhash_signature(items, k: int = MINHASH_SIG_SIZE):
     return sig
 
 
-def _jaccard_similarity(sig1, sig2):
+def _jaccard_similarity(sig1: List[float], sig2: List[float]) -> float:
     """Estimate Jaccard similarity from two minHash signatures.
 
     :param sig1: First minHash signature (list of ints)
@@ -117,7 +117,7 @@ def setup(
     return clusters, nets, cell_list
 
 
-def construct_graph(hyprgraph: Netlist, nets, cell_list, clusters):
+def construct_graph(hyprgraph: Netlist, nets: List[Any], cell_list: List[Any], clusters: List[Any]) -> TinyGraph:
     r"""
     The function constructs a bipartite graph based on a given hypergraph, netlist, cell list, and
     clusters.
@@ -166,7 +166,7 @@ def construct_graph(hyprgraph: Netlist, nets, cell_list, clusters):
     return ugraph
 
 
-def purge_duplicate_nets(hyprgraph: Netlist, ugraph, nets, num_clusters, num_modules):
+def purge_duplicate_nets(hyprgraph: Netlist, ugraph: TinyGraph, nets: List[Any], num_clusters: int, num_modules: int) -> Tuple[Dict[int, int], List[int]]:
     r"""
     The function `purge_duplicate_nets` removes duplicate nets from a graph and returns the updated net
     weights and list of nets.
@@ -256,7 +256,7 @@ def purge_duplicate_nets(hyprgraph: Netlist, ugraph, nets, num_clusters, num_mod
     return net_weight, updated_nets
 
 
-def reconstruct_graph(hyprgraph: Netlist, ugraph, nets, num_clusters, num_modules):
+def reconstruct_graph(hyprgraph: Netlist, ugraph: TinyGraph, nets: List[Any], num_clusters: int, num_modules: int) -> Tuple[TinyGraph, Dict[int, int], int]:
     r"""
     The function reconstructs a new graph by purging duplicate nets and updating net weights.
 
@@ -314,7 +314,7 @@ def reconstruct_graph(hyprgraph: Netlist, ugraph, nets, num_clusters, num_module
     return gr2, net_weight2, num_nets
 
 
-def contract_subgraph(hyprgraph: Netlist, module_weight, forbid: Set):
+def contract_subgraph(hyprgraph: Netlist, module_weight: Any, forbid: Set) -> Tuple[HierNetlist, List[int]]:
     r"""
     The `contract_subgraph` function takes a hierarchical netlist, module weights, and a set of
     forbidden nets as input, and returns a contracted hierarchical netlist with updated module weights.

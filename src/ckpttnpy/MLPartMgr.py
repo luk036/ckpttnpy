@@ -6,6 +6,7 @@ Provides MLBiPartMgr (2-way) and MLKWayPartMgr (k-way) specializations.
 """
 
 import gc
+from typing import Any, Type
 
 # from ckpttnpy.min_cover import contract_subgraph
 from ckpttnpy.FMPartMgr import FMPartMgr
@@ -28,7 +29,7 @@ class MLPartMgr:
     """The `MLPartMgr` class is a manager for Multi-level Partitioning."""
 
     def __init__(
-        self, GainCalc, GainMgr, ConstrMgr, PartMgr, bal_tol, num_parts=2
+        self, GainCalc: Type, GainMgr: Type, ConstrMgr: Type, PartMgr: Type, bal_tol: float, num_parts: int = 2
     ) -> None:
         """
         The function initializes an object with various attributes and assigns values to them.
@@ -56,7 +57,7 @@ class MLPartMgr:
         self.LIMIT_SIZE = 50
 
     @property
-    def limitsize(self):
+    def limitsize(self) -> int:
         """
         The `limitsize` function is a property that returns the value of the `_limitsize` attribute.
         :return: The `limitsize` property is returning the value of the `_limitsize` attribute.
@@ -64,7 +65,7 @@ class MLPartMgr:
         return self.LIMIT_SIZE
 
     @limitsize.setter
-    def limitsize(self, limit):
+    def limitsize(self, limit: int) -> None:
         """
         The above function is a setter method that sets the value of the "_limitsize" attribute in a class.
 
@@ -73,7 +74,7 @@ class MLPartMgr:
         """
         self.LIMIT_SIZE = limit
 
-    def run_Partition(self, hyprgraph, module_weight, part):
+    def run_Partition(self, hyprgraph: Any, module_weight: Any, part: Any) -> LegalCheck:
         """Run Fiduccia-Mattheyses Partitioning
 
         This function performs a partitioning algorithm on a hypergraph, optimizing the
@@ -90,7 +91,7 @@ class MLPartMgr:
         :return: The function `run_Partition` returns the value of `legalcheck`.
         """
 
-        def legalcheck_fn():
+        def legalcheck_fn() -> tuple[LegalCheck, int]:
             """
             The function `legalcheck_fn` creates instances of various managers and uses them to perform a legal
             check on a given part, returning the result and the total cost.
@@ -105,7 +106,7 @@ class MLPartMgr:
             legalcheck = part_mgr.legalize(part)
             return legalcheck, part_mgr.totalcost
 
-        def optimize_fn():
+        def optimize_fn() -> int:
             """
             The function `optimize_fn` optimizes a given part by calculating the total cost using various
             managers and returns the result.
@@ -118,7 +119,7 @@ class MLPartMgr:
             )
             part_mgr = self.PartMgr(hyprgraph, gain_mgr, constr_mgr)
             part_mgr.optimize(part)
-            return part_mgr.totalcost
+            return part_mgr.totalcost  # type: ignore[no-any-return]
 
         legalcheck, totalcost = legalcheck_fn()
         if legalcheck != LegalCheck.AllSatisfied:
@@ -148,7 +149,7 @@ class MLPartMgr:
 # The MLBiPartMgr class is a subclass of MLPartMgr that initializes with specific parameters for
 # balancing tolerance.
 class MLBiPartMgr(MLPartMgr):
-    def __init__(self, bal_tol):
+    def __init__(self, bal_tol: float) -> None:
         """
         The `__init__` function initializes an object with the given balance tolerance and calls the
         `__init__` function of the parent class `MLPartMgr` with specific arguments.
@@ -165,7 +166,7 @@ class MLBiPartMgr(MLPartMgr):
 # The MLKWayPartMgr class is a subclass of MLPartMgr that initializes with specific parameters and
 # inherits methods from various other classes.
 class MLKWayPartMgr(MLPartMgr):
-    def __init__(self, bal_tol, num_parts):
+    def __init__(self, bal_tol: float, num_parts: int) -> None:
         """
         The function is a constructor that initializes an object with certain parameters and calls the
         constructor of a parent class.
@@ -190,7 +191,7 @@ class MLKWayPartMgr(MLPartMgr):
 # The MLBiPartMgr class is a subclass of MLPartMgr that initializes with specific parameters for
 # balancing tolerance.
 class MLBiNNPartMgr(MLPartMgr):
-    def __init__(self, bal_tol):
+    def __init__(self, bal_tol: float) -> None:
         """
         The `__init__` function initializes an object with the given balance tolerance and calls the
         `__init__` function of the parent class `MLPartMgr` with specific arguments.
@@ -207,7 +208,7 @@ class MLBiNNPartMgr(MLPartMgr):
 # The MLKWayPartMgr class is a subclass of MLPartMgr that initializes with specific parameters and
 # inherits methods from various other classes.
 class MLKWayNNPartMgr(MLPartMgr):
-    def __init__(self, bal_tol, num_parts):
+    def __init__(self, bal_tol: float, num_parts: int) -> None:
         """
         The function is a constructor that initializes an object with certain parameters and calls the
         constructor of a parent class.

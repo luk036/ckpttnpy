@@ -42,7 +42,7 @@ class FMBiGainMgr(FMGainMgr):
             self.lock_all(part[v], v)
         return totalcost
 
-    def lock(self, whichPart, v) -> None:
+    def lock(self, whichPart: int, v: Any) -> None:
         """
         The `lock` function locks a vertex by detaching it from a gain bucket and
         setting its next pointer to itself.
@@ -56,7 +56,7 @@ class FMBiGainMgr(FMGainMgr):
         self.gainbucket[whichPart].detach(vlink)
         vlink.next = vlink  # lock
 
-    def lock_all(self, from_part, v) -> None:
+    def lock_all(self, from_part: int, v: Any) -> None:
         """
         The function "lock_all" locks a specific part and its corresponding opposite part.
 
@@ -66,7 +66,7 @@ class FMBiGainMgr(FMGainMgr):
         """
         self.lock(from_part ^ 1, v)
 
-    def modify_key(self, w, part_w, key):
+    def modify_key(self, w: Any, part_w: int, key: int) -> None:
         """
         The `modify_key` function updates the gain for a moving cell.
 
@@ -96,7 +96,7 @@ class FMBiGainMgr(FMGainMgr):
         """
         self.gainbucket[part_w ^ 1].modify_key(self.gain_calc.vertex_list[w], key)
 
-    def update_move_v(self, move_info_v, gain) -> None:
+    def update_move_v(self, move_info_v: tuple[Any, int, int], gain: int) -> None:
         """
         The function `update_move_v` updates the value of a variable `v` by subtracting the `gain` from it.
 
@@ -109,7 +109,7 @@ class FMBiGainMgr(FMGainMgr):
 
     # private:
 
-    def _set_key(self, whichPart, v, key) -> None:
+    def _set_key(self, whichPart: int, v: Any, key: int) -> None:
         """
         The `_set_key` function sets a key for a specific part and vertex in a gainbucket.
 

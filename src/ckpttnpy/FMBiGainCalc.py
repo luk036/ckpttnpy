@@ -23,7 +23,7 @@ class FMBiGainCalc:
 
     # public:
 
-    def __init__(self, hyprgraph, _: int = 2):  # num_parts == 2
+    def __init__(self, hyprgraph: Any, _: int = 2):  # num_parts == 2
         """Initialization
         The function initializes an object with a given Netlist and a default number
         of partitions, and creates a vertex list based on the type of modules in
@@ -71,7 +71,7 @@ class FMBiGainCalc:
 
     # private:
 
-    def _init_gain(self, net, part: Part):
+    def _init_gain(self, net: Any, part: Part) -> None:
         """
         The function `_init_gain` initializes the gain for a given network and
         partition.
@@ -94,7 +94,7 @@ class FMBiGainCalc:
         else:
             self._init_gain_general_net(net, part)
 
-    def _modify_gain(self, w, weight):
+    def _modify_gain(self, w: Any, weight: int) -> None:
         """
         Modifies the gain of a vertex by adding a weight to its data.
 
@@ -104,7 +104,7 @@ class FMBiGainCalc:
         """
         self.vertex_list[w].data[0] += weight
 
-    def _init_gain_2pin_net(self, net, part: Part):
+    def _init_gain_2pin_net(self, net: Any, part: Part) -> None:
         """initialize gain for 2-pin net
 
         The function initializes the gain for a 2-pin net in a graph.
@@ -129,7 +129,7 @@ class FMBiGainCalc:
             self._modify_gain(w, -weight)
             self._modify_gain(v, -weight)
 
-    def _init_gain_3pin_net(self, net, part: Part):
+    def _init_gain_3pin_net(self, net: Any, part: Part) -> None:
         """
         The function initializes the gain for a 3-pin net based on the parts
         assigned to each pin.
@@ -161,7 +161,7 @@ class FMBiGainCalc:
             self._modify_gain(v, weight)
         self.totalcost += weight
 
-    def _init_gain_general_net(self, net, part: Part) -> None:
+    def _init_gain_general_net(self, net: Any, part: Part) -> None:
         """
         The function `_init_gain_general_net` initializes the gain for a general
         net based on the number of connections to each partition.
@@ -201,7 +201,7 @@ class FMBiGainCalc:
         """
         pass
 
-    def update_move_2pin_net(self, part, move_info):
+    def update_move_2pin_net(self, part: Part, move_info: list) -> Any:
         """
         Updates the gain for a 2-pin net after a vertex move.
 
@@ -218,7 +218,7 @@ class FMBiGainCalc:
         self.delta_gain_w = delta * weight
         return w
 
-    def init_idx_vec(self, v, net) -> None:
+    def init_idx_vec(self, v: Any, net: Any) -> None:
         """
         The function `init_idx_vec` initializes the `idx_vec` attribute by filtering out the vertex `v` from
         the `ugraph[net]` list.
@@ -228,7 +228,7 @@ class FMBiGainCalc:
         """
         self.idx_vec = [w for w in self.hyprgraph.ugraph[net] if w != v]
 
-    def update_move_3pin_net(self, part, move_info):
+    def update_move_3pin_net(self, part: Part, move_info: list) -> List[int]:
         """
         The function `update_move_3pin_net` updates the move for a 3-pin net by
         calculating the delta gain based on the current part assignment and the
@@ -284,7 +284,7 @@ class FMBiGainCalc:
 
         return delta_gain
 
-    def update_move_general_net(self, part, move_info):
+    def update_move_general_net(self, part: Part, move_info: list) -> List[int]:
         """
         The function `update_move_general_net` updates the move for a general net
         in a graph based on the given move information.

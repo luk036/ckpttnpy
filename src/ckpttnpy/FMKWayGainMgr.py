@@ -19,7 +19,7 @@ class FMKWayGainMgr(FMGainMgr):
     reinitialization of a K-way partitioned netlist.
     """
 
-    def __init__(self, GainCalc, hyprgraph, num_parts: int):
+    def __init__(self, GainCalc: Any, hyprgraph: Any, num_parts: int):
         """
         The function initializes an object with the given parameters and calls the parent class's
         initialization method.
@@ -35,7 +35,7 @@ class FMKWayGainMgr(FMGainMgr):
         FMGainMgr.__init__(self, GainCalc, hyprgraph, num_parts)
         self.rr = Robin(num_parts)
 
-    def init(self, part: Part):
+    def init(self, part: Part) -> int:
         """
         The `init` function initializes or reinitializes certain variables and data structures based on the
         given `part` argument.
@@ -64,7 +64,7 @@ class FMKWayGainMgr(FMGainMgr):
 
         return totalcost
 
-    def lock(self, whichPart, v):
+    def lock(self, whichPart: int, v: Any) -> None:
         """
         The lock function sets a key by detaching a vertex link from a gain bucket and locking it.
 
@@ -75,7 +75,7 @@ class FMKWayGainMgr(FMGainMgr):
         self.gainbucket[whichPart].detach(vlink)
         vlink.next = vlink  # lock
 
-    def lock_all(self, _, v):
+    def lock_all(self, _: Any, v: Any) -> None:
         """
         The `lock_all` function locks a specific vertex in a graph by detaching it from its bucket and
         setting its `next` attribute to itself.
@@ -90,7 +90,7 @@ class FMKWayGainMgr(FMGainMgr):
             bckt.detach(vlink)
             vlink.next = vlink  # lock
 
-    def update_move_v(self, move_info_v, gain):
+    def update_move_v(self, move_info_v: tuple[Any, int, int], gain: int) -> None:
         """
         The function `update_move_v` updates the gain for a moving cell in a specific partition.
 
@@ -105,7 +105,7 @@ class FMKWayGainMgr(FMGainMgr):
         self._set_key(from_part, v, -gain)
         # self.lock(to_part, v)
 
-    def modify_key(self, w, part_w, key):
+    def modify_key(self, w: Any, part_w: int, key: Dict[int, int]) -> None:
         """
         The function `modify_key` modifies the key of a specific element in a dictionary.
 
@@ -142,7 +142,7 @@ class FMKWayGainMgr(FMGainMgr):
 
     # private:
 
-    def _set_key(self, whichPart, v, key):
+    def _set_key(self, whichPart: int, v: Any, key: int) -> None:
         """
         The `_set_key` function sets a key value for a specific part and vertex in a gainbucket.
 

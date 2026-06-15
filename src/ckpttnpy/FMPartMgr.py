@@ -5,6 +5,8 @@ for the FM algorithm's backtracking mechanism. Supports both list and dict
 partition representations.
 """
 
+from typing import Any
+
 from mywheel.map_adapter import MapAdapter
 
 from .PartMgrBase import Part, PartMgrBase
@@ -17,7 +19,7 @@ class FMPartMgr(PartMgrBase):
     parts and restoring part information from a snapshot.
     """
 
-    def take_snapshot(self, part: Part):
+    def take_snapshot(self, part: Part) -> Part:
         """
         The `take_snapshot` function takes a `Part` object as input and returns a copy of it.
 
@@ -28,7 +30,7 @@ class FMPartMgr(PartMgrBase):
         """
         return part.copy()
 
-    def restore_part_info(self, snapshot, part: Part):
+    def restore_part_info(self, snapshot: Any, part: Part) -> None:
         """
         The function `restore_part_info` takes a snapshot and updates the attributes of a `Part` object
         based on the snapshot.
