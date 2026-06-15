@@ -6,7 +6,7 @@ import random
 import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
-from typing import List, Optional, Set, Tuple
+from typing import Any, List, Optional, Set, Tuple
 
 import networkx as nx
 from netlistx.readwrite import read_are, read_netd
@@ -233,7 +233,7 @@ def read_hypergraph(
 
 def read_hypergraph_ibm(
     filename: str,
-) -> Tuple[nx.Graph, List[int], Set[int]]:
+) -> Tuple[nx.Graph, Any, Set[int]]:
     """Read an IBM .net/.are pair and return (graph, module_weights, module_fixed).
 
     The companion .are file is located by replacing the .net suffix.
@@ -322,6 +322,7 @@ def run_one_partition(
 ) -> Tuple[List[int], int]:
     """Run a single FM partitioning from a randomized start."""
     from netlistx.netlist import Netlist
+    from ckpttnpy.MLPartMgr import MLPartMgr
 
     modules = [n for n in graph.nodes() if graph.nodes[n].get("bipartite") == 0]
     nets = [n for n in graph.nodes() if graph.nodes[n].get("bipartite") == 1]
@@ -337,12 +338,11 @@ def run_one_partition(
         if use_recursive:
             from ckpttnpy.MLPartMgr import MLBiPartMgr
 
-            part_mgr = MLBiPartMgr(bal_tol)
+            part_mgr: MLPartMgr = MLBiPartMgr(bal_tol)
         else:
             from ckpttnpy.FMBiConstrMgr import FMBiConstrMgr
             from ckpttnpy.FMBiGainCalc import FMBiGainCalc
             from ckpttnpy.FMBiGainMgr import FMBiGainMgr
-            from ckpttnpy.MLPartMgr import MLPartMgr
             from ckpttnpy.NNPartMgr import NNPartMgr
 
             part_mgr = MLPartMgr(
@@ -362,7 +362,6 @@ def run_one_partition(
             from ckpttnpy.FMKWayConstrMgr import FMKWayConstrMgr
             from ckpttnpy.FMKWayGainCalc import FMKWayGainCalc
             from ckpttnpy.FMKWayGainMgr import FMKWayGainMgr
-            from ckpttnpy.MLPartMgr import MLPartMgr
             from ckpttnpy.NNPartMgr import NNPartMgr
 
             part_mgr = MLPartMgr(
@@ -380,6 +379,8 @@ def run_one_partition(
 
 def run_cli() -> int:
     """Main CLI entry point."""
+    from ckpttnpy.FMConstrMgr import FMConstrMgr
+
     parser = argparse.ArgumentParser(
         description="Hypergraph partitioner compatible with hMetis and KaHyPar",
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -583,7 +584,7 @@ Examples:
     if k == 2:
         from ckpttnpy.FMBiConstrMgr import FMBiConstrMgr
 
-        constr_mgr = FMBiConstrMgr(modules, epsilon_val, module_weights, k)
+        constr_mgr: FMConstrMgr = FMBiConstrMgr(modules, epsilon_val, module_weights, k)
     else:
         from ckpttnpy.FMKWayConstrMgr import FMKWayConstrMgr
 
