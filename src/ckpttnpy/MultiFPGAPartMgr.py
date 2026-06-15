@@ -35,7 +35,9 @@ class MultiFPGAPartMgr:
         self.bal_tol = bal_tol
         self.partitioner = MLKWayPartMgr(bal_tol, num_fpgas)
 
-    def partition_design(self, hyprgraph: Any, module_weights: List[Dict[str, float]]) -> List[int]:
+    def partition_design(
+        self, hyprgraph: Any, module_weights: List[Dict[str, float]]
+    ) -> List[int]:
         """
         Partitions the design represented by the hypergraph across multiple FPGAs.
 
@@ -64,7 +66,9 @@ class MultiFPGAPartMgr:
 
         return initial_part
 
-    def optimize_inter_fpga_connections(self, hyprgraph: Any, partition: List[int]) -> List[int]:
+    def optimize_inter_fpga_connections(
+        self, hyprgraph: Any, partition: List[int]
+    ) -> List[int]:
         """
         Optimizes the partition to minimize inter-FPGA connections and communication costs.
 

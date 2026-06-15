@@ -322,6 +322,7 @@ def run_one_partition(
 ) -> Tuple[List[int], int]:
     """Run a single FM partitioning from a randomized start."""
     from netlistx.netlist import Netlist
+
     from ckpttnpy.MLPartMgr import MLPartMgr
 
     modules = [n for n in graph.nodes() if graph.nodes[n].get("bipartite") == 0]

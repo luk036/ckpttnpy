@@ -53,7 +53,9 @@ class HierNetlist(Netlist):
         """
         return max(self.get_degree(v) for v in self.modules)
 
-    def projection_down(self, part: Union[dict, list], part_down: Union[dict, list]) -> None:
+    def projection_down(
+        self, part: Union[dict, list], part_down: Union[dict, list]
+    ) -> None:
         """
         The `projection_down` function assigns values from the `part` list to the `part_down` list based on
         the mapping defined by the `self.node_down_list` and `self.clusters` lists.
@@ -87,7 +89,9 @@ class HierNetlist(Netlist):
             for v2 in self.parent.ugraph[net]:
                 part_down[v2] = p
 
-    def projection_up(self, part: Union[dict, list], part_up: Union[dict, list]) -> None:
+    def projection_up(
+        self, part: Union[dict, list], part_up: Union[dict, list]
+    ) -> None:
         """
         The `projection_up` function maps values from `part` to `part_up` based on the indices in
         `self.node_down_list`.

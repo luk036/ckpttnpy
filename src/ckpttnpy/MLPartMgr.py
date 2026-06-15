@@ -29,7 +29,13 @@ class MLPartMgr:
     """The `MLPartMgr` class is a manager for Multi-level Partitioning."""
 
     def __init__(
-        self, GainCalc: Type, GainMgr: Type, ConstrMgr: Type, PartMgr: Type, bal_tol: float, num_parts: int = 2
+        self,
+        GainCalc: Type,
+        GainMgr: Type,
+        ConstrMgr: Type,
+        PartMgr: Type,
+        bal_tol: float,
+        num_parts: int = 2,
     ) -> None:
         """
         The function initializes an object with various attributes and assigns values to them.
@@ -74,7 +80,9 @@ class MLPartMgr:
         """
         self.LIMIT_SIZE = limit
 
-    def run_Partition(self, hyprgraph: Any, module_weight: Any, part: Any) -> LegalCheck:
+    def run_Partition(
+        self, hyprgraph: Any, module_weight: Any, part: Any
+    ) -> LegalCheck:
         """Run Fiduccia-Mattheyses Partitioning
 
         This function performs a partitioning algorithm on a hypergraph, optimizing the

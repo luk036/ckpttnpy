@@ -117,7 +117,9 @@ def setup(
     return clusters, nets, cell_list
 
 
-def construct_graph(hyprgraph: Netlist, nets: List[Any], cell_list: List[Any], clusters: List[Any]) -> TinyGraph:
+def construct_graph(
+    hyprgraph: Netlist, nets: List[Any], cell_list: List[Any], clusters: List[Any]
+) -> TinyGraph:
     r"""
     The function constructs a bipartite graph based on a given hypergraph, netlist, cell list, and
     clusters.
@@ -166,7 +168,13 @@ def construct_graph(hyprgraph: Netlist, nets: List[Any], cell_list: List[Any], c
     return ugraph
 
 
-def purge_duplicate_nets(hyprgraph: Netlist, ugraph: TinyGraph, nets: List[Any], num_clusters: int, num_modules: int) -> Tuple[Dict[int, int], List[int]]:
+def purge_duplicate_nets(
+    hyprgraph: Netlist,
+    ugraph: TinyGraph,
+    nets: List[Any],
+    num_clusters: int,
+    num_modules: int,
+) -> Tuple[Dict[int, int], List[int]]:
     r"""
     The function `purge_duplicate_nets` removes duplicate nets from a graph and returns the updated net
     weights and list of nets.
@@ -256,7 +264,13 @@ def purge_duplicate_nets(hyprgraph: Netlist, ugraph: TinyGraph, nets: List[Any],
     return net_weight, updated_nets
 
 
-def reconstruct_graph(hyprgraph: Netlist, ugraph: TinyGraph, nets: List[Any], num_clusters: int, num_modules: int) -> Tuple[TinyGraph, Dict[int, int], int]:
+def reconstruct_graph(
+    hyprgraph: Netlist,
+    ugraph: TinyGraph,
+    nets: List[Any],
+    num_clusters: int,
+    num_modules: int,
+) -> Tuple[TinyGraph, Dict[int, int], int]:
     r"""
     The function reconstructs a new graph by purging duplicate nets and updating net weights.
 
@@ -314,7 +328,9 @@ def reconstruct_graph(hyprgraph: Netlist, ugraph: TinyGraph, nets: List[Any], nu
     return gr2, net_weight2, num_nets
 
 
-def contract_subgraph(hyprgraph: Netlist, module_weight: Any, forbid: Set) -> Tuple[HierNetlist, List[int]]:
+def contract_subgraph(
+    hyprgraph: Netlist, module_weight: Any, forbid: Set
+) -> Tuple[HierNetlist, List[int]]:
     r"""
     The `contract_subgraph` function takes a hierarchical netlist, module weights, and a set of
     forbidden nets as input, and returns a contracted hierarchical netlist with updated module weights.

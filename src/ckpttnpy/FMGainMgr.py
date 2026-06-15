@@ -144,7 +144,9 @@ class FMGainMgr:
 
     # private:
 
-    def _update_move_net(self, part: Part, move_info: list, gain_calc_method: Any) -> None:
+    def _update_move_net(
+        self, part: Part, move_info: list, gain_calc_method: Any
+    ) -> None:
         """
         The function `_update_move_net` updates the move for a net in a partition solution.
 
