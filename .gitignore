@@ -179,3 +179,7 @@ MANIFEST
 
 .gemini/
 gha-creds-*.json
+
+# Cache dirs
+.ruff_cache/
+.benchmarks/
