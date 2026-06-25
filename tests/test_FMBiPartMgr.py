@@ -11,7 +11,8 @@ from ckpttnpy.FMBiGainCalc import FMBiGainCalc
 from ckpttnpy.FMBiGainMgr import FMBiGainMgr
 from ckpttnpy.FMConstrMgr import LegalCheck
 from ckpttnpy.FMPartMgr import FMPartMgr
-from ckpttnpy.skeleton import _logger
+import logging
+_logger = logging.getLogger(__name__)
 from tests.mocks import Part
 
 

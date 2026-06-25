@@ -11,7 +11,8 @@ from ckpttnpy.FMKWayConstrMgr import FMKWayConstrMgr
 from ckpttnpy.FMKWayGainCalc import FMKWayGainCalc
 from ckpttnpy.FMKWayGainMgr import FMKWayGainMgr
 from ckpttnpy.FMPartMgr import FMPartMgr
-from ckpttnpy.skeleton import _logger
+import logging
+_logger = logging.getLogger(__name__)
 from tests.mocks import Part
 
 
