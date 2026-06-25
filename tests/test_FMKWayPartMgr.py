@@ -1,3 +1,5 @@
+import logging
+
 import pytest
 from netlistx.netlist import (  # create_test_netlist,
     Netlist,
@@ -11,9 +13,9 @@ from ckpttnpy.FMKWayConstrMgr import FMKWayConstrMgr
 from ckpttnpy.FMKWayGainCalc import FMKWayGainCalc
 from ckpttnpy.FMKWayGainMgr import FMKWayGainMgr
 from ckpttnpy.FMPartMgr import FMPartMgr
-import logging
-_logger = logging.getLogger(__name__)
 from tests.mocks import Part
+
+_logger = logging.getLogger(__name__)
 
 
 def _run_FMKWayPartMgr(hyprgraph: Netlist, gain_mgr, num_parts, part: Part):

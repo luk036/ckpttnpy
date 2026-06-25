@@ -1,3 +1,5 @@
+import logging
+
 import pytest
 from netlistx.netlist import (  # create_test_netlist,
     Netlist,
@@ -11,9 +13,9 @@ from ckpttnpy.FMBiGainCalc import FMBiGainCalc
 from ckpttnpy.FMBiGainMgr import FMBiGainMgr
 from ckpttnpy.FMConstrMgr import LegalCheck
 from ckpttnpy.NNPartMgr import NNPartMgr
-import logging
-_logger = logging.getLogger(__name__)
 from tests.mocks import Part
+
+_logger = logging.getLogger(__name__)
 
 
 def _run_NNBiPartMgr(hyprgraph: Netlist, part: Part):
