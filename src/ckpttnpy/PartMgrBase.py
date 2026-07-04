@@ -158,57 +158,44 @@ class PartMgrBase:
         # return legalcheck
 
     def _optimize_1pass(self, part: Part) -> None:
-        """
-        The `_optimize_1pass` function optimizes the placement of parts by selecting moves with the maximum
-        gain and updating the placement accordingly.
+        """Run one pass of the FM optimization loop with backtracking.
 
-        :param part: The `part` parameter represents a specific partition or group of elements. It is used
-            in the context of a partitioning algorithm where elements are divided into different groups or
-            partitions based on certain criteria
-        :type part: Part
+        Selects the highest-gain vertex and moves it to a different partition,
+        repeating until no moves remain.  When gain turns negative it starts a
+        *journal* (list/tuple of ``(index, old_value)`` pairs) instead of a full
+        ``part.copy()``.  At the end of the pass the journal is replayed in
+        reverse to restore the best-known state — O(diff) instead of O(N).
+        Falls back to :meth:`take_snapshot` / :meth:`restore_part_info` for
+        part types that are neither ``list`` nor ``dict``.
 
-        .. svgbob::
-
-            "Optimization Pass with Backtracking"
-          +--------------------------+--------------------------+
-          | Initial: gain=0          | Best: gain=+15           |
-          | [A,A,B,B,C,C]            | [A,B,B,B,C,C]            |
-          | Cost: 100                | Cost: 85                 |
-          +--------------------------+--------------------------+
-          | Exploring: gain=+5,-10   | Backtrack to best        |
-          | [A,B,B,B,C,C] -> [A,B,C,B,C,C]  | gain=+15 preserved |
-          +--------------------------+--------------------------+
-
-          Algorithm explores moves, tracks best solution, and backtracks if needed
+        :param part: The partition assignment to optimise (modified in place).
         """
         totalgain = 0
         deferredsnapshot = False
         snapshot = None
         besttotalgain = 0
-        # legalcheck = LegalCheck.NotSatisfied
+        journal = None  # list of (index, old_value) — avoids full copy
 
         while not self.gain_mgr.is_empty():
-            # Take the gainmax with v from gainbucket
             move_info_v, gainmax = self.gain_mgr.select(part)
-            # Check if the move of v can satisfied or NotSatisfied
             satisfiedOK = self.validator.check_constraints(move_info_v)
             if not satisfiedOK:
                 continue
-            # legalcheck = LegalCheck.AllSatisfied
             if gainmax < 0:
-                # become down turn
                 if (not deferredsnapshot) or (totalgain > besttotalgain):
-                    # Take a snapshot before move
-                    snapshot = self.take_snapshot(part)
+                    if isinstance(part, (list, dict)):
+                        journal = []
+                    else:
+                        snapshot = self.take_snapshot(part)
                     besttotalgain = totalgain
                 deferredsnapshot = True
             elif totalgain + gainmax >= besttotalgain:
                 besttotalgain = totalgain + gainmax
                 deferredsnapshot = False
 
-            # Update v and its neigbours (even they are in waitinglist)
-            # Put neigbours to bucket
             v, _, to_part = move_info_v
+            if journal is not None:
+                journal.append((v, part[v]))
             self.gain_mgr.lock(to_part, v)
             self.gain_mgr.update_move(part, move_info_v)
             self.gain_mgr.update_move_v(move_info_v, gainmax)
@@ -217,12 +204,14 @@ class PartMgrBase:
             part[v] = to_part
 
         if deferredsnapshot:
-            # restore previous best solution
-            self.restore_part_info(snapshot, part)
+            if journal is not None:
+                for v_old, old_val in reversed(journal):
+                    part[v_old] = old_val
+            else:
+                self.restore_part_info(snapshot, part)
             totalgain = besttotalgain
 
         self.totalcost -= totalgain
-        # return legalcheck
 
     def final_check(self, part: Part) -> bool:
         """

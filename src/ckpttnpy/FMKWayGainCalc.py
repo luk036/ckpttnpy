@@ -27,6 +27,8 @@ class FMKWayGainCalc:
         "delta_gain_v",
         "idx_vec",
         "delta_gain_w",
+        "_delta_gain_pool",
+        "_num_pool",
     )
 
     # public:
@@ -41,8 +43,16 @@ class FMKWayGainCalc:
         :param num_parts: The `num_parts` parameter is an integer that represents the number of partitions.
             It specifies how many partitions the algorithm should divide the given `hyprgraph` (Netlist) into
         :type num_parts: int
+
+        Pre-allocates several reusable buffers:
+        - ``delta_gain_v``, ``delta_gain_w``: zeroed per-call via re-zeroing
+        - ``idx_vec``: cleared and refilled by :meth:`init_idx_vec`
+        - ``_delta_gain_pool``: grown as needed by :meth:`_alloc_delta`
+        - ``_num_pool``: reused by :meth:`_init_gain_general_net` and
+          :meth:`update_move_general_net`
         """
-        self.delta_gain_v: List[int] = list()
+        self.delta_gain_v: List[int] = [0] * num_parts
+        self.delta_gain_w: List[int] = [0] * num_parts
 
         self.hyprgraph = hyprgraph
         self.num_parts = num_parts
@@ -60,6 +70,9 @@ class FMKWayGainCalc:
             ]
         else:
             raise NotImplementedError
+        self.idx_vec: List[Any] = []
+        self._delta_gain_pool: List[List[int]] = []
+        self._num_pool: List[int] = [0] * num_parts
 
     def init(self, part: Part) -> int:
         """
@@ -180,33 +193,20 @@ class FMKWayGainCalc:
         self.totalcost += weight
 
     def _init_gain_general_net(self, net: Any, part: Part) -> None:
-        r"""Initialize gain for a general net based on per-partition counts.
+        """Initialize gain for a general net using per-partition counts.
 
-        Counts vertices in each partition for the given net and assigns gains.
-        For partitions with 0 vertices, all connected vertices get negative gain.
-        For partitions with 1 vertex, that vertex gets positive gain.
+        Reuses :attr:`_num_pool` instead of allocating a new ``[0] * num_parts``.
+
+        For partitions with 0 vertices in the net, all connected vertices get
+        negative gain.  For partitions with exactly 1 vertex, that vertex gets
+        positive gain.
 
         :param net: Net node in the hypergraph
         :param part: Partition assignment for each vertex
-        :type part: Part
-
-        .. svgbob::
-
-            "General Net Gain Initialization"
-          +------------------------+
-          |        Net w=10        |
-          |      +--------+        |
-          |   ,--+   10   +--,     |
-          |  /   +--------+   \    |
-          | v1    v2    v3    v4   |
-          | A(1)  B(1)  A(1)  C(1) |
-          +------------------------+
-
-          Gain for moving v1: -10 (if moves from A to different partition)
-          Gain for moving v2: +10 (if moves to A or C, -10 if to B)
-
         """
-        num = [0] * self.num_parts
+        num = self._num_pool
+        for k in range(self.num_parts):
+            num[k] = 0
         for w in self.hyprgraph.ugraph[net]:
             num[part[w]] += 1
 
@@ -222,7 +222,6 @@ class FMKWayGainCalc:
                 for w in self.hyprgraph.ugraph[net]:
                     self.vertex_list[k][w].data[0] -= weight
             elif c == 1:
-                # for w in self.hyprgraph.ugraph[net]:
                 cur = iter(self.hyprgraph.ugraph[net])
                 w = next(cur)
                 while part[w] != k:
@@ -230,13 +229,19 @@ class FMKWayGainCalc:
                 self._modify_gain(w, part[w], weight)
 
     def update_move_init(self) -> None:
+        """Zero out the per-partition ``delta_gain_v`` buffer.
+
+        Called once per vertex move, before processing each affected net.
+        Reuses the existing list instead of allocating a new ``[0] * N``.
         """
-        The function "update_move_init" initializes a list called "delta_gain_v" with zeros.
-        """
-        self.delta_gain_v = [0] * self.num_parts
+        for k in range(self.num_parts):
+            self.delta_gain_v[k] = 0
 
     def update_move_2pin_net(self, part: Part, move_info: list) -> Any:
         """Update gains for a 2-pin net after a vertex move.
+
+        Reuses the pre-allocated :attr:`delta_gain_w` list by re-zeroing
+        entries instead of allocating a new ``[0] * num_parts``.
 
         :param part: Current partition assignment for each vertex
         :param move_info: Tuple (net, v, from_part, to_part) for the moved vertex
@@ -248,7 +253,9 @@ class FMKWayGainCalc:
         w = u if u != v else next(net_cur)
         part_w = part[w]
         weight = self.hyprgraph.get_net_weight(net)
-        self.delta_gain_w = [0] * self.num_parts
+        delta_gain_w = self.delta_gain_w
+        for k in range(self.num_parts):
+            delta_gain_w[k] = 0
 
         for l_part in [from_part, to_part]:
             if part_w == l_part:
@@ -261,32 +268,54 @@ class FMKWayGainCalc:
         return w
 
     def init_idx_vec(self, v: Any, net: Any) -> None:
-        """
-        The function `init_idx_vec` initializes the `idx_vec` attribute by creating a list of all elements
-        in `self.hyprgraph.ugraph[net]` except for `v`.
+        """Build ``self.idx_vec`` with all neighbours of *net* except *v*.
 
-        :param v: The parameter `v` represents a vertex in the graph `net`
-        :param net: The parameter "net" is a variable that represents a network or graph
+        Reuses the pre-allocated :attr:`idx_vec` list by clearing and
+        refilling, avoiding allocation of a new list per call.
+
+        :param v: Vertex being moved (excluded from the neighbour list).
+        :param net: Net whose adjacency is iterated.
         """
-        self.idx_vec = [w for w in self.hyprgraph.ugraph[net] if w != v]
+        self.idx_vec.clear()
+        for w in self.hyprgraph.ugraph[net]:
+            if w != v:
+                self.idx_vec.append(w)
+
+    def _alloc_delta(self, degree: int) -> List[List[int]]:
+        """Return a ``degree × num_parts`` zeroed list from a reusable pool.
+
+        The pool grows on demand and is never shrunk, avoiding repeated
+        allocations of inner lists for every call to the 3-pin or general
+        net update methods.
+
+        :param degree: Number of outer rows requested.
+        :returns: A slice of the pool, zeroed to ``degree × num_parts``.
+        """
+        pool = self._delta_gain_pool
+        while len(pool) < degree:
+            pool.append([0] * self.num_parts)
+        # zero out the rows we need
+        for i in range(degree):
+            row = pool[i]
+            for k in range(self.num_parts):
+                row[k] = 0
+        return pool[:degree]
 
     def update_move_3pin_net(self, part: Part, move_info: list) -> List[List[int]]:
         """Update gains for a 3-pin net after a vertex move.
+
+        Uses :meth:`_alloc_delta` to obtain a zeroed ``degree × num_parts``
+        matrix from the reusable pool rather than allocating new inner lists.
 
         :param part: Current partition assignment for each vertex
         :param move_info: Tuple (net, v, from_part, to_part) for the moved vertex
         :return: delta_gain list (one per remaining vertex, each a list of per-partition gains)
         """
         net, _, from_part, to_part = move_info
-
-        delta_gain = []
         degree = len(self.idx_vec)
-        delta_gain = list([0] * self.num_parts for _ in range(degree))
-
+        delta_gain = self._alloc_delta(degree)
         weight = self.hyprgraph.get_net_weight(net)
-
         fp, tp = from_part, to_part
-
         part_w = part[self.idx_vec[0]]
         part_u = part[self.idx_vec[1]]
 
@@ -321,59 +350,24 @@ class FMKWayGainCalc:
         return delta_gain
 
     def update_move_general_net(self, part: Part, move_info: list) -> List[List[int]]:
-        r"""Update gains for a general net after a vertex move.
+        """Update gains for a general (degree > 3) net after a vertex move.
 
-
+        Uses :meth:`_alloc_delta` and reuses :attr:`_num_pool` to avoid
+        allocating new lists on each call.
 
         :param part: Current partition assignment for each vertex
-
         :param move_info: Tuple (net, v, from_part, to_part) for the moved vertex
-
-        :return: delta_gain list (one entry per vertex in idx_vec, each a list of per-partition gains)
-
-
-
-        .. svgbob::
-
-
-
-            "General Net Move Update"
-
-          +--------------------------+--------------------------+
-
-          |  Before Move             |  After Move              |
-
-          |                          |                          |
-
-          |    Net                   |    Net                   |
-
-          |   +-----+                |   +-----+                |
-
-          |   |  5  |<--- Module v   |   |  5  |                |
-
-          |   +-----+     (move)     |   +-----+<--- Module v   |
-
-          |  /   |   \               |  /   |   \     (moved)   |
-
-          | v1   v2   v3            | v1   v2   v3            |
-
-          | A(2) B(1) C(1)          | A(1) B(1) C(1)          |
-
-          +--------------------------+--------------------------+
-
-
-
-          Update gains for all affected modules when v moves from A to C
-
+        :return: delta_gain list (one per remaining vertex, each a list of per-partition gains)
         """
         net, _, from_part, to_part = move_info
-        num = [0] * self.num_parts
+        num = self._num_pool
+        for k in range(self.num_parts):
+            num[k] = 0
         for w in self.idx_vec:
             num[part[w]] += 1
 
         degree = len(self.idx_vec)
-        delta_gain = list([0] * self.num_parts for _ in range(degree))
-
+        delta_gain = self._alloc_delta(degree)
         weight = self.hyprgraph.get_net_weight(net)
 
         fp, tp = from_part, to_part

@@ -19,8 +19,6 @@ Item = Dllink[List[int]]
 class FMGainMgr:
     """The `FMGainMgr` class is a base class for managing gains in Fiduccia-Mattheyses partitioning algorithm."""
 
-    waitinglist = Dllist[List[int]]([0, 3734])
-
     # public:
 
     def __init__(self, GainCalc: Any, hyprgraph: Any, num_parts: int = 2) -> None:
@@ -43,6 +41,7 @@ class FMGainMgr:
         self.pmax = self.hyprgraph.get_max_degree()
         bound = self.pmax * (num_parts - 1)
         self.gainbucket = [BPQueue(-bound, bound) for _ in range(num_parts)]
+        self.waitinglist = Dllist[List[int]]([0, 3734])  # instance, not shared
 
     def init(self, part: Part) -> int:
         """

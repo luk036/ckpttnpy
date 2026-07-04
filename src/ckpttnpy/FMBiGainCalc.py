@@ -19,7 +19,14 @@ class FMBiGainCalc:
     """The FMBiGainCalc class is used for calculating the bipartition gain in
     Fiduccia-Mattheyses partitioning algorithm."""
 
-    __slots__ = ("totalcost", "hyprgraph", "vertex_list", "idx_vec", "delta_gain_w")
+    __slots__ = (
+        "totalcost",
+        "hyprgraph",
+        "vertex_list",
+        "idx_vec",
+        "delta_gain_w",
+        "_delta_gain_buf",
+    )
 
     # public:
 
@@ -38,6 +45,10 @@ class FMBiGainCalc:
             this case, it is used as a placeholder for the second argument of the
             "__, defaults to 2
         :type _: int (optional)
+
+        Pre-allocates two reusable buffers:
+        - ``idx_vec``: cleared and refilled by :meth:`init_idx_vec`
+        - ``_delta_gain_buf``: grown as needed by :meth:`update_move_general_net`
         """
         self.hyprgraph = hyprgraph
         self.vertex_list: Any = None  # Will be set below
@@ -47,6 +58,8 @@ class FMBiGainCalc:
             self.vertex_list = {v: Dllink([0, v]) for v in self.hyprgraph}
         else:
             raise NotImplementedError
+        self.idx_vec: List[Any] = []
+        self._delta_gain_buf: List[int] = []
 
     def init(self, part: Part) -> int:
         """
@@ -219,14 +232,18 @@ class FMBiGainCalc:
         return w
 
     def init_idx_vec(self, v: Any, net: Any) -> None:
-        """
-        The function `init_idx_vec` initializes the `idx_vec` attribute by filtering out the vertex `v` from
-        the `ugraph[net]` list.
+        """Build ``self.idx_vec`` with all neighbours of *net* except *v*.
 
-        :param v: The parameter `v` represents a vertex in the graph
-        :param net: The `net` parameter represents a network or graph
+        Reuses the pre-allocated :attr:`idx_vec` list by clearing and
+        refilling, avoiding allocation of a new list per call.
+
+        :param v: Vertex being moved (excluded from the neighbour list).
+        :param net: Net whose adjacency is iterated.
         """
-        self.idx_vec = [w for w in self.hyprgraph.ugraph[net] if w != v]
+        self.idx_vec.clear()
+        for w in self.hyprgraph.ugraph[net]:
+            if w != v:
+                self.idx_vec.append(w)
 
     def update_move_3pin_net(self, part: Part, move_info: list) -> List[int]:
         """
@@ -302,7 +319,12 @@ class FMBiGainCalc:
         for w in self.idx_vec:
             num[part[w]] += 1
         degree = len(self.idx_vec)
-        delta_gain = [0] * degree
+        delta_gain = self._delta_gain_buf
+        if len(delta_gain) < degree:
+            delta_gain.extend([0] * (degree - len(delta_gain)))
+        # zero out first degree entries
+        for i in range(degree):
+            delta_gain[i] = 0
         gain = self.hyprgraph.get_net_weight(net)
 
         for l_part in [from_part, to_part]:
