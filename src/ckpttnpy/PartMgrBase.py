@@ -174,7 +174,7 @@ class PartMgrBase:
         deferredsnapshot = False
         snapshot = None
         besttotalgain = 0
-        journal = None  # list of (index, old_value) — avoids full copy
+        journal: list | None = None  # list of (index, old_value) — avoids full copy
 
         while not self.gain_mgr.is_empty():
             move_info_v, gainmax = self.gain_mgr.select(part)
@@ -183,10 +183,7 @@ class PartMgrBase:
                 continue
             if gainmax < 0:
                 if (not deferredsnapshot) or (totalgain > besttotalgain):
-                    if isinstance(part, (list, dict)):
-                        journal = []
-                    else:
-                        snapshot = self.take_snapshot(part)
+                    journal = []  # Part is always list or dict, so journal is used
                     besttotalgain = totalgain
                 deferredsnapshot = True
             elif totalgain + gainmax >= besttotalgain:
@@ -204,11 +201,9 @@ class PartMgrBase:
             part[v] = to_part
 
         if deferredsnapshot:
-            if journal is not None:
-                for v_old, old_val in reversed(journal):
-                    part[v_old] = old_val
-            else:
-                self.restore_part_info(snapshot, part)
+            assert journal is not None
+            for v_old, old_val in reversed(journal):
+                part[v_old] = old_val
             totalgain = besttotalgain
 
         self.totalcost -= totalgain
