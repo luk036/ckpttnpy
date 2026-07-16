@@ -15,12 +15,13 @@ import time
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
-from netlistx.readwrite import read_netd, read_are
-from netlistx.netlist import read_json
-from ckpttnpy.FMBiGainCalc import FMBiGainCalc
-from ckpttnpy.FMBiGainMgr import FMBiGainMgr
-from ckpttnpy.FMBiConstrMgr import FMBiConstrMgr
-from ckpttnpy.FMPartMgr import FMPartMgr
+from netlistx.netlist import read_json  # noqa: E402
+from netlistx.readwrite import read_are, read_netd  # noqa: E402
+
+from ckpttnpy.FMBiConstrMgr import FMBiConstrMgr  # noqa: E402
+from ckpttnpy.FMBiGainCalc import FMBiGainCalc  # noqa: E402
+from ckpttnpy.FMBiGainMgr import FMBiGainMgr  # noqa: E402
+from ckpttnpy.FMPartMgr import FMPartMgr  # noqa: E402
 
 
 def run_fm_bi(hyprgraph, part):
@@ -44,8 +45,10 @@ def benchmark_fm_bi(hyprgraph, name, iterations=5):
         times.append(t1 - t0)
 
     avg = sum(times) / len(times)
-    print(f"  {name}: avg={avg*1000:.1f} ms over {iterations} runs "
-          f"(min={min(times)*1000:.1f} ms, max={max(times)*1000:.1f} ms)")
+    print(
+        f"  {name}: avg={avg*1000:.1f} ms over {iterations} runs "
+        f"(min={min(times)*1000:.1f} ms, max={max(times)*1000:.1f} ms)"
+    )
     return avg
 
 
