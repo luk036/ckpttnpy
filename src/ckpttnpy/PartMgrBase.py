@@ -172,7 +172,6 @@ class PartMgrBase:
         """
         totalgain = 0
         deferredsnapshot = False
-        snapshot = None
         besttotalgain = 0
         journal: list | None = None  # list of (index, old_value) — avoids full copy
 
