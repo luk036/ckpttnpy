@@ -20,31 +20,12 @@ class FMKWayGainMgr(FMGainMgr):
     """
 
     def __init__(self, GainCalc: Any, hyprgraph: Any, num_parts: int):
-        """
-        The function initializes an object with the given parameters and calls the parent class's
-        initialization method.
 
-        :param GainCalc: The `GainCalc` parameter is a type or class that is used for calculating the gain
-            of a netlist. It is likely a separate class that has methods or functions for calculating the gain
-            based on certain criteria or algorithms
-        :param hyprgraph: The `hyprgraph` parameter is of type `Netlist` and it represents a description of the netlist
-        :param num_parts: The `num_parts` parameter is an integer that represents the number of partitions.
-            It is of type `int`
-        :type num_parts: int
-        """
         FMGainMgr.__init__(self, GainCalc, hyprgraph, num_parts)
         self.rr = Robin(num_parts)
 
     def init(self, part: Part) -> int:
-        """
-        The `init` function initializes or reinitializes certain variables and data structures based on the
-        given `part` argument.
 
-        :param part: The `part` parameter is a list that represents the parts in the system. Each element in
-            the list corresponds to a part, and the index of the element represents the part number
-        :type part: Part
-        :return: The variable `totalcost` is being returned.
-        """
         totalcost = FMGainMgr.init(self, part)
 
         for bckt in self.gainbucket:
@@ -65,45 +46,26 @@ class FMKWayGainMgr(FMGainMgr):
         return totalcost
 
     def lock(self, whichPart: int, v: Any) -> None:
-        """
-        The lock function sets a key by detaching a vertex link from a gain bucket and locking it.
 
-        :param whichPart: An unsigned 8-bit integer representing a specific part or section
-        :param v: The parameter `v` is of type `node_t`
-        """
         vlink = self.gain_calc.vertex_list[whichPart][v]
         self.gainbucket[whichPart].detach(vlink)
         vlink.next = vlink  # lock
 
     def lock_all(self, _: Any, v: Any) -> None:
-        """
-        The `lock_all` function locks a specific vertex in a graph by detaching it from its bucket and
-        setting its `next` attribute to itself.
 
-        :param _: The underscore (_) is a convention in Python to indicate that a parameter is not going to
-            be used in the function. It is often used as a placeholder when the function signature requires a
-            certain number of parameters, but the function does not actually need to use all of them
-        :param v: The parameter `v` represents the vertex that needs to be locked
-        """
         for vlist, bckt in zip(self.gain_calc.vertex_list, self.gainbucket):
             vlink = vlist[v]
             bckt.detach(vlink)
             vlink.next = vlink  # lock
 
     def update_move_v(self, move_info_v: tuple[Any, int, int], gain: int) -> None:
-        """
-        The function `update_move_v` updates the gain for a moving cell in a specific partition.
 
-        :param move_info_v: A tuple containing three elements: v, from_part, and to_part
-        :param gain: The `gain` parameter represents the gain value that needs to be updated for the moving cell
-        """
         v, from_part, to_part = move_info_v
         for k in [k for k in self.rr.exclude(from_part) if k != to_part]:
             self.gainbucket[k].modify_key(
                 self.gain_calc.vertex_list[k][v], self.gain_calc.delta_gain_v[k]
             )
         self._set_key(from_part, v, -gain)
-        # self.lock(to_part, v)
 
     def modify_key(self, w: Any, part_w: int, key: Dict[int, int]) -> None:
         """
@@ -143,16 +105,7 @@ class FMKWayGainMgr(FMGainMgr):
     # private:
 
     def _set_key(self, whichPart: int, v: Any, key: int) -> None:
-        """
-        The `_set_key` function sets a key value for a specific part and vertex in a gainbucket.
 
-        :param whichPart: whichPart is a variable of type uint8_t. It is used to specify which part of the
-            gainbucket to set the key for
-        :param v: The parameter `v` is of type `node_t` and represents a node in the `vertex_list` of the
-            `gain_calc` object
-        :param key: The `key` parameter is an integer value that is used to set the key for a specific node
-            in the `gainbucket` list
-        """
         self.gainbucket[whichPart].set_key(
             self.gain_calc.vertex_list[whichPart][v], key
         )

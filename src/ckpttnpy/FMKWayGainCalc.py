@@ -75,16 +75,7 @@ class FMKWayGainCalc:
         self._num_pool: List[int] = [0] * num_parts
 
     def init(self, part: Part) -> int:
-        """
-        The `init` function initializes the total cost and resets the data values for each vertex link, and
-        then initializes the gain for each net.
 
-        :param part: The "part" parameter is a list that represents the partitioning of the graph. Each
-            element in the list corresponds to a vertex in the graph, and the value of the element indicates
-            which partition the vertex belongs to
-        :type part: Part
-        :return: The method is returning the value of the `totalcost` variable.
-        """
         self.totalcost = 0
         for vlist in self.vertex_list:
             for vlink in vlist.values():
@@ -94,15 +85,7 @@ class FMKWayGainCalc:
         return self.totalcost
 
     def _init_gain(self, net: Any, part: Part) -> None:
-        """
-        The function `_init_gain` initializes the gain for a given network based on its degree.
 
-        :param net: The `net` parameter represents a node in a graph. It is of type `node_t`
-        :param part: The `part` parameter is a list that represents a partition of nodes in the network. It
-            is used to determine the gain of moving a particular node to a different partition
-        :type part: Part
-        :return: nothing.
-        """
         degree = self.hyprgraph.ugraph.degree[net]
         if degree < 2:  # unlikely, self-loop, etc.
             return  # does not provide any gain when move
@@ -114,29 +97,12 @@ class FMKWayGainCalc:
             self._init_gain_2pin_net(net, part)
 
     def _modify_gain(self, v: Any, pv: int, weight: int) -> None:
-        """
-        The function `_modify_gain` modifies the gain of a node in a graph by adding a weight to it.
 
-        :param v: The parameter `v` is of type `node_t` and represents a node in a graph. It is used as an
-            argument in the function `_modify_gain`
-        :param pv: pv is a node that is being excluded from the rr (round-robin) list
-        :param weight: The weight parameter is an integer that represents the weight to be added to the data
-            of each vertex in the vertex list
-        """
         for k in self.rr.exclude(pv):
             self.vertex_list[k][v].data[0] += weight
 
     def _init_gain_2pin_net(self, net: Any, part: Part) -> None:
-        """
-        The function `_init_gain_2pin_net` initializes the gain for a 2-pin net in a graph.
 
-        :param net: The `net` parameter is a `node_t` object, which represents a net in a graph. It is used
-            to identify a specific net in the graph
-        :param part: The `part` parameter is a list that represents the partitioning of the nodes in the
-            graph. Each element in the list corresponds to a node in the graph, and the value of the element
-            indicates the partition to which the node belongs
-        :type part: Part
-        """
         net_cur = iter(self.hyprgraph.ugraph[net])
         w = next(net_cur)
         v = next(net_cur)
@@ -152,16 +118,7 @@ class FMKWayGainCalc:
             self.vertex_list[part_w][v].data[0] += weight
 
     def _init_gain_3pin_net(self, net: Any, part: Part) -> None:
-        """
-        The function `_init_gain_3pin_net` initializes the gain for a 3-pin net in a graph.
 
-        :param net: The `net` parameter represents a node in a graph. It is of type `node_t`
-        :param part: The `part` parameter is a list that represents the partitioning of nodes in the graph.
-            Each element in the list corresponds to a node in the graph, and the value of the element represents
-            the partition that the node belongs to
-        :type part: Part
-        :return: The function does not explicitly return anything.
-        """
         net_cur = iter(self.hyprgraph.ugraph[net])
         w = next(net_cur)
         v = next(net_cur)

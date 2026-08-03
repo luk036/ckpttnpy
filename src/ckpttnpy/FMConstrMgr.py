@@ -50,22 +50,6 @@ class FMConstrMgr(Generic[Gnl]):
     def __init__(
         self, hyprgraph: Gnl, bal_tol: float, module_weight: Any, num_parts: int = 2
     ):
-        """
-        The function initializes the attributes of an object and calculates a lower
-        bound value.
-
-        :param hyprgraph: The `hyprgraph` parameter represents a list of values.
-            It is not clear what these values represent without further context
-        :param bal_tol: The `bal_tol` parameter represents the balance tolerance.
-            It is a value that determines how balanced the weights of the parts
-            should be. The lower the value, the more balanced the weights should
-            be
-        :param module_weight: The `module_weight` parameter represents the weight
-            of each module
-        :param num_parts: The `num_parts` parameter represents the number of parts
-            or modules that the system is divided into. It is an optional
-            parameter with a default value of 2, defaults to 2 (optional)
-        """
         self.hyprgraph = hyprgraph
         self.bal_tol = bal_tol
         self.module_weight = module_weight
@@ -76,30 +60,11 @@ class FMConstrMgr(Generic[Gnl]):
         self.lowerbound = round(totalweightK * self.bal_tol)
 
     def init(self, part: Part) -> None:
-        """
-        The `init` function initializes the `diff` list based on the module
-        weights and the partition of the vertices.
-
-        :param part: The `part` parameter is of type `Part` and it represents a
-            partition of the nodes in a graph. Each node is assigned to a part,
-            and the `part` parameter stores this assignment information
-        :type part: Part
-        """
         self.diff = [0] * self.num_parts
         for v in self.hyprgraph:
             self.diff[part[v]] += self.get_module_weight(v)
 
     def get_module_weight(self, node_index: int) -> int:
-        """
-        The function `get_module_weight` returns the weight of a module, given its
-        index.
-
-        :param node_index: The parameter `node_index` is of type `int` and it
-            represents the index or key used to access the `module_weight`
-            dictionary
-        :return: the value of `1` if `self.module_weight` is `None`, otherwise it
-            is returning the value of `self.module_weight[v]`.
-        """
         return 1 if self.module_weight is None else self.module_weight[node_index]
 
     def _get_diff_from(self, move_info_v: tuple) -> int:
@@ -167,41 +132,14 @@ class FMConstrMgr(Generic[Gnl]):
         return LegalCheck.AllSatisfied  # all satisfied
 
     def check_constraints(self, move_info_v: tuple[Any, int, int]) -> bool:
-        """
-        The function `check_constraints` checks if a given move satisfies certain constraints.
-
-        :param move_info_v: A tuple containing three elements: v, from_part, and an underscore
-        :return: a boolean value.
-        """
         diffFrom = self._get_diff_from(move_info_v)
         return diffFrom >= self.lowerbound
 
     def update_move(self, move_info_v: tuple[Any, int, int]) -> None:
-        """
-        The `update_move` function updates the `diff` dictionary by adding the
-        weight to the `to_part` key and subtracting the weight from the
-        `from_part` key.
-
-        :param move_info_v: The `move_info_v` parameter is a tuple containing
-            three elements. The first element is not used in this method, so it
-            is ignored. The second element, `from_part`, represents the part from
-            which the move is being made. The third element, `to_part`,
-            represents the part to
-        """
         _, from_part, to_part = move_info_v
         self.diff[to_part] += self.weight
         self.diff[from_part] -= self.weight
 
     def final_check(self, part: Part) -> bool:
-        """
-        The `final_check` function checks if the final partitioning of the graph
-        satisfies the balance constraints.
-
-        :param part: The `part` parameter is of type `Part` and it represents a
-            partition of the nodes in a graph. Each node is assigned to a part,
-            and the `part` parameter stores this assignment information
-        :type part: Part
-        :return: a boolean value indicating whether the final partitioning of the graph satisfies the balance constraints.
-        """
         self.init(part)
         return all(diff >= self.lowerbound for diff in self.diff)

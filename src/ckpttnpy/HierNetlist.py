@@ -19,17 +19,6 @@ class HierNetlist(Netlist):
     parent: Netlist
 
     def __init__(self, ugraph: nx.Graph, modules: Any, nets: Any):
-        """
-        The function initializes an object with a graph, modules, and nets, and sets some attributes.
-
-        :param ugraph: ugraph is a variable of type nx.Graph, which represents a graph. It is used as an argument
-            in the constructor of the class
-        :type ugraph: nx.Graph
-        :param modules: The `modules` parameter is either a range or a list that represents the modules in
-            the graph. It contains the information about the modules present in the graph
-        :param nets: The `nets` parameter is either a range or a list that represents the nets in the graph.
-            A net is a collection of interconnected nodes in a circuit or network
-        """
         Netlist.__init__(self, ugraph, modules, nets)
 
         self.node_down_list: List[Any] = []
@@ -37,20 +26,9 @@ class HierNetlist(Netlist):
         self.clusters: List[Any] = []
 
     def get_degree(self, v: Any) -> int:
-        """
-        The function `get_degree` returns the sum of the weights of all edges connected to a given vertex.
-
-        :param v: The parameter `v` represents a vertex in a graph
-        :return: The function `get_degree` returns the sum of the values in the `net_weight` dictionary for
-            each element in the `ugraph[v]` list.
-        """
         return sum(self.net_weight.get(net, 1) for net in self.ugraph[v])
 
     def get_max_degree(self) -> int:
-        """
-        The function `get_max_degree` returns the maximum degree of all the modules in a graph.
-        :return: the maximum degree of all the modules in the graph.
-        """
         return max(self.get_degree(v) for v in self.modules)
 
     def projection_down(
@@ -92,13 +70,6 @@ class HierNetlist(Netlist):
     def projection_up(
         self, part: Union[dict, list], part_up: Union[dict, list]
     ) -> None:
-        """
-        The `projection_up` function maps values from `part` to `part_up` based on the indices in
-        `self.node_down_list`.
-
-        :param part: The parameter `part` can be either a dictionary or a list of integers
-        :param part_up: The `part_up` parameter is either a dictionary or a list of integers
-        """
         for v1, v2 in enumerate(self.node_down_list):
             part_up[v1] = part[v2]
 

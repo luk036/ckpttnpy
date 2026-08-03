@@ -15,24 +15,10 @@ Part = Union[Dict[Any, int], List[int]]
 # The `NNPartMgr` class is a base class that manages parts, including their hierarchy, gain, and
 # constraints.
 class NNPartMgr:
-    """Base class for Fiduccia-Mattheyses Partitioning Manager
 
-    The `NNPartMgr` class is a base class that manages parts, including their hierarchy, gain, and
-    constraints.
-    """
 
     def __init__(self, hyprgraph: Any, gain_mgr: Any, constr_mgr: Any):
-        """
-        The function initializes an object with three arguments and sets their values as attributes of the
-        object.
 
-        :param hyprgraph: The `hyprgraph` parameter is an object of type `hyprgraph` which is used for some purpose in the
-            class. The specific purpose is not mentioned in the code snippet provided
-        :param gain_mgr: The `gain_mgr` parameter is an object of type `gain_mgr`. It is used to manage the
-            gains of the system
-        :param constr_mgr: The `constr_mgr` parameter is an object of type `constr_mgr`. It is used to
-            manage constraints in the code
-        """
         self.hyprgraph = hyprgraph
         self.gain_mgr = gain_mgr
         self.validator = constr_mgr
@@ -111,7 +97,6 @@ class NNPartMgr:
         legalcheck = LegalCheck.NotSatisfied
         while legalcheck != LegalCheck.AllSatisfied:  # satisfied:
             # Take the gainmax with v from gainbucket
-            # gainmax = self.gain_mgr.gainbucket.get_max()
             to_part = self.validator.select_togo()
             if self.gain_mgr.gainbucket[to_part]._max == 0:  # is_empty_togo()
                 break
@@ -136,15 +121,7 @@ class NNPartMgr:
         return legalcheck
 
     def optimize(self, part: Part) -> None:
-        """
-        The `optimize` function iteratively optimizes the cost of a given part until no further improvement
-        can be made.
 
-        :param part: The "part" parameter is an object of type "Part". It is used as input for the
-            optimization process
-        :type part: Part
-        """
-        # legalcheck = LegalCheck.NotSatisfied
         while True:
             self.init(part)
             totalcostbefore = self.totalcost
@@ -163,11 +140,7 @@ class NNPartMgr:
         :param part: The partition assignment to optimize
         :type part: Part
         """
-        # self.init(part)
-        # totalcostbefore = self.totalcost
-
         totalgain = 0
-        # legalcheck = LegalCheck.NotSatisfied
 
         while not self.gain_mgr.is_empty():
             # Take the gainmax with v from gainbucket
@@ -184,7 +157,6 @@ class NNPartMgr:
             # Update v and its neigbours (even they are in waitinglist)
             # Put neigbours to bucket
             v, _, to_part = move_info_v
-            # self.gain_mgr.lock(to_part, v)
             self.gain_mgr.update_move(part, move_info_v)
             self.gain_mgr.update_move_v(move_info_v, gainmax)
             self.validator.update_move(move_info_v)
@@ -194,14 +166,5 @@ class NNPartMgr:
         self.totalcost -= totalgain
 
     def final_check(self, part: Part) -> bool:
-        """
-        The `final_check` function checks if the final partitioning of the graph is legal according to the
-        constraints defined in the validator.
 
-        :param part: The `part` parameter represents the final partitioning of the graph. It is a data
-            structure that assigns each vertex to a specific partition
-        :type part: Part
-        :return: The function `final_check` returns a boolean value indicating whether the final
-            partitioning of the graph is legal according to the constraints defined in the validator.
-        """
         return bool(self.validator.final_check(part))

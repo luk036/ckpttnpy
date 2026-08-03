@@ -22,19 +22,7 @@ class FMGainMgr:
     # public:
 
     def __init__(self, GainCalc: Any, hyprgraph: Any, num_parts: int = 2) -> None:
-        """
-        The function initializes an object with the given parameters and sets up variables for calculating
-        gains.
 
-        :param GainCalc: The `GainCalc` parameter is a type or class that is used for calculating the gain
-            of a partition in the code. It is passed as an argument to the `__init__` method and stored as an
-            instance variable `self.gain_calc`
-        :param hyprgraph: The `hyprgraph` parameter is an object of type `Netlist`. It represents a netlist, which is a
-            description of the connections between components in a circuit or system
-        :param num_parts: The `num_parts` parameter is an integer that represents the number of partitions.
-            It determines how many partitions the algorithm will divide the `hyprgraph` (Netlist) into, defaults to 2
-            (optional)
-        """
         self.hyprgraph = hyprgraph
         self.num_parts = num_parts
         self.gain_calc = GainCalc(hyprgraph, num_parts)
@@ -44,34 +32,17 @@ class FMGainMgr:
         self.waitinglist = Dllist[List[int]]([0, 3734])  # instance, not shared
 
     def init(self, part: Part) -> int:
-        """
-        The `init` function initializes the object and calculates the total cost based on the given part.
 
-        :param part: A list that contains the description of a part
-        :return: The total cost is being returned.
-        """
         totalcost = self.gain_calc.init(part)
         self.waitinglist.clear()
         assert isinstance(totalcost, int)
         return totalcost
 
     def is_empty(self) -> bool:
-        """
-        The function `is_empty` checks if all the `_max` values of the `gainbucket` objects are equal to 0.
-        :return: a boolean value.
-        """
         return all(bckt._max == 0 for bckt in self.gainbucket)
 
     def select(self, part: Part) -> tuple[tuple[Any, int, int], int]:
-        """
-        The `select` function selects the best candidate based on the maximum gain and returns the move
-        information and the maximum gain.
 
-        :param part: The `part` parameter is a list that represents the current assignment of vertices to
-            parts. Each element in the list corresponds to a vertex, and its value represents the part to which
-            the vertex is currently assigned
-        :return: a tuple containing the move_info_v and maxk values.
-        """
         to_part = max(range(self.num_parts), key=lambda k: self.gainbucket[k].get_max())
         maxk = self.gainbucket[to_part].get_max()
 
@@ -83,12 +54,7 @@ class FMGainMgr:
         return move_info_v, maxk
 
     def select_togo(self, to_part: int) -> tuple[Any, int]:
-        """
-        The function `select_togo` selects the best candidate to go based on the given `to_part` argument.
 
-        :param to_part: The `to_part` parameter is of type `uint8_t` and represents a description
-        :return: a tuple containing two values: `v` and `gainmax`.
-        """
         gainmax = self.gainbucket[to_part].get_max()
         vlink = self.gainbucket[to_part].popleft()
         self.waitinglist.append(vlink)
@@ -96,16 +62,7 @@ class FMGainMgr:
         return v, gainmax
 
     def update_move(self, part: Part, move_info_v: tuple[Any, int, int]) -> None:
-        """
-        The function `update_move` updates the gain of a move in a graph based on the given move
-        information.
 
-        :param part: A list that represents the partition of the graph. Each element in the list corresponds
-            to a vertex in the graph and indicates which partition the vertex belongs to. For example, if part =
-            [0, 1, 0, 1], it means that vertex 0 and vertex 2 belong
-        :param move_info_v: The `move_info_v` parameter is a tuple that contains information about a move.
-            It has the following structure:
-        """
         self.gain_calc.update_move_init()
         v, from_part, to_part = move_info_v
         for net in self.hyprgraph.ugraph[v]:
@@ -146,15 +103,7 @@ class FMGainMgr:
     def _update_move_net(
         self, part: Part, move_info: list, gain_calc_method: Any
     ) -> None:
-        """
-        The function `_update_move_net` updates the move for a net in a partition solution.
 
-        :param part: A list representing the partition solution. Each element in the list represents a node
-            and its corresponding partition (0 or 1)
-        :param move_info: The `move_info` parameter is a variable of type `type`. It is not clear what
-            specific information is passed in this variable without further context
-        :param gain_calc_method: The method to call on the gain_calc object.
-        """
         delta_gain = gain_calc_method(part, move_info)
         if isinstance(delta_gain, (list, tuple)):
             for dGw, w in zip(delta_gain, self.gain_calc.idx_vec):

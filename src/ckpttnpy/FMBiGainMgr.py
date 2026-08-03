@@ -19,17 +19,7 @@ class FMBiGainMgr(FMGainMgr):
     """
 
     def init(self, part: Part) -> int:
-        """
-        The `init` function initializes the state of an object and performs some
-        calculations based on the input `part`.
 
-        :param part: The "part" parameter is a list that represents the
-            partitioning of the vertices in the graph. Each element in the list
-            corresponds to a vertex in the graph and indicates which partition the
-            vertex belongs to (0 or 1)
-        :type part: Part
-        :return: the value of the variable "totalcost".
-        """
         totalcost = FMGainMgr.init(self, part)
 
         for bckt in self.gainbucket:
@@ -43,27 +33,13 @@ class FMBiGainMgr(FMGainMgr):
         return totalcost
 
     def lock(self, whichPart: int, v: Any) -> None:
-        """
-        The `lock` function locks a vertex by detaching it from a gain bucket and
-        setting its next pointer to itself.
 
-        :param whichPart: whichPart is a variable of type uint8_t. It is used to
-            specify which part of the code to lock
-        :param v: The parameter `v` is of type `node_t` and represents a node in
-            the graph
-        """
         vlink = self.gain_calc.vertex_list[v]
         self.gainbucket[whichPart].detach(vlink)
         vlink.next = vlink  # lock
 
     def lock_all(self, from_part: int, v: Any) -> None:
-        """
-        The function "lock_all" locks a specific part and its corresponding opposite part.
 
-        :param from_part: The `from_part` parameter is of type `uint8_t` and is used to determine which part
-            to lock
-        :param v: The parameter "v" is of type "node_t"
-        """
         self.lock(from_part ^ 1, v)
 
     def modify_key(self, w: Any, part_w: int, key: int) -> None:
@@ -97,25 +73,12 @@ class FMBiGainMgr(FMGainMgr):
         self.gainbucket[part_w ^ 1].modify_key(self.gain_calc.vertex_list[w], key)
 
     def update_move_v(self, move_info_v: tuple[Any, int, int], gain: int) -> None:
-        """
-        The function `update_move_v` updates the value of a variable `v` by subtracting the `gain` from it.
 
-        :param move_info_v: A tuple containing three elements: v, from_part, and an underscore variable
-        :param gain: The `gain` parameter represents the amount of gain or loss in value that is associated
-            with the move
-        """
         v, from_part, _ = move_info_v
         self._set_key(from_part, v, -gain)
 
     # private:
 
     def _set_key(self, whichPart: int, v: Any, key: int) -> None:
-        """
-        The `_set_key` function sets a key for a specific part and vertex in a gainbucket.
 
-        :param whichPart: whichPart is a variable of type uint8_t, which represents a part or section of the
-            gainbucket
-        :param v: The parameter "v" is of type "node_t"
-        :param key: The key parameter is an integer value that represents a key value
-        """
         self.gainbucket[whichPart].set_key(self.gain_calc.vertex_list[v], key)

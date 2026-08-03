@@ -20,14 +20,6 @@ class FMPartMgr(PartMgrBase):
     """
 
     def take_snapshot(self, part: Part) -> Part:
-        """
-        The `take_snapshot` function takes a `Part` object as input and returns a copy of it.
-
-        :param part: The "part" parameter is of type "Part" and it represents the part that you want to take
-            a snapshot of
-        :type part: Part
-        :return: a copy of the "part" object.
-        """
         return part.copy()
 
     def restore_part_info(self, snapshot: Any, part: Part) -> None:

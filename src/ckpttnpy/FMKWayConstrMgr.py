@@ -18,39 +18,14 @@ class FMKWayConstrMgr(FMConstrMgr):
     def __init__(
         self, hyprgraph: Any, bal_tol: float, module_weight: Any, num_parts: int
     ):
-        r"""
-        The function initializes an object with certain parameters and sets all elements of the "illegal"
-        list to True.
-
-        :param hyprgraph: The `hyprgraph` parameter is a type that is not specified in the code snippet. It is likely a
-            custom type or a reference to another class or module
-        :param bal_tol: The `bal_tol` parameter is used to specify the balance tolerance for the module. It
-            represents the maximum allowable difference in weight between the heaviest and lightest parts in the
-            module
-        :param module_weight: The `module_weight` parameter represents the weight of a single module
-        :param num_parts: The `num_parts` parameter is an integer that represents the number of parts in the
-            system
-        :type num_parts: int
-        """
         FMConstrMgr.__init__(self, hyprgraph, bal_tol, module_weight, num_parts)
         self.illegal = [True] * num_parts
 
     def init(self, part: Part) -> None:
-        """
-        The `init` function initializes the `illegal` attribute by checking if each element in `self.diff`
-        is less than `self.lowerbound`.
-
-        :param part: The `part` parameter is of type `Part` and it represents some part of an object or system
-        :type part: Part
-        """
         FMConstrMgr.init(self, part)
         self.illegal = [d < self.lowerbound for d in self.diff]
 
     def select_togo(self) -> int:
-        """
-        The function `select_togo` returns the index of the minimum value in the `diff` list.
-        :return: The index of the minimum value in the list `self.diff`.
-        """
         return min(range(self.num_parts), key=lambda k: self.diff[k])
 
     def check_legal(self, move_info_v: tuple[Any, int, int]) -> LegalCheck:
