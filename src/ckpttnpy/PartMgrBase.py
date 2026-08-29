@@ -2,13 +2,14 @@
 
 PartMgrBase provides the core FM (Fiduccia-Mattheyses) partition optimization loop:
 initialization, legalization, iterative 1-pass optimization with backtracking,
-and abstract methods for snapshot/restore used by subclasses.
+and concrete snapshot/restore defaults for subclasses.
 """
 
 # Take a snapshot when a move make **negative** gain.
 # Snapshot in the form of "interface"???
-from abc import abstractmethod
 from typing import Any, Dict, List, Union
+
+from mywheel.map_adapter import MapAdapter
 
 from .FMConstrMgr import LegalCheck
 
@@ -192,21 +193,20 @@ class PartMgrBase:
 
         return bool(self.validator.final_check(part))
 
-    @abstractmethod
     def take_snapshot(self, part: Part) -> Part:
-        """
-        The `take_snapshot` function is an abstract method that takes a `Part` object as an argument and
-        returns a value.
+        """Take a snapshot of the current partition state.
+
+        Default implementation copies the partition (list or dict); used to
+        roll back to the best-known state on negative-gain moves.
 
         :param part: The "part" parameter is of type "Part" and is used to specify the part of the system
             for which a snapshot needs to be taken
         :type part: Part
         """
+        return part.copy()
 
-    @abstractmethod
     def restore_part_info(self, snapshot: Any, part: Part) -> None:
-        """
-        The function `restore_part_info` restores the information of a specific part from a given snapshot.
+        """Restore partition information from a snapshot.
 
         :param snapshot: A snapshot of the part's information that needs to be restored. This could be a
             dictionary, object, or any other data structure that contains the necessary information to restore
@@ -214,3 +214,11 @@ class PartMgrBase:
         :param part: The "part" parameter is of type "Part"
         :type part: Part
         """
+        if isinstance(snapshot, list):
+            for v, k in enumerate(snapshot):
+                part[v] = k
+        elif isinstance(snapshot, dict) or isinstance(snapshot, MapAdapter):
+            for v, k in snapshot.items():
+                part[v] = k
+        else:
+            raise NotImplementedError()
