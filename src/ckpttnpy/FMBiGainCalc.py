@@ -8,7 +8,6 @@ general nets, tracking total cut cost.
 from typing import Any, Dict, List, Union
 
 from mywheel.dllist import Dllink
-from mywheel.map_adapter import MapAdapter
 
 Part = Union[Dict[Any, int], List[int]]
 
@@ -21,6 +20,9 @@ class FMBiGainCalc:
         "totalcost",
         "hyprgraph",
         "vertex_list",
+        "vertex_nets",
+        "net_pins",
+        "net_degree",
         "idx_vec",
         "delta_gain_w",
         "_delta_gain_buf",
@@ -45,17 +47,27 @@ class FMBiGainCalc:
         self.hyprgraph = hyprgraph
         self.vertex_list: Any = None  # Will be set below
         if isinstance(self.hyprgraph.modules, range):
-            self.vertex_list = MapAdapter([Dllink([0, i]) for i in self.hyprgraph])
+            self.vertex_list = [Dllink([0, i]) for i in self.hyprgraph]
         elif isinstance(self.hyprgraph.modules, list):
             self.vertex_list = {v: Dllink([0, v]) for v in self.hyprgraph}
         else:
             raise NotImplementedError
+        self.net_pins = {
+            net: list(self.hyprgraph.ugraph[net]) for net in self.hyprgraph.nets
+        }
+        self.net_degree = {net: len(pins) for net, pins in self.net_pins.items()}
+        self.vertex_nets = {v: [] for v in self.hyprgraph}
+        for net, pins in self.net_pins.items():
+            for v in pins:
+                self.vertex_nets[v].append(net)
         self.idx_vec: List[Any] = []
         self._delta_gain_buf: List[int] = []
 
     def init(self, part: Part) -> int:
         self.totalcost = 0
-        for vlink in self.vertex_list.values():
+        vlist = self.vertex_list
+        links = vlist if isinstance(vlist, list) else vlist.values()
+        for vlink in links:
             vlink.data[0] = 0
         for net in self.hyprgraph.nets:
             self._init_gain(net, part)
@@ -64,7 +76,7 @@ class FMBiGainCalc:
     # private:
 
     def _init_gain(self, net: Any, part: Part) -> None:
-        degree = self.hyprgraph.ugraph.degree[net]
+        degree = self.net_degree[net]
         if degree < 2:  # unlikely, self-loop, etc.
             return  # does not provide any gain when move
         if degree == 3:
@@ -78,9 +90,7 @@ class FMBiGainCalc:
         self.vertex_list[w].data[0] += weight
 
     def _init_gain_2pin_net(self, net: Any, part: Part) -> None:
-        net_cur = iter(self.hyprgraph.ugraph[net])
-        w = next(net_cur)
-        v = next(net_cur)
+        w, v = self.net_pins[net]
         weight = self.hyprgraph.get_net_weight(net)
         if part[w] != part[v]:
             self.totalcost += weight
@@ -91,10 +101,7 @@ class FMBiGainCalc:
             self._modify_gain(v, -weight)
 
     def _init_gain_3pin_net(self, net: Any, part: Part) -> None:
-        net_cur = iter(self.hyprgraph.ugraph[net])
-        w = next(net_cur)
-        v = next(net_cur)
-        u = next(net_cur)
+        w, v, u = self.net_pins[net]
         weight = self.hyprgraph.get_net_weight(net)
         if part[u] == part[v]:
             if part[w] == part[v]:
@@ -109,8 +116,9 @@ class FMBiGainCalc:
         self.totalcost += weight
 
     def _init_gain_general_net(self, net: Any, part: Part) -> None:
+        pins = self.net_pins[net]
         num = [0, 0]
-        for w in self.hyprgraph.ugraph[net]:
+        for w in pins:
             num[part[w]] += 1
 
         weight = self.hyprgraph.get_net_weight(net)
@@ -120,14 +128,13 @@ class FMBiGainCalc:
 
         for k in [0, 1]:
             if num[k] == 0:
-                for w in self.hyprgraph.ugraph[net]:
+                for w in pins:
                     self._modify_gain(w, -weight)
             elif num[k] == 1:
-                cur = iter(self.hyprgraph.ugraph[net])
-                w = next(cur)
-                while part[w] != k:
-                    w = next(cur)
-                self._modify_gain(w, weight)
+                for w in pins:
+                    if part[w] == k:
+                        self._modify_gain(w, weight)
+                        break
 
     def update_move_init(self) -> None:
         """
@@ -144,9 +151,9 @@ class FMBiGainCalc:
         :return: The other vertex w connected to v via this net
         """
         net, v, from_part, _ = move_info
-        net_cur = iter(self.hyprgraph.ugraph[net])
-        u = next(net_cur)
-        w = u if u != v else next(net_cur)
+        pins = self.net_pins[net]
+        u = pins[0]
+        w = u if u != v else pins[1]
         weight = self.hyprgraph.get_net_weight(net)
         delta = 2 if part[w] == from_part else -2
         self.delta_gain_w = delta * weight
@@ -161,10 +168,10 @@ class FMBiGainCalc:
         :param v: Vertex being moved (excluded from the neighbour list).
         :param net: Net whose adjacency is iterated.
         """
-        self.idx_vec.clear()
-        for w in self.hyprgraph.ugraph[net]:
-            if w != v:
-                self.idx_vec.append(w)
+        idx_vec = self.idx_vec
+        idx_vec.clear()
+        idx_vec.extend(self.net_pins[net])
+        idx_vec.remove(v)
 
     def update_move_3pin_net(self, part: Part, move_info: list) -> List[int]:
         net, _, from_part, _ = move_info

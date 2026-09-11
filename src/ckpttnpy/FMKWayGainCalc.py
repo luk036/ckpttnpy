@@ -9,7 +9,6 @@ from itertools import permutations
 from typing import Any, Dict, List, Union
 
 from mywheel.dllist import Dllink
-from mywheel.map_adapter import MapAdapter
 from mywheel.robin import Robin
 
 Part = Union[Dict[Any, int], List[int]]
@@ -22,6 +21,9 @@ class FMKWayGainCalc:
         "totalcost",
         "hyprgraph",
         "vertex_list",
+        "vertex_nets",
+        "net_pins",
+        "net_degree",
         "num_parts",
         "rr",
         "delta_gain_v",
@@ -61,8 +63,7 @@ class FMKWayGainCalc:
 
         if isinstance(self.hyprgraph.modules, range):
             self.vertex_list = [
-                MapAdapter([Dllink([0, i]) for i in self.hyprgraph])
-                for _ in range(num_parts)
+                [Dllink([0, i]) for i in self.hyprgraph] for _ in range(num_parts)
             ]
         elif isinstance(self.hyprgraph.modules, list):
             self.vertex_list = [
@@ -70,6 +71,14 @@ class FMKWayGainCalc:
             ]
         else:
             raise NotImplementedError
+        self.net_pins = {
+            net: list(self.hyprgraph.ugraph[net]) for net in self.hyprgraph.nets
+        }
+        self.net_degree = {net: len(pins) for net, pins in self.net_pins.items()}
+        self.vertex_nets = {v: [] for v in self.hyprgraph}
+        for net, pins in self.net_pins.items():
+            for v in pins:
+                self.vertex_nets[v].append(net)
         self.idx_vec: List[Any] = []
         self._delta_gain_pool: List[List[int]] = []
         self._num_pool: List[int] = [0] * num_parts
@@ -77,14 +86,15 @@ class FMKWayGainCalc:
     def init(self, part: Part) -> int:
         self.totalcost = 0
         for vlist in self.vertex_list:
-            for vlink in vlist.values():
+            links = vlist if isinstance(vlist, list) else vlist.values()
+            for vlink in links:
                 vlink.data[0] = 0
         for net in self.hyprgraph.nets:
             self._init_gain(net, part)
         return self.totalcost
 
     def _init_gain(self, net: Any, part: Part) -> None:
-        degree = self.hyprgraph.ugraph.degree[net]
+        degree = self.net_degree[net]
         if degree < 2:  # unlikely, self-loop, etc.
             return  # does not provide any gain when move
         if degree > 3:
@@ -99,9 +109,7 @@ class FMKWayGainCalc:
             self.vertex_list[k][v].data[0] += weight
 
     def _init_gain_2pin_net(self, net: Any, part: Part) -> None:
-        net_cur = iter(self.hyprgraph.ugraph[net])
-        w = next(net_cur)
-        v = next(net_cur)
+        w, v = self.net_pins[net]
         part_w = part[w]
         part_v = part[v]
         weight = self.hyprgraph.get_net_weight(net)
@@ -114,10 +122,7 @@ class FMKWayGainCalc:
             self.vertex_list[part_w][v].data[0] += weight
 
     def _init_gain_3pin_net(self, net: Any, part: Part) -> None:
-        net_cur = iter(self.hyprgraph.ugraph[net])
-        w = next(net_cur)
-        v = next(net_cur)
-        u = next(net_cur)
+        w, v, u = self.net_pins[net]
         part_w = part[w]
         part_v = part[v]
         part_u = part[u]
@@ -156,10 +161,11 @@ class FMKWayGainCalc:
         :param net: Net node in the hypergraph
         :param part: Partition assignment for each vertex
         """
+        pins = self.net_pins[net]
         num = self._num_pool
         for k in range(self.num_parts):
             num[k] = 0
-        for w in self.hyprgraph.ugraph[net]:
+        for w in pins:
             num[part[w]] += 1
 
         weight = self.hyprgraph.get_net_weight(net)
@@ -171,14 +177,13 @@ class FMKWayGainCalc:
 
         for k, c in enumerate(num):
             if c == 0:
-                for w in self.hyprgraph.ugraph[net]:
+                for w in pins:
                     self.vertex_list[k][w].data[0] -= weight
             elif c == 1:
-                cur = iter(self.hyprgraph.ugraph[net])
-                w = next(cur)
-                while part[w] != k:
-                    w = next(cur)
-                self._modify_gain(w, part[w], weight)
+                for w in pins:
+                    if part[w] == k:
+                        self._modify_gain(w, part[w], weight)
+                        break
 
     def update_move_init(self) -> None:
         """Zero out the per-partition ``delta_gain_v`` buffer.
@@ -200,9 +205,9 @@ class FMKWayGainCalc:
         :return: The other vertex w connected to v via this net
         """
         net, v, from_part, to_part = move_info
-        net_cur = iter(self.hyprgraph.ugraph[net])
-        u = next(net_cur)
-        w = u if u != v else next(net_cur)
+        pins = self.net_pins[net]
+        u = pins[0]
+        w = u if u != v else pins[1]
         part_w = part[w]
         weight = self.hyprgraph.get_net_weight(net)
         delta_gain_w = self.delta_gain_w
@@ -228,10 +233,10 @@ class FMKWayGainCalc:
         :param v: Vertex being moved (excluded from the neighbour list).
         :param net: Net whose adjacency is iterated.
         """
-        self.idx_vec.clear()
-        for w in self.hyprgraph.ugraph[net]:
-            if w != v:
-                self.idx_vec.append(w)
+        idx_vec = self.idx_vec
+        idx_vec.clear()
+        idx_vec.extend(self.net_pins[net])
+        idx_vec.remove(v)
 
     def _alloc_delta(self, degree: int) -> List[List[int]]:
         """Return a ``degree × num_parts`` zeroed list from a reusable pool.

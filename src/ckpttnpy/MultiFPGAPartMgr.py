@@ -148,7 +148,7 @@ class MultiFPGAGainCalc(FMKWayGainCalc):
         # Additional logic to account for inter-FPGA communication costs
         # If net connects modules on different FPGAs, increase the cost
         connected_fpgas = set()
-        for w in self.hyprgraph.ugraph[net]:
+        for w in self.net_pins[net]:
             connected_fpgas.add(part[w])
 
         if len(connected_fpgas) > 1:  # Net spans multiple FPGAs
@@ -156,7 +156,7 @@ class MultiFPGAGainCalc(FMKWayGainCalc):
             net_weight = (
                 self.hyprgraph.get_net_weight(net) * self.inter_fpga_cost_weight
             )
-            for w in self.hyprgraph.ugraph[net]:
+            for w in self.net_pins[net]:
                 self._modify_gain(
                     w, part[w], -net_weight
                 )  # Negative gain for inter-FPGA connections

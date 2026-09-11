@@ -37,11 +37,23 @@ class FMGainMgr:
         return totalcost
 
     def is_empty(self) -> bool:
+        if self.num_parts == 2:
+            return self.gainbucket[0]._max == 0 and self.gainbucket[1]._max == 0
         return all(bckt._max == 0 for bckt in self.gainbucket)
 
     def select(self, part: Part) -> tuple[tuple[Any, int, int], int]:
-        to_part = max(range(self.num_parts), key=lambda k: self.gainbucket[k].get_max())
-        maxk = self.gainbucket[to_part].get_max()
+        if self.num_parts == 2:
+            g0 = self.gainbucket[0].get_max()
+            g1 = self.gainbucket[1].get_max()
+            if g0 >= g1:
+                to_part, maxk = 0, g0
+            else:
+                to_part, maxk = 1, g1
+        else:
+            to_part = max(
+                range(self.num_parts), key=lambda k: self.gainbucket[k].get_max()
+            )
+            maxk = self.gainbucket[to_part].get_max()
 
         vlink = self.gainbucket[to_part].popleft()
         self.waitinglist.append(vlink)
@@ -58,26 +70,25 @@ class FMGainMgr:
         return v, gainmax
 
     def update_move(self, part: Part, move_info_v: tuple[Any, int, int]) -> None:
-        self.gain_calc.update_move_init()
+        gain_calc = self.gain_calc
+        gain_calc.update_move_init()
         v, from_part, to_part = move_info_v
-        for net in self.hyprgraph.ugraph[v]:
-            degree = self.hyprgraph.ugraph.degree[net]
+        for net in gain_calc.vertex_nets[v]:
+            degree = gain_calc.net_degree[net]
             if degree < 2:  # unlikely, self-loop, etc.
                 continue  # does not provide any gain change when move
             move_info = [net, v, from_part, to_part]
             if degree == 2:
-                self._update_move_net(
-                    part, move_info, self.gain_calc.update_move_2pin_net
-                )
+                self._update_move_net(part, move_info, gain_calc.update_move_2pin_net)
             else:
-                self.gain_calc.init_idx_vec(v, net)
+                gain_calc.init_idx_vec(v, net)
                 if degree == 3:
                     self._update_move_net(
-                        part, move_info, self.gain_calc.update_move_3pin_net
+                        part, move_info, gain_calc.update_move_3pin_net
                     )
                 else:
                     self._update_move_net(
-                        part, move_info, self.gain_calc.update_move_general_net
+                        part, move_info, gain_calc.update_move_general_net
                     )
 
     @abstractmethod
@@ -101,6 +112,7 @@ class FMGainMgr:
         delta_gain = gain_calc_method(part, move_info)
         if isinstance(delta_gain, (list, tuple)):
             for dGw, w in zip(delta_gain, self.gain_calc.idx_vec):
-                self.modify_key(w, part[w], dGw)
+                if dGw:
+                    self.modify_key(w, part[w], dGw)
         else:
             self.modify_key(delta_gain, part[delta_gain], self.gain_calc.delta_gain_w)

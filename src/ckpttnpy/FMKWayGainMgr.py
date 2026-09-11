@@ -95,7 +95,8 @@ class FMKWayGainMgr(FMGainMgr):
             3
         """
         for k in self.rr.exclude(part_w):
-            self.gainbucket[k].modify_key(self.gain_calc.vertex_list[k][w], key[k])
+            if key[k]:
+                self.gainbucket[k].modify_key(self.gain_calc.vertex_list[k][w], key[k])
 
     # private:
 
