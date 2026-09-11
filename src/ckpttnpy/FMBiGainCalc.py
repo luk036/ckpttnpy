@@ -54,7 +54,6 @@ class FMBiGainCalc:
         self._delta_gain_buf: List[int] = []
 
     def init(self, part: Part) -> int:
-
         self.totalcost = 0
         for vlink in self.vertex_list.values():
             vlink.data[0] = 0
@@ -65,7 +64,6 @@ class FMBiGainCalc:
     # private:
 
     def _init_gain(self, net: Any, part: Part) -> None:
-
         degree = self.hyprgraph.ugraph.degree[net]
         if degree < 2:  # unlikely, self-loop, etc.
             return  # does not provide any gain when move
@@ -77,12 +75,9 @@ class FMBiGainCalc:
             self._init_gain_general_net(net, part)
 
     def _modify_gain(self, w: Any, weight: int) -> None:
-
         self.vertex_list[w].data[0] += weight
 
     def _init_gain_2pin_net(self, net: Any, part: Part) -> None:
-
-
         net_cur = iter(self.hyprgraph.ugraph[net])
         w = next(net_cur)
         v = next(net_cur)
@@ -96,7 +91,6 @@ class FMBiGainCalc:
             self._modify_gain(v, -weight)
 
     def _init_gain_3pin_net(self, net: Any, part: Part) -> None:
-
         net_cur = iter(self.hyprgraph.ugraph[net])
         w = next(net_cur)
         v = next(net_cur)
@@ -115,7 +109,6 @@ class FMBiGainCalc:
         self.totalcost += weight
 
     def _init_gain_general_net(self, net: Any, part: Part) -> None:
-
         num = [0, 0]
         for w in self.hyprgraph.ugraph[net]:
             num[part[w]] += 1
@@ -174,7 +167,6 @@ class FMBiGainCalc:
                 self.idx_vec.append(w)
 
     def update_move_3pin_net(self, part: Part, move_info: list) -> List[int]:
-
         net, _, from_part, _ = move_info
         delta_gain = [0, 0]
         gain = self.hyprgraph.get_net_weight(net)
@@ -220,7 +212,6 @@ class FMBiGainCalc:
         return delta_gain
 
     def update_move_general_net(self, part: Part, move_info: list) -> List[int]:
-
         net, _, from_part, to_part = move_info
         num = [0, 0]
         for w in self.idx_vec:

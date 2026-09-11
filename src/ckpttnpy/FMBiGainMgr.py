@@ -19,7 +19,6 @@ class FMBiGainMgr(FMGainMgr):
     """
 
     def init(self, part: Part) -> int:
-
         totalcost = FMGainMgr.init(self, part)
 
         for bckt in self.gainbucket:
@@ -33,13 +32,11 @@ class FMBiGainMgr(FMGainMgr):
         return totalcost
 
     def lock(self, whichPart: int, v: Any) -> None:
-
         vlink = self.gain_calc.vertex_list[v]
         self.gainbucket[whichPart].detach(vlink)
         vlink.next = vlink  # lock
 
     def lock_all(self, from_part: int, v: Any) -> None:
-
         self.lock(from_part ^ 1, v)
 
     def modify_key(self, w: Any, part_w: int, key: int) -> None:
@@ -73,12 +70,10 @@ class FMBiGainMgr(FMGainMgr):
         self.gainbucket[part_w ^ 1].modify_key(self.gain_calc.vertex_list[w], key)
 
     def update_move_v(self, move_info_v: tuple[Any, int, int], gain: int) -> None:
-
         v, from_part, _ = move_info_v
         self._set_key(from_part, v, -gain)
 
     # private:
 
     def _set_key(self, whichPart: int, v: Any, key: int) -> None:
-
         self.gainbucket[whichPart].set_key(self.gain_calc.vertex_list[v], key)

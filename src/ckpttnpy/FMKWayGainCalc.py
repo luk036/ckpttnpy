@@ -75,7 +75,6 @@ class FMKWayGainCalc:
         self._num_pool: List[int] = [0] * num_parts
 
     def init(self, part: Part) -> int:
-
         self.totalcost = 0
         for vlist in self.vertex_list:
             for vlink in vlist.values():
@@ -85,7 +84,6 @@ class FMKWayGainCalc:
         return self.totalcost
 
     def _init_gain(self, net: Any, part: Part) -> None:
-
         degree = self.hyprgraph.ugraph.degree[net]
         if degree < 2:  # unlikely, self-loop, etc.
             return  # does not provide any gain when move
@@ -97,12 +95,10 @@ class FMKWayGainCalc:
             self._init_gain_2pin_net(net, part)
 
     def _modify_gain(self, v: Any, pv: int, weight: int) -> None:
-
         for k in self.rr.exclude(pv):
             self.vertex_list[k][v].data[0] += weight
 
     def _init_gain_2pin_net(self, net: Any, part: Part) -> None:
-
         net_cur = iter(self.hyprgraph.ugraph[net])
         w = next(net_cur)
         v = next(net_cur)
@@ -118,7 +114,6 @@ class FMKWayGainCalc:
             self.vertex_list[part_w][v].data[0] += weight
 
     def _init_gain_3pin_net(self, net: Any, part: Part) -> None:
-
         net_cur = iter(self.hyprgraph.ugraph[net])
         w = next(net_cur)
         v = next(net_cur)

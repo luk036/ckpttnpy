@@ -26,7 +26,6 @@ class PartMgrBase:
     """
 
     def __init__(self, hyprgraph: Any, gain_mgr: Any, constr_mgr: Any):
-
         self.hyprgraph = hyprgraph
         self.gain_mgr = gain_mgr
         self.validator = constr_mgr
@@ -129,7 +128,6 @@ class PartMgrBase:
         return legalcheck
 
     def optimize(self, part: Part) -> None:
-
         for _ in range(100):  # max_passes
             self.init(part)
             totalcostbefore = self.totalcost
@@ -190,7 +188,6 @@ class PartMgrBase:
         self.totalcost -= totalgain
 
     def final_check(self, part: Part) -> bool:
-
         return bool(self.validator.final_check(part))
 
     def take_snapshot(self, part: Part) -> Part:

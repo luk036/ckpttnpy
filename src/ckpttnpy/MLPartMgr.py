@@ -36,7 +36,6 @@ class MLPartMgr:
         bal_tol: float,
         num_parts: int = 2,
     ) -> None:
-
         self.GainCalc = GainCalc
         self.GainMgr = GainMgr
         self.ConstrMgr = ConstrMgr
@@ -52,17 +51,12 @@ class MLPartMgr:
 
     @limitsize.setter
     def limitsize(self, limit: int) -> None:
-
         self.LIMIT_SIZE = limit
 
     def run_Partition(
         self, hyprgraph: Any, module_weight: Any, part: Any
     ) -> LegalCheck:
-
-
-
         def legalcheck_fn() -> tuple[LegalCheck, int]:
-
             gain_mgr = self.GainMgr(self.GainCalc, hyprgraph, self.num_parts)
             constr_mgr = self.ConstrMgr(
                 hyprgraph, self.bal_tol, module_weight, self.num_parts
@@ -72,7 +66,6 @@ class MLPartMgr:
             return legalcheck, part_mgr.totalcost
 
         def optimize_fn() -> int:
-
             gain_mgr = self.GainMgr(self.GainCalc, hyprgraph, self.num_parts)
             constr_mgr = self.ConstrMgr(
                 hyprgraph, self.bal_tol, module_weight, self.num_parts
@@ -110,7 +103,6 @@ class MLPartMgr:
 # balancing tolerance.
 class MLBiPartMgr(MLPartMgr):
     def __init__(self, bal_tol: float) -> None:
-
         MLPartMgr.__init__(
             self, FMBiGainCalc, FMBiGainMgr, FMBiConstrMgr, FMPartMgr, bal_tol
         )
@@ -118,7 +110,6 @@ class MLBiPartMgr(MLPartMgr):
 
 class MLKWayPartMgr(MLPartMgr):
     def __init__(self, bal_tol: float, num_parts: int) -> None:
-
         MLPartMgr.__init__(
             self,
             FMKWayGainCalc,
@@ -134,7 +125,6 @@ class MLKWayPartMgr(MLPartMgr):
 # balancing tolerance.
 class MLBiNNPartMgr(MLPartMgr):
     def __init__(self, bal_tol: float) -> None:
-
         MLPartMgr.__init__(
             self, FMBiGainCalc, FMBiGainMgr, FMBiConstrMgr, NNPartMgr, bal_tol
         )
@@ -142,7 +132,6 @@ class MLBiNNPartMgr(MLPartMgr):
 
 class MLKWayNNPartMgr(MLPartMgr):
     def __init__(self, bal_tol: float, num_parts: int) -> None:
-
         MLPartMgr.__init__(
             self,
             FMKWayGainCalc,

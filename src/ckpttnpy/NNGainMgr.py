@@ -19,9 +19,7 @@ class NNGainMgr:
     """The `NNGainMgr` class is a base class for managing gains in Fiduccia-Mattheyses partitioning algorithm."""
 
     def __init__(self, GainCalc: Any, hyprgraph: Any, num_parts: int = 2) -> None:
-
-    # public:
-
+        # public:
 
         self.hyprgraph = hyprgraph
         self.num_parts = num_parts
@@ -30,7 +28,6 @@ class NNGainMgr:
         self.gainbucket = [BPQueue(-self.pmax, self.pmax) for _ in range(num_parts)]
 
     def init(self, part: Part) -> int:
-
         totalcost = self.gain_calc.init(part)
         assert isinstance(totalcost, int)
         return totalcost
@@ -39,7 +36,6 @@ class NNGainMgr:
         return all(bckt._max == 0 for bckt in self.gainbucket)
 
     def select(self, part: Part) -> tuple[tuple[Any, int, int], int]:
-
         to_part = max(range(self.num_parts), key=lambda k: self.gainbucket[k].get_max())
         maxk = self.gainbucket[to_part].get_max()
 
@@ -50,14 +46,12 @@ class NNGainMgr:
         return move_info_v, maxk
 
     def select_togo(self, to_part: int) -> tuple[Any, int]:
-
         gainmax = self.gainbucket[to_part].get_max()
         vlink = self.gainbucket[to_part].popleft()
         v = vlink.data[1]
         return v, gainmax
 
     def update_move(self, part: Part, move_info_v: tuple[Any, int, int]) -> None:
-
         self.gain_calc.update_move_init()
         v, from_part, to_part = move_info_v
         for net in self.hyprgraph.ugraph[v]:
@@ -98,7 +92,6 @@ class NNGainMgr:
     def _update_move_net(
         self, part: Part, move_info: list, gain_calc_method: Any
     ) -> None:
-
         delta_gain = gain_calc_method(part, move_info)
         if isinstance(delta_gain, (list, tuple)):
             for dGw, w in zip(delta_gain, self.gain_calc.idx_vec):

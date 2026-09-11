@@ -20,12 +20,10 @@ class FMKWayGainMgr(FMGainMgr):
     """
 
     def __init__(self, GainCalc: Any, hyprgraph: Any, num_parts: int):
-
         FMGainMgr.__init__(self, GainCalc, hyprgraph, num_parts)
         self.rr = Robin(num_parts)
 
     def init(self, part: Part) -> int:
-
         totalcost = FMGainMgr.init(self, part)
 
         for bckt in self.gainbucket:
@@ -46,20 +44,17 @@ class FMKWayGainMgr(FMGainMgr):
         return totalcost
 
     def lock(self, whichPart: int, v: Any) -> None:
-
         vlink = self.gain_calc.vertex_list[whichPart][v]
         self.gainbucket[whichPart].detach(vlink)
         vlink.next = vlink  # lock
 
     def lock_all(self, _: Any, v: Any) -> None:
-
         for vlist, bckt in zip(self.gain_calc.vertex_list, self.gainbucket):
             vlink = vlist[v]
             bckt.detach(vlink)
             vlink.next = vlink  # lock
 
     def update_move_v(self, move_info_v: tuple[Any, int, int], gain: int) -> None:
-
         v, from_part, to_part = move_info_v
         for k in [k for k in self.rr.exclude(from_part) if k != to_part]:
             self.gainbucket[k].modify_key(
@@ -105,7 +100,6 @@ class FMKWayGainMgr(FMGainMgr):
     # private:
 
     def _set_key(self, whichPart: int, v: Any, key: int) -> None:
-
         self.gainbucket[whichPart].set_key(
             self.gain_calc.vertex_list[whichPart][v], key
         )
