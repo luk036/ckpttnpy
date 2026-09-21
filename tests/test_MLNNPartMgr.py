@@ -38,6 +38,7 @@ def test_MLBiPartMgr() -> None:
 
 
 def test_MLBiPartMgr2() -> None:
+    seed(1234)
     hyprgraph = read_json("testcases/p1.json")
     totalcost = _run_MLBiPartMgr(hyprgraph)
     assert totalcost >= 43
