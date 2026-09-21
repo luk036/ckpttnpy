@@ -1,0 +1,802 @@
+[
+ {
+  "lang": "py",
+  "testcase": "p1",
+  "k": 2,
+  "algo": "FM",
+  "ml": false,
+  "seed": 0,
+  "cost": 78,
+  "time_s": 0.1937
+ },
+ {
+  "lang": "py",
+  "testcase": "p1",
+  "k": 2,
+  "algo": "FM",
+  "ml": false,
+  "seed": 1,
+  "cost": 72,
+  "time_s": 0.3112
+ },
+ {
+  "lang": "py",
+  "testcase": "p1",
+  "k": 2,
+  "algo": "FM",
+  "ml": false,
+  "seed": 2,
+  "cost": 81,
+  "time_s": 0.313
+ },
+ {
+  "lang": "py",
+  "testcase": "p1",
+  "k": 2,
+  "algo": "FM",
+  "ml": false,
+  "seed": 3,
+  "cost": 81,
+  "time_s": 0.2459
+ },
+ {
+  "lang": "py",
+  "testcase": "p1",
+  "k": 2,
+  "algo": "FM",
+  "ml": false,
+  "seed": 4,
+  "cost": 83,
+  "time_s": 0.3756
+ },
+ {
+  "lang": "py",
+  "testcase": "p1",
+  "k": 2,
+  "algo": "FM",
+  "ml": true,
+  "seed": 0,
+  "cost": 71,
+  "time_s": 1.0275
+ },
+ {
+  "lang": "py",
+  "testcase": "p1",
+  "k": 2,
+  "algo": "FM",
+  "ml": true,
+  "seed": 1,
+  "cost": 75,
+  "time_s": 0.9926
+ },
+ {
+  "lang": "py",
+  "testcase": "p1",
+  "k": 2,
+  "algo": "FM",
+  "ml": true,
+  "seed": 2,
+  "cost": 56,
+  "time_s": 0.9933
+ },
+ {
+  "lang": "py",
+  "testcase": "p1",
+  "k": 2,
+  "algo": "FM",
+  "ml": true,
+  "seed": 3,
+  "cost": 61,
+  "time_s": 1.1115
+ },
+ {
+  "lang": "py",
+  "testcase": "p1",
+  "k": 2,
+  "algo": "FM",
+  "ml": true,
+  "seed": 4,
+  "cost": 83,
+  "time_s": 1.0306
+ },
+ {
+  "lang": "py",
+  "testcase": "p1",
+  "k": 2,
+  "algo": "NN",
+  "ml": false,
+  "seed": 0,
+  "cost": 234,
+  "time_s": 0.0306
+ },
+ {
+  "lang": "py",
+  "testcase": "p1",
+  "k": 2,
+  "algo": "NN",
+  "ml": false,
+  "seed": 1,
+  "cost": 211,
+  "time_s": 0.0265
+ },
+ {
+  "lang": "py",
+  "testcase": "p1",
+  "k": 2,
+  "algo": "NN",
+  "ml": false,
+  "seed": 2,
+  "cost": 226,
+  "time_s": 0.0262
+ },
+ {
+  "lang": "py",
+  "testcase": "p1",
+  "k": 2,
+  "algo": "NN",
+  "ml": false,
+  "seed": 3,
+  "cost": 213,
+  "time_s": 0.0271
+ },
+ {
+  "lang": "py",
+  "testcase": "p1",
+  "k": 2,
+  "algo": "NN",
+  "ml": false,
+  "seed": 4,
+  "cost": 217,
+  "time_s": 0.0275
+ },
+ {
+  "lang": "py",
+  "testcase": "p1",
+  "k": 2,
+  "algo": "NN",
+  "ml": true,
+  "seed": 0,
+  "cost": 114,
+  "time_s": 0.8133
+ },
+ {
+  "lang": "py",
+  "testcase": "p1",
+  "k": 2,
+  "algo": "NN",
+  "ml": true,
+  "seed": 1,
+  "cost": 112,
+  "time_s": 0.8081
+ },
+ {
+  "lang": "py",
+  "testcase": "p1",
+  "k": 2,
+  "algo": "NN",
+  "ml": true,
+  "seed": 2,
+  "cost": 95,
+  "time_s": 0.8072
+ },
+ {
+  "lang": "py",
+  "testcase": "p1",
+  "k": 2,
+  "algo": "NN",
+  "ml": true,
+  "seed": 3,
+  "cost": 103,
+  "time_s": 0.8141
+ },
+ {
+  "lang": "py",
+  "testcase": "p1",
+  "k": 2,
+  "algo": "NN",
+  "ml": true,
+  "seed": 4,
+  "cost": 116,
+  "time_s": 0.8635
+ },
+ {
+  "lang": "py",
+  "testcase": "p1",
+  "k": 3,
+  "algo": "FM",
+  "ml": false,
+  "seed": 0,
+  "cost": 144,
+  "time_s": 1.4456
+ },
+ {
+  "lang": "py",
+  "testcase": "p1",
+  "k": 3,
+  "algo": "FM",
+  "ml": false,
+  "seed": 1,
+  "cost": 207,
+  "time_s": 1.7602
+ },
+ {
+  "lang": "py",
+  "testcase": "p1",
+  "k": 3,
+  "algo": "FM",
+  "ml": false,
+  "seed": 2,
+  "cost": 180,
+  "time_s": 1.7565
+ },
+ {
+  "lang": "py",
+  "testcase": "p1",
+  "k": 3,
+  "algo": "FM",
+  "ml": false,
+  "seed": 3,
+  "cost": 164,
+  "time_s": 2.6316
+ },
+ {
+  "lang": "py",
+  "testcase": "p1",
+  "k": 3,
+  "algo": "FM",
+  "ml": false,
+  "seed": 4,
+  "cost": 182,
+  "time_s": 1.4545
+ },
+ {
+  "lang": "py",
+  "testcase": "p1",
+  "k": 3,
+  "algo": "FM",
+  "ml": true,
+  "seed": 0,
+  "cost": 114,
+  "time_s": 3.3349
+ },
+ {
+  "lang": "py",
+  "testcase": "p1",
+  "k": 3,
+  "algo": "FM",
+  "ml": true,
+  "seed": 1,
+  "cost": 127,
+  "time_s": 4.0073
+ },
+ {
+  "lang": "py",
+  "testcase": "p1",
+  "k": 3,
+  "algo": "FM",
+  "ml": true,
+  "seed": 2,
+  "cost": 127,
+  "time_s": 4.4633
+ },
+ {
+  "lang": "py",
+  "testcase": "p1",
+  "k": 3,
+  "algo": "FM",
+  "ml": true,
+  "seed": 3,
+  "cost": 111,
+  "time_s": 3.2493
+ },
+ {
+  "lang": "py",
+  "testcase": "p1",
+  "k": 3,
+  "algo": "FM",
+  "ml": true,
+  "seed": 4,
+  "cost": 115,
+  "time_s": 3.1703
+ },
+ {
+  "lang": "py",
+  "testcase": "p1",
+  "k": 3,
+  "algo": "NN",
+  "ml": false,
+  "seed": 0,
+  "cost": 330,
+  "time_s": 0.1021
+ },
+ {
+  "lang": "py",
+  "testcase": "p1",
+  "k": 3,
+  "algo": "NN",
+  "ml": false,
+  "seed": 1,
+  "cost": 362,
+  "time_s": 0.1036
+ },
+ {
+  "lang": "py",
+  "testcase": "p1",
+  "k": 3,
+  "algo": "NN",
+  "ml": false,
+  "seed": 2,
+  "cost": 341,
+  "time_s": 0.1055
+ },
+ {
+  "lang": "py",
+  "testcase": "p1",
+  "k": 3,
+  "algo": "NN",
+  "ml": false,
+  "seed": 3,
+  "cost": 348,
+  "time_s": 0.091
+ },
+ {
+  "lang": "py",
+  "testcase": "p1",
+  "k": 3,
+  "algo": "NN",
+  "ml": false,
+  "seed": 4,
+  "cost": 353,
+  "time_s": 0.0897
+ },
+ {
+  "lang": "py",
+  "testcase": "p1",
+  "k": 3,
+  "algo": "NN",
+  "ml": true,
+  "seed": 0,
+  "cost": 257,
+  "time_s": 0.9178
+ },
+ {
+  "lang": "py",
+  "testcase": "p1",
+  "k": 3,
+  "algo": "NN",
+  "ml": true,
+  "seed": 1,
+  "cost": 232,
+  "time_s": 0.9625
+ },
+ {
+  "lang": "py",
+  "testcase": "p1",
+  "k": 3,
+  "algo": "NN",
+  "ml": true,
+  "seed": 2,
+  "cost": 170,
+  "time_s": 0.9067
+ },
+ {
+  "lang": "py",
+  "testcase": "p1",
+  "k": 3,
+  "algo": "NN",
+  "ml": true,
+  "seed": 3,
+  "cost": 165,
+  "time_s": 0.9066
+ },
+ {
+  "lang": "py",
+  "testcase": "p1",
+  "k": 3,
+  "algo": "NN",
+  "ml": true,
+  "seed": 4,
+  "cost": 135,
+  "time_s": 0.9101
+ },
+ {
+  "lang": "py",
+  "testcase": "ibm03",
+  "k": 2,
+  "algo": "FM",
+  "ml": false,
+  "seed": 0,
+  "cost": 3587,
+  "time_s": 11.1046
+ },
+ {
+  "lang": "py",
+  "testcase": "ibm03",
+  "k": 2,
+  "algo": "FM",
+  "ml": false,
+  "seed": 1,
+  "cost": 2450,
+  "time_s": 12.9624
+ },
+ {
+  "lang": "py",
+  "testcase": "ibm03",
+  "k": 2,
+  "algo": "FM",
+  "ml": false,
+  "seed": 2,
+  "cost": 2438,
+  "time_s": 12.9578
+ },
+ {
+  "lang": "py",
+  "testcase": "ibm03",
+  "k": 2,
+  "algo": "FM",
+  "ml": false,
+  "seed": 3,
+  "cost": 2647,
+  "time_s": 14.1314
+ },
+ {
+  "lang": "py",
+  "testcase": "ibm03",
+  "k": 2,
+  "algo": "FM",
+  "ml": false,
+  "seed": 4,
+  "cost": 4692,
+  "time_s": 6.5285
+ },
+ {
+  "lang": "py",
+  "testcase": "ibm03",
+  "k": 2,
+  "algo": "FM",
+  "ml": true,
+  "seed": 0,
+  "cost": 1240,
+  "time_s": 48.0094
+ },
+ {
+  "lang": "py",
+  "testcase": "ibm03",
+  "k": 2,
+  "algo": "FM",
+  "ml": true,
+  "seed": 1,
+  "cost": 1244,
+  "time_s": 70.9767
+ },
+ {
+  "lang": "py",
+  "testcase": "ibm03",
+  "k": 2,
+  "algo": "FM",
+  "ml": true,
+  "seed": 2,
+  "cost": 1971,
+  "time_s": 60.0359
+ },
+ {
+  "lang": "py",
+  "testcase": "ibm03",
+  "k": 2,
+  "algo": "FM",
+  "ml": true,
+  "seed": 3,
+  "cost": 1638,
+  "time_s": 61.7098
+ },
+ {
+  "lang": "py",
+  "testcase": "ibm03",
+  "k": 2,
+  "algo": "FM",
+  "ml": true,
+  "seed": 4,
+  "cost": 1505,
+  "time_s": 66.1987
+ },
+ {
+  "lang": "py",
+  "testcase": "ibm03",
+  "k": 2,
+  "algo": "NN",
+  "ml": false,
+  "seed": 0,
+  "cost": 7296,
+  "time_s": 1.1958
+ },
+ {
+  "lang": "py",
+  "testcase": "ibm03",
+  "k": 2,
+  "algo": "NN",
+  "ml": false,
+  "seed": 1,
+  "cost": 7572,
+  "time_s": 1.7441
+ },
+ {
+  "lang": "py",
+  "testcase": "ibm03",
+  "k": 2,
+  "algo": "NN",
+  "ml": false,
+  "seed": 2,
+  "cost": 7237,
+  "time_s": 1.4157
+ },
+ {
+  "lang": "py",
+  "testcase": "ibm03",
+  "k": 2,
+  "algo": "NN",
+  "ml": false,
+  "seed": 3,
+  "cost": 6865,
+  "time_s": 1.2121
+ },
+ {
+  "lang": "py",
+  "testcase": "ibm03",
+  "k": 2,
+  "algo": "NN",
+  "ml": false,
+  "seed": 4,
+  "cost": 7384,
+  "time_s": 1.1068
+ },
+ {
+  "lang": "py",
+  "testcase": "ibm03",
+  "k": 2,
+  "algo": "NN",
+  "ml": true,
+  "seed": 0,
+  "cost": 4744,
+  "time_s": 51.4733
+ },
+ {
+  "lang": "py",
+  "testcase": "ibm03",
+  "k": 2,
+  "algo": "NN",
+  "ml": true,
+  "seed": 1,
+  "cost": 4130,
+  "time_s": 50.0737
+ },
+ {
+  "lang": "py",
+  "testcase": "ibm03",
+  "k": 2,
+  "algo": "NN",
+  "ml": true,
+  "seed": 2,
+  "cost": 4614,
+  "time_s": 50.92
+ },
+ {
+  "lang": "py",
+  "testcase": "ibm03",
+  "k": 2,
+  "algo": "NN",
+  "ml": true,
+  "seed": 3,
+  "cost": 3265,
+  "time_s": 52.5031
+ },
+ {
+  "lang": "py",
+  "testcase": "ibm03",
+  "k": 2,
+  "algo": "NN",
+  "ml": true,
+  "seed": 4,
+  "cost": 3311,
+  "time_s": 53.2553
+ },
+ {
+  "lang": "py",
+  "testcase": "ibm03",
+  "k": 3,
+  "algo": "FM",
+  "ml": false,
+  "seed": 0,
+  "cost": 6316,
+  "time_s": 107.5433
+ },
+ {
+  "lang": "py",
+  "testcase": "ibm03",
+  "k": 3,
+  "algo": "FM",
+  "ml": false,
+  "seed": 1,
+  "cost": 6831,
+  "time_s": 87.3852
+ },
+ {
+  "lang": "py",
+  "testcase": "ibm03",
+  "k": 3,
+  "algo": "FM",
+  "ml": false,
+  "seed": 2,
+  "cost": 5767,
+  "time_s": 168.1108
+ },
+ {
+  "lang": "py",
+  "testcase": "ibm03",
+  "k": 3,
+  "algo": "FM",
+  "ml": false,
+  "seed": 3,
+  "cost": 5733,
+  "time_s": 109.2977
+ },
+ {
+  "lang": "py",
+  "testcase": "ibm03",
+  "k": 3,
+  "algo": "FM",
+  "ml": false,
+  "seed": 4,
+  "cost": 7702,
+  "time_s": 108.0638
+ },
+ {
+  "lang": "py",
+  "testcase": "ibm03",
+  "k": 3,
+  "algo": "FM",
+  "ml": true,
+  "seed": 0,
+  "cost": 3395,
+  "time_s": 299.1203
+ },
+ {
+  "lang": "py",
+  "testcase": "ibm03",
+  "k": 3,
+  "algo": "FM",
+  "ml": true,
+  "seed": 1,
+  "cost": 3399,
+  "time_s": 378.5437
+ },
+ {
+  "lang": "py",
+  "testcase": "ibm03",
+  "k": 3,
+  "algo": "FM",
+  "ml": true,
+  "seed": 2,
+  "cost": 2833,
+  "time_s": 248.2041
+ },
+ {
+  "lang": "py",
+  "testcase": "ibm03",
+  "k": 3,
+  "algo": "FM",
+  "ml": true,
+  "seed": 3,
+  "cost": 4320,
+  "time_s": 264.818
+ },
+ {
+  "lang": "py",
+  "testcase": "ibm03",
+  "k": 3,
+  "algo": "FM",
+  "ml": true,
+  "seed": 4,
+  "cost": 4188,
+  "time_s": 248.5639
+ },
+ {
+  "lang": "py",
+  "testcase": "ibm03",
+  "k": 3,
+  "algo": "NN",
+  "ml": false,
+  "seed": 0,
+  "cost": 11693,
+  "time_s": 6.2149
+ },
+ {
+  "lang": "py",
+  "testcase": "ibm03",
+  "k": 3,
+  "algo": "NN",
+  "ml": false,
+  "seed": 1,
+  "cost": 10758,
+  "time_s": 4.392
+ },
+ {
+  "lang": "py",
+  "testcase": "ibm03",
+  "k": 3,
+  "algo": "NN",
+  "ml": false,
+  "seed": 2,
+  "cost": 10508,
+  "time_s": 4.3512
+ },
+ {
+  "lang": "py",
+  "testcase": "ibm03",
+  "k": 3,
+  "algo": "NN",
+  "ml": false,
+  "seed": 3,
+  "cost": 11468,
+  "time_s": 4.7216
+ },
+ {
+  "lang": "py",
+  "testcase": "ibm03",
+  "k": 3,
+  "algo": "NN",
+  "ml": false,
+  "seed": 4,
+  "cost": 11118,
+  "time_s": 5.6419
+ },
+ {
+  "lang": "py",
+  "testcase": "ibm03",
+  "k": 3,
+  "algo": "NN",
+  "ml": true,
+  "seed": 0,
+  "cost": 8505,
+  "time_s": 55.0861
+ },
+ {
+  "lang": "py",
+  "testcase": "ibm03",
+  "k": 3,
+  "algo": "NN",
+  "ml": true,
+  "seed": 1,
+  "cost": 6465,
+  "time_s": 54.6857
+ },
+ {
+  "lang": "py",
+  "testcase": "ibm03",
+  "k": 3,
+  "algo": "NN",
+  "ml": true,
+  "seed": 2,
+  "cost": 6686,
+  "time_s": 52.8788
+ },
+ {
+  "lang": "py",
+  "testcase": "ibm03",
+  "k": 3,
+  "algo": "NN",
+  "ml": true,
+  "seed": 3,
+  "cost": 7151,
+  "time_s": 52.9247
+ },
+ {
+  "lang": "py",
+  "testcase": "ibm03",
+  "k": 3,
+  "algo": "NN",
+  "ml": true,
+  "seed": 4,
+  "cost": 7342,
+  "time_s": 54.2015
+ }
+]
