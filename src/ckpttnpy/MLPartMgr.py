@@ -6,18 +6,10 @@ Provides MLBiPartMgr (2-way) and MLKWayPartMgr (k-way) specializations.
 """
 
 import gc
-from typing import Any, Type
+from typing import Any
 
-from ckpttnpy.FMPartMgr import FMPartMgr
-from ckpttnpy.NNPartMgr import NNPartMgr
-
-from .FMBiConstrMgr import FMBiConstrMgr
-from .FMBiGainCalc import FMBiGainCalc
-from .FMBiGainMgr import FMBiGainMgr
 from .FMConstrMgr import LegalCheck
-from .FMKWayConstrMgr import FMKWayConstrMgr
-from .FMKWayGainCalc import FMKWayGainCalc
-from .FMKWayGainMgr import FMKWayGainMgr
+from .FMPartSpec import BI_FM, BI_NN, KWAY_FM, KWAY_NN, FMPartSpec
 
 # Take a snapshot when a move make **negative** gain.
 # Snapshot in the form of "interface"???
@@ -27,19 +19,8 @@ from .min_cover import contract_subgraph
 class MLPartMgr:
     """The `MLPartMgr` class is a manager for Multi-level Partitioning."""
 
-    def __init__(
-        self,
-        GainCalc: Type,
-        GainMgr: Type,
-        ConstrMgr: Type,
-        PartMgr: Type,
-        bal_tol: float,
-        num_parts: int = 2,
-    ) -> None:
-        self.GainCalc = GainCalc
-        self.GainMgr = GainMgr
-        self.ConstrMgr = ConstrMgr
-        self.PartMgr = PartMgr
+    def __init__(self, spec: FMPartSpec, bal_tol: float, num_parts: int = 2) -> None:
+        self.spec = spec
         self.bal_tol = bal_tol
         self.num_parts = num_parts
         self.totalcost = 0
@@ -56,21 +37,18 @@ class MLPartMgr:
     def run_Partition(
         self, hyprgraph: Any, module_weight: Any, part: Any
     ) -> LegalCheck:
-        def legalcheck_fn() -> tuple[LegalCheck, int]:
-            gain_mgr = self.GainMgr(self.GainCalc, hyprgraph, self.num_parts)
-            constr_mgr = self.ConstrMgr(
+        def make_part_mgr() -> Any:
+            return self.spec.make_part_mgr(
                 hyprgraph, self.bal_tol, module_weight, self.num_parts
             )
-            part_mgr = self.PartMgr(hyprgraph, gain_mgr, constr_mgr)
+
+        def legalcheck_fn() -> tuple[LegalCheck, int]:
+            part_mgr = make_part_mgr()
             legalcheck = part_mgr.legalize(part)
             return legalcheck, part_mgr.totalcost
 
         def optimize_fn() -> int:
-            gain_mgr = self.GainMgr(self.GainCalc, hyprgraph, self.num_parts)
-            constr_mgr = self.ConstrMgr(
-                hyprgraph, self.bal_tol, module_weight, self.num_parts
-            )
-            part_mgr = self.PartMgr(hyprgraph, gain_mgr, constr_mgr)
+            part_mgr = make_part_mgr()
             part_mgr.optimize(part)
             return part_mgr.totalcost  # type: ignore[no-any-return]
 
@@ -103,41 +81,21 @@ class MLPartMgr:
 # balancing tolerance.
 class MLBiPartMgr(MLPartMgr):
     def __init__(self, bal_tol: float) -> None:
-        MLPartMgr.__init__(
-            self, FMBiGainCalc, FMBiGainMgr, FMBiConstrMgr, FMPartMgr, bal_tol
-        )
+        MLPartMgr.__init__(self, BI_FM, bal_tol, 2)
 
 
 class MLKWayPartMgr(MLPartMgr):
     def __init__(self, bal_tol: float, num_parts: int) -> None:
-        MLPartMgr.__init__(
-            self,
-            FMKWayGainCalc,
-            FMKWayGainMgr,
-            FMKWayConstrMgr,
-            FMPartMgr,
-            bal_tol,
-            num_parts,
-        )
+        MLPartMgr.__init__(self, KWAY_FM, bal_tol, num_parts)
 
 
 # The MLBiPartMgr class is a subclass of MLPartMgr that initializes with specific parameters for
 # balancing tolerance.
 class MLBiNNPartMgr(MLPartMgr):
     def __init__(self, bal_tol: float) -> None:
-        MLPartMgr.__init__(
-            self, FMBiGainCalc, FMBiGainMgr, FMBiConstrMgr, NNPartMgr, bal_tol
-        )
+        MLPartMgr.__init__(self, BI_NN, bal_tol, 2)
 
 
 class MLKWayNNPartMgr(MLPartMgr):
     def __init__(self, bal_tol: float, num_parts: int) -> None:
-        MLPartMgr.__init__(
-            self,
-            FMKWayGainCalc,
-            FMKWayGainMgr,
-            FMKWayConstrMgr,
-            NNPartMgr,
-            bal_tol,
-            num_parts,
-        )
+        MLPartMgr.__init__(self, KWAY_NN, bal_tol, num_parts)

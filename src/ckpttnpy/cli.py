@@ -11,6 +11,9 @@ from typing import Any, List, Optional, Set, Tuple
 import networkx as nx
 from netlistx.readwrite import read_are, read_netd
 
+from ckpttnpy.harness import random_init_part
+from ckpttnpy.partitioner import create_partitioner, resolve_spec
+
 
 def read_hypergraph_hmetis(filename: str) -> Tuple[nx.Graph, List[int]]:
     """Read hypergraph from hMetis format file."""
@@ -282,19 +285,6 @@ def write_partition(
         print(output)
 
 
-def random_init_part(
-    part: List[int],
-    num_modules: int,
-    num_parts: int,
-    module_fixed: Set[int],
-    rng: random.Random,
-) -> None:
-    """Randomize partition assignments for non-fixed modules."""
-    for i in range(num_modules):
-        if i not in module_fixed:
-            part[i] = rng.randint(0, num_parts - 1)
-
-
 PRESET_CHOICES = ["default", "quality", "highest_quality", "deterministic", "large_k"]
 OBJECTIVE_CHOICES = ["cut", "km1", "soed", "km1a"]
 
@@ -335,44 +325,9 @@ def run_one_partition(
     init_part = [0] * len(modules)
     random_init_part(init_part, len(modules), k, module_fixed, rng)
 
-    if k == 2:
-        if use_recursive:
-            from ckpttnpy.MLPartMgr import MLBiPartMgr
-
-            part_mgr: MLPartMgr = MLBiPartMgr(bal_tol)
-        else:
-            from ckpttnpy.FMBiConstrMgr import FMBiConstrMgr
-            from ckpttnpy.FMBiGainCalc import FMBiGainCalc
-            from ckpttnpy.FMBiGainMgr import FMBiGainMgr
-            from ckpttnpy.NNPartMgr import NNPartMgr
-
-            part_mgr = MLPartMgr(
-                FMBiGainCalc,
-                FMBiGainMgr,
-                FMBiConstrMgr,
-                NNPartMgr,
-                bal_tol,
-                2,
-            )
-    else:
-        if use_recursive:
-            from ckpttnpy.MLPartMgr import MLKWayPartMgr
-
-            part_mgr = MLKWayPartMgr(bal_tol, k)
-        else:
-            from ckpttnpy.FMKWayConstrMgr import FMKWayConstrMgr
-            from ckpttnpy.FMKWayGainCalc import FMKWayGainCalc
-            from ckpttnpy.FMKWayGainMgr import FMKWayGainMgr
-            from ckpttnpy.NNPartMgr import NNPartMgr
-
-            part_mgr = MLPartMgr(
-                FMKWayGainCalc,
-                FMKWayGainMgr,
-                FMKWayConstrMgr,
-                NNPartMgr,
-                bal_tol,
-                k,
-            )
+    part_mgr: MLPartMgr = create_partitioner(
+        k, "FM" if use_recursive else "NN", bal_tol
+    )
 
     part_mgr.run_Partition(netlist, module_weights, init_part)
     return init_part, part_mgr.totalcost
@@ -582,14 +537,9 @@ Examples:
             print(f"Partitioning cost: {best_cost}", file=sys.stderr)
 
     modules = [n for n in graph.nodes() if graph.nodes[n].get("bipartite") == 0]
-    if k == 2:
-        from ckpttnpy.FMBiConstrMgr import FMBiConstrMgr
-
-        constr_mgr: FMConstrMgr = FMBiConstrMgr(modules, epsilon_val, module_weights, k)
-    else:
-        from ckpttnpy.FMKWayConstrMgr import FMKWayConstrMgr
-
-        constr_mgr = FMKWayConstrMgr(modules, epsilon_val, module_weights, k)
+    constr_mgr: FMConstrMgr = resolve_spec(k, "FM").ConstrMgr(
+        modules, epsilon_val, module_weights, k
+    )
     if not constr_mgr.final_check(best_part):
         print(
             "Warning: final partition does not satisfy the balance constraint",
