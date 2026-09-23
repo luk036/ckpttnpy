@@ -15,20 +15,7 @@ import time
 from netlistx.netlist import read_json
 from netlistx.readwrite import read_are, read_netd
 
-from ckpttnpy.FMBiConstrMgr import FMBiConstrMgr
-from ckpttnpy.FMBiGainCalc import FMBiGainCalc
-from ckpttnpy.FMBiGainMgr import FMBiGainMgr
-from ckpttnpy.FMKWayConstrMgr import FMKWayConstrMgr
-from ckpttnpy.FMKWayGainCalc import FMKWayGainCalc
-from ckpttnpy.FMKWayGainMgr import FMKWayGainMgr
-from ckpttnpy.FMPartMgr import FMPartMgr
-from ckpttnpy.MLPartMgr import (
-    MLBiNNPartMgr,
-    MLBiPartMgr,
-    MLKWayNNPartMgr,
-    MLKWayPartMgr,
-)
-from ckpttnpy.NNPartMgr import NNPartMgr
+from ckpttnpy.partitioner import create_flat_part_mgr, create_partitioner
 
 BAL_TOL = 0.45
 LIMIT_SIZE = 50
@@ -60,30 +47,14 @@ def make_init(n: int, k: int, seed: int) -> list:
 
 
 def run_flat(hyprgraph, part: list, k: int, algo: str) -> int:
-    if k == 2:
-        gain_mgr = FMBiGainMgr(FMBiGainCalc, hyprgraph)
-        constr_mgr = FMBiConstrMgr(hyprgraph, BAL_TOL, hyprgraph.module_weight)
-    else:
-        gain_mgr = FMKWayGainMgr(FMKWayGainCalc, hyprgraph, k)
-        constr_mgr = FMKWayConstrMgr(hyprgraph, BAL_TOL, hyprgraph.module_weight, k)
-    mgr = NNPartMgr(hyprgraph, gain_mgr, constr_mgr) if algo == "NN" else FMPartMgr(
-        hyprgraph, gain_mgr, constr_mgr
-    )
+    mgr = create_flat_part_mgr(k, algo, BAL_TOL, hyprgraph, hyprgraph.module_weight)
     mgr.legalize(part)
     mgr.optimize(part)
     return mgr.totalcost
 
 
 def run_ml(hyprgraph, part: list, k: int, algo: str) -> int:
-    if k == 2:
-        mgr = MLBiNNPartMgr(BAL_TOL) if algo == "NN" else MLBiPartMgr(BAL_TOL)
-    else:
-        mgr = (
-            MLKWayNNPartMgr(BAL_TOL, k)
-            if algo == "NN"
-            else MLKWayPartMgr(BAL_TOL, k)
-        )
-    mgr.limitsize = LIMIT_SIZE
+    mgr = create_partitioner(k, algo, BAL_TOL, LIMIT_SIZE)
     mgr.run_Partition(hyprgraph, hyprgraph.module_weight, part)
     return mgr.totalcost
 

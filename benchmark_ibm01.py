@@ -10,15 +10,8 @@ from random import randint, seed
 from netlistx.netlist import read_json
 from netlistx.readwrite import read_are, read_netd
 
-from ckpttnpy.FMBiConstrMgr import FMBiConstrMgr
-from ckpttnpy.FMBiGainCalc import FMBiGainCalc
-from ckpttnpy.FMBiGainMgr import FMBiGainMgr
 from ckpttnpy.FMConstrMgr import LegalCheck
-from ckpttnpy.FMKWayConstrMgr import FMKWayConstrMgr
-from ckpttnpy.FMKWayGainCalc import FMKWayGainCalc
-from ckpttnpy.FMKWayGainMgr import FMKWayGainMgr
-from ckpttnpy.FMPartMgr import FMPartMgr
-from ckpttnpy.MLPartMgr import MLBiPartMgr, MLKWayPartMgr
+from ckpttnpy.partitioner import create_flat_part_mgr, create_partitioner
 
 SEED = 42
 NUM_RUNS = 5
@@ -41,15 +34,9 @@ def load_p1():
 
 def run_fm_only(hyprgraph, part, bal_tol, num_parts):
     """Run FM-only (single-level) partitioner, binary or k-way."""
-    if num_parts == 2:
-        gain_mgr = FMBiGainMgr(FMBiGainCalc, hyprgraph)
-        constr_mgr = FMBiConstrMgr(hyprgraph, bal_tol, hyprgraph.module_weight, 2)
-    else:
-        gain_mgr = FMKWayGainMgr(FMKWayGainCalc, hyprgraph, num_parts)
-        constr_mgr = FMKWayConstrMgr(
-            hyprgraph, bal_tol, hyprgraph.module_weight, num_parts
-        )
-    part_mgr = FMPartMgr(hyprgraph, gain_mgr, constr_mgr)
+    part_mgr = create_flat_part_mgr(
+        num_parts, "FM", bal_tol, hyprgraph, hyprgraph.module_weight
+    )
 
     legal_check = part_mgr.legalize(part)
     if legal_check != LegalCheck.AllSatisfied:
@@ -61,11 +48,7 @@ def run_fm_only(hyprgraph, part, bal_tol, num_parts):
 
 def run_ml(hyprgraph, part, bal_tol, limitsize, num_parts):
     """Run multilevel partitioner, binary or k-way."""
-    if num_parts == 2:
-        part_mgr = MLBiPartMgr(bal_tol)
-    else:
-        part_mgr = MLKWayPartMgr(bal_tol, num_parts)
-    part_mgr.limitsize = limitsize
+    part_mgr = create_partitioner(num_parts, "FM", bal_tol, limitsize)
 
     legal_check = part_mgr.run_Partition(hyprgraph, hyprgraph.module_weight, part)
     if legal_check != LegalCheck.AllSatisfied:
