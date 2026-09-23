@@ -1,12 +1,12 @@
-from random import randint, seed
+import random
 
 from netlistx.netlist import Netlist, create_drawf, read_json
 
 from ckpttnpy.FMBiConstrMgr import FMBiConstrMgr
 from ckpttnpy.FMConstrMgr import LegalCheck
 from ckpttnpy.FMKWayConstrMgr import FMKWayConstrMgr
+from ckpttnpy.harness import make_init_part
 from ckpttnpy.MLPartMgr import MLBiPartMgr, MLKWayPartMgr
-from tests.mocks import Part
 
 
 def _run_MLBiPartMgr(hyprgraph: Netlist):
@@ -14,15 +14,7 @@ def _run_MLBiPartMgr(hyprgraph: Netlist):
     part_mgr = MLBiPartMgr(bal_tol)
     # try: part_mgr.limitsize = 2000
     part_mgr.limitsize = 7
-    randseq = [randint(0, 1) for _ in hyprgraph]
-
-    part: Part
-    if isinstance(hyprgraph.modules, range):
-        part = randseq
-    elif isinstance(hyprgraph.modules, list):
-        part = {v: k for v, k in zip(hyprgraph.modules, randseq)}
-    else:
-        raise NotImplementedError
+    part = make_init_part(hyprgraph, 2, random)
 
     legal_check = part_mgr.run_Partition(hyprgraph, hyprgraph.module_weight, part)
     assert legal_check == LegalCheck.AllSatisfied
@@ -61,15 +53,7 @@ def _run_MLKWayPartMgr(hyprgraph: Netlist, num_parts: int):
     bal_tol = 0.45
     part_mgr = MLKWayPartMgr(bal_tol, num_parts)
     # try: part_mgr.limitsize = 2000
-    randseq = [randint(0, num_parts - 1) for _ in hyprgraph]
-
-    part: Part
-    if isinstance(hyprgraph.modules, range):
-        part = randseq
-    elif isinstance(hyprgraph.modules, list):
-        part = {v: k for v, k in zip(hyprgraph.modules, randseq)}
-    else:
-        raise NotImplementedError
+    part = make_init_part(hyprgraph, num_parts, random)
 
     legal_check = part_mgr.run_Partition(hyprgraph, hyprgraph.module_weight, part)
     assert legal_check == LegalCheck.AllSatisfied
@@ -81,7 +65,7 @@ def _run_MLKWayPartMgr(hyprgraph: Netlist, num_parts: int):
 
 
 def test_MLKWayPartMgr() -> None:
-    seed(1234)
+    random.seed(1234)
     hyprgraph = read_json("testcases/p1.json")
     totalcost = _run_MLKWayPartMgr(hyprgraph, 3)
     assert totalcost >= 77

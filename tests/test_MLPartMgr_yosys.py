@@ -7,15 +7,15 @@ Yosys netlists differ from standard test netlists in that:
 - Module weights are stored as a dict (cells=1, ports=0)
 - Port nodes are marked as fixed in module_fixed set
 """
-from random import randint, seed
+import random
 
 from netlistx.netlist import read_yosys_json
 
 from ckpttnpy.FMBiConstrMgr import FMBiConstrMgr
 from ckpttnpy.FMConstrMgr import LegalCheck
 from ckpttnpy.FMKWayConstrMgr import FMKWayConstrMgr
+from ckpttnpy.harness import make_init_part
 from ckpttnpy.MLPartMgr import MLBiPartMgr, MLKWayPartMgr
-from tests.mocks import Part
 
 
 def _run_MLBiPartMgr_yosys(hyprgraph):
@@ -30,10 +30,7 @@ def _run_MLBiPartMgr_yosys(hyprgraph):
     bal_tol = 0.45
     part_mgr = MLBiPartMgr(bal_tol)
     part_mgr.limitsize = 7
-    randseq = [randint(0, 1) for _ in hyprgraph]
-
-    # Yosys netlists always use list-based modules → dict part
-    part: Part = {v: k for v, k in zip(hyprgraph.modules, randseq)}
+    part = make_init_part(hyprgraph, 2, random)
 
     legal_check = part_mgr.run_Partition(hyprgraph, hyprgraph.module_weight, part)
     assert legal_check == LegalCheck.AllSatisfied
@@ -56,10 +53,7 @@ def _run_MLKWayPartMgr_yosys(hyprgraph, num_parts: int):
     """
     bal_tol = 0.45
     part_mgr = MLKWayPartMgr(bal_tol, num_parts)
-    randseq = [randint(0, num_parts - 1) for _ in hyprgraph]
-
-    # Yosys netlists always use list-based modules → dict part
-    part: Part = {v: k for v, k in zip(hyprgraph.modules, randseq)}
+    part = make_init_part(hyprgraph, num_parts, random)
 
     legal_check = part_mgr.run_Partition(hyprgraph, hyprgraph.module_weight, part)
     assert legal_check == LegalCheck.AllSatisfied
@@ -78,7 +72,7 @@ def _run_MLKWayPartMgr_yosys(hyprgraph, num_parts: int):
 
 def test_yosys_sphere_MLBiPartMgr() -> None:
     """Bi-partition the sphere Yosys netlist."""
-    seed(42)
+    random.seed(42)
     hyprgraph = read_yosys_json("yosys_testcases/sphere_netlist.json")
     cost = _run_MLBiPartMgr_yosys(hyprgraph)
     assert cost >= 0
@@ -86,7 +80,7 @@ def test_yosys_sphere_MLBiPartMgr() -> None:
 
 def test_yosys_sphere_MLKWayPartMgr() -> None:
     """3-way partition the sphere Yosys netlist."""
-    seed(42)
+    random.seed(42)
     hyprgraph = read_yosys_json("yosys_testcases/sphere_netlist.json")
     cost = _run_MLKWayPartMgr_yosys(hyprgraph, 3)
     assert cost >= 0
@@ -100,7 +94,7 @@ def test_yosys_sphere_MLKWayPartMgr() -> None:
 
 def test_yosys_sphere3hopf_MLBiPartMgr() -> None:
     """Bi-partition the sphere3hopf Yosys netlist."""
-    seed(42)
+    random.seed(42)
     hyprgraph = read_yosys_json("yosys_testcases/sphere3hopf_netlist_simple.json")
     cost = _run_MLBiPartMgr_yosys(hyprgraph)
     assert cost >= 0
@@ -108,7 +102,7 @@ def test_yosys_sphere3hopf_MLBiPartMgr() -> None:
 
 def test_yosys_sphere3hopf_MLKWayPartMgr() -> None:
     """3-way partition the sphere3hopf Yosys netlist."""
-    seed(42)
+    random.seed(42)
     hyprgraph = read_yosys_json("yosys_testcases/sphere3hopf_netlist_simple.json")
     cost = _run_MLKWayPartMgr_yosys(hyprgraph, 3)
     assert cost >= 0

@@ -3,15 +3,15 @@
 Reads ibm01.net and ibm01.are using netlistx.readwrite (ported
 from netlistx-cpp/source/readwrite.cpp).
 """
-from random import randint, seed
+import random
 
 from netlistx.readwrite import read_are, read_netd
 
 from ckpttnpy.FMBiConstrMgr import FMBiConstrMgr
 from ckpttnpy.FMConstrMgr import LegalCheck
 from ckpttnpy.FMKWayConstrMgr import FMKWayConstrMgr
+from ckpttnpy.harness import make_init_part
 from ckpttnpy.MLPartMgr import MLBiPartMgr, MLKWayPartMgr
-from tests.mocks import Part
 
 
 def _load_ibm01():
@@ -28,8 +28,7 @@ def _run_MLBiPartMgr_ibm(hyprgraph):
     bal_tol = 0.45
     part_mgr = MLBiPartMgr(bal_tol)
     part_mgr.limitsize = 10
-    randseq = [randint(0, 1) for _ in hyprgraph]
-    part: Part = {v: k for v, k in zip(hyprgraph.modules, randseq)}
+    part = make_init_part(hyprgraph, 2, random)
 
     legal_check = part_mgr.run_Partition(hyprgraph, hyprgraph.module_weight, part)
     assert legal_check == LegalCheck.AllSatisfied
@@ -44,8 +43,7 @@ def _run_MLKWayPartMgr_ibm(hyprgraph, num_parts: int):
     bal_tol = 0.45
     part_mgr = MLKWayPartMgr(bal_tol, num_parts)
     part_mgr.limitsize = 10
-    randseq = [randint(0, num_parts - 1) for _ in hyprgraph]
-    part: Part = {v: k for v, k in zip(hyprgraph.modules, randseq)}
+    part = make_init_part(hyprgraph, num_parts, random)
 
     legal_check = part_mgr.run_Partition(hyprgraph, hyprgraph.module_weight, part)
     assert legal_check == LegalCheck.AllSatisfied
@@ -57,14 +55,14 @@ def _run_MLKWayPartMgr_ibm(hyprgraph, num_parts: int):
 
 
 def test_ibm01_MLBiPartMgr() -> None:
-    seed(42)
+    random.seed(42)
     hyprgraph = _load_ibm01()
     cost = _run_MLBiPartMgr_ibm(hyprgraph)
     assert cost >= 0
 
 
 def test_ibm01_MLKWayPartMgr() -> None:
-    seed(42)
+    random.seed(42)
     hyprgraph = _load_ibm01()
     cost = _run_MLKWayPartMgr_ibm(hyprgraph, 3)
     assert cost >= 0
