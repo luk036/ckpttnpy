@@ -5,6 +5,8 @@ author:
 documentclass: IEEEtran
 classoption:
   - 10pt
+header-includes: |
+  \usepackage{graphicx}
 keywords:
   - hypergraph partitioning
   - circuit partitioning
@@ -25,9 +27,10 @@ abstract: |
   visits every balanced bipartition. On the p1, ibm01, and ibm03 benchmarks,
   multilevel refinement reduces the cut cost by 12-62 percent over flat FM, the
   greedy refiner is 10-100 times faster but 1.6-2.8 times worse, and the same
-  algorithm behaves consistently across Python, C++, and Rust ports. Unlike
-  classical tools, ckpttn warns explicitly when the balance constraint cannot be
-  met.
+  algorithm behaves consistently across Python, C++, and Rust ports, whose inner
+  loops are all organized around the observation that most gain updates are
+  no-ops. Unlike classical tools, ckpttn warns explicitly when the balance
+  constraint cannot be met.
 ---
 
 ```{=latex}
@@ -95,6 +98,17 @@ a prescribed block (for example, I/O pads), in which case they can never move.
 Balanced partitioning is NP-hard [8], and for tight tolerance the
 multilevel method is the practical method of choice.
 
+The choice of method tracks the instance, and it is worth stating the map
+explicitly. A netlist that is close to a mesh is handled well by spectral
+bisection; an instance whose balance can be relaxed is a candidate for a
+network-flow formulation built on the max-flow/min-cut theorem; a graph of at
+most a few tens of modules can be solved exactly by the enumeration of
+Section III-D; and beyond that the multilevel method is preferred when the
+balance tolerance is tight, while single-level FM suffices when it is loose.
+ckpttn exposes the extremes of this map through its presets (Section IV), and
+the two refiners of Section III are the local-search policies that sit inside
+the multilevel loop.
+
 ## Algorithms
 
 ### Fiduccia-Mattheyses Refinement {#sec:fm}
@@ -138,6 +152,16 @@ or a roll-back of the moves; ckpttn uses snapshots for the general path and can
 skip the snapshot entirely when no improving move was found. Passes continue
 until the cost stops decreasing.
 
+Two properties keep the inner loop cheap. The work done by a move is
+proportional to the degrees of the incident nets, $\sum_{e \ni v} \deg(e)$, not
+to the size of the graph; and the candidate set is a bounded priority queue, so
+with integer gains insertion, maximum extraction, and key update are $O(1)$
+amortized. Three pieces of machinery distinguish FM from a plain greedy descent:
+the bucket queue that makes the best move cheap to find, the per-pass locking
+that keeps a module from moving twice, and the snapshot/roll-back that makes the
+temporarily worsening moves safe to take. Remove all three and one obtains the
+simpler refiner of the next subsection.
+
 ### A Simpler Refiner {#sec:nn}
 
 The bucket-and-lock machinery exists to *escape* local minima. If one is willing
@@ -148,6 +172,20 @@ descends to the nearest local optimum, and in return it is 10-100 times faster
 than FM on flat graphs. The multilevel framework closes most of the quality gap,
 which is precisely the intended role of a cheap refiner inside the coarsen/
 refine loop.
+
+NN is not a separate program but a different policy inside the same pass
+skeleton. The base class owns the loop -- select the maximum-gain move, ask the
+constraint manager whether it is legal, apply it, update the gains of the
+neighbours -- and exposes a single overridable hook for one pass. FM's hook adds
+the locking and the roll-back; NN's hook stops at the first non-positive gain.
+This is the Template Method pattern for the skeleton and the Strategy pattern
+for the gain and constraint managers, and it is what lets one gain calculator
+serve the flat, multilevel, and k-way partitioners. Termination of NN is
+immediate from monotonicity: the cut is a non-negative integer and every
+accepted move is strictly improving, so the descent cannot cycle and must stop
+at a local optimum -- no locking and no snapshot are required. All three ports
+implement the same hook with the same threshold, $g_{\max} \le 0$; a zero-gain
+move is not taken, because without locking it could cycle.
 
 ### The Multilevel Framework {#sec:ml}
 
@@ -173,6 +211,20 @@ exploit. Duplicate nets (nets with the same module set) are merged; for
 low-degree nets this is checked exactly, and for larger nets a 64-element MinHash
 signature pre-filters clearly dissimilar pairs (estimated Jaccard similarity
 below $0.8$), so that the expensive exact comparison is rarely needed.
+
+Concretely, one contraction step is a five-stage pipeline: compute the
+min-maximal matching and split the nets into matched clusters and remaining
+nets, with the unmatched modules forming the cell list; build an intermediate
+bipartite graph between the cells and the clusters; purge duplicate nets,
+merging their weights and dropping the self-loops that clustering creates;
+reconstruct the graph with remapped net indices; and wrap the result in a
+hierarchical netlist. The hierarchical netlist carries the two projection maps
+that make the rest of the method work -- a node-up map from an original module
+to its contracted representative, used while coarsening, and a node-down map
+from a cluster back to one of its members, used while refining. Duplicate
+detection compares nets of degree at most five exactly and pre-filters larger
+nets (up to degree 200) with the MinHash signature, falling back to the exact
+comparison only above the $0.8$ similarity threshold.
 
 A recursion guard keeps the contraction honest: a level is contracted only when
 the result is materially smaller than its parent, $|V^{+}| \cdot 1.5 < |V|$.
@@ -205,6 +257,18 @@ level, where the contracted graph has at most a few tens of modules. There it
 yields a certified optimum for that level, which the uncoarsening then refines
 heuristically.
 
+The construction is memoryless and is organized around a binary tree that
+encodes the Dyck-path structure of the current bitstring; two recursively
+defined flip sequences, one per direction of travel, advance the cycle, so the
+whole traversal is a sequence of single-bit flips. For a balanced bipartition of
+$N$ modules each of the first $N$ bits is one module's block assignment; when
+$N$ is even a single dummy bit is appended so that the bitstring has odd length
+$L = N + 1$, and the flips that touch the dummy bit are ignored. The leaf
+threshold follows from the measured cost of the traversal -- instant to
+$n = 11$, about $0.2$~s at $n = 20$, and a few seconds at $n = 25$ ($10.4$~M
+states) -- so the enumeration is kept to the coarsest level, where it certifies
+the optimum.
+
 ### K-Way Partitioning
 
 For $k > 2$ the search is organized as a sequence of pairwise refinements.
@@ -217,6 +281,16 @@ Pairs whose movable set is trivial or larger than a threshold are skipped, since
 the enumeration is exponential in the number of movable modules. This pairwise
 sweep is repeated a bounded number of times, and a flat FM legalization keeps
 the block weights within tolerance between sweeps.
+
+The leaf budget scales with the number of blocks: for $k$ parts the enumeration
+is allowed $25k/2$ movable modules, spread over the $\binom{k}{2}$ pairs, so each
+pair sees at most about fifteen modules on average and any pair whose movable
+set exceeds that is skipped. For $k = 2$ this is the $25$-module limit of the
+previous subsection; for $k = 6$ it is $75$ modules over fifteen pairs, which
+still leaves every pair's enumeration trivial. The enumeration runs on the full
+netlist rather than on the isolated pair, so pins that land outside the pair are
+still counted; this is what makes the pair's value a correct $k$-way cost rather
+than an internal two-way cost.
 
 ## Implementation {#sec:impl}
 
@@ -233,13 +307,24 @@ objects, which are instantiated with a shared hypergraph:
   the best state.
 
 Separating these concerns lets the same gain calculator be reused for the flat,
-multilevel, and k-way managers.
+multilevel, and k-way managers. The arrangement is the Template Method pattern
+for the pass skeleton -- the base class fixes the sequence of select, legalize,
+apply, and update, and the subclass supplies only the per-pass hook -- together
+with the Strategy pattern for the gain, constraint, and partition managers,
+which can be swapped without touching the loop.
 
 **Ports.** The same algorithm is implemented in Python (`ckpttnpy`), C++
 (`ckpttn-cpp`), and Rust (`ckpttn-rs`). The Python reference uses NetworkX; the
 C++ port uses a hand-rolled hypergraph and templates; the Rust port uses
 `petgraph`. Cross-language regression tests check that a small hand-built
 partition yields the same cut in all three.
+
+In the Python reference the collaboration is spread over a small set of modules:
+`FMBiGainCalc` and `FMKWayGainCalc` compute the gains, `FMBiGainMgr` and
+`FMKWayGainMgr` own the buckets, `FMBiConstrMgr` and `FMKWayConstrMgr` decide
+legality, `PartMgrBase` fixes the pass skeleton, `FMPartMgr` and `NNPartMgr` are
+its two policies, `MLPartMgr` drives the hierarchy, `HierNetlist` holds the
+projection maps, and `min_cover` performs the contraction.
 
 **Interface.** A command-line front end partitions a hypergraph file directly:
 
@@ -255,7 +340,7 @@ random seed. Presets bundle the balance tolerance and mode:
 ```{=latex}
 \begin{table}[t]
 \centering
-\caption{Presets: balance tolerance and partitioning mode.}
+\textbf{Presets: balance tolerance and partitioning mode.}\par
 \begin{tabular}{lll}
 \hline
 Preset & Balance & Mode \\
@@ -270,6 +355,40 @@ Preset & Balance & Mode \\
 \end{table}
 ```
 
+**Tuning.** The presets are thin wrappers over a small set of constants, most of
+which are fixed at compile time rather than exposed as options. Contraction is
+attempted while the graph has at least 50 modules; gain updates are skipped on
+nets of degree above 500; the bucket buffers are sized 32768 for bi-partitioning
+and 65536 for k-way; and degree-2 and degree-3 nets take a specialized fast
+path. On the coarsening side, nets of degree at most five are compared exactly
+for duplication, while larger nets (up to degree 200) are pre-filtered with a
+64-element MinHash signature at a Jaccard threshold of $0.8$. Several starts can
+be run in parallel: with $t$ starts and a seed $s$ the runs use seeds
+$s + i \cdot 104729$, so the search is reproducible while still exploring
+different basins; on ibm02 (19,601 modules) the best single start cost 282 cut
+nets, whereas four deterministic starts reached 87.
+
+```{=latex}
+\begin{table*}[t]
+\centering
+\textbf{Selected constants of ckpttn.}\par
+\begin{tabular}{lll}
+\hline
+Constant & Value & Role \\
+\hline
+\texttt{limitsize}                   & 50            & coarsen while $|V| \ge$ this \\
+\texttt{FM\_MAX\_DEGREE}             & 500           & skip gain updates above this degree \\
+\texttt{stack\_buf\_size}            & 32768 / 65536 & bounded-queue buffers (bi / k-way) \\
+\texttt{special\_handle\_2pin\_nets} & true          & degree-2/3 fast path \\
+\texttt{LOW\_PIN\_NET\_THRESHOLD}    & 5             & exact duplicate check at this degree \\
+\texttt{MINHASH\_SIG\_SIZE}          & 64            & MinHash signature length \\
+\texttt{MINHASH\_SIMILARITY}         & 0.8           & Jaccard pre-filter threshold \\
+\texttt{MINHASH\_MAX\_DEGREE}        & 200           & skip MinHash above this degree \\
+\hline
+\end{tabular}
+\end{table*}
+```
+
 **Balance warning.** If the requested balance is impossible -- for instance,
 because a single module outweighs an entire block -- ckpttn reports the failure
 in its final output. On a five-module instance whose largest module has weight
@@ -277,6 +396,24 @@ $10^{7}$ and whose ideal block weight is about $5 \times 10^{6}$, the block
 weights are $10^{7}$ and $4$ and ckpttn prints an explicit warning that the
 balance constraint is violated, whereas other tools return the same result
 silently.
+
+**Inner loop.** Because FM is dominated by the per-move key update, the ports
+are engineered around the observation that most updates are no-ops. For a
+general net with at least two pins on each side, moving one pin leaves every
+neighbour's gain unchanged, so the update is skipped with a single test instead
+of a queue operation; in the Python reference this cuts `modify_key` calls on
+ibm03 from 7.37~M to 374~K. Two further layers of indirection were removed on
+the Python side -- the NetworkX view objects and the adapter frames around
+vertex and net lookup -- and the adjacency and degrees are now materialised once
+per gain calculator into plain lists, which together take p1 from 299~ms to
+216~ms and ibm03 from 14.6~s to 8.8~s for identical cuts. The C++ port replaced
+a freshly allocated gain-change vector per move with a per-calculator buffer
+returned as a `std::span`, which halves the k-way kernel on ibm03; the Rust port
+removed a clone of the index vector and a `collect` of the neighbours per move,
+both borrow-checker artifacts, for a uniform 28 percent win. Every change is
+behaviour-preserving, verified by re-running against the same cut costs, which
+is the only reason such micro-optimisations are admissible in a reference
+implementation.
 
 ## Experimental Results {#sec:results}
 
@@ -288,6 +425,18 @@ nets, IBM-PLACE format); ibm01 (12,752 modules, 14,111 nets) is added for the
 multilevel study. Random starts use a fixed SplitMix64 stream so that a seed
 denotes the same assignment in every port.
 
+```{=latex}
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.47\textwidth]{figs/p1-2way.pdf}\hfill
+\includegraphics[width=0.47\textwidth]{figs/p1-3way.pdf}
+\caption{Two-way (left) and three-way (right) partitions of the p1 benchmark
+(833 modules, 902 nets), drawn on the bipartite module--net graph with modules
+colored by block.}
+\label{fig:p1}
+\end{figure*}
+```
+
 ### Refiners, Flat and Multilevel
 
 Table I compares the FM and NN refiners, flat and multilevel, for
@@ -297,6 +446,34 @@ faster (0.03 s versus 0.31 s on p1; 1.21 s versus 12.96 s on ibm03). And the
 multilevel framework helps both, but helps NN far more -- coarsening recovers
 much of FM's quality (flat NN 220 to multilevel NN 108 on p1; 7271 to 3922 on
 ibm03), which is exactly why a cheap refiner is useful inside the loop.
+
+The same ordering holds for three-way partitioning. On p1 the mean cut is
+$346.8$ for flat NN and $191.8$ for multilevel NN, against $175.4$ and $118.8$
+for FM; on ibm03 it is $11{,}109$ and $7{,}230$ for NN against $6{,}470$ and
+$3{,}627$ for FM. Fig. 2 shows the full sweep over both benchmarks and all three
+ports, and Fig. 3 isolates the two effects at work: how much the multilevel
+framework buys over flat refinement, and how much worse NN is than FM.
+
+```{=latex}
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figs/fig_cut.pdf}
+\caption{Mean cut cost of the FM and NN refiners, flat and multilevel, for
+two-way and three-way partitioning of p1 and ibm03, in the three ports. Lower is
+better; note the logarithmic scale.}
+\label{fig:cut}
+\end{figure*}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.48\textwidth]{figs/fig_gain.pdf}\hfill
+\includegraphics[width=0.48\textwidth]{figs/fig_ratio.pdf}
+\caption{Left: cut reduction of the multilevel framework over flat refinement
+(p1, mean). Right: NN penalty, the ratio of NN to FM mean cut, with the parity
+line shown.}
+\label{fig:gainratio}
+\end{figure*}
+```
 
 ```{=latex}
 \begin{table*}[t]
@@ -359,6 +536,16 @@ per-call dispatch through an iterator trait), not an algorithmic one, and it
 narrows as the graph grows.
 
 ```{=latex}
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figs/fig_runtime.pdf}
+\caption{Median wall-clock time of the three ports on the multilevel
+configurations, p1 and ibm03 (logarithmic scale).}
+\label{fig:runtime}
+\end{figure*}
+```
+
+```{=latex}
 \begin{table*}[t]
 \centering
 \caption{Optimize time of the three ports (release builds) on p1 and ibm03.}
@@ -409,13 +596,25 @@ explicit balance warning closes the remaining failure mode -- a silently
 infeasible partition -- and makes the tool's output accountable in an automated
 flow.
 
+The test surface reflects the same three ports. The reference and its CLI carry
+78 tests (25 for the interface and 53 for the algorithm); the C++ suite has 65
+cases over the flat, multilevel, and Yosys paths plus the exhaustive leaf; and
+the Rust port runs 245 tests plus a multilevel regression that asserts a
+non-trivial result. Cross-port benchmarks re-use the same SplitMix64 stream, so
+a reported seed denotes the same initial partition in every implementation.
+
 ## Concluding Remarks {#sec:conclusion}
 
 ckpttn shows that a classical partitioner can be both simple and trustworthy.
 Keeping FM but making the gain bookkeeping cheap, contracting aggressively with
 a primal-dual matching and duplicate-net pruning, and certifying the coarsest
 level by exact enumeration yields a multilevel partitioner whose quality is
-competitive with mature tools and whose three ports agree. The experiments
+competitive with mature tools and whose three ports agree. That agreement is not
+an accident of coding: because the pass skeleton and the gain, constraint, and
+partition policies are separated, the ports differ only in data layout, and the
+same separation is what made the inner-loop engineering -- the no-op gain
+updates, the reusable buffers, the borrowed neighbours -- safe to apply
+uniformly. The experiments
 confirm the expected trade-offs -- multilevel refinement buys 12-62 percent of
 cut at roughly twice the runtime, and a greedy refiner trades 1.6-2.8 times the
 cut for one to two orders of magnitude of speed -- and the explicit balance

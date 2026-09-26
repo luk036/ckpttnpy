@@ -16,11 +16,17 @@
 PANDOC := pandoc
 FLAGS  := -s -t latex -N --shift-heading-level-by=-1 --pdf-engine=pdflatex
 
+# Figure PDFs live under figs/ and are \includegraphics'd by ckpttn-paper.md.
+# They must be prerequisites, or `make` will not rebuild the paper when a
+# figure is regenerated (the .md itself looks unchanged).
+FIGURES := figs/p1-2way.pdf figs/p1-3way.pdf \
+           figs/fig_cut.pdf figs/fig_gain.pdf figs/fig_ratio.pdf figs/fig_runtime.pdf
+
 .PHONY: ckpttn-paper clean
 
 ckpttn-paper: ckpttn-paper.pdf
 
-ckpttn-paper.pdf: ckpttn-paper.md
+ckpttn-paper.pdf: ckpttn-paper.md $(FIGURES)
 	$(PANDOC) $(FLAGS) ckpttn-paper.md -o $@
 
 # Trailing `; true` forces make to run these through a shell; `rm` is not an
