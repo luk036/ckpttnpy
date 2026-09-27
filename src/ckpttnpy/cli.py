@@ -48,12 +48,15 @@ def read_hypergraph_hmetis(filename: str) -> Tuple[nx.Graph, List[int]]:
         module_weights = [int(w) for w in net_lines[num_nets:]]
         net_lines = net_lines[:num_nets]
 
-    for net_idx, net_line in enumerate(net_lines[:num_nets]):
-        parts: List[int] = [int(v) for v in net_line.split()]
+    pins = [[int(v) for v in ln.split()] for ln in net_lines[:num_nets]]
+    # hMetis vertex ids are 1-based; some hand-made files are 0-based.
+    base = 0 if any(0 in net for net in pins) else 1
+    for net_idx, parts in enumerate(pins):
         global_net_idx = num_vertices + net_idx
         for vidx in parts:
-            if 0 <= vidx < num_vertices:
-                graph.add_edge(global_net_idx, vidx)
+            module = vidx - base
+            if 0 <= module < num_vertices:
+                graph.add_edge(global_net_idx, module)
 
     return graph, module_weights
 
