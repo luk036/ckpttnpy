@@ -1,0 +1,468 @@
+% References for "ckpttn: Multilevel Circuit Partitioning".
+% Keys are cited from ckpttn-paper.md as [@key]; the bibliography is rendered
+% by pandoc's citeproc using the vendored ieee.csl style.
+
+@inproceedings{fiduccia1982,
+  author    = {Fiduccia, Charles M. and Mattheyses, Robert M.},
+  title     = {A Linear-Time Heuristic for Improving Network Partitions},
+  booktitle = {Proceedings of the 19th Design Automation Conference (DAC)},
+  address   = {Las Vegas, NV, USA},
+  pages     = {175--181},
+  year      = {1982},
+  doi       = {10.1109/DAC.1982.1585498}
+}
+
+@article{kernighan1970,
+  author  = {Kernighan, Brian W. and Lin, Shen},
+  title   = {An Efficient Heuristic Procedure for Partitioning Graphs},
+  journal = {Bell System Technical Journal},
+  volume  = {49},
+  number  = {2},
+  pages   = {291--307},
+  year    = {1970},
+  doi     = {10.1002/j.1538-7305.1970.tb01770.x}
+}
+
+@inproceedings{karypis1999,
+  author    = {Karypis, George and Kumar, Vipin},
+  title     = {Multilevel k-way Hypergraph Partitioning},
+  booktitle = {Proceedings of the 36th Annual ACM/IEEE Design Automation Conference (DAC)},
+  address   = {New Orleans, LA, USA},
+  pages     = {343--348},
+  year      = {1999},
+  doi       = {10.1145/309847.309954}
+}
+
+@article{schlag2023,
+  author  = {Schlag, Sebastian and Heuer, Tobias and Gottesb{\"u}ren, Lars and Akhremtsev, Yaroslav and Schulz, Christian and Sanders, Peter},
+  title   = {High-Quality Hypergraph Partitioning},
+  journal = {ACM Journal of Experimental Algorithmics},
+  volume  = {27},
+  number  = {1.9},
+  pages   = {1--39},
+  year    = {2023},
+  doi     = {10.1145/3529090}
+}
+
+@inproceedings{mutze2018,
+  author    = {M{\"u}tze, Torsten and Nummenpalo, Jerri and Walczak, Bartosz},
+  title     = {Sparse Kneser Graphs Are Hamiltonian},
+  booktitle = {Proceedings of the 50th Annual ACM SIGACT Symposium on Theory of Computing (STOC)},
+  address   = {Los Angeles, CA, USA},
+  pages     = {912--919},
+  year      = {2018},
+  doi       = {10.1145/3188745.3188834}
+}
+
+@article{gregor2018,
+  author  = {Gregor, Petr and M{\"u}tze, Torsten and Nummenpalo, Jerri},
+  title   = {A Short Proof of the Middle Levels Theorem},
+  journal = {Discrete Analysis},
+  number  = {8},
+  pages   = {1--12},
+  year    = {2018},
+  doi     = {10.19086/da.3659}
+}
+
+@book{sherwani1999,
+  author    = {Sherwani, Naveed A.},
+  title     = {Algorithms for {VLSI} Physical Design Automation},
+  edition   = {3rd},
+  publisher = {Springer},
+  address   = {Boston, MA, USA},
+  year      = {1999},
+  isbn      = {978-0-7923-8393-2}
+}
+
+@book{kahng2011,
+  author    = {Kahng, Andrew B. and Lienig, Jens and Markov, Igor L. and Hu, Jin},
+  title     = {{VLSI} Physical Design: From Graph Partitioning to Timing Closure},
+  publisher = {Springer},
+  address   = {Dordrecht, The Netherlands},
+  year      = {2011},
+  doi       = {10.1007/978-90-481-9591-6},
+  isbn      = {978-90-481-9590-9}
+}
+
+% ===========================================================================
+% Move-based refinement and early k-way partitioning
+% ===========================================================================
+
+@inproceedings{schweikert1972,
+  author    = {Schweikert, D. G. and Kernighan, B. W.},
+  title     = {A Proper Model for the Partitioning of Electrical Circuits},
+  booktitle = {Proceedings of the 9th Design Automation Workshop (DAC)},
+  address   = {New York, NY, USA},
+  pages     = {57--62},
+  year      = {1972},
+  doi       = {10.1145/800153.804930}
+}
+
+@article{krishnamurthy1984,
+  author  = {Krishnamurthy, B.},
+  title   = {An Improved Min-Cut Algorithm for Partitioning {VLSI} Networks},
+  journal = {IEEE Transactions on Computers},
+  volume  = {C-33},
+  number  = {5},
+  pages   = {438--446},
+  year    = {1984},
+  doi     = {10.1109/TC.1984.1676460}
+}
+
+@article{sanchis1989,
+  author  = {Sanchis, Laura A.},
+  title   = {Multiple-Way Network Partitioning},
+  journal = {IEEE Transactions on Computers},
+  volume  = {38},
+  number  = {1},
+  pages   = {62--81},
+  year    = {1989},
+  doi     = {10.1109/12.8730}
+}
+
+@inproceedings{cong1998,
+  author    = {Cong, Jason and Lim, Sung Kyu},
+  title     = {Multiway Partitioning with Pairwise Movement},
+  booktitle = {Proceedings of the IEEE/ACM International Conference on Computer-Aided Design (ICCAD)},
+  pages     = {512--516},
+  year      = {1998},
+  doi       = {10.1145/288548.289079}
+}
+
+@article{caldwell2000,
+  author  = {Caldwell, Andrew E. and Kahng, Andrew B. and Markov, Igor L.},
+  title   = {Design and Implementation of Move-Based Heuristics for {VLSI} Hypergraph Partitioning},
+  journal = {ACM Journal of Experimental Algorithmics},
+  volume  = {5},
+  pages   = {5},
+  year    = {2000},
+  doi     = {10.1145/351827.384247}
+}
+
+% ===========================================================================
+% Multilevel partitioning and scientific-computing tools
+% ===========================================================================
+
+@inproceedings{hendrickson1995,
+  author    = {Hendrickson, Bruce and Leland, Robert},
+  title     = {A Multilevel Algorithm for Partitioning Graphs},
+  booktitle = {Proceedings of the ACM/IEEE Conference on Supercomputing (SC)},
+  pages     = {28--es},
+  year      = {1995},
+  doi       = {10.1145/224170.224228}
+}
+
+@inproceedings{karypis1997,
+  author    = {Karypis, George and Aggarwal, Rajat and Kumar, Vipin and Shekhar, Shashi},
+  title     = {Multilevel Hypergraph Partitioning: Application in {VLSI} Domain},
+  booktitle = {Proceedings of the 34th Design Automation Conference (DAC)},
+  pages     = {526--529},
+  year      = {1997},
+  doi       = {10.1109/DAC.1997.597203}
+}
+
+@article{karypis1998,
+  author  = {Karypis, George and Kumar, Vipin},
+  title   = {A Fast and High Quality Multilevel Scheme for Partitioning Irregular Graphs},
+  journal = {SIAM Journal on Scientific Computing},
+  volume  = {20},
+  number  = {1},
+  pages   = {359--392},
+  year    = {1998},
+  doi     = {10.1137/S1064827595287997}
+}
+
+@article{devine2002,
+  author  = {Devine, Karen and Boman, Erik and Heaphy, Robert and Hendrickson, Bruce and Vaughan, Courtenay},
+  title   = {Zoltan Data Management Services for Parallel Dynamic Applications},
+  journal = {Computing in Science \& Engineering},
+  volume  = {4},
+  number  = {2},
+  pages   = {90--96},
+  year    = {2002},
+  doi     = {10.1109/5992.988653}
+}
+
+@article{vastenhouw2005,
+  author  = {Vastenhouw, Brendan and Bisseling, Rob H.},
+  title   = {A Two-Dimensional Data Distribution Method for Parallel Sparse Matrix-Vector Multiplication},
+  journal = {SIAM Review},
+  volume  = {47},
+  number  = {1},
+  pages   = {67--95},
+  year    = {2005},
+  doi     = {10.1137/S0036144502409019}
+}
+
+% ===========================================================================
+% Spectral partitioning
+% ===========================================================================
+
+@article{fiedler1973,
+  author  = {Fiedler, Miroslav},
+  title   = {Algebraic Connectivity of Graphs},
+  journal = {Czechoslovak Mathematical Journal},
+  volume  = {23},
+  number  = {2},
+  pages   = {298--305},
+  year    = {1973},
+  doi     = {10.21136/CMJ.1973.101168}
+}
+
+@article{pothen1990,
+  author  = {Pothen, Alex and Simon, Horst D. and Liou, Kang-Pu},
+  title   = {Partitioning Sparse Matrices with Eigenvectors of Graphs},
+  journal = {SIAM Journal on Matrix Analysis and Applications},
+  volume  = {11},
+  number  = {3},
+  pages   = {430--452},
+  year    = {1990},
+  doi     = {10.1137/0611030}
+}
+
+@article{hagen1992,
+  author  = {Hagen, Lars and Kahng, Andrew B.},
+  title   = {New Spectral Methods for Ratio Cut Partitioning and Clustering},
+  journal = {IEEE Transactions on Computer-Aided Design of Integrated Circuits and Systems},
+  volume  = {11},
+  number  = {9},
+  pages   = {1074--1085},
+  year    = {1992},
+  doi     = {10.1109/43.159993}
+}
+
+% ===========================================================================
+% Network-flow partitioning
+% ===========================================================================
+
+@inproceedings{yang1994,
+  author    = {Yang, Honghua and Wong, D. F.},
+  title     = {Efficient Network Flow Based Min-Cut Balanced Partitioning},
+  booktitle = {Proceedings of the IEEE/ACM International Conference on Computer-Aided Design (ICCAD)},
+  pages     = {50--55},
+  year      = {1994},
+  doi       = {10.1109/ICCAD.1994.629743}
+}
+
+@article{liu1998,
+  author  = {Liu, Huiqun and Wong, D. F.},
+  title   = {Network-Flow-Based Multiway Partitioning with Area and Pin Constraints},
+  journal = {IEEE Transactions on Computer-Aided Design of Integrated Circuits and Systems},
+  volume  = {17},
+  number  = {1},
+  pages   = {50--59},
+  year    = {1998},
+  doi     = {10.1109/43.673632}
+}
+
+% ===========================================================================
+% Surveys and benchmarks
+% ===========================================================================
+
+@article{alpert1995,
+  author  = {Alpert, Charles J. and Kahng, Andrew B.},
+  title   = {Recent Directions in Netlist Partitioning: A Survey},
+  journal = {Integration, the VLSI Journal},
+  volume  = {19},
+  number  = {1--2},
+  pages   = {1--81},
+  year    = {1995},
+  doi     = {10.1016/0167-9260(95)00008-4}
+}
+
+@incollection{papa2007,
+  author    = {Papa, David A. and Markov, Igor L.},
+  title     = {Hypergraph Partitioning and Clustering},
+  booktitle = {Handbook of Approximation Algorithms and Metaheuristics},
+  publisher = {Chapman \& Hall/CRC},
+  pages     = {61-1--61-19},
+  year      = {2007},
+  doi       = {10.1201/9781420010749.ch61}
+}
+
+@incollection{buluc2016,
+  author    = {Bulu{\c{c}}, Ayd{\i}n and Meyerhenke, Henning and Safro, Ilya and Sanders, Peter and Schulz, Christian},
+  title     = {Recent Advances in Graph Partitioning},
+  booktitle = {Algorithm Engineering: Selected Results and Surveys},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {9220},
+  publisher = {Springer},
+  pages     = {117--158},
+  year      = {2016},
+  doi       = {10.1007/978-3-319-49487-6_4}
+}
+
+@article{catalyurek2023,
+  author  = {{\c{C}}ataly{\"u}rek, {\"U}mit V. and Devine, Karen and Faraj, Marcelo and Gottesb{\"u}ren, Lars and Heuer, Tobias and Meyerhenke, Henning and Sanders, Peter and Schlag, Sebastian and Schulz, Christian and Seemaier, Daniel and Wagner, Dorothea},
+  title   = {More Recent Advances in (Hyper)Graph Partitioning},
+  journal = {ACM Computing Surveys},
+  volume  = {55},
+  number  = {12},
+  pages   = {253:1--253:38},
+  year    = {2023},
+  doi     = {10.1145/3571808}
+}
+
+@inproceedings{alpert1998,
+  author    = {Alpert, Charles J.},
+  title     = {The {ISPD98} Circuit Benchmark Suite},
+  booktitle = {Proceedings of the International Symposium on Physical Design (ISPD)},
+  pages     = {80--85},
+  year      = {1998},
+  doi       = {10.1145/274535.274546}
+}
+
+% ===========================================================================
+% Recent multilevel and parallel partitioners
+% ===========================================================================
+
+@inproceedings{schlag2016,
+  author    = {Schlag, Sebastian and Henne, Vitali and Heuer, Tobias and Meyerhenke, Henning and Sanders, Peter and Schulz, Christian},
+  title     = {k-Way Hypergraph Partitioning via n-Level Recursive Bisection},
+  booktitle = {Proceedings of the 18th Workshop on Algorithm Engineering and Experiments (ALENEX)},
+  pages     = {53--67},
+  year      = {2016},
+  doi       = {10.1137/1.9781611974317.5}
+}
+
+@inproceedings{akhremtsev2017,
+  author    = {Akhremtsev, Yaroslav and Heuer, Tobias and Sanders, Peter and Schlag, Sebastian},
+  title     = {Engineering a Direct k-Way Hypergraph Partitioning Algorithm},
+  booktitle = {Proceedings of the 19th Workshop on Algorithm Engineering and Experiments (ALENEX)},
+  pages     = {28--42},
+  year      = {2017},
+  doi       = {10.1137/1.9781611974768.3}
+}
+
+@inproceedings{gottesburen2021,
+  author    = {Gottesb{\"u}ren, Lars and Heuer, Tobias and Sanders, Peter and Schlag, Sebastian},
+  title     = {Scalable Shared-Memory Hypergraph Partitioning},
+  booktitle = {Proceedings of the 23rd Workshop on Algorithm Engineering and Experiments (ALENEX)},
+  pages     = {16--30},
+  year      = {2021},
+  doi       = {10.1137/1.9781611976472.2}
+}
+
+@article{gottesburen2024,
+  author  = {Gottesb{\"u}ren, Lars and Heuer, Tobias and Maas, Nikolai and Sanders, Peter and Schlag, Sebastian},
+  title   = {Scalable High-Quality Hypergraph Partitioning},
+  journal = {ACM Transactions on Algorithms},
+  volume  = {20},
+  number  = {1},
+  pages   = {1--54},
+  year    = {2024},
+  doi     = {10.1145/3626527}
+}
+
+@article{heuer2019,
+  author  = {Heuer, Tobias and Sanders, Peter and Schlag, Sebastian},
+  title   = {Network Flow-Based Refinement for Multilevel Hypergraph Partitioning},
+  journal = {ACM Journal of Experimental Algorithmics},
+  volume  = {24},
+  pages   = {1--36},
+  year    = {2019},
+  doi     = {10.1145/3329872}
+}
+
+@inproceedings{sanders2012,
+  author    = {Sanders, Peter and Schulz, Christian},
+  title     = {Distributed Evolutionary Graph Partitioning},
+  booktitle = {Proceedings of the 14th Workshop on Algorithm Engineering and Experiments (ALENEX)},
+  pages     = {16--29},
+  year      = {2012},
+  doi       = {10.1137/1.9781611972924.2}
+}
+
+% ===========================================================================
+% Constraint-driven and learning-based partitioning
+% ===========================================================================
+
+@inproceedings{bustany2022,
+  author    = {Bustany, Ismail and Kahng, Andrew B. and Koutis, Ioannis and Pramanik, Bodhisatta and Wang, Zhiang},
+  title     = {{SpecPart}: A Supervised Spectral Framework for Hypergraph Partitioning Solution Improvement},
+  booktitle = {Proceedings of the 41st IEEE/ACM International Conference on Computer-Aided Design (ICCAD)},
+  pages     = {1--9},
+  year      = {2022},
+  doi       = {10.1145/3508352.3549390}
+}
+
+@inproceedings{bustany2023,
+  author    = {Bustany, Ismail and Gasparyan, Grigor and Kahng, Andrew B. and Koutis, Ioannis and Pramanik, Bodhisatta and Wang, Zhiang},
+  title     = {An Open-Source Constraints-Driven General Partitioning Multi-Tool for {VLSI} Physical Design},
+  booktitle = {Proceedings of the IEEE/ACM International Conference on Computer-Aided Design (ICCAD)},
+  pages     = {1--9},
+  year      = {2023},
+  doi       = {10.1109/ICCAD57390.2023.10323975}
+}
+
+@article{bustany2024,
+  author  = {Bustany, Ismail and Kahng, Andrew B. and Koutis, Ioannis and Pramanik, Bodhisatta and Wang, Zhiang},
+  title   = {{K-SpecPart}: Supervised Embedding Algorithms and Cut Overlay for Improved Hypergraph Partitioning},
+  journal = {IEEE Transactions on Computer-Aided Design of Integrated Circuits and Systems},
+  volume  = {43},
+  number  = {4},
+  pages   = {1232--1245},
+  year    = {2024},
+  doi     = {10.1109/TCAD.2023.3332268}
+}
+
+@inproceedings{iyer2025,
+  author    = {Iyer, Mahesh A. and Kahng, Andrew B. and Luu, Jonathan and Pramanik, Bodhisatta and Vorwerk, Kevin and Zgheib, Grace},
+  title     = {A Partitioning-Based {CAD} Flow for Interposer-Based Multi-Die {FPGAs}},
+  booktitle = {Proceedings of the IEEE 33rd Annual International Symposium on Field-Programmable Custom Computing Machines (FCCM)},
+  pages     = {172--180},
+  year      = {2025},
+  doi       = {10.1109/FCCM62733.2025.00063}
+}
+
+@misc{khan2024,
+  author       = {Khan, Muhammad Hadir and Onal, Bugra and Dogan, Eren and Guthaus, Matthew R.},
+  title        = {{VLSI} Hypergraph Partitioning with Deep Learning},
+  year         = {2024},
+  howpublished = {arXiv:2409.01387},
+  url          = {https://arxiv.org/abs/2409.01387}
+}
+
+% ===========================================================================
+% Supporting techniques (duplicate detection, Gray codes, RNG)
+% ===========================================================================
+
+@inproceedings{broder1997,
+  author    = {Broder, Andrei Z.},
+  title     = {On the Resemblance and Containment of Documents},
+  booktitle = {Proceedings of the Compression and Complexity of Sequences (SEQUENCES)},
+  pages     = {21--29},
+  year      = {1997},
+  doi       = {10.1109/SEQUEN.1997.666900}
+}
+
+@article{savage1997,
+  author  = {Savage, Carla},
+  title   = {A Survey of Combinatorial Gray Codes},
+  journal = {SIAM Review},
+  volume  = {39},
+  number  = {4},
+  pages   = {605--629},
+  year    = {1997},
+  doi     = {10.1137/S0036144595295272}
+}
+
+@inproceedings{steele2014,
+  author    = {Steele, Guy L. and Lea, Doug and Flood, Christine H.},
+  title     = {Fast Splittable Pseudorandom Number Generators},
+  booktitle = {Proceedings of the ACM International Conference on Object-Oriented Programming, Systems, Languages, and Applications (OOPSLA)},
+  pages     = {453--472},
+  year      = {2014},
+  doi       = {10.1145/2714064.2660195}
+}
+
+@article{mutze2016,
+  author  = {M{\"u}tze, Torsten},
+  title   = {Proof of the Middle Levels Conjecture},
+  journal = {Proceedings of the London Mathematical Society},
+  volume  = {112},
+  number  = {4},
+  pages   = {677--713},
+  year    = {2016},
+  doi     = {10.1112/plms/pdw004}
+}

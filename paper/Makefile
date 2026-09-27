@@ -8,13 +8,20 @@
 #     IEEE layout and the I/II/... section numbering.
 #   * `--shift-heading-level-by=-1` maps the body's `##` headings to \section
 #     (the title is metadata, so no `\section` would be emitted otherwise).
-#   * No pandoc-crossref/citeproc: the paper uses no `@`-cross-references, and
-#     its numbered reference list is plain text. Tables are written as raw
-#     LaTeX (`{=latex}` blocks) because pandoc pipe tables become `longtable`,
-#     which IEEEtran's two-column mode rejects.
+#   * `--citeproc` resolves the paper's `[@key]` citations against ckpttn.bib
+#     with the vendored ieee.csl style (numeric `[1]`), so the bibliography is
+#     generated rather than hand-maintained. Both files are prerequisites, and
+#     `nocite: @*` in the front matter keeps entries that are listed for
+#     further reading but not cited in the text.
+#   * Tables are written as raw LaTeX (`{=latex}` blocks) because pandoc pipe
+#     tables become `longtable`, which IEEEtran's two-column mode rejects.
 
 PANDOC := pandoc
-FLAGS  := -s -t latex -N --shift-heading-level-by=-1 --pdf-engine=pdflatex
+FLAGS  := -s -t latex -N --shift-heading-level-by=-1 --pdf-engine=pdflatex --citeproc
+
+# Citation inputs: the BibTeX database and the CSL style. Changing either must
+# rebuild the PDF, so both are prerequisites of the rule below.
+BIB := ckpttn.bib ieee.csl
 
 # Figure PDFs live under figs/ and are \includegraphics'd by ckpttn-paper.md.
 # They must be prerequisites, or `make` will not rebuild the paper when a
@@ -26,7 +33,7 @@ FIGURES := figs/p1-2way.pdf figs/p1-3way.pdf \
 
 ckpttn-paper: ckpttn-paper.pdf
 
-ckpttn-paper.pdf: ckpttn-paper.md $(FIGURES)
+ckpttn-paper.pdf: ckpttn-paper.md $(FIGURES) $(BIB)
 	$(PANDOC) $(FLAGS) ckpttn-paper.md -o $@
 
 # Trailing `; true` forces make to run these through a shell; `rm` is not an
