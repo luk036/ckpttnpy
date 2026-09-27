@@ -13,50 +13,48 @@ class MockHyprgraph:
 
 @pytest.fixture
 def mgr():
-    hyprgraph = MockHyprgraph(4)
-    module_weight = [1, 1, 1, 1]
+    hyprgraph = MockHyprgraph(8)
+    module_weight = [1] * 8
     return FMConstrMgr(hyprgraph, 0.25, module_weight)
 
 
 def test_check_legal(mgr) -> None:
-    part = [0, 0, 1, 1]
+    part = [0, 0, 0, 0, 1, 1, 1, 1]
     mgr.init(part)
-    # mgr.diff is [2, 2]
-    # mgr.lowerbound is 1
+    # mgr.diff is [4, 4], mgr.lowerbound is round(0.75 * 8 / 2) == 3
 
-    move_info_v = (0, 0, 1)  # move vertex 0 from part 0 to part 1
+    move_info_v = (0, 0, 1)
     assert mgr.check_legal(move_info_v) == LegalCheck.AllSatisfied
 
     mgr.update_move(move_info_v)
-    # mgr.diff is [1, 3]
+    # mgr.diff is [3, 5]
     move_info_v = (1, 0, 1)
     assert mgr.check_legal(move_info_v) == LegalCheck.NotSatisfied
 
-    move_info_v = (2, 1, 0)
+    move_info_v = (4, 1, 0)
     assert mgr.check_legal(move_info_v) == LegalCheck.AllSatisfied
 
 
 def test_check_constraints(mgr) -> None:
-    part = [0, 0, 1, 1]
+    part = [0, 0, 0, 0, 1, 1, 1, 1]
     mgr.init(part)
-    # mgr.diff is [2, 2]
-    # mgr.lowerbound is 1
+    # mgr.diff is [4, 4], mgr.lowerbound is 3
 
     move_info_v = (0, 0, 1)
     assert mgr.check_constraints(move_info_v)
 
     mgr.update_move(move_info_v)
-    # mgr.diff is [1, 3]
+    # mgr.diff is [3, 5]
     move_info_v = (1, 0, 1)
     assert not mgr.check_constraints(move_info_v)
 
 
 def test_update_move(mgr) -> None:
-    part = [0, 0, 1, 1]
+    part = [0, 0, 0, 0, 1, 1, 1, 1]
     mgr.init(part)
-    # mgr.diff is [2, 2]
+    # mgr.diff is [4, 4]
 
     move_info_v = (0, 0, 1)
     mgr.weight = mgr.get_module_weight(move_info_v[0])
     mgr.update_move(move_info_v)
-    assert mgr.diff == [1, 3]
+    assert mgr.diff == [3, 5]

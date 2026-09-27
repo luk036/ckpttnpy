@@ -56,8 +56,8 @@ class FMConstrMgr(Generic[Gnl]):
         self.num_parts = num_parts
         self.diff = [0] * num_parts
         self.totalweight = sum(self.get_module_weight(v) for v in self.hyprgraph)
-        totalweightK = self.totalweight * (2.0 / self.num_parts)
-        self.lowerbound = round(totalweightK * self.bal_tol)
+        ideal_block_weight = self.totalweight / self.num_parts
+        self.lowerbound = round((1.0 - self.bal_tol) * ideal_block_weight)
 
     def init(self, part: Part) -> None:
         self.diff = [0] * self.num_parts
@@ -96,7 +96,7 @@ class FMConstrMgr(Generic[Gnl]):
             >>> mgr.init(part)
             >>> move_info_v = (0, 0, 1)
             >>> mgr.check_legal(move_info_v)
-            <LegalCheck.AllSatisfied: 2>
+            <LegalCheck.NotSatisfied: 0>
 
         .. svgbob::
 

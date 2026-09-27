@@ -15,7 +15,7 @@ _logger = logging.getLogger(__name__)
 
 def _run_FMBiPartMgr(hyprgraph: Netlist, part: Part):
     gain_mgr = FMBiGainMgr(FMBiGainCalc, hyprgraph)
-    constr_mgr = FMBiConstrMgr(hyprgraph, 0.499, hyprgraph.module_weight)
+    constr_mgr = FMBiConstrMgr(hyprgraph, 0.3, hyprgraph.module_weight)
     part_mgr = FMPartMgr(hyprgraph, gain_mgr, constr_mgr)
     legal_check = part_mgr.legalize(part)
     if legal_check != LegalCheck.AllSatisfied:
