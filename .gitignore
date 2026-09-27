@@ -183,3 +183,6 @@ gha-creds-*.json
 # Cache dirs
 .ruff_cache/
 .benchmarks/
+
+# Downloaded reference PDFs (kept local; not redistributed)
+refs/*.pdf
