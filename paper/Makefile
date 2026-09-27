@@ -29,14 +29,36 @@ BIB := ckpttn.bib ieee.csl
 FIGURES := figs/p1-2way.pdf figs/p1-3way.pdf \
            figs/fig_cut.pdf figs/fig_gain.pdf figs/fig_ratio.pdf figs/fig_runtime.pdf
 
-.PHONY: ckpttn-paper clean
+.PHONY: ckpttn-paper ckpttn-talk clean
 
 ckpttn-paper: ckpttn-paper.pdf
 
 ckpttn-paper.pdf: ckpttn-paper.md $(FIGURES) $(BIB)
 	$(PANDOC) $(FLAGS) ckpttn-paper.md -o $@
 
+# ckpttn-talk.md -> ckpttn-talk.pdf (Beamer slides).
+# Why these flags:
+#   * LuaLaTeX is required: the deck keeps emoji, which need a font fallback
+#     registered in preamble.tex.
+#   * `--include-in-header` MUST be a command-line flag; setting it from YAML
+#     metadata is silently ignored.
+#   * pandoc writes the .tex first, then LuaLaTeX runs twice so that the
+#     `\tableofcontents` outline is populated on the second pass.
+#   * `--slide-level=2`: `#` = \section, `##` = frame.
+LUALATEX   := lualatex
+TALK_FLAGS := -t beamer --slide-level=2 --include-in-header=preamble.tex
+
+ckpttn-talk: ckpttn-talk.pdf
+
+ckpttn-talk.tex: ckpttn-talk.md preamble.tex $(FIGURES)
+	$(PANDOC) $(TALK_FLAGS) ckpttn-talk.md -o $@
+
+ckpttn-talk.pdf: ckpttn-talk.tex
+	$(LUALATEX) -interaction=nonstopmode -halt-on-error ckpttn-talk.tex
+	$(LUALATEX) -interaction=nonstopmode -halt-on-error ckpttn-talk.tex
+
 # Trailing `; true` forces make to run these through a shell; `rm` is not an
 # .exe on Windows, where make may otherwise fail to exec it directly.
 clean:
-	-@rm -f ckpttn-paper.tex ckpttn-paper.aux ckpttn-paper.log ckpttn-paper.out ckpttn-paper.toc ; true
+	-@rm -f ckpttn-paper.tex ckpttn-paper.aux ckpttn-paper.log ckpttn-paper.out ckpttn-paper.toc \
+		ckpttn-talk.tex ckpttn-talk.aux ckpttn-talk.log ckpttn-talk.out ckpttn-talk.toc ckpttn-talk.nav ckpttn-talk.snm ; true
