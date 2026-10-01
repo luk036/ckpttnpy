@@ -858,5 +858,3 @@ systematic study of the contraction guard and leaf threshold across the IBM
 benchmark family [@catalyurek2023].
 
 ## References {-}
-
-
