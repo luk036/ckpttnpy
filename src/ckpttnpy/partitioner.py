@@ -5,10 +5,10 @@ family. ``create_partitioner`` builds a multi-level manager on top of it;
 ``create_flat_part_mgr`` builds the single-level equivalent.
 """
 
-from typing import Any
+from typing import Any, Optional
 
 from .FMPartSpec import BI_FM, BI_NN, KWAY_FM, KWAY_NN, FMPartSpec
-from .MLPartMgr import MLPartMgr
+from .MLPartMgr import DEFAULT_LIMIT_SIZE, MLPartMgr
 from .PartMgrBase import PartMgrBase
 
 
@@ -24,7 +24,7 @@ def resolve_spec(k: int, algo: str) -> FMPartSpec:
 
 
 def create_partitioner(
-    k: int, algo: str, bal_tol: float, limitsize: int = 50
+    k: int, algo: str, bal_tol: float, limitsize: Optional[int] = DEFAULT_LIMIT_SIZE
 ) -> MLPartMgr:
     """Build a multi-level partitioner (coarsen, recurse, then refine)."""
     mgr = MLPartMgr(resolve_spec(k, algo), bal_tol, k)

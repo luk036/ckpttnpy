@@ -4,7 +4,7 @@ import argparse
 import json
 import random
 import sys
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
 from typing import Any, List, Optional, Set, Tuple
 
@@ -360,7 +360,10 @@ Examples:
     parser.add_argument("hypergraph_file", help="Input hypergraph file")
     parser.add_argument("k", type=int, nargs="?", help="Number of parts (default: 2)")
     parser.add_argument(
-        "epsilon", type=float, nargs="?", help="Imbalance factor (default: 0.05)"
+        "epsilon",
+        type=float,
+        nargs="?",
+        help="Imbalance factor (default: preset, 0.03 for 'default')",
     )
 
     g_input = parser.add_argument_group("Input options")
@@ -407,15 +410,17 @@ Examples:
         "-m",
         "--mode",
         choices=["direct", "recursive"],
-        default="recursive",
-        help="Mode: recursive=FMPartMgr, direct=NNPartMgr (default: recursive)",
+        default=None,
+        help="Mode: recursive=FMPartMgr, direct=NNPartMgr (default: preset)",
     )
     g_algo.add_argument(
         "-t",
+        "--starts",
         "--threads",
+        dest="starts",
         type=int,
-        default=1,
-        help="Number of starts for multi-start (default: 1)",
+        default=4,
+        help="Number of starts for multi-start (default: 4)",
     )
 
     g_other = parser.add_argument_group("Other options")
@@ -432,10 +437,12 @@ Examples:
 
     args = parser.parse_args()
 
+    preset_cfg = get_preset_config(args.preset)
     k = args.k or 2
-    epsilon_val = args.epsilon or 0.05
+    epsilon_val = preset_cfg["bal_tol"] if args.epsilon is None else args.epsilon
     quiet = args.quiet
-    use_recursive = args.mode == "recursive"
+    mode = args.mode or ("recursive" if preset_cfg["recursive"] else "direct")
+    use_recursive = mode == "recursive"
 
     if k < 2:
         parser.error("k must be at least 2")
@@ -480,7 +487,7 @@ Examples:
         print(f"Hypergraph: {num_modules} vertices, {num_nets} nets", file=sys.stderr)
         print(f"K={k}, epsilon={epsilon_val}, preset={args.preset}", file=sys.stderr)
 
-    num_starts = max(args.threads, 1)
+    num_starts = max(args.starts, 1)
     best_part: List[int] = [0] * num_modules
     best_cost = sys.maxsize
 
@@ -502,12 +509,11 @@ Examples:
             base_msg = f"Base seed: {args.seed}" if args.seed != 0 else "Random seeds"
             print(f"{base_msg}, starts: {num_starts}", file=sys.stderr)
             print(
-                f"Running partitioning (preset: {args.preset}, "
-                f"mode: {args.mode})...",
+                f"Running partitioning (preset: {args.preset}, " f"mode: {mode})...",
                 file=sys.stderr,
             )
 
-        with ThreadPoolExecutor(max_workers=num_starts) as executor:
+        with ProcessPoolExecutor(max_workers=num_starts) as executor:
             futures = {}
             for start in range(num_starts):
                 start_seed = args.seed + start * 104729 if args.seed != 0 else None

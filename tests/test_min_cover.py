@@ -139,19 +139,20 @@ def test_contract_subgraph_with_weights() -> None:
 # ── MinHash duplicate detection with high-pin nets ────────────────
 
 
-def test_purge_duplicate_nets_minhash() -> None:
-    """Exercise the minHash branch in purge_duplicate_nets (degree > 5 and <= 200)."""
+def test_purge_duplicate_nets_minhash(monkeypatch) -> None:
+    """Exercise the minHash branch in purge_duplicate_nets.
+
+    The branch is opt-in: the default ``LOW_PIN_NET_THRESHOLD`` (200) bypasses it,
+    so lower it below the net degree to cover the probabilistic pre-filter.
+    """
     import networkx as nx
     from netlistx.netlist import Netlist
 
-    from ckpttnpy.min_cover import (
-        LOW_PIN_NET_THRESHOLD,
-        construct_graph,
-        purge_duplicate_nets,
-        setup,
-    )
+    from ckpttnpy import min_cover
+    from ckpttnpy.min_cover import construct_graph, purge_duplicate_nets, setup
 
-    num_cells = LOW_PIN_NET_THRESHOLD + 2  # 7 cells to exceed low-pin threshold
+    monkeypatch.setattr(min_cover, "LOW_PIN_NET_THRESHOLD", 5)
+    num_cells = 7  # degree 7: > 5 (pre-filter) and <= 200 (degree cap)
     G = nx.Graph()
     modules = list(range(num_cells))
     nets = [num_cells, num_cells + 1]  # two nets

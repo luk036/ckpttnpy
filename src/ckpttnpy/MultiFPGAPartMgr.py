@@ -21,14 +21,14 @@ class MultiFPGAPartMgr:
         self,
         num_fpgas: int,
         fpga_resources: List[Dict[str, float]],
-        bal_tol: float = 0.1,
+        bal_tol: float = 0.05,
     ):
         """
         Initializes the MultiFPGAPartMgr with the number of FPGAs and their resources.
 
         :param num_fpgas: The number of FPGAs in the system
         :param fpga_resources: A list of dictionaries containing resource information for each FPGA
-        :param bal_tol: The balance tolerance for partitioning, defaults to 0.1
+        :param bal_tol: The balance tolerance for partitioning, defaults to 0.05
         """
         self.num_fpgas = num_fpgas
         self.fpga_resources = fpga_resources

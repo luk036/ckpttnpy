@@ -5,8 +5,11 @@ Implements min-maximal matching based clustering, duplicate net detection
 subgraph contraction. Produces a HierNetlist with updated module weights.
 
 Duplicate net detection:
-- Low-pin nets (<= 5 pins): exact set comparison
-- High-pin nets: minHash probabilistic similarity (signature size 64, threshold 0.8)
+- Nets with degree <= ``LOW_PIN_NET_THRESHOLD``: exact set comparison
+- The MinHash probabilistic pre-filter (signature size 64, threshold 0.8) is kept
+  for the case where ``LOW_PIN_NET_THRESHOLD`` is lowered below
+  ``MINHASH_MAX_DEGREE``; at the default the exact path covers the whole range
+  because it is faster (measured on ibm01/02/03/18).
 
 Note:
     module and net should have a unique id because they treat the same node in the underlying graph.
@@ -20,7 +23,11 @@ from netlistx.netlist_algo import min_maximal_matching
 
 from .HierNetlist import HierNetlist
 
-LOW_PIN_NET_THRESHOLD = 5
+MINHASH_MAX_DEGREE = 200  # Above this degree, duplicate detection is skipped
+# Exact set comparison is faster than the MinHash pre-filter on all benchmarked
+# graphs (ibm01/02/03/18), so use it directly up to the degree cap by default.
+# The pre-filter still engages if LOW_PIN_NET_THRESHOLD is lowered.
+LOW_PIN_NET_THRESHOLD = MINHASH_MAX_DEGREE
 MINHASH_SIG_SIZE = 64  # Number of hash functions in minHash signature
 MINHASH_SIMILARITY = 0.8  # Similarity threshold for duplicate detection
 
@@ -181,7 +188,7 @@ def purge_duplicate_nets(
 
     This function identifies and removes duplicate nets by:
     1. Checking for nets that connect exactly the same set of modules
-    2. For low-pin nets (<= 5 connections), it does exact set comparison
+    2. For nets up to ``LOW_PIN_NET_THRESHOLD`` pins, it does exact set comparison
     3. Combining weights of duplicate nets into a single representative net
 
     The example below can be visualized as follows:
@@ -241,7 +248,7 @@ def purge_duplicate_nets(
                     set2 = set(v for v in ugraph[net2])
                     if set1 == set2:
                         same = True
-                elif deg <= 200:
+                elif deg <= MINHASH_MAX_DEGREE:
                     # MinHash pre-filter: skip exact comparison unless likely duplicate
                     if net1 not in sig_cache:
                         sig_cache[net1] = _minhash_signature(ugraph[net1])

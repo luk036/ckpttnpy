@@ -407,12 +407,13 @@ Preset & Balance & Mode \\
 
 **Tuning.** The presets are thin wrappers over a small set of constants, most of
 which are fixed at compile time rather than exposed as options. Contraction is
-attempted while the graph has at least 50 modules; gain updates are skipped on
-nets of degree above 500; the bucket buffers are sized 32768 for bi-partitioning
-and 65536 for k-way; and degree-2 and degree-3 nets take a specialized fast
-path. On the coarsening side, nets of degree at most five are compared exactly
-for duplication, while larger nets (up to degree 200) are pre-filtered with a
-64-element MinHash signature at a Jaccard threshold of $0.8$. Several starts can
+attempted while the graph has at least \texttt{limitsize} modules (50 in the C++
+port, size-adaptive $\max(50, \lvert V \rvert / 6)$ in Python); gain updates are
+skipped on nets of degree above 500; the bucket buffers are sized 32768 for
+bi-partitioning and 65536 for k-way; and degree-2 and degree-3 nets take a
+specialized fast path. On the coarsening side, nets of degree at most 200 are
+compared exactly for duplication, while the 64-element MinHash pre-filter
+(Jaccard threshold $0.8$) only engages if that threshold is lowered. Several starts can
 be run in parallel: with $t$ starts and a seed $s$ the runs use seeds
 $s + i \cdot 104729$, so the search is reproducible while still exploring
 different basins; on ibm02 (19,601 modules) the best single start cost 282 cut
@@ -426,11 +427,11 @@ nets, whereas four deterministic starts reached 87.
 \hline
 Constant & Value & Role \\
 \hline
-\texttt{limitsize}                   & 50            & coarsen while $|V| \ge$ this \\
+\texttt{limitsize}                   & 50            & coarsen while $|V| \ge$ this (C++); Python auto $\max(50, |V|/6)$ \\
 \texttt{FM\_MAX\_DEGREE}             & 500           & skip gain updates above this degree \\
 \texttt{stack\_buf\_size}            & 32768 / 65536 & bounded-queue buffers (bi / k-way) \\
 \texttt{special\_handle\_2pin\_nets} & true          & degree-2/3 fast path \\
-\texttt{LOW\_PIN\_NET\_THRESHOLD}    & 5             & exact duplicate check at this degree \\
+\texttt{LOW\_PIN\_NET\_THRESHOLD}    & 200           & exact duplicate check at this degree \\
 \texttt{MINHASH\_SIG\_SIZE}          & 64            & MinHash signature length \\
 \texttt{MINHASH\_SIMILARITY}         & 0.8           & Jaccard pre-filter threshold \\
 \texttt{MINHASH\_MAX\_DEGREE}        & 200           & skip MinHash above this degree \\

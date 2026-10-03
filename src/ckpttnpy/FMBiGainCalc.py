@@ -9,6 +9,8 @@ from typing import Any, Dict, List, Union
 
 from mywheel.dllist import Dllink
 
+from .FMPmrConfig import FM_MAX_DEGREE
+
 Part = Union[Dict[Any, int], List[int]]
 
 
@@ -77,7 +79,7 @@ class FMBiGainCalc:
 
     def _init_gain(self, net: Any, part: Part) -> None:
         degree = self.net_degree[net]
-        if degree < 2:  # unlikely, self-loop, etc.
+        if degree < 2 or degree > FM_MAX_DEGREE:  # self-loop or too-large net
             return  # does not provide any gain when move
         if degree == 3:
             self._init_gain_3pin_net(net, part)

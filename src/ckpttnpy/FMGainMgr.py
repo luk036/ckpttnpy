@@ -11,6 +11,8 @@ from typing import Any, Dict, List, Union
 from mywheel.bpqueue import BPQueue
 from mywheel.dllist import Dllink, Dllist
 
+from .FMPmrConfig import FM_MAX_DEGREE
+
 Part = Union[Dict[Any, int], List[int]]
 
 Item = Dllink[List[int]]
@@ -75,7 +77,7 @@ class FMGainMgr:
         v, from_part, to_part = move_info_v
         for net in gain_calc.vertex_nets[v]:
             degree = gain_calc.net_degree[net]
-            if degree < 2:  # unlikely, self-loop, etc.
+            if degree < 2 or degree > FM_MAX_DEGREE:  # self-loop or too-large net
                 continue  # does not provide any gain change when move
             move_info = [net, v, from_part, to_part]
             if degree == 2:

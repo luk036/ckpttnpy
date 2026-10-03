@@ -31,6 +31,7 @@ class PartMgrBase:
         self.validator = constr_mgr
         self.num_parts = gain_mgr.num_parts
         self.totalcost = 0
+        self.max_passes = 50
 
     def get_module_weight(self, v: Any) -> int:
         """Get module weight for a given module.
@@ -128,7 +129,7 @@ class PartMgrBase:
         return legalcheck
 
     def optimize(self, part: Part) -> None:
-        for _ in range(100):  # max_passes
+        for _ in range(self.max_passes):
             self.init(part)
             totalcostbefore = self.totalcost
             self._optimize_1pass(part)
