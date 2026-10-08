@@ -2,9 +2,8 @@
 import logging
 import sys
 
-from netlistx.netlist import Netlist, create_random_hgraph
-
 import _common
+from netlistx.netlist import Netlist, create_random_hgraph
 
 __author__ = "Wai-Shing Luk"
 __copyright__ = "Wai-Shing Luk"
@@ -18,9 +17,7 @@ class RandomPartExperiment(_common.Experiment):
     k = 2
 
     def add_arguments(self, parser):
-        parser.add_argument(
-            dest="N", help="number of modules", type=int, metavar="INT"
-        )
+        parser.add_argument(dest="N", help="number of modules", type=int, metavar="INT")
         parser.add_argument(dest="M", help="number of nets", type=int, metavar="INT")
         parser.add_argument(
             dest="eta", help="ratio of nets and pins", type=float, metavar="FLOAT"

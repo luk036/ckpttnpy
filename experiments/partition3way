@@ -2,9 +2,8 @@
 import logging
 import sys
 
-from netlistx.netlist import Netlist, read_json
-
 import _common
+from netlistx.netlist import Netlist, read_json
 
 __author__ = "Wai-Shing Luk"
 __copyright__ = "Wai-Shing Luk"
