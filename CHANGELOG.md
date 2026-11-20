@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.3 (2026-11-20)
+
+### Build & CI
+- **PyPI publish workflow**: Added the release-triggered publish workflow. (#ef1b3d1)
+
 ## Version 0.2 (2026-10-09)
 
 ### Features
